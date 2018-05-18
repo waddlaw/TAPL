@@ -32,9 +32,8 @@ data Term where
 -- 各自然数 i について、集合 Si を以下のように定義する。
 -- 簡略化のため Int を Nat として扱う。エラー処理は実装しない。
 s :: Int -> T
-s i
-  | i == 0    = Set.empty
-  | otherwise = Set.unions [s1, s2, s3]
+s 0 = Set.empty
+s i = Set.unions [s1, s2, s3]
   where
     s1 = Set.fromList [True, False, Zero]
     s2 = Set.fromList $ concat [[Succ t1, Pred t1, IsZero t1] | t1 <- si]

@@ -1,11 +1,18 @@
 #!/usr/bin/env stack
 {- stack repl
    --resolver lts-11.9
+   --package QuickCheck
+   --package containers
+   --package tasty
+   --package tasty-hunit
 -}
 
-import           Data.Set (Set)
-import qualified Data.Set as Set
-import           Prelude  hiding (Bool (..))
+import           Data.Set         (Set)
+import qualified Data.Set         as Set
+import           Prelude          hiding (False, True)
+import           Test.QuickCheck
+import           Test.Tasty
+import           Test.Tasty.HUnit
 
 -- | def 3.2.1 [帰納的な項の定義]
 -- 項の集合とは以下の条件を満たす最小の集合Tである
@@ -42,12 +49,12 @@ s i = Set.unions [s1, s2, s3]
 
 -- | def 3.3.1 項tに現れる定数の集合を Consts(t) と書き、次のように定義する
 consts :: Term -> T
-consts True       = Set.singleton True
-consts False      = Set.singleton False
-consts Zero       = Set.singleton Zero
-consts (Succ t)   = consts t
-consts (Pred t)   = consts t
-consts (IsZero t) = consts t
+consts True          = Set.singleton True
+consts False         = Set.singleton False
+consts Zero          = Set.singleton Zero
+consts (Succ t)      = consts t
+consts (Pred t)      = consts t
+consts (IsZero t)    = consts t
 consts (If t1 t2 t3) = Set.unions $ map consts [t1, t2, t3]
 
 -- | def 3.3.2 項tのサイズを size(t) と書き、次のように定義する
@@ -70,9 +77,31 @@ depth (Pred t)      = depth t + 1
 depth (IsZero t)    = depth t + 1
 depth (If t1 t2 t3) = maximum [depth t1, depth t2, depth t3] + 1
 
+inv01 :: Term -> Bool
+inv01 t = Set.member t (s i)
+  where i = depth t
+
+minT :: Term -> T
+minT = s . depth
+
 main :: IO ()
-main = do
-  print $ Set.size $ s 0 -- 0
-  print $ Set.size $ s 1 -- 3
-  print $ Set.size $ s 2 -- 39
-  print $ Set.size $ s 3 -- 59439 (Ex 3.2.4)
+main = defaultMain tests
+
+tests :: TestTree
+tests = testGroup "Tests"
+  [ testCase "Set.size (s n)" $ do
+      (Set.size $ s 0) @?= 0
+      (Set.size $ s 1) @?= 3
+      (Set.size $ s 2) @?= 39
+      (Set.size $ s 3) @?= 59439
+  ]
+
+instance Arbitrary Term where
+  arbitrary = do
+    t1 <- arbitrary
+    t2 <- arbitrary
+    t3 <- arbitrary
+    elements [ True, False, Zero
+             , Succ t1, Pred t1, IsZero t1
+             , If t1 t2 t3
+             ]

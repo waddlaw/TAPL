@@ -7,9 +7,11 @@
    --package tasty-hunit
 -}
 
+import           Prelude          hiding (False, True)
+
 import           Data.Set         (Set)
 import qualified Data.Set         as Set
-import           Prelude          hiding (False, True)
+
 import           Test.QuickCheck
 import           Test.Tasty
 import           Test.Tasty.HUnit

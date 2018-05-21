@@ -1,5 +1,8 @@
 name: tapl
+version: '0.0.0'
 author: Shinya Yamaguchi
+github: waddlaw/TAPL
+
 dependencies:
 - base
 - containers

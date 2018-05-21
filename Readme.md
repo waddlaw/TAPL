@@ -2,6 +2,8 @@
 
 ## 開発
 
+- [haddock](https://waddlaw.github.io/TAPL/)
+
 ### ビルド
 
 ```shell

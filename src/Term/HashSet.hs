@@ -1,4 +1,4 @@
-module Term
+module Term.HashSet
   ( module Term.Types
   , s
   , consts
@@ -9,10 +9,10 @@ module Term
 
 import           Term.Types
 
-import           Data.Set   (Set)
-import qualified Data.Set   as Set
+import           Data.HashSet (HashSet)
+import qualified Data.HashSet as HashSet
 
-type T = Set Term
+type T = HashSet Term
 
 {- |
 [定義 3.2.3 具体的な項の定義]:
@@ -26,13 +26,13 @@ fromList [TTrue,TFalse,Zero]
 -}
 -- 簡略化のため Int を Nat として扱う。エラー処理は実装しない。
 s :: Int -> T
-s 0 = Set.empty
-s i = Set.unions [s1, s2, s3]
+s 0 = HashSet.empty
+s i = HashSet.unions [s1, s2, s3]
   where
-    s1 = Set.fromList [TTrue, TFalse, Zero]
-    s2 = Set.fromList $ concat [[Succ t1, Pred t1, IsZero t1] | t1 <- si]
-    s3 = Set.fromList [If t1 t2 t3 | t1 <- si, t2 <- si, t3 <- si]
-    si = Set.toList $ s (i-1)
+    s1 = HashSet.fromList [TTrue, TFalse, Zero]
+    s2 = HashSet.fromList $ concat [[Succ t1, Pred t1, IsZero t1] | t1 <- si]
+    s3 = HashSet.fromList [If t1 t2 t3 | t1 <- si, t2 <- si, t3 <- si]
+    si = HashSet.toList $ s (i-1)
 
 {- |
 [定義 3.3.1 項tに現れる定数の集合を Consts(t) と書き、次のように定義する]:
@@ -44,13 +44,13 @@ fromList [TTrue]
 fromList [Zero]
 -}
 consts :: Term -> T
-consts TTrue         = Set.singleton TTrue
-consts TFalse        = Set.singleton TFalse
-consts Zero          = Set.singleton Zero
+consts TTrue         = HashSet.singleton TTrue
+consts TFalse        = HashSet.singleton TFalse
+consts Zero          = HashSet.singleton Zero
 consts (Succ t)      = consts t
 consts (Pred t)      = consts t
 consts (IsZero t)    = consts t
-consts (If t1 t2 t3) = Set.unions $ map consts [t1, t2, t3]
+consts (If t1 t2 t3) = HashSet.unions $ map consts [t1, t2, t3]
 
 {- |
 [定義 3.3.2 項tのサイズを size(t) と書き、次のように定義する]:

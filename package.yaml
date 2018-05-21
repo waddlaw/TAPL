@@ -6,7 +6,9 @@ github: waddlaw/TAPL
 dependencies:
 - base
 - containers
+- hashable
 - QuickCheck
+- unordered-containers
 
 library:
   source-dirs: src
@@ -25,6 +27,13 @@ tests:
   #   main: doctests.hs
   #   dependencies:
   #   - tapl
+
+benchmarks:
+  term:
+    main: bench/Main.hs
+    dependencies:
+    - tapl
+    - gauge
 
 ghc-options:
 - -Wall

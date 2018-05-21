@@ -1,9 +1,12 @@
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE DeriveGeneric #-}
 module Term.Types
   ( Term(..)
   ) where
 
 import           Test.QuickCheck
+import GHC.Generics (Generic)
+import Data.Hashable
 
 {- | [定義 3.2.1 帰納的な項の定義]:
 
@@ -20,7 +23,9 @@ data Term where
   Pred    :: Term -> Term                 -- (2)
   IsZero  :: Term -> Term                 -- (2)
   If      :: Term -> Term -> Term -> Term -- (3)
-  deriving (Eq, Ord, Show)
+  deriving (Eq, Ord, Show, Generic)
+
+instance Hashable Term
 
 instance Arbitrary Term where
   arbitrary = do

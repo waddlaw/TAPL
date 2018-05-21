@@ -16,6 +16,9 @@ $ stack test --fast --file-watch
 
 # haddock
 $ stack haddock --fast --file-watch
+
+# ベンチマーク
+$  stack bench --benchmark-arguments "--small"
 ```
 
 haddock の生成
@@ -30,3 +33,7 @@ $ stack clean && stack haddock --haddock-arguments "--odir haddock"
 $ stack clean && stack test --fast --pedantic
 $ hlint .
 ```
+
+## 新たに使ってみたパッケージ
+
+- [vincenthz/hs-gauge](https://github.com/vincenthz/hs-gauge)

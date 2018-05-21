@@ -16,22 +16,25 @@ $ stack test --fast --file-watch
 
 # haddock
 $ stack haddock --fast --file-watch
-
-# ベンチマーク
-## all
-$ stack bench --benchmark-arguments "--small"
-
-## gauge
-$ stack bench tapl:bench:gauge --benchmark-arguments "--small"
-
-## criterion
-$ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ```
 
 haddock の生成
 
 ```shell
 $ stack clean && stack haddock --haddock-arguments "--odir haddock"
+```
+
+ベンチマーク
+
+```shell
+#all
+$ stack bench --benchmark-arguments "--small"
+
+# gauge
+$ stack bench tapl:bench:gauge --benchmark-arguments "--small"
+
+# criterion
+$ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ```
 
 ### チェック

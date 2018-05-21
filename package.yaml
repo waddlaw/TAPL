@@ -18,6 +18,10 @@ tests:
     - tasty-discover
     - tasty-hunit
     - tasty-quickcheck
+  # docktest:
+  #   main: doctests.hs
+  #   dependencies:
+  #   - tapl
 
 ghc-options:
 - -Wall

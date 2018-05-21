@@ -21,7 +21,7 @@ $ stack haddock --fast --file-watch
 haddock の生成
 
 ```shell
-$ stack clean && stack haddock --haddock-arguments "--odir haddock"
+$ stack clean && stack haddock --haddock-arguments "--odir docs"
 ```
 
 ベンチマーク

@@ -1,12 +1,12 @@
-{-# LANGUAGE GADTs #-}
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE GADTs         #-}
 module Term.Types
   ( Term(..)
   ) where
 
+import           Data.Hashable
+import           GHC.Generics    (Generic)
 import           Test.QuickCheck
-import GHC.Generics (Generic)
-import Data.Hashable
 
 {- | [定義 3.2.1 帰納的な項の定義]:
 

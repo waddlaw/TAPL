@@ -20,7 +20,7 @@ haddock の生成
 $ stack clean && stack haddock --haddock-arguments "--odir haddock"
 ```
 
-###チェック
+### チェック
 
 ```shell
 $ stack clean && stack test --fast --pedantic

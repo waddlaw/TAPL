@@ -18,7 +18,14 @@ $ stack test --fast --file-watch
 $ stack haddock --fast --file-watch
 
 # ベンチマーク
-$  stack bench --benchmark-arguments "--small"
+## all
+$ stack bench --benchmark-arguments "--small"
+
+## gauge
+$ stack bench tapl:bench:gauge --benchmark-arguments "--small"
+
+## criterion
+$ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ```
 
 haddock の生成

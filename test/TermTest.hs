@@ -1,6 +1,7 @@
 module TermTest where
 
 import qualified Term.HashSet
+import qualified Term.MonadSet
 import qualified Term.Set
 
 import           Test.Tasty
@@ -9,6 +10,7 @@ import           Test.Tasty.QuickCheck
 
 import qualified Data.HashSet          as HashSet
 import qualified Data.Set              as Set
+import qualified Data.Set.Monad        as MonadSet
 
 test_size :: TestTree
 test_size = testGroup "集合 s のサイズチェック"
@@ -22,6 +24,11 @@ test_size = testGroup "集合 s のサイズチェック"
       HashSet.size (Term.HashSet.s 1) @?= 3
       HashSet.size (Term.HashSet.s 2) @?= 39
       HashSet.size (Term.HashSet.s 3) @?= 59439
+  , testCase "MonadSet.size (s n)" $ do
+      MonadSet.size (Term.MonadSet.s 0) @?= 0
+      MonadSet.size (Term.MonadSet.s 1) @?= 3
+      MonadSet.size (Term.MonadSet.s 2) @?= 39
+      MonadSet.size (Term.MonadSet.s 3) @?= 59439
   ]
 
 prop_inv01:: Term.Set.Term -> Property

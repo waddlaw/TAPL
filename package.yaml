@@ -7,6 +7,7 @@ dependencies:
 - base
 - containers
 - hashable
+- set-monad
 - QuickCheck
 - unordered-containers
 
@@ -29,11 +30,16 @@ tests:
   #   - tapl
 
 benchmarks:
-  term:
-    main: bench/Main.hs
+  gauge:
+    main: bench/Gauge.hs
     dependencies:
     - tapl
     - gauge
+  criterion:
+    main: bench/Criterion.hs
+    dependencies:
+    - tapl
+    - criterion
 
 ghc-options:
 - -Wall

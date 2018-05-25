@@ -7,12 +7,22 @@ dependencies:
 - base
 - containers
 - hashable
-- set-monad
+- prettyprinter
 - QuickCheck
+- set-monad
+- transformers
+- trifecta
 - unordered-containers
 
 library:
   source-dirs: src
+
+executables:
+  proofb:
+    main: app/ProofB.hs
+    dependencies:
+    - tapl
+    - haskeline
 
 tests:
   test:

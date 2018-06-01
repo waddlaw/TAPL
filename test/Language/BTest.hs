@@ -4,6 +4,7 @@ import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.B
+import           Language.B.Types
 
 test_reduction :: TestTree
 test_reduction = testGroup "簡約チェック"

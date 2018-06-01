@@ -37,6 +37,12 @@ $ stack bench tapl:bench:gauge --benchmark-arguments "--small"
 $ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ```
 
+nightly でビルド
+
+```shell
+$ stack --stack-yaml stack-nightly.yaml test
+```
+
 ### チェック
 
 ```shell

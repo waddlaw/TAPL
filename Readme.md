@@ -8,26 +8,16 @@
 
 - [haddock](https://waddlaw.github.io/TAPL/)
 
-### ビルド
+### GHC 8.2.2
 
 ```shell
-# 通常
 $ stack test --fast --file-watch
 
-# haddock
-$ stack haddock --fast --file-watch
-```
+## haddock 生成
+$ stack clean && stack haddock
 
-haddock の生成
-
-```shell
-$ stack clean && stack haddock --haddock-arguments "--odir docs"
-```
-
-ベンチマーク
-
-```shell
-#all
+## ベンチマーク
+# all
 $ stack bench --benchmark-arguments "--small"
 
 # gauge
@@ -37,16 +27,19 @@ $ stack bench tapl:bench:gauge --benchmark-arguments "--small"
 $ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ```
 
-nightly でビルド
+### GHC 8.4.3
 
 ```shell
-$ stack --stack-yaml stack-nightly.yaml test
+$ stack test --fast --file-watch --stack-yaml stack-nightly.yaml
+
+## haddock 生成
+$ stack clean && stack haddock --stack-yaml stack-nightly.yaml
 ```
 
 ### チェック
 
 ```shell
-$ stack clean && stack test --fast --pedantic
+$ stack clean && stack test --fast --pedantic --file-watch
 $ hlint .
 ```
 

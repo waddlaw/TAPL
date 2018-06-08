@@ -4,7 +4,7 @@ module Main (main) where
 import           Language.B
 import           Language.B.Parser
 import           Language.B.Types
-import           Language.Util
+import           Language.Utils
 
 import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.State.Strict

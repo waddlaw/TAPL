@@ -1,4 +1,4 @@
-module Language.Util
+module Language.Utils
   ( trim
   ) where
 

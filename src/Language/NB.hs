@@ -19,8 +19,7 @@ eval1 (TmIf TmFalse _t2 t3)                        = Right t3
 eval1 (TmIf t1 t2 t3)                              = TmIf   <$> eval1 t1 <*> pure t2 <*> pure t3
 eval1 (TmSucc t1)                                  = TmSucc <$> eval1 t1
 eval1 (TmPred TmZero)                              = Right TmZero
-eval1 (TmPred (TmSucc nv1))
-  | isNumericalVal nv1                             = Right nv1
+eval1 (TmPred (TmSucc nv1@(isNumericalVal -> True))) = Right nv1
 eval1 (TmPred t1)                                  = TmPred <$> eval1 t1
 eval1 (TmIsZero TmZero)                            = Right TmTrue
 eval1 (TmIsZero (TmSucc (isNumericalVal -> True))) = Right TmFalse

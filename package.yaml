@@ -11,7 +11,6 @@ dependencies:
   - transformers
   - trifecta
   - unordered-containers
-  - GLUT
 when:
   - condition: impl(ghc == 8.2.2)
     dependencies:

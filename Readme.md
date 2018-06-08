@@ -45,6 +45,14 @@ $ stack clean && stack test --fast --pedantic --file-watch
 $ hlint .
 ```
 
+## 実行方法
+
+```shell
+$ stack exec proofb
+
+$ stack exec nb
+```
+
 ## ディレクトリ構成
 
 ディレクトリ名 | 内容

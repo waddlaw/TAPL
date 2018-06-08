@@ -27,6 +27,11 @@ executables:
     dependencies:
       - tapl
       - haskeline
+  nb:
+    main: app/NB.hs
+    dependencies:
+      - tapl
+      - haskeline
 tests:
   test:
     main: Driver.hs

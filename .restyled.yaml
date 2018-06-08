@@ -1,6 +1,5 @@
 enabled: true
-auto: true
 restylers:
-  - stylish-haskell
+  - stylish-haskell:
       include:
         - "**/*.hs"

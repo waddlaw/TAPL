@@ -16,6 +16,7 @@ dependencies:
   - base
   - containers
   - hashable
+  - parsers
   - prettyprinter
   - QuickCheck
   - text

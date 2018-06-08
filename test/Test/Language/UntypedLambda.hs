@@ -5,9 +5,10 @@ import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
+import qualified Language.UntypedLambda.Examples as UL
 import           Language.Utils.Pretty
 
-import Data.Either
+import           Data.Either
 
 test_ul :: TestTree
 test_ul = testGroup "UntypedLambda"
@@ -22,4 +23,5 @@ test_ul = testGroup "UntypedLambda"
       isLeft (runUlParser "123x") @?= True
       runUlParser "λx. t" @?= Right (TmLam "x" (TmVar "t"))
       isLeft (runUlParser "λ. Ab") @?= True
+      runUlParser "λx. (λy. ((x y) x))" @?= Right UL.example1
   ]

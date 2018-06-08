@@ -7,35 +7,32 @@ import           Language.Utils.Parser
 
 import           Control.Applicative
 import           Data.Text                    (Text)
+import qualified Data.Text                    as T
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta
 
 runUlParser :: String -> Either String Term
-runUlParser = runParserString termP
+runUlParser = runParserString exprP
 
-termP :: Parser Term
-termP =  varP
-     <|> lambdaP
-     <|> applyP
+exprP :: Parser Term
+exprP = lefty <$> factorP <*> termsP
+  where
+    lefty x xs = foldl1 TmApp (x:xs)
+    termsP = many (space *> factorP)
+
+factorP :: Parser Term
+factorP = (char '(' *> (exprP <* char ')')) <|> varP <|> lambdaP
 
 lambdaP :: Parser Term
 lambdaP = TmLam <$  symbol "λ"
                 <*> identP
                 <*  dot
-                <*> (parens termP <|> token termP)
-
-applyP :: Parser Term
-applyP = TmApp <$> (parens termP <|> token termP)
-               <*  space
-               <*> (parens termP <|> token termP)
+                <*> token exprP
 
 varP :: Parser Term
-varP = (TmVar <$> identP) <|> failP
-
-failP :: Parser Term
-failP = do
-  _ <- upper <|> digit
-  unexpected "unexpected Upper or Digit"
+varP = lifty <$> oneOf ['a'..'z'] <*> many alphaNum
+  where
+    lifty x xs = TmVar $ T.pack (x:xs)
 
 identP :: Parser Text
 identP = ident defaultIdentStyle

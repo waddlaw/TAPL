@@ -13,6 +13,7 @@ import           Language.B.Types
 
 import           Data.Maybe
 
+
 -- | 項の評価関係
 --
 -- 評価関係 t -> t' は「tが1ステップでt'に評価される」と読む

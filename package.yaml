@@ -2,6 +2,16 @@ name: tapl
 version: 0.0.0
 author: Shinya Yamaguchi
 github: waddlaw/TAPL
+
+ghc-options:
+  - '-Wall'
+  - '-Wcompat'
+  - '-Wincomplete-uni-patterns'
+  - '-Wincomplete-record-updates'
+  - '-Wnoncanonical-monad-instances'
+  - '-Wredundant-constraints'
+  - '-Wtabs'
+
 dependencies:
   - base
   - containers
@@ -12,16 +22,19 @@ dependencies:
   - transformers
   - trifecta
   - unordered-containers
+
 when:
   - condition: impl(ghc == 8.2.2)
     dependencies:
       - set-monad
+
 library:
   source-dirs: src
   when:
     - condition: impl(ghc == 8.2.2)
       other-modules:
         - Term.MonadSet
+
 executables:
   proofb:
     main: app/ProofB.hs
@@ -33,6 +46,7 @@ executables:
     dependencies:
       - tapl
       - haskeline
+
 tests:
   test:
     main: Driver.hs
@@ -43,6 +57,7 @@ tests:
       - tasty-discover
       - tasty-hunit
       - tasty-quickcheck
+
 benchmarks:
   gauge:
     main: bench/Gauge.hs
@@ -54,11 +69,3 @@ benchmarks:
     dependencies:
       - tapl
       - criterion
-ghc-options:
-  - '-Wall'
-  - '-Wcompat'
-  - '-Wincomplete-uni-patterns'
-  - '-Wincomplete-record-updates'
-  - '-Wnoncanonical-monad-instances'
-  - '-Wredundant-constraints'
-  - '-Wtabs'

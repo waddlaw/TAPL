@@ -98,8 +98,5 @@ renderRule :: Rule -> String
 renderRule r = mconcat [n, ": ", render r]
   where n = show . fromEnum $ r
 
-render :: Pretty a => a -> String
-render = renderString . layoutPretty defaultLayoutOptions . pretty
-
 putPretty :: Pretty a => a -> Proof
 putPretty = lift . lift . print . renderString . layoutPretty defaultLayoutOptions . pretty

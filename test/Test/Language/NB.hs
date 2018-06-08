@@ -6,7 +6,7 @@ import           Test.Tasty.HUnit
 import           Language.NB
 
 test_nb :: TestTree
-test_nb = testGroup "NB (unit test)"
+test_nb = testGroup "NB"
   [ testCase "isNumericalVal" $ do
       isNumericalVal TmTrue @?= False
       isNumericalVal TmZero @?= True
@@ -20,4 +20,11 @@ test_nb = testGroup "NB (unit test)"
       eval TmTrue @?= TmTrue
       eval (TmIf TmTrue TmTrue TmFalse) @?= TmTrue
       eval (TmIsZero (TmPred (TmSucc (TmPred (TmSucc TmZero))))) @?= TmTrue
+  ]
+
+test_nb_parser :: TestTree
+test_nb_parser = testGroup "NB.Parser"
+  [ testCase "runNbParser" $ do
+      runNbParser "true" @?= Right TmTrue
+      runNbParser "succ (succ (succ 0))" @?= Right (TmSucc (TmSucc (TmSucc TmZero)))
   ]

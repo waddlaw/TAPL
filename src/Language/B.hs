@@ -26,11 +26,11 @@ reduction (Just premise) (TmIf t1 t2 t3) = TmIf t1' t2 t3   -- E-IF
 reduction _ _ = error "No Rule"
 
 deduce :: Rule -> Conclusion -> Maybe Premise
-deduce E_IFTRUE (EvalRelation ((TmIf TmTrue t2 _t3), t')) =
+deduce E_IFTRUE (EvalRelation (TmIf TmTrue t2 _t3, t')) =
   if t2 == t' then Nothing else error "unify mismatch"
-deduce E_IFFALSE (EvalRelation ((TmIf TmFalse _t2 t3), t')) =
+deduce E_IFFALSE (EvalRelation (TmIf TmFalse _t2 t3, t')) =
   if t3 == t' then Nothing else error "unify mismatch"
-deduce E_IF (EvalRelation ((TmIf t1 t2 t3 ), (TmIf t1' t2' t3'))) =
+deduce E_IF (EvalRelation (TmIf t1 t2 t3, TmIf t1' t2' t3')) =
   if t2 == t2' && t3 == t3' then Just (EvalRelation (t1, t1')) else error "unify mismatch"
 deduce _ _ = error "unify mismatch"
 

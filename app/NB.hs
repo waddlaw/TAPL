@@ -22,7 +22,4 @@ main' = do
     Just input -> evalCmd input >> main'
 
 evalCmd :: String -> InputT IO ()
-evalCmd str =
-  case runNbParser str of
-    Left err -> outputStrLn err
-    Right t  -> outputStrLn $ render $ eval t
+evalCmd = outputStrLn . either id (render . eval) . runNbParser

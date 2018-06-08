@@ -1,1 +1,6 @@
 resolver: nightly-2018-06-01
+build:
+  haddock: false
+  haddock-arguments:
+    haddock-args:
+      - --odir=docs

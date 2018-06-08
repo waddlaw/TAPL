@@ -54,7 +54,7 @@ setTargetCmd = do
   minput <- getInputLine "[term -> term]: "
   case minput of
     Nothing -> return ()
-    Just input -> do
+    Just input ->
       case bparser input of
         Left err -> outputStrLn err
         Right er -> do
@@ -67,12 +67,11 @@ showTargetCmd = do
   putPretty el
 
 stepCmd :: String -> Proof
-stepCmd input = do
+stepCmd input =
   case stepCmdParser input of
     Left err -> outputStrLn err
-    Right n -> do
-
-      if (n `notElem` (map fromEnum allRules)) then
+    Right n ->
+      if n `notElem` map fromEnum allRules then
         do
           outputStrLn $ "invalid input range: " ++ show n
           rulesCmd

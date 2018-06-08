@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/waddlaw/TAPL.svg?style=svg)](https://circleci.com/gh/waddlaw/TAPL)
+
 # 型システム入門 プログラミング言語と型の理論
 
 - [オーム社の公式ページ](https://www.ohmsha.co.jp/book/9784274069116/)

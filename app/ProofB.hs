@@ -108,8 +108,8 @@ putPretty = lift . lift . print . renderString . layoutPretty defaultLayoutOptio
 
 ------
 example :: EvalRelation
-example = EvalRelation (BIf t false false, BIf u false false)
+example = EvalRelation (TmIf t false false, TmIf u false false)
   where
-    s = BIf true false false
-    t = BIf s true true
-    u = BIf false true true
+    s = TmIf true false false
+    t = TmIf s true true
+    u = TmIf false true true

@@ -9,9 +9,9 @@ module Language.B.Types
 import           Data.Text.Prettyprint.Doc
 
 data Term
-  = BTrue
-  | BFalse
-  | BIf Term Term Term
+  = TmTrue
+  | TmFalse
+  | TmIf Term Term Term
   deriving (Eq, Show)
 
 data Rule
@@ -32,9 +32,9 @@ type Premise         = EvalRelation
 type Conclusion      = EvalRelation
 
 instance Pretty Term where
-  pretty BTrue  = pretty "true"
-  pretty BFalse = pretty "false"
-  pretty (BIf t1 t2 t3) =  pretty "if"   <+> pretty t1
+  pretty TmTrue  = pretty "true"
+  pretty TmFalse = pretty "false"
+  pretty (TmIf t1 t2 t3) =  pretty "if"   <+> pretty t1
                        <+> pretty "then" <+> pretty t2
                        <+> pretty "else" <+> pretty t3
 

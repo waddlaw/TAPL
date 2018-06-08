@@ -35,13 +35,13 @@ termP =  trueP
      <|> ifP
 
 trueP :: Parser Term
-trueP = BTrue <$ symbol "true"
+trueP = TmTrue <$ symbol "true"
 
 falseP :: Parser Term
-falseP = BFalse <$ symbol "false"
+falseP = TmFalse <$ symbol "false"
 
 ifP :: Parser Term
-ifP = BIf <$  symbol "if"
+ifP = TmIf <$  symbol "if"
           <*> (parens termP <|> token termP)
           <*  symbol "then"
           <*> (parens termP <|> token termP)

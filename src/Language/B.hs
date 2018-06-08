@@ -1,11 +1,14 @@
 {-# LANGUAGE FlexibleInstances    #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 module Language.B
-  ( deduce
+  ( module Language.B.Parser
+  , module Language.B.Types
+  , deduce
   , step
   , reduction
   ) where
 
+import           Language.B.Parser
 import           Language.B.Types
 
 import           Data.Maybe

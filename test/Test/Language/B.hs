@@ -4,7 +4,7 @@ import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.B
-import           Language.B.Types
+import qualified Language.B.Example as B
 
 test_reduction :: TestTree
 test_reduction = testGroup "簡約チェック"
@@ -17,10 +17,7 @@ test_reduction = testGroup "簡約チェック"
 test_proof :: TestTree
 test_proof = testGroup "証明"
   [ testCase "導出可能" $ do
-      let s  = TmIf TmTrue TmFalse TmFalse
-          t  = TmIf s TmTrue TmTrue
-          u  = TmIf TmFalse TmTrue TmTrue
-          z1 = EvalRelation (TmIf t TmFalse TmFalse, TmIf u TmFalse TmFalse)
+      let z1 = B.example
           z2 = EvalRelation (TmIf TmTrue TmTrue TmFalse, TmTrue)
           z3 = EvalRelation (TmIf TmFalse TmTrue TmFalse, TmFalse)
 

@@ -2,8 +2,7 @@
 module Main (main) where
 
 import           Language.B
-import           Language.B.Parser
-import           Language.B.Types
+import qualified Language.B.Example                      as B
 import           Language.Utils
 
 import           Control.Monad.Trans.Class
@@ -19,7 +18,7 @@ main :: IO ()
 main = do
   putStrLn "Start ProofB"
 
-  _ <- runStateT (runInputT defaultSettings main') example
+  _ <- runStateT (runInputT defaultSettings main') B.example
 
   putStrLn "Leaving ProofB"
 
@@ -104,11 +103,3 @@ render = renderString . layoutPretty defaultLayoutOptions . pretty
 
 putPretty :: Pretty a => a -> Proof
 putPretty = lift . lift . print . renderString . layoutPretty defaultLayoutOptions . pretty
-
-------
-example :: EvalRelation
-example = EvalRelation (TmIf t false false, TmIf u false false)
-  where
-    s = TmIf true false false
-    t = TmIf s true true
-    u = TmIf false true true

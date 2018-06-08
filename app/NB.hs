@@ -17,8 +17,8 @@ main' :: InputT IO ()
 main' = do
   minput <- getInputLine "NB> "
   case trim <$> minput of
-    Nothing       -> return ()
-    Just ":q"     -> return ()
+    Nothing    -> return ()
+    Just ":q"  -> return ()
     Just input -> evalCmd input >> main'
 
 evalCmd :: String -> InputT IO ()

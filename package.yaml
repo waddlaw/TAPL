@@ -8,6 +8,7 @@ dependencies:
   - hashable
   - prettyprinter
   - QuickCheck
+  - text
   - transformers
   - trifecta
   - unordered-containers

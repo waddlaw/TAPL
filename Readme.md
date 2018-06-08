@@ -43,6 +43,17 @@ $ stack clean && stack test --fast --pedantic --file-watch
 $ hlint .
 ```
 
+## ディレクトリ構成
+
+ディレクトリ名 | 内容
+---------------|----------
+app   | アプリケーション
+bench | ベンチマーク
+src   | ライブラリ
+test  | テスト
+docs  | haddock で生成されたもの
+note  | メモ
+
 ## 新たに使ってみたパッケージ
 
 - [vincenthz/hs-gauge](https://github.com/vincenthz/hs-gauge)

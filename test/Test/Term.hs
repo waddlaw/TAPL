@@ -1,5 +1,5 @@
 {-# LANGUAGE CPP #-}
-module TermTest where
+module Test.Term where
 
 import qualified Term.HashSet
 #if __GLASGOW_HASKELL__ == 822

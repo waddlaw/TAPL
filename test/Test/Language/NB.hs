@@ -27,4 +27,5 @@ test_nb_parser = testGroup "NB.Parser"
   [ testCase "runNbParser" $ do
       runNbParser "true" @?= Right TmTrue
       runNbParser "succ (succ (succ 0))" @?= Right (TmSucc (TmSucc (TmSucc TmZero)))
+      runNbParser "iszero 0" @?= Right (TmIsZero TmZero)
   ]

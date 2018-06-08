@@ -18,6 +18,11 @@ termP =  trueP
      <|> zeroP
      <|> succP
      <|> predP
+     <|> iszeroP
+
+iszeroP :: Parser Term
+iszeroP = TmIsZero <$  symbol "iszero"
+                   <*> (parens termP <|> token termP)
 
 predP :: Parser Term
 predP = TmPred <$  symbol "pred"

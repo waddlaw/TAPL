@@ -4,7 +4,6 @@ import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.NB
-import           Language.NB.Types
 
 test_nb :: TestTree
 test_nb = testGroup "NB (unit test)"

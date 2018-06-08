@@ -1,6 +1,7 @@
 {-# LANGUAGE ViewPatterns #-}
 module Language.NB
-  ( isNumericalVal
+  ( module Language.NB.Types
+  , isNumericalVal
   , isVal
   , eval
   ) where

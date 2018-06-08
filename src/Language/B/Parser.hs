@@ -4,21 +4,16 @@ module Language.B.Parser
   ) where
 
 import           Language.B.Types
+import           Language.Utils.Parser
 
 import           Control.Applicative
 import           Text.Trifecta
 
-runParser :: Parser a -> String -> Either String a
-runParser p input =
-  case parseString p mempty input of
-    Failure xs -> Left $ "parse failure: " ++ show xs
-    Success a  -> Right a
-
 bparser :: String -> Either String EvalRelation
-bparser = runParser elP
+bparser = runParserString elP
 
 stepCmdParser :: String -> Either String Int
-stepCmdParser = runParser p
+stepCmdParser = runParserString p
   where
     p = fromIntegral <$  symbol ":step"
                      <*> natural

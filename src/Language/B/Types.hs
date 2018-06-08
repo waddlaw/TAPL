@@ -1,7 +1,7 @@
 module Language.B.Types
-  ( Term(..)
-  , Rule(..)
-  , EvalRelation(..)
+  ( Term (..)
+  , Rule (..)
+  , EvalRelation (..)
   , Premise
   , Conclusion
   ) where

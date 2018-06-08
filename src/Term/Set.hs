@@ -10,7 +10,7 @@ module Term.Set
 import           Term.Types
 
 import           Data.Set   (Set)
-import qualified  Data.Set   as Set
+import qualified   Data.Set   as Set
 
 type T = Set Term
 

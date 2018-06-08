@@ -24,7 +24,7 @@ instance Pretty Term where
   pretty TmZero       = pretty "0"
   pretty (TmSucc t)   = pretty "succ" <+> pretty t
   pretty (TmPred t)   = pretty "pred" <+> pretty t
-  pretty (TmIsZero t) = pretty "isZero" <+> pretty t
+  pretty (TmIsZero t) = pretty "iszero" <+> pretty t
 
 data TmError
   = NoRuleApplies

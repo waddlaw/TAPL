@@ -1,0 +1,73 @@
+version: 2
+jobs:
+  test:
+    machine:
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: Build docker image
+          command: |
+            rsync -ave --exclude='.circleci' ./ .circleci/code
+            docker-compose -f .circleci/docker-compose.yml build
+      - restore_cache:
+          keys:
+            - stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+            - stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-
+            - stack-{{ .Environment.COMMON_CACHE_KEY }}-
+      - run:
+          name: Run stack test
+          command: |
+            docker-compose -f .circleci/docker-compose.yml run app stack clean --allow-different-user
+            docker-compose -f .circleci/docker-compose.yml run app stack test --fast --allow-different-user
+      - save_cache:
+          key: stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+          paths:
+            - .circleci/code/.stack-work
+  hlint:
+    docker:
+      - image: ubuntu:16.04
+    steps:
+      - checkout
+      - run:
+          name: Run hlint
+          command: |
+            apt update
+            apt install -y curl
+            curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s .
+  pedantic:
+    machine:
+      docker_layer_caching: true
+    steps:
+      - checkout
+      - run:
+          name: Build docker image
+          command: |
+            rsync -ave --exclude='.circleci' ./ .circleci/code
+            docker-compose -f .circleci/docker-compose.yml build
+      - restore_cache:
+          keys:
+            - stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+            - stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-
+            - stack-{{ .Environment.COMMON_CACHE_KEY }}-
+      - run:
+          name: Run stack test --pedantic
+          command: |
+            docker-compose -f .circleci/docker-compose.yml run app stack clean --allow-different-user
+            docker-compose -f .circleci/docker-compose.yml run app stack test --no-run-tests --pedantic --fast --allow-different-user
+      - save_cache:
+          key: stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+          paths:
+            - .circleci/code/.stack-work
+
+workflows:
+  version: 2
+  test-hlint-pedantic:
+    jobs:
+      - test
+      - hlint:
+          requires:
+            - test
+      - pedantic:
+          requires:
+            - test

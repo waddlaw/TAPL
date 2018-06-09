@@ -14,14 +14,18 @@ test_ul :: TestTree
 test_ul = testGroup "UntypedLambda"
   [ testCase "pretty" $ do
       prettyText (TmVar "x") @?= "x"
-      prettyText (TmLam "x" (TmVar "x")) @?= "λx. x"
-      prettyText (TmApp (TmVar "x") (TmVar "y")) @?= "x y"
+      prettyText (TmLam "x" "x") @?= "λx. x"
+      prettyText (TmApp "x" "y") @?= "x y"
   , testCase "parser" $ do
-      runUlParser "x" @?= Right (TmVar "x")
-      runUlParser "x1y" @?= Right (TmVar "x1y")
+      runUlParser "x" @?= Right "x"
+      runUlParser "x1y" @?= Right "x1y"
       isLeft (runUlParser "Xyz") @?= True
       isLeft (runUlParser "123x") @?= True
-      runUlParser "λx. t" @?= Right (TmLam "x" (TmVar "t"))
+      runUlParser "λx. t" @?= Right (TmLam "x" "t")
       isLeft (runUlParser "λ. Ab") @?= True
-      runUlParser "λx. (λy. ((x y) x))" @?= Right UL.example1
+      runUlParser "s t u" @?= Right UL.example1
+      runUlParser "s t u" @?= runUlParser "(s t) u"
+      runUlParser "λx. λy. x y x" @?= Right UL.example2
+      runUlParser "λx. λy. x y x" @?= runUlParser "λx. (λy. ((x y) x))"
+      runUlParser "(λx.x) ((λx.x) (λz.(λx.x) z))" @?= Right UL.example3
   ]

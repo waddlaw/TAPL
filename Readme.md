@@ -10,10 +10,13 @@
 
 - [haddock](https://waddlaw.github.io/TAPL/)
 
-### GHC 8.2.2
+### GHC 8.4.3
 
 ```shell
 $ stack test --fast --file-watch
+
+## hoogle 生成
+$ stack hoogle --keep-going
 
 ## haddock 生成
 $ stack clean && stack haddock
@@ -29,13 +32,10 @@ $ stack bench tapl:bench:gauge --benchmark-arguments "--small"
 $ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ```
 
-### GHC 8.4.3
+### GHC 8.2.2
 
 ```shell
-$ stack test --fast --file-watch --stack-yaml stack-nightly.yaml
-
-## haddock 生成
-$ stack clean && stack haddock --stack-yaml stack-nightly.yaml
+$ stack test --fast --file-watch --stack-yaml stack-8.2.2.yaml
 ```
 
 ### チェック

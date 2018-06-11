@@ -28,4 +28,10 @@ test_ul = testGroup "UntypedLambda"
       runUlParser "λx. λy. x y x" @?= Right UL.example2
       runUlParser "λx. λy. x y x" @?= runUlParser "λx. (λy. ((x y) x))"
       runUlParser "(λx.x) ((λx.x) (λz.(λx.x) z))" @?= Right UL.example3
+  , testCase "isClosed" $ do
+      isClosed UL.example1 @?= False
+      isClosed UL.example2 @?= True
+      isClosed UL.example3 @?= True
+      isClosed UL.example4 @?= False
+      isClosed UL.example5 @?= True
   ]

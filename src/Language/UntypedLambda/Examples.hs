@@ -5,6 +5,7 @@ module Language.UntypedLambda.Examples
   , example3
   , example4
   , example5
+  , example6
   ) where
 
 import           Prelude                        hiding (id)
@@ -31,3 +32,7 @@ example4 = TmApp (TmLam "x" "x") "x"
 -- | λz. λx. λy. x (y z)
 example5 :: Term
 example5 = TmLam "z" (TmLam "x" (TmLam "y" (TmApp "x" (TmApp "y" "z"))))
+
+-- | (λx. x (λx. x)) (u r)
+example6 :: Term
+example6 = TmApp (TmLam "x" (TmApp "x" (TmLam "x" "x"))) (TmApp "u" "r")

@@ -34,4 +34,7 @@ test_ul = testGroup "UntypedLambda"
       isClosed UL.example3 @?= True
       isClosed UL.example4 @?= False
       isClosed UL.example5 @?= True
+  , testCase "β-reduction" $ do
+      reduceBeta (TmApp (TmLam "x" "x") "y") @?= TmVar "y"
+      reduceBeta UL.example6 @?= TmApp (TmApp "u" "r") (TmLam "x" "x")
   ]

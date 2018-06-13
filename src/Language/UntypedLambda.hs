@@ -8,10 +8,12 @@ module Language.UntypedLambda
   , eval
   , evalWithTrace
   , evalOneStep
+  , trace
   ) where
 
 import           Language.UntypedLambda.Parser
 import           Language.UntypedLambda.Types
+import           Language.Utils
 
 import           Data.Set                      (Set)
 import qualified Data.Set                      as Set
@@ -24,6 +26,10 @@ eval s t
   | otherwise = eval s result
   where
     result = evalOneStep s t
+
+-- | デバッグ用
+trace :: Strategy -> Term -> IO ()
+trace s t = mapM_ (putStrLn . render) $ reverse $ evalWithTrace s [t] t
 
 -- | 簡約ステップ列を返す
 evalWithTrace :: Strategy -> [Term] -> Term -> [Term]

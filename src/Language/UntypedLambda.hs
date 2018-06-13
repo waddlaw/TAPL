@@ -22,7 +22,7 @@ subst v1 new t@(TmVar v2)
   | otherwise = t
 subst v1 new t@(TmLam v2 t')
   | v1 == v2  = t
-  | otherwise = subst v1 new t'
+  | otherwise = TmLam v2 (subst v1 new t')
 subst v new (TmApp t1 t2) = TmApp t1' t2'
   where
     t1' = subst v new t1

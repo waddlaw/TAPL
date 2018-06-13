@@ -37,4 +37,5 @@ test_ul = testGroup "UntypedLambda"
   , testCase "β-reduction" $ do
       reduceBeta (TmApp (TmLam "x" "x") "y") @?= TmVar "y"
       reduceBeta UL.example6 @?= TmApp (TmApp "u" "r") (TmLam "x" "x")
+      reduceBeta (TmApp (TmLam "x" (TmLam "y" (TmApp "x" "y"))) "z") @?= TmLam "y" (TmApp "z" "y")
   ]

@@ -5,6 +5,7 @@ module Language.UntypedLambda
   , reduceNormalOrder
   , reduceCallByName
   , reduceCallByValue
+  , eval
   , evalOneStep
   ) where
 
@@ -15,9 +16,17 @@ import           Data.Set                      (Set)
 import qualified Data.Set                      as Set
 import           Data.Text                     (Text)
 
+-- | 指定された評価戦略で項を正規系に評価する
+eval :: Strategy -> Term -> Term
+eval s t
+  | result == t = t
+  | otherwise = eval s result
+  where
+    result = evalOneStep s t
+
 -- | 1ステップのみ、指定された評価戦略で評価する
 evalOneStep :: Strategy -> Term -> Term
-evalOneStep FullBetaReduction t = undefined
+evalOneStep FullBetaReduction _ = undefined -- TODO
 evalOneStep NormalOrder       t = reduceNormalOrder t
 evalOneStep CallByName        t = reduceCallByName t
 evalOneStep CallByValue       t = reduceCallByValue t

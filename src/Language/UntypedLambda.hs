@@ -23,8 +23,8 @@ evalOneStep CallByValue       t = undefined
 -- | 正規順序
 reduceNormalOrder :: Term -> Term
 reduceNormalOrder (TmApp (TmLam x old) new) = subst x new old
-reduceNormalOrder (TmLam v t) = TmLam v (reduceNormalOrder t)
-reduceNormalOrder t = t
+reduceNormalOrder (TmLam v t)               = TmLam v (reduceNormalOrder t)
+reduceNormalOrder t                         = t
 
 subst :: Text -> Term -> Term -> Term
 subst v1 new t@(TmVar v2)

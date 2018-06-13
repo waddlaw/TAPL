@@ -14,6 +14,7 @@ import           Data.Text                     (Text)
 
 reduceBeta :: Term -> Term
 reduceBeta (TmApp (TmLam x old) new) = subst x new old
+reduceBeta (TmLam v t) = TmLam v (reduceBeta t)
 reduceBeta t = t
 
 subst :: Text -> Term -> Term -> Term

@@ -49,4 +49,8 @@ test_ul = testGroup "UntypedLambda"
       reduceCallByName UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
       reduceCallByName (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
       reduceCallByName (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" (TmApp ULP.id "z")
+  , testCase "evaluate (CallByValue)" $ do
+      reduceCallByValue UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
+      reduceCallByValue (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
+      reduceCallByValue (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" (TmApp ULP.id "z")
   ]

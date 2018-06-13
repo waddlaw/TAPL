@@ -16,8 +16,11 @@ data Term
 
 instance Pretty Term where
   pretty (TmVar x)     = pretty x
-  pretty (TmLam x t)   = pretty "λ" <> pretty x <> pretty "." <+> pretty t
-  pretty (TmApp t1 t2) = pretty t1 <+> pretty t2
+  pretty (TmLam x t)   = pretty "\\" <> pretty x <> pretty "." <+> pretty t
+  pretty (TmApp t1 t2) = ppr t1 <+> ppr t2
+    where
+      ppr t@(TmVar _) = pretty t
+      ppr t           = parens (pretty t)
 
 instance IsString Term where
   fromString = TmVar . T.pack

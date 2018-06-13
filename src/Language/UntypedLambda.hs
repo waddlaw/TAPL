@@ -22,24 +22,25 @@ evalOneStep NormalOrder       t = reduceNormalOrder t
 evalOneStep CallByName        t = reduceCallByName t
 evalOneStep CallByValue       t = reduceCallByValue t
 
--- | β-簡約 (正規順序)
+-- | 正規順序戦略
 reduceNormalOrder :: Term -> Term
 reduceNormalOrder (TmApp (TmLam x old) new) = subst x new old
 reduceNormalOrder (TmLam v t)               = TmLam v (reduceNormalOrder t)
 reduceNormalOrder t                         = t
 
--- | β-簡約 (名前呼び)
+-- | 名前呼び戦略
 reduceCallByName :: Term -> Term
 reduceCallByName (TmApp (TmLam x old) new) = subst x new old
-reduceCallByName t = t
+reduceCallByName t                         = t
 
--- | β-簡約 (値呼び)
+-- | 値呼び戦略
 reduceCallByValue :: Term -> Term
-reduceCallByValue (TmApp (TmLam x t1) t2)
-  | isValue t2 = subst x t1 t2
-  | otherwise = reduceCallByValue $ TmApp (TmLam x t1) (reduceCallByValue t2)
+reduceCallByValue (TmApp t@(TmLam x old) new)
+  | isValue new = subst x new old
+  | otherwise   = TmApp t (reduceCallByValue new)
 reduceCallByValue t = t
 
+-- | β-reduction
 subst :: Text -> Term -> Term -> Term
 subst v1 new t@(TmVar v2)
   | v1 == v2  = new
@@ -72,4 +73,4 @@ freeVars fv (TmApp t1 t2) = fv1 `Set.union` fv2
 -- | 与えられた項が値かどうか判定する述語
 isValue :: Term -> Bool
 isValue (TmLam _ _) = True
-isValue _ = False
+isValue _           = False

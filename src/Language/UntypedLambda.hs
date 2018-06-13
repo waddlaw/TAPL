@@ -3,6 +3,7 @@ module Language.UntypedLambda
   , module Language.UntypedLambda.Parser
   , isClosed
   , reduceNormalOrder
+  , evalOneStep
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -11,6 +12,12 @@ import           Language.UntypedLambda.Types
 import           Data.Set                      (Set)
 import qualified Data.Set                      as Set
 import           Data.Text                     (Text)
+
+evalOneStep :: Strategy -> Term -> Term
+evalOneStep FullBetaReduction t = undefined
+evalOneStep NormalOrder       t = reduceNormalOrder t
+evalOneStep CallByName        t = undefined
+evalOneStep CallByValue       t = undefined
 
 reduceNormalOrder :: Term -> Term
 reduceNormalOrder (TmApp (TmLam x old) new) = subst x new old

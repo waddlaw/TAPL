@@ -45,4 +45,8 @@ test_ul = testGroup "UntypedLambda"
       reduceNormalOrder (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
       reduceNormalOrder (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" "z"
       reduceNormalOrder (TmLam "z" "z") @?= TmLam "z" "z"
+  , testCase "evaluate (CallByName)" $ do
+      reduceCallByName UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
+      reduceCallByName (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
+      reduceCallByName (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" (TmApp ULP.id "z")
   ]

@@ -2,7 +2,7 @@ module Language.UntypedLambda
   ( module Language.UntypedLambda.Types
   , module Language.UntypedLambda.Parser
   , isClosed
-  , reduceBeta
+  , reduceNormalOrder
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -12,10 +12,10 @@ import           Data.Set                      (Set)
 import qualified Data.Set                      as Set
 import           Data.Text                     (Text)
 
-reduceBeta :: Term -> Term
-reduceBeta (TmApp (TmLam x old) new) = subst x new old
-reduceBeta (TmLam v t) = TmLam v (reduceBeta t)
-reduceBeta t = t
+reduceNormalOrder :: Term -> Term
+reduceNormalOrder (TmApp (TmLam x old) new) = subst x new old
+reduceNormalOrder (TmLam v t) = TmLam v (reduceNormalOrder t)
+reduceNormalOrder t = t
 
 subst :: Text -> Term -> Term -> Term
 subst v1 new t@(TmVar v2)

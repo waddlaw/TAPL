@@ -13,12 +13,14 @@ import           Data.Set                      (Set)
 import qualified Data.Set                      as Set
 import           Data.Text                     (Text)
 
+-- | 1ステップのみ、指定された評価戦略で評価する
 evalOneStep :: Strategy -> Term -> Term
 evalOneStep FullBetaReduction t = undefined
 evalOneStep NormalOrder       t = reduceNormalOrder t
 evalOneStep CallByName        t = undefined
 evalOneStep CallByValue       t = undefined
 
+-- | 正規順序
 reduceNormalOrder :: Term -> Term
 reduceNormalOrder (TmApp (TmLam x old) new) = subst x new old
 reduceNormalOrder (TmLam v t) = TmLam v (reduceNormalOrder t)
@@ -36,9 +38,11 @@ subst v new (TmApp t1 t2) = TmApp t1' t2'
     t1' = subst v new t1
     t2' = subst v new t2
 
+-- | 与えられた項が閉じているかどうか判定する述語
 isClosed :: Term -> Bool
 isClosed = Set.null . freeVars Set.empty
 
+-- | 項に含まれる自由変数を返す
 freeVars :: Set Text -> Term -> Set Text
 freeVars fv (TmVar v)
   | Set.member v fv = Set.empty

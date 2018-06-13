@@ -6,6 +6,7 @@ module Language.UntypedLambda
   , reduceCallByName
   , reduceCallByValue
   , eval
+  , evalWithTrace
   , evalOneStep
   ) where
 
@@ -23,6 +24,15 @@ eval s t
   | otherwise = eval s result
   where
     result = evalOneStep s t
+
+-- | 簡約ステップ列を返す
+evalWithTrace :: Strategy -> [Term] -> Term -> [Term]
+evalWithTrace s acc t
+  | result == t = acc
+  | otherwise = evalWithTrace s acc' result
+  where
+    result = evalOneStep s t
+    acc'   = result:acc
 
 -- | 1ステップのみ、指定された評価戦略で評価する
 evalOneStep :: Strategy -> Term -> Term

@@ -6,6 +6,7 @@ import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples as UL
+import qualified Language.UntypedLambda.Prelude  as ULP
 import           Language.Utils.Pretty
 
 import           Data.Either
@@ -34,8 +35,26 @@ test_ul = testGroup "UntypedLambda"
       isClosed UL.example3 @?= True
       isClosed UL.example4 @?= False
       isClosed UL.example5 @?= True
-  , testCase "β-reduction" $ do
-      reduceBeta (TmApp (TmLam "x" "x") "y") @?= TmVar "y"
-      reduceBeta UL.example6 @?= TmApp (TmApp "u" "r") (TmLam "x" "x")
-      reduceBeta (TmApp (TmLam "x" (TmLam "y" (TmApp "x" "y"))) "z") @?= TmLam "y" (TmApp "z" "y")
+  , testCase "evaluate (NormalOrder)" $ do
+      reduceNormalOrder (TmApp (TmLam "x" "x") "y") @?= TmVar "y"
+      reduceNormalOrder UL.example6 @?= TmApp (TmApp "u" "r") (TmLam "x" "x")
+      reduceNormalOrder (TmApp (TmLam "x" (TmLam "y" (TmApp "x" "y"))) "z") @?= TmLam "y" (TmApp "z" "y")
+
+      -- 評価戦略の共通の例
+      reduceNormalOrder UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
+      reduceNormalOrder (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
+      reduceNormalOrder (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" "z"
+      reduceNormalOrder (TmLam "z" "z") @?= TmLam "z" "z"
+  , testCase "evaluate (CallByName)" $ do
+      reduceCallByName UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
+      reduceCallByName (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
+      reduceCallByName (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" (TmApp ULP.id "z")
+  , testCase "evaluate (CallByValue)" $ do
+      reduceCallByValue UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
+      reduceCallByValue (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
+      reduceCallByValue (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" (TmApp ULP.id "z")
+  , testCase "evaluate" $ do
+      eval NormalOrder UL.example3 @?= TmLam "z" "z"
+      eval CallByName UL.example3 @?= TmLam "z" (TmApp ULP.id "z")
+      eval CallByValue UL.example3 @?= TmLam "z" (TmApp ULP.id "z")
   ]

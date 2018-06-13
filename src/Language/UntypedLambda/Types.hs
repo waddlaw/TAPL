@@ -1,5 +1,6 @@
 module Language.UntypedLambda.Types
   ( Term (..)
+  , Strategy (..)
   ) where
 
 import           Data.String
@@ -20,3 +21,9 @@ instance Pretty Term where
 
 instance IsString Term where
   fromString = TmVar . T.pack
+
+data Strategy
+  = FullBetaReduction -- ^ 完全ベータ簡約
+  | NormalOrder       -- ^ 正規順序戦略
+  | CallByName        -- ^ 名前呼び戦略
+  | CallByValue       -- ^ 値呼び戦略

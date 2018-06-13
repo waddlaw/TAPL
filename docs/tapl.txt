@@ -55,6 +55,19 @@ data Term
 TmVar :: Text -> Term
 TmLam :: Text -> Term -> Term
 TmApp :: Term -> Term -> Term
+data Strategy
+
+-- | 完全ベータ簡約
+FullBetaReduction :: Strategy
+
+-- | 正規順序戦略
+NormalOrder :: Strategy
+
+-- | 名前呼び戦略
+CallByName :: Strategy
+
+-- | 値呼び戦略
+CallByValue :: Strategy
 instance GHC.Show.Show Language.UntypedLambda.Types.Term
 instance GHC.Classes.Eq Language.UntypedLambda.Types.Term
 instance Data.Text.Prettyprint.Doc.Internal.Pretty Language.UntypedLambda.Types.Term
@@ -72,6 +85,24 @@ runUlParser :: String -> Either String Term
 
 module Language.UntypedLambda
 
+-- | 与えられた項が閉じているかどうか判定する述語
+isClosed :: Term -> Bool
+
+-- | 正規順序戦略
+reduceNormalOrder :: Term -> Term
+
+-- | 名前呼び戦略
+reduceCallByName :: Term -> Term
+
+-- | 値呼び戦略
+reduceCallByValue :: Term -> Term
+
+-- | 指定された評価戦略で項を正規系に評価する
+eval :: Strategy -> Term -> Term
+
+-- | 1ステップのみ、指定された評価戦略で評価する
+evalOneStep :: Strategy -> Term -> Term
+
 module Language.UntypedLambda.Prelude
 
 -- | λx. x
@@ -87,6 +118,15 @@ example2 :: Term
 
 -- | (λx.x) ((λx.x) (λz. (λx.x) z))
 example3 :: Term
+
+-- | (λx.x) x
+example4 :: Term
+
+-- | λz. λx. λy. x (y z)
+example5 :: Term
+
+-- | (λx. x (λx. x)) (u r)
+example6 :: Term
 
 module Language.NB.Parser
 runNbParser :: String -> Either String Term

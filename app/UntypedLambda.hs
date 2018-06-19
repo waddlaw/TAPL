@@ -36,17 +36,15 @@ main' = do
     Nothing      -> return ()
     Just ":q"    -> return ()
     Just input ->
-      if | ":set trace"     `isPrefixOf` input -> updateEnvTraceCmd True
-         | ":set strategy"  `isPrefixOf` input -> updateEnvStrategyCmd input
-         | ":unset trace"   `isPrefixOf` input -> updateEnvTraceCmd False
-         | ":list strategy" `isPrefixOf` input -> listStrategyCmd
-         | ":list prelude"  `isPrefixOf` input -> listPreludeCmd
-         | ":env"           `isPrefixOf` input -> printEnvCmd
-         | ":help"          `isPrefixOf` input -> helpCmd
+      if | ":set trace"     `isPrefixOf` input -> updateEnvTraceCmd True     >> main'
+         | ":set strategy"  `isPrefixOf` input -> updateEnvStrategyCmd input >> main'
+         | ":unset trace"   `isPrefixOf` input -> updateEnvTraceCmd False    >> main'
+         | ":list strategy" `isPrefixOf` input -> listStrategyCmd            >> main'
+         | ":list prelude"  `isPrefixOf` input -> listPreludeCmd             >> main'
+         | ":env"           `isPrefixOf` input -> printEnvCmd                >> main'
+         | ":help"          `isPrefixOf` input -> helpCmd                    >> main'
          -- main process
-         | otherwise -> evalCmd input
-
-  main'
+         | otherwise -> evalCmd input >> main'
 
 helpCmd :: UntypedLambda
 helpCmd = mapM_ outputStrLn $ "available commands" : commands

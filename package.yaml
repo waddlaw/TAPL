@@ -47,6 +47,11 @@ executables:
     dependencies:
       - tapl
       - haskeline
+  untyped-lambda:
+    main: app/UntypedLambda.hs
+    dependencies:
+      - tapl
+      - haskeline
 
 tests:
   test:

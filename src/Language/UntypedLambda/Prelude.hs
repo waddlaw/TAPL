@@ -131,7 +131,7 @@ ss = TmLam "p" (TmApp (TmApp pair (TmApp snd "p")) (TmApp (TmApp plus (c 1)) (Tm
 
 -- | λm. fst (m ss zz)
 prd :: Term
-prd = TmLam "m" (TmApp fst ((TmApp (TmApp "m" ss) zz)))
+prd = TmLam "m" (TmApp fst (TmApp (TmApp "m" ss) zz))
 
 -- | λm. λn. n prd m
 subtract1 :: Term

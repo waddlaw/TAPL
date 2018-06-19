@@ -16,6 +16,17 @@
 
 ![型無しλ計算](screenshots/untyped-lambda.gif)
 
+## Quick Start Guide
+
+stack のバージョンは 1.7.1 以上を利用しましょう。
+
+```shell
+$ git clone https://github.com/waddlaw/TAPL.git
+$ cd TAPL
+$ stack build
+$ stack exec untyped-lambda
+```
+
 ## 開発
 
 - [haddock](https://waddlaw.github.io/TAPL/)
@@ -64,18 +75,3 @@ $ stack exec nb
 
 $ stack exec untyped-lambda
 ```
-
-## ディレクトリ構成
-
-ディレクトリ名 | 内容
----------------|----------
-app   | アプリケーション
-bench | ベンチマーク
-src   | ライブラリ
-test  | テスト
-docs  | haddock で生成されたもの
-note  | メモ
-
-## 新たに使ってみたパッケージ
-
-- [vincenthz/hs-gauge](https://github.com/vincenthz/hs-gauge)

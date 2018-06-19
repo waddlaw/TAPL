@@ -57,34 +57,34 @@ test_ul = testGroup "UntypedLambda"
       reduceCallByValue (TmLam "z" (TmApp id "z")) @?= TmLam "z" (TmApp id "z")
   , testCase "evaluate" $ do
       eval NormalOrder UL.example3 @?= TmLam "z" "z"
-      eval CallByName UL.example3 @?= TmLam "z" (TmApp id "z")
+      eval CallByName  UL.example3 @?= TmLam "z" (TmApp id "z")
       eval CallByValue UL.example3 @?= TmLam "z" (TmApp id "z")
   , testCase "Church ブール値" $ do
       eval NormalOrder UL.example7 @?= tru
-      eval CallByName UL.example7 @?= tru
+      eval CallByName  UL.example7 @?= tru
       eval CallByValue UL.example7 @?= tru
 
       -- and
       eval NormalOrder UL.example8 @?= tru
-      eval CallByName UL.example8 @?= tru
+      eval CallByName  UL.example8 @?= tru
       eval CallByValue UL.example8 @?= tru
       eval NormalOrder UL.example9 @?= fls
-      eval CallByName UL.example9 @?= fls
+      eval CallByName  UL.example9 @?= fls
       eval CallByValue UL.example9 @?= fls
 
       -- or
       eval NormalOrder (TmApp (TmApp or tru) fls) @?= tru
-      eval CallByName (TmApp (TmApp or tru) fls) @?= tru
+      eval CallByName  (TmApp (TmApp or tru) fls) @?= tru
       eval CallByValue (TmApp (TmApp or tru) fls) @?= tru
       eval NormalOrder (TmApp (TmApp or fls) fls) @?= fls
-      eval CallByName (TmApp (TmApp or fls) fls) @?= fls
+      eval CallByName  (TmApp (TmApp or fls) fls) @?= fls
       eval CallByValue (TmApp (TmApp or fls) fls) @?= fls
 
       -- not
       eval NormalOrder (TmApp not fls) @?= tru
-      eval CallByName (TmApp not fls) @?= tru
+      eval CallByName  (TmApp not fls) @?= tru
       eval CallByValue (TmApp not fls) @?= tru
       eval NormalOrder (TmApp not tru) @?= fls
-      eval CallByName (TmApp not tru) @?= fls
+      eval CallByName  (TmApp not tru) @?= fls
       eval CallByValue (TmApp not tru) @?= fls
   ]

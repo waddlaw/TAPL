@@ -117,4 +117,12 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder (TmApp (TmApp times (c 100)) (c 200)) @?= eval NormalOrder (TmApp (TmApp times2 (c 100)) (c 200))
       eval NormalOrder (TmApp (TmApp times (c 5)) (c 10))    @?= eval NormalOrder (TmApp (TmApp times3 (c 5)) (c 10))
       eval NormalOrder (TmApp (TmApp times (c 100)) (c 200)) @?= eval NormalOrder (TmApp (TmApp times3 (c 100)) (c 200))
+
+      -- power
+      eval NormalOrder (TmApp (TmApp power1 (c 2)) (c 10)) @?= c 1024
+      eval NormalOrder (TmApp (TmApp power1 (c 2)) (c 0))  @?= c 1
+
+      -- TODO https://github.com/waddlaw/TAPL/issues/13
+      -- eval NormalOrder (TmApp (TmApp power2 (c 2)) (c 3))  @?= c 9
+      -- eval NormalOrder (TmApp (TmApp power2 (c 0)) (c 2))  @?= c 1
   ]

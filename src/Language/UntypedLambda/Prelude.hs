@@ -19,7 +19,9 @@ module Language.UntypedLambda.Prelude
   , plus
   , times
   , times2 -- ^ 演習5.2.3
-  , times3
+  , times3 -- ^ 演習5.2.3
+  , power1 -- ^ 演習5.2.4
+  , power2 -- ^ 演習5.2.4
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,
@@ -100,3 +102,13 @@ times2 = TmLam "m" (TmLam "n" (TmLam "s" (TmLam "z" (TmApp (TmApp "m" (TmApp "n"
 -- | λm. λn. λs. m (n s)
 times3 :: Term
 times3 = TmLam "m" (TmLam "n" (TmLam "s" (TmApp "m" (TmApp "n" "s"))))
+
+-- | λn. λm. m (times n) c1
+-- n^m
+power1 :: Term
+power1 = TmLam "n" (TmLam "m" (TmApp (TmApp "m" (TmApp times "n")) (c 1)))
+
+-- | λn. λm. m n
+-- m^n
+power2 :: Term
+power2 = TmLam "n" (TmLam "m" (TmApp "m" "n"))

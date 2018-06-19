@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.UntypedLambda where
 
-import           Prelude                         hiding (id)
+import           Prelude                         hiding (id, or)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
@@ -71,4 +71,12 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder UL.example9 @?= fls
       eval CallByName UL.example9 @?= fls
       eval CallByValue UL.example9 @?= fls
+
+      -- or
+      eval NormalOrder (TmApp (TmApp or tru) fls) @?= tru
+      eval CallByName (TmApp (TmApp or tru) fls) @?= tru
+      eval CallByValue (TmApp (TmApp or tru) fls) @?= tru
+      eval NormalOrder (TmApp (TmApp or fls) fls) @?= fls
+      eval CallByName (TmApp (TmApp or fls) fls) @?= fls
+      eval CallByValue (TmApp (TmApp or fls) fls) @?= fls
   ]

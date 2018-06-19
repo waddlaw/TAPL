@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Examples where
 
-import           Prelude                        hiding (and, id)
+import           Prelude                        hiding (and, fst, id)
 
 import           Language.UntypedLambda
 import           Language.UntypedLambda.Prelude
@@ -41,3 +41,7 @@ example8 = TmApp (TmApp and tru) tru
 -- | and tru fls
 example9 :: Term
 example9 = TmApp (TmApp and tru) fls
+
+-- | fst (pair v w)
+example10 :: Term
+example10 = TmApp fst (TmApp (TmApp pair "v") "w")

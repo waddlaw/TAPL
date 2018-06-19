@@ -100,5 +100,6 @@ freeVars fv (TmApp t1 t2) = fv1 `Set.union` fv2
 
 -- | 与えられた項が値かどうか判定する述語
 isValue :: Term -> Bool
+isValue (TmVar _)   = True
 isValue (TmLam _ _) = True
 isValue _           = False

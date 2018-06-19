@@ -59,4 +59,8 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder UL.example3 @?= TmLam "z" "z"
       eval CallByName UL.example3 @?= TmLam "z" (TmApp id "z")
       eval CallByValue UL.example3 @?= TmLam "z" (TmApp id "z")
+  , testCase "Church ブール値" $ do
+      eval NormalOrder UL.example7 @?= tru
+      eval CallByName UL.example7 @?= tru
+      eval CallByValue UL.example7 @?= tru
   ]

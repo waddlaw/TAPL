@@ -18,7 +18,7 @@ test_ul :: TestTree
 test_ul = testGroup "UntypedLambda"
   [ testCase "pretty" $ do
       prettyText (TmVar "x") @?= "x"
-      prettyText (TmLam "x" "x") @?= "\\x. x"
+      prettyText (TmLam "x" "x") @?= "λx. x"
       prettyText (TmApp "x" "y") @?= "x y"
   , testCase "parser" $ do
       runUlParser "x" @?= Right "x"

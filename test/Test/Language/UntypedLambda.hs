@@ -1,12 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.UntypedLambda where
 
+import           Prelude                         hiding (id)
+
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples as UL
-import qualified Language.UntypedLambda.Prelude  as ULP
+import           Language.UntypedLambda.Prelude
 import           Language.Utils.Pretty
 
 import           Data.Either
@@ -41,20 +43,20 @@ test_ul = testGroup "UntypedLambda"
       reduceNormalOrder (TmApp (TmLam "x" (TmLam "y" (TmApp "x" "y"))) "z") @?= TmLam "y" (TmApp "z" "y")
 
       -- 評価戦略の共通の例
-      reduceNormalOrder UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
-      reduceNormalOrder (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
-      reduceNormalOrder (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" "z"
+      reduceNormalOrder UL.example3 @?= TmApp id (TmLam "z" (TmApp id "z"))
+      reduceNormalOrder (TmApp id (TmLam "z" (TmApp id "z"))) @?= TmLam "z" (TmApp id "z")
+      reduceNormalOrder (TmLam "z" (TmApp id "z")) @?= TmLam "z" "z"
       reduceNormalOrder (TmLam "z" "z") @?= TmLam "z" "z"
   , testCase "evaluate (CallByName)" $ do
-      reduceCallByName UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
-      reduceCallByName (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
-      reduceCallByName (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" (TmApp ULP.id "z")
+      reduceCallByName UL.example3 @?= TmApp id (TmLam "z" (TmApp id "z"))
+      reduceCallByName (TmApp id (TmLam "z" (TmApp id "z"))) @?= TmLam "z" (TmApp id "z")
+      reduceCallByName (TmLam "z" (TmApp id "z")) @?= TmLam "z" (TmApp id "z")
   , testCase "evaluate (CallByValue)" $ do
-      reduceCallByValue UL.example3 @?= TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))
-      reduceCallByValue (TmApp ULP.id (TmLam "z" (TmApp ULP.id "z"))) @?= TmLam "z" (TmApp ULP.id "z")
-      reduceCallByValue (TmLam "z" (TmApp ULP.id "z")) @?= TmLam "z" (TmApp ULP.id "z")
+      reduceCallByValue UL.example3 @?= TmApp id (TmLam "z" (TmApp id "z"))
+      reduceCallByValue (TmApp id (TmLam "z" (TmApp id "z"))) @?= TmLam "z" (TmApp id "z")
+      reduceCallByValue (TmLam "z" (TmApp id "z")) @?= TmLam "z" (TmApp id "z")
   , testCase "evaluate" $ do
       eval NormalOrder UL.example3 @?= TmLam "z" "z"
-      eval CallByName UL.example3 @?= TmLam "z" (TmApp ULP.id "z")
-      eval CallByValue UL.example3 @?= TmLam "z" (TmApp ULP.id "z")
+      eval CallByName UL.example3 @?= TmLam "z" (TmApp id "z")
+      eval CallByValue UL.example3 @?= TmLam "z" (TmApp id "z")
   ]

@@ -8,11 +8,11 @@
 
 ## スクリーンショット
 
-[!型無し算術式](screenshots/untyped-arith.gif)
+![型無し算術式](screenshots/untyped-arith.gif)
 
 型無しλ計算
 
-[!型無しλ計算](screenshots/untyped-lambda.gif)
+![型無しλ計算](screenshots/untyped-lambda.gif)
 
 ## 開発
 

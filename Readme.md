@@ -8,6 +8,8 @@
 
 ## スクリーンショット
 
+型無し算術式
+
 ![型無し算術式](screenshots/untyped-arith.gif)
 
 型無しλ計算

@@ -6,8 +6,9 @@ module Language.UntypedLambda.Prelude
   , fls
   , test
   , and
-  , or  -- ** 演習 5.2.1
-  , not -- ** 演習 5.2.1
+  -- ** 演習 5.2.1
+  , or
+  , not
   -- * 二つ組
   , pair
   , fst
@@ -15,17 +16,22 @@ module Language.UntypedLambda.Prelude
   -- * Church 数
   , c
   , scc
-  , scc2 -- ** 演習5.2.2
   , plus
   , times
-  , times2 -- ** 演習5.2.3
-  , times3 -- ** 演習5.2.3
-  , power1 -- ** 演習5.2.4
-  , power2 -- ** 演習5.2.4
   , iszro
   , prd
-  , subtract1 -- ** 演習5.2.5
-  , equal -- ** 演習5.2.6
+  -- ** 演習5.2.2
+  , scc2
+  -- ** 演習5.2.3
+  , times2
+  , times3
+  -- ** 演習5.2.4
+  , power1
+  , power2
+  -- ** 演習5.2.5
+  , subtract1
+  -- ** 演習5.2.6
+  , equal
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,
@@ -75,8 +81,11 @@ snd = TmLam "p" (TmApp "p" fls)
 
 -- |
 -- c0 = λs. λz. z
+--
 -- c1 = λs. λz. s z
+--
 -- c2 = λs. λz. s (s z)
+--
 -- c3 = λs. λz. s (s (s z))
 c :: Int -> Term
 c n = TmLam "s" (TmLam "z" body)

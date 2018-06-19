@@ -105,21 +105,32 @@ fst :: Term
 -- | λp. p fls
 snd :: Term
 
--- | c0 = λs. λz. z c1 = λs. λz. s z c2 = λs. λz. s (s z) c3 = λs. λz. s (s
---   (s z))
+-- | c0 = λs. λz. z
+--   
+--   c1 = λs. λz. s z
+--   
+--   c2 = λs. λz. s (s z)
+--   
+--   c3 = λs. λz. s (s (s z))
 c :: Int -> Term
 
 -- | λn. λs. λz. s (n s z)
 scc :: Term
-
--- | λn. λs. λz. n s (s z)
-scc2 :: Term
 
 -- | λm. λn. λs. λz. m s (n s z)
 plus :: Term
 
 -- | λm. λn. m (plus n) c0
 times :: Term
+
+-- | λm. m (λx. fls) tru
+iszro :: Term
+
+-- | λm. fst (m ss zz)
+prd :: Term
+
+-- | λn. λs. λz. n s (s z)
+scc2 :: Term
 
 -- | λm. λn. λs. λz. m (n s) z
 times2 :: Term
@@ -132,12 +143,6 @@ power1 :: Term
 
 -- | λn. λm. m n m^n
 power2 :: Term
-
--- | λm. m (λx. fls) tru
-iszro :: Term
-
--- | λm. fst (m ss zz)
-prd :: Term
 
 -- | λm. λn. n prd m
 subtract1 :: Term

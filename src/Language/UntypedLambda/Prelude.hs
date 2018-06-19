@@ -17,6 +17,7 @@ module Language.UntypedLambda.Prelude
   , scc
   , scc2 -- ^ 演習5.2.2
   , plus
+  , times
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,
@@ -85,3 +86,7 @@ scc2 = TmLam "n" (TmLam "s" (TmLam "z" (TmApp (TmApp "n" "s") (TmApp "s" "z"))))
 -- | λm. λn. λs. λz. m s (n s z)
 plus :: Term
 plus = TmLam "m" (TmLam "n" (TmLam "s" (TmLam "z" (TmApp (TmApp "m" "s") (TmApp (TmApp "n" "s") "z")))))
+
+-- | λm. λn. m (plus n) c0
+times :: Term
+times = TmLam "m" (TmLam "n" (TmApp (TmApp "m" (TmApp plus "n")) (c 0)))

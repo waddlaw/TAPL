@@ -1,14 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Language.UntypedLambda.Examples
-  ( example1
-  , example2
-  , example3
-  , example4
-  , example5
-  , example6
-  ) where
+module Language.UntypedLambda.Examples where
 
-import           Prelude                        hiding (id)
+import           Prelude                        hiding (and, id)
 
 import           Language.UntypedLambda
 import           Language.UntypedLambda.Prelude
@@ -36,3 +29,15 @@ example5 = TmLam "z" (TmLam "x" (TmLam "y" (TmApp "x" (TmApp "y" "z"))))
 -- | (λx. x (λx. x)) (u r)
 example6 :: Term
 example6 = TmApp (TmLam "x" (TmApp "x" (TmLam "x" "x"))) (TmApp "u" "r")
+
+-- | test tru tru fls
+example7 :: Term
+example7 = TmApp (TmApp (TmApp test tru) tru) fls
+
+-- | and tru tru
+example8 :: Term
+example8 = TmApp (TmApp and tru) tru
+
+-- | and tru fls
+example9 :: Term
+example9 = TmApp (TmApp and tru) fls

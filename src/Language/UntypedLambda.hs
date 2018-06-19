@@ -50,12 +50,14 @@ evalOneStep CallByValue       t = reduceCallByValue t
 -- | 正規順序戦略
 reduceNormalOrder :: Term -> Term
 reduceNormalOrder (TmApp (TmLam x old) new) = subst x new old
+reduceNormalOrder (TmApp t1@(TmApp _ _) t2) = TmApp (reduceNormalOrder t1) t2
 reduceNormalOrder (TmLam v t)               = TmLam v (reduceNormalOrder t)
 reduceNormalOrder t                         = t
 
 -- | 名前呼び戦略
 reduceCallByName :: Term -> Term
 reduceCallByName (TmApp (TmLam x old) new) = subst x new old
+reduceCallByName (TmApp t1@(TmApp _ _) t2) = TmApp (reduceCallByName t1) t2
 reduceCallByName t                         = t
 
 -- | 値呼び戦略
@@ -63,6 +65,7 @@ reduceCallByValue :: Term -> Term
 reduceCallByValue (TmApp t@(TmLam x old) new)
   | isValue new = subst x new old
   | otherwise   = TmApp t (reduceCallByValue new)
+reduceCallByValue (TmApp t1@(TmApp _ _) t2) = TmApp (reduceCallByValue t1) t2
 reduceCallByValue t = t
 
 -- | β-reduction

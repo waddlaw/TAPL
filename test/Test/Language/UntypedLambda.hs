@@ -129,4 +129,9 @@ test_ul = testGroup "UntypedLambda"
       -- iszro
       eval NormalOrder (TmApp iszro (c 1)) @?= fls
       eval NormalOrder (TmApp iszro (TmApp (TmApp times (c 0)) (c 2))) @?= tru
+
+      -- prd
+      eval NormalOrder (TmApp prd (c 0)) @?= c 0
+      eval NormalOrder (TmApp prd (c 1)) @?= c 0
+      eval NormalOrder (TmApp prd (c 2)) @?= c 1
   ]

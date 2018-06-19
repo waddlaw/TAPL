@@ -91,4 +91,56 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder UL.example10 @?= TmVar "v"
       eval CallByName  UL.example10 @?= TmVar "v"
       eval CallByValue UL.example10 @?= TmVar "v"
+  , testCase "Church数" $ do
+      c 0 @?= TmLam "s" (TmLam "z" "z")
+      c 1 @?= TmLam "s" (TmLam "z" (TmApp "s" "z"))
+      c 2 @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp "s" "z")))
+      c 3 @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp "s" (TmApp "s" "z"))))
+
+      -- scc
+      eval NormalOrder (TmApp scc (c 0)) @?= c 1
+      -- 抽象の本体の適用は許可されないため
+      eval CallByName  (TmApp scc (c 0)) @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp (TmApp (c 0) "s") "z")))
+      eval CallByValue (TmApp scc (c 0)) @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp (TmApp (c 0) "s") "z")))
+      eval NormalOrder (TmApp scc (c 0)) @?= eval NormalOrder (TmApp scc2 (c 0))
+      eval NormalOrder (TmApp scc (c 1)) @?= eval NormalOrder (TmApp scc2 (c 1))
+      eval NormalOrder (TmApp scc (c 2)) @?= eval NormalOrder (TmApp scc2 (c 2))
+
+      -- plus
+      eval NormalOrder (TmApp (TmApp plus (c 5)) (c 10))    @?= c 15
+      eval NormalOrder (TmApp (TmApp plus (c 100)) (c 200)) @?= c 300
+
+      -- times
+      eval NormalOrder (TmApp (TmApp times (c 5)) (c 10))    @?= c 50
+      eval NormalOrder (TmApp (TmApp times (c 100)) (c 200)) @?= c 20000
+      eval NormalOrder (TmApp (TmApp times (c 5)) (c 10))    @?= eval NormalOrder (TmApp (TmApp times2 (c 5)) (c 10))
+      eval NormalOrder (TmApp (TmApp times (c 100)) (c 200)) @?= eval NormalOrder (TmApp (TmApp times2 (c 100)) (c 200))
+      eval NormalOrder (TmApp (TmApp times (c 5)) (c 10))    @?= eval NormalOrder (TmApp (TmApp times3 (c 5)) (c 10))
+      eval NormalOrder (TmApp (TmApp times (c 100)) (c 200)) @?= eval NormalOrder (TmApp (TmApp times3 (c 100)) (c 200))
+
+      -- power
+      eval NormalOrder (TmApp (TmApp power1 (c 2)) (c 10)) @?= c 1024
+      eval NormalOrder (TmApp (TmApp power1 (c 2)) (c 0))  @?= c 1
+
+      -- TODO https://github.com/waddlaw/TAPL/issues/13
+      -- eval NormalOrder (TmApp (TmApp power2 (c 2)) (c 3))  @?= c 9
+      -- eval NormalOrder (TmApp (TmApp power2 (c 0)) (c 2))  @?= c 1
+
+      -- iszro
+      eval NormalOrder (TmApp iszro (c 1)) @?= fls
+      eval NormalOrder (TmApp iszro (TmApp (TmApp times (c 0)) (c 2))) @?= tru
+
+      -- prd
+      eval NormalOrder (TmApp prd (c 0)) @?= c 0
+      eval NormalOrder (TmApp prd (c 1)) @?= c 0
+      eval NormalOrder (TmApp prd (c 2)) @?= c 1
+
+      -- subtract1
+      eval NormalOrder (TmApp (TmApp subtract1 (c 10)) (c 2)) @?= c 8
+      eval NormalOrder (TmApp (TmApp subtract1 (c 0))  (c 2)) @?= c 0
+      eval NormalOrder (TmApp (TmApp subtract1 (c 10)) (c 0)) @?= c 10
+
+      -- equal
+      eval NormalOrder (TmApp (TmApp equal (c 10)) (c 2)) @?= fls
+      eval NormalOrder (TmApp (TmApp equal (c 2))  (c 2)) @?= tru
   ]

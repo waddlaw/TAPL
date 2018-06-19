@@ -9,6 +9,7 @@ module Language.UntypedLambda
   , evalWithTrace
   , evalOneStep
   , trace
+  , steps
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -40,6 +41,10 @@ evalWithTrace s acc t
     result = evalOneStep s t
     acc'   = result:acc
 
+-- | 簡約ステップ数を返す
+steps :: Term -> Int
+steps = length . evalWithTrace NormalOrder []
+
 -- | 1ステップのみ、指定された評価戦略で評価する
 evalOneStep :: Strategy -> Term -> Term
 evalOneStep FullBetaReduction _ = undefined -- TODO
@@ -51,6 +56,7 @@ evalOneStep CallByValue       t = reduceCallByValue t
 reduceNormalOrder :: Term -> Term
 reduceNormalOrder (TmApp (TmLam x old) new) = subst x new old
 reduceNormalOrder (TmApp t1@(TmApp _ _) t2) = TmApp (reduceNormalOrder t1) t2
+reduceNormalOrder (TmApp t1 t2@(TmApp _ _)) = TmApp t1 (reduceNormalOrder t2)
 reduceNormalOrder (TmLam v t)               = TmLam v (reduceNormalOrder t)
 reduceNormalOrder t                         = t
 
@@ -58,6 +64,7 @@ reduceNormalOrder t                         = t
 reduceCallByName :: Term -> Term
 reduceCallByName (TmApp (TmLam x old) new) = subst x new old
 reduceCallByName (TmApp t1@(TmApp _ _) t2) = TmApp (reduceCallByName t1) t2
+reduceCallByName (TmApp t1 t2@(TmApp _ _)) = TmApp t1 (reduceCallByName t2)
 reduceCallByName t                         = t
 
 -- | 値呼び戦略
@@ -66,6 +73,7 @@ reduceCallByValue (TmApp t@(TmLam x old) new)
   | isValue new = subst x new old
   | otherwise   = TmApp t (reduceCallByValue new)
 reduceCallByValue (TmApp t1@(TmApp _ _) t2) = TmApp (reduceCallByValue t1) t2
+reduceCallByValue (TmApp t1 t2@(TmApp _ _)) = TmApp t1 (reduceCallByValue t2)
 reduceCallByValue t = t
 
 -- | β-reduction

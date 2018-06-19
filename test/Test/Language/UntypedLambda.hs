@@ -91,4 +91,9 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder UL.example10 @?= TmVar "v"
       eval CallByName  UL.example10 @?= TmVar "v"
       eval CallByValue UL.example10 @?= TmVar "v"
+  , testCase "Church数" $ do
+      c 0 @?= TmLam "s" (TmLam "z" "z")
+      c 1 @?= TmLam "s" (TmLam "z" (TmApp "s" "z"))
+      c 2 @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp "s" "z")))
+      c 3 @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp "s" (TmApp "s" "z"))))
   ]

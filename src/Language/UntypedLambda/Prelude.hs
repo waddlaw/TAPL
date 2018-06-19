@@ -12,6 +12,8 @@ module Language.UntypedLambda.Prelude
   , pair
   , fst
   , snd
+  -- Church 数
+  , c
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,
@@ -58,3 +60,13 @@ fst = TmLam "p" (TmApp "p" tru)
 -- | λp. p fls
 snd :: Term
 snd = TmLam "p" (TmApp "p" fls)
+
+-- |
+-- c0 = λs. λz. z
+-- c1 = λs. λz. s z
+-- c2 = λs. λz. s (s z)
+-- c3 = λs. λz. s (s (s z))
+c :: Int -> Term
+c n = TmLam "s" (TmLam "z" body)
+  where
+    body = foldr TmApp "z" $ replicate n "s"

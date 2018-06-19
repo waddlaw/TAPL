@@ -2,12 +2,15 @@ module Language.UntypedLambda.Parser
   ( runUlParser
   ) where
 
+import           Language.UntypedLambda.Prelude (prelude)
 import           Language.UntypedLambda.Types
 import           Language.Utils.Parser
 
 import           Control.Applicative
-import           Data.Text                    (Text)
-import qualified Data.Text                    as T
+import qualified Data.Map                       as Map
+import           Data.Maybe
+import           Data.Text                      (Text)
+import qualified Data.Text                      as T
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta
 
@@ -30,9 +33,10 @@ lambdaP = TmLam <$  symbol "λ"
                 <*> token exprP
 
 varP :: Parser Term
-varP = lifty <$> oneOf ['a'..'z'] <*> many alphaNum
+varP = fmap lifty $ toName <$> oneOf ['a'..'z'] <*> many alphaNum
   where
-    lifty x xs = TmVar $ T.pack (x:xs)
+    toName x xs = T.pack (x:xs)
+    lifty var = fromMaybe (TmVar var) $ Map.lookup var prelude
 
 identP :: Parser Text
 identP = ident defaultIdentStyle

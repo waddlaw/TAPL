@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.UntypedLambda where
 
-import           Prelude                         hiding (id, not, or)
+import           Prelude                         hiding (id, not, or, and)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
@@ -31,6 +31,14 @@ test_ul = testGroup "UntypedLambda"
       runUlParser "λx. λy. x y x" @?= Right UL.example2
       runUlParser "λx. λy. x y x" @?= runUlParser "λx. (λy. ((x y) x))"
       runUlParser "(λx.x) ((λx.x) (λz.(λx.x) z))" @?= Right UL.example3
+
+      -- Bool
+      runUlParser "tru" @?= Right tru
+      runUlParser "fls" @?= Right fls
+      runUlParser "test" @?= Right test
+      runUlParser "and" @?= Right and
+      runUlParser "or" @?= Right or
+      runUlParser "not" @?= Right not
   , testCase "isClosed" $ do
       isClosed UL.example1 @?= False
       isClosed UL.example2 @?= True

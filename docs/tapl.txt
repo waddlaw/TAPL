@@ -68,6 +68,10 @@ CallByName :: Strategy
 
 -- | 値呼び戦略
 CallByValue :: Strategy
+instance GHC.Enum.Bounded Language.UntypedLambda.Types.Strategy
+instance GHC.Enum.Enum Language.UntypedLambda.Types.Strategy
+instance GHC.Read.Read Language.UntypedLambda.Types.Strategy
+instance GHC.Show.Show Language.UntypedLambda.Types.Strategy
 instance GHC.Show.Show Language.UntypedLambda.Types.Term
 instance GHC.Classes.Eq Language.UntypedLambda.Types.Term
 instance Data.Text.Prettyprint.Doc.Internal.Pretty Language.UntypedLambda.Types.Term
@@ -77,6 +81,7 @@ module Language.UntypedLambda.Prelude
 
 -- | λx. x
 id :: Term
+prelude :: Map Text Term
 
 -- | λt. λf. t
 tru :: Term
@@ -157,6 +162,7 @@ equal :: Term
 module Language.Utils
 trim :: String -> String
 render :: Pretty a => a -> String
+renderPrelude :: Pretty a => Map Text a -> String
 
 module Language.Utils.Parser
 runParserString :: Parser a -> String -> Either String a

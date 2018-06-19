@@ -18,7 +18,7 @@
 
 ## Quick Start Guide
 
-stack のバージョンは 1.7.1 以上を利用しましょう。
+stack のバージョンは 1.7.1 以上を利用しましょう。
 
 ```shell
 $ git clone https://github.com/waddlaw/TAPL.git

@@ -10,7 +10,7 @@ module Language.UntypedLambda.Prelude
   , not -- ^ 演習 5.2.1
   ) where
 
-import           Prelude                hiding (and, id, or, not)
+import           Prelude                hiding (and, id, not, or)
 
 import           Language.UntypedLambda
 

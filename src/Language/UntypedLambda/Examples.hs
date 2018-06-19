@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Examples where
 
-import           Prelude                        hiding (id, and)
+import           Prelude                        hiding (and, id)
 
 import           Language.UntypedLambda
 import           Language.UntypedLambda.Prelude

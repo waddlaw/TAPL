@@ -24,6 +24,7 @@ module Language.UntypedLambda.Prelude
   , power2 -- ^ 演習5.2.4
   , iszro
   , prd
+  , subtract1 -- ^ 演習5.2.5
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,
@@ -130,3 +131,7 @@ ss = TmLam "p" (TmApp (TmApp pair (TmApp snd "p")) (TmApp (TmApp plus (c 1)) (Tm
 -- | λm. fst (m ss zz)
 prd :: Term
 prd = TmLam "m" (TmApp fst ((TmApp (TmApp "m" ss) zz)))
+
+-- | λm. λn. n prd m
+subtract1 :: Term
+subtract1 = TmLam "m" (TmLam "n" (TmApp (TmApp "n" prd) "m"))

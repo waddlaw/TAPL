@@ -134,4 +134,9 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder (TmApp prd (c 0)) @?= c 0
       eval NormalOrder (TmApp prd (c 1)) @?= c 0
       eval NormalOrder (TmApp prd (c 2)) @?= c 1
+
+      -- subtract1
+      eval NormalOrder (TmApp (TmApp subtract1 (c 10)) (c 2)) @?= c 8
+      eval NormalOrder (TmApp (TmApp subtract1 (c 0)) (c 2))  @?= c 0
+      eval NormalOrder (TmApp (TmApp subtract1 (c 10)) (c 0)) @?= c 10
   ]

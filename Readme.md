@@ -6,6 +6,14 @@
 - [日本語版サポートページ](http://tapl.proofcafe.org/)
 - [原著サポートページ](http://www.cis.upenn.edu/~bcpierce/)
 
+## スクリーンショット
+
+[!型無し算術式](screenshots/untyped-arith.gif)
+
+型無しλ計算
+
+[!型無しλ計算](screenshots/untyped-lambda.gif)
+
 ## 開発
 
 - [haddock](https://waddlaw.github.io/TAPL/)

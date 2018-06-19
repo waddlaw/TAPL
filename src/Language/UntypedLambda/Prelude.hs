@@ -6,10 +6,11 @@ module Language.UntypedLambda.Prelude
   , fls
   , test
   , and
-  , or  -- 演習 5.2.1
+  , or  -- ^ 演習 5.2.1
+  , not -- ^ 演習 5.2.1
   ) where
 
-import           Prelude                hiding (and, id, or)
+import           Prelude                hiding (and, id, or, not)
 
 import           Language.UntypedLambda
 
@@ -36,3 +37,7 @@ and = TmLam "b" (TmLam "c" (TmApp (TmApp "b" "c") fls))
 -- | λb. λc. b tru c
 or :: Term
 or = TmLam "b" (TmLam "c" (TmApp (TmApp "b" tru) "c"))
+
+-- | λb. b fls tru
+not :: Term
+not = TmLam "b" (TmApp (TmApp "b" fls) tru)

@@ -5,9 +5,10 @@ module Language.UntypedLambda.Prelude
   , tru
   , fls
   , test
+  , and
   ) where
 
-import           Prelude                hiding (id)
+import           Prelude                hiding (id, and)
 
 import           Language.UntypedLambda
 
@@ -26,3 +27,7 @@ fls = TmLam "t" (TmLam "f" "f")
 -- | λl. λm. λn. l m n
 test :: Term
 test = TmLam "l" (TmLam "m" (TmLam "n" (TmApp (TmApp "l" "m") "n")))
+
+-- | λb. λc. b c fls
+and :: Term
+and = TmLam "b" (TmLam "c" (TmApp (TmApp "b" "c") fls))

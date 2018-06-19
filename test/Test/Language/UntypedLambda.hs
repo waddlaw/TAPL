@@ -63,4 +63,12 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder UL.example7 @?= tru
       eval CallByName UL.example7 @?= tru
       eval CallByValue UL.example7 @?= tru
+
+      -- and
+      eval NormalOrder UL.example8 @?= tru
+      eval CallByName UL.example8 @?= tru
+      eval CallByValue UL.example8 @?= tru
+      eval NormalOrder UL.example9 @?= fls
+      eval CallByName UL.example9 @?= fls
+      eval CallByValue UL.example9 @?= fls
   ]

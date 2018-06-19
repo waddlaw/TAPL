@@ -25,6 +25,7 @@ module Language.UntypedLambda.Prelude
   , iszro
   , prd
   , subtract1 -- ^ 演習5.2.5
+  , equal -- ^ 演習5.2.6
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,
@@ -135,3 +136,10 @@ prd = TmLam "m" (TmApp fst ((TmApp (TmApp "m" ss) zz)))
 -- | λm. λn. n prd m
 subtract1 :: Term
 subtract1 = TmLam "m" (TmLam "n" (TmApp (TmApp "n" prd) "m"))
+
+-- | λm. λn. and (iszro (m prd n)) (iszro (n prd m))
+equal :: Term
+equal = TmLam "m" (TmLam "n" (TmApp (TmApp and (TmApp iszro l)) (TmApp iszro r)))
+  where
+    l = TmApp (TmApp "m" prd) "n"
+    r = TmApp (TmApp "n" prd) "m"

@@ -15,6 +15,7 @@ module Language.UntypedLambda.Prelude
   -- Church 数
   , c
   , scc
+  , scc2 -- ^ 演習5.2.2
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,
@@ -75,3 +76,7 @@ c n = TmLam "s" (TmLam "z" body)
 -- | λn. λs. λz. s (n s z)
 scc :: Term
 scc = TmLam "n" (TmLam "s" (TmLam "z" (TmApp "s" (TmApp (TmApp "n" "s") "z"))))
+
+-- | λn. λs. λz. n s (s z)
+scc2 :: Term
+scc2 = TmLam "n" (TmLam "s" (TmLam "z" (TmApp (TmApp "n" "s") (TmApp "s" "z"))))

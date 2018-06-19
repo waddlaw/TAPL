@@ -1,3 +1,4 @@
+{-# LANGUAGE MultiWayIf #-}
 module Main (main) where
 
 import           Language.UntypedLambda
@@ -6,14 +7,15 @@ import           Language.Utils
 
 import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.State.Strict
+import           Data.List
 import           System.Console.Haskeline
 
 type UntypedLambda = InputT (StateT Env IO) ()
 
 data Env = Env
-  { strategy :: Strategy
-  , isTrace  :: Bool
-  }
+  { envStrategy :: Strategy
+  , envIsTrace  :: Bool
+  } deriving Show
 
 defaultEnvironment :: Env
 defaultEnvironment = Env NormalOrder False
@@ -30,33 +32,59 @@ main' :: UntypedLambda
 main' = do
   minput <- getInputLine "UntypedLambda> "
   case trim <$> minput of
-    Nothing       -> return ()
-    Just ":q"     -> return ()
-    Just ":list"  -> listCmd >> main'
-    Just ":trace" -> traceCmd >> main'
-    Just input    -> evalCmd input >> main'
+    Nothing      -> return ()
+    Just ":q"    -> return ()
+    Just input ->
+      if | ":set trace"     `isPrefixOf` input -> updateEnvTraceCmd True     >> main'
+         | ":set strategy"  `isPrefixOf` input -> updateEnvStrategyCmd input >> main'
+         | ":unset trace"   `isPrefixOf` input -> updateEnvTraceCmd False    >> main'
+         | ":list strategy" `isPrefixOf` input -> listStrategyCmd            >> main'
+         | ":list prelude"  `isPrefixOf` input -> listPreludeCmd             >> main'
+         | ":env"           `isPrefixOf` input -> printEnvCmd                >> main'
+         -- main process
+         | otherwise -> evalCmd input >> main'
 
-traceCmd :: UntypedLambda
-traceCmd = do
+printEnvCmd :: UntypedLambda
+printEnvCmd = do
   env <- getEnv
-  putEnv $ env { isTrace = not $ isTrace env }
+  outputStrLn $ show env
 
-listCmd :: UntypedLambda
-listCmd = outputStrLn $ renderPrelude prelude
+updateEnvTraceCmd :: Bool -> UntypedLambda
+updateEnvTraceCmd isTrace = do
+  env <- getEnv
+  putEnv $ env { envIsTrace = isTrace }
+  printEnvCmd
+
+updateEnvStrategyCmd :: String -> UntypedLambda
+updateEnvStrategyCmd input = do
+  env <- getEnv
+  putEnv $ env { envStrategy = strategy }
+  printEnvCmd
+  where
+    strategy = read $ last $ words input
+
+listStrategyCmd :: UntypedLambda
+listStrategyCmd = mapM_ (outputStrLn . show) strategies
+  where
+    strategies = [minBound .. maxBound] :: [Strategy]
+
+listPreludeCmd :: UntypedLambda
+listPreludeCmd = outputStrLn $ renderPrelude prelude
 
 evalCmd :: String -> UntypedLambda
 evalCmd input = do
-  istrace <- isTrace <$> getEnv
+  isTrace<- envIsTrace <$> getEnv
+  strategy <- envStrategy <$> getEnv
 
   case runUlParser input of
     Left err -> outputStrLn err
     Right term ->
-      if istrace then
+      if isTrace then
         do
-          _ <- lift $ lift $ trace NormalOrder term
+          _ <- lift $ lift $ trace strategy term
           return ()
       else
-        outputStrLn $ render $ eval NormalOrder term
+        outputStrLn $ render $ eval strategy term
 
 getEnv :: InputT (StateT a IO) a
 getEnv = lift get

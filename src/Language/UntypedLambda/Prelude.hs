@@ -14,6 +14,7 @@ module Language.UntypedLambda.Prelude
   , snd
   -- Church 数
   , c
+  , scc
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,
@@ -70,3 +71,7 @@ c :: Int -> Term
 c n = TmLam "s" (TmLam "z" body)
   where
     body = foldr TmApp "z" $ replicate n "s"
+
+-- | λn. λs. λz. s (n s z)
+scc :: Term
+scc = TmLam "n" (TmLam "s" (TmLam "z" (TmApp "s" (TmApp (TmApp "n" "s") "z"))))

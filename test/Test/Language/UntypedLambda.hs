@@ -96,4 +96,10 @@ test_ul = testGroup "UntypedLambda"
       c 1 @?= TmLam "s" (TmLam "z" (TmApp "s" "z"))
       c 2 @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp "s" "z")))
       c 3 @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp "s" (TmApp "s" "z"))))
+
+      -- scc
+      eval NormalOrder (TmApp scc (c 0)) @?= c 1
+      -- 抽象の本体の適用は許可されないため
+      eval CallByName  (TmApp scc (c 0)) @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp (TmApp (c 0) "s") "z")))
+      eval CallByValue (TmApp scc (c 0)) @?= TmLam "s" (TmLam "z" (TmApp "s" (TmApp (TmApp (c 0) "s") "z")))
   ]

@@ -1,7 +1,7 @@
 module Main (main) where
 
 import           Language.UntypedLambda
-import           Language.UntypedLambda.Prelude (prelude)
+import           Language.UntypedLambda.Prelude   (prelude)
 import           Language.Utils
 
 import           Control.Monad.Trans.Class
@@ -12,7 +12,7 @@ type UntypedLambda = InputT (StateT Env IO) ()
 
 data Env = Env
   { strategy :: Strategy
-  , isTrace :: Bool
+  , isTrace  :: Bool
   }
 
 defaultEnvironment :: Env
@@ -30,11 +30,11 @@ main' :: UntypedLambda
 main' = do
   minput <- getInputLine "UntypedLambda> "
   case trim <$> minput of
-    Nothing      -> return ()
-    Just ":q"    -> return ()
-    Just ":list" -> listCmd >> main'
+    Nothing       -> return ()
+    Just ":q"     -> return ()
+    Just ":list"  -> listCmd >> main'
     Just ":trace" -> traceCmd >> main'
-    Just input   -> evalCmd input >> main'
+    Just input    -> evalCmd input >> main'
 
 traceCmd :: UntypedLambda
 traceCmd = do

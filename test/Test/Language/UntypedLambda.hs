@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.UntypedLambda where
 
-import           Prelude                         hiding (id, not, or, and, fst, snd)
+import           Prelude                         hiding (and, fst, id, not, or,
+                                                  snd)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit

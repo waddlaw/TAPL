@@ -23,5 +23,5 @@ renderPrelude :: Pretty a => Map Text a -> String
 renderPrelude = foldr glue "" . Map.toList
   where
     glue (key, func) acc  = concat [T.unpack key, ": ", render func, addNewline acc]
-    addNewline "" = ""
+    addNewline ""  = ""
     addNewline acc = "\n" ++ acc

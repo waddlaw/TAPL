@@ -2,7 +2,7 @@ module Language.UntypedLambda.Parser
   ( runUlParser
   ) where
 
-import           Language.UntypedLambda.Prelude (prelude, c)
+import           Language.UntypedLambda.Prelude (c, prelude)
 import           Language.UntypedLambda.Types
 import           Language.Utils.Parser
 
@@ -36,7 +36,7 @@ varP = toTerm <$> oneOf ['a'..'z'] <*> many alphaNum
   where
     -- TODO
     toTerm 'c' xs = c (read xs ::Int)
-    toTerm x xs = lifty $ T.pack (x:xs)
+    toTerm x xs   = lifty $ T.pack (x:xs)
     lifty var = Map.findWithDefault (TmVar var) var prelude
 
 identP :: Parser Text

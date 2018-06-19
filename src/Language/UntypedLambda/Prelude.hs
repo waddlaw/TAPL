@@ -117,11 +117,13 @@ times3 :: Term
 times3 = TmLam "m" (TmLam "n" (TmLam "s" (TmApp "m" (TmApp "n" "s"))))
 
 -- | λn. λm. m (times n) c1
+--
 -- n^m
 power1 :: Term
 power1 = TmLam "n" (TmLam "m" (TmApp (TmApp "m" (TmApp times "n")) (c 1)))
 
 -- | λn. λm. m n
+--
 -- m^n
 power2 :: Term
 power2 = TmLam "n" (TmLam "m" (TmApp "m" "n"))

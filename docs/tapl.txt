@@ -138,10 +138,14 @@ times2 :: Term
 -- | λm. λn. λs. m (n s)
 times3 :: Term
 
--- | λn. λm. m (times n) c1 n^m
+-- | λn. λm. m (times n) c1
+--   
+--   n^m
 power1 :: Term
 
--- | λn. λm. m n m^n
+-- | λn. λm. m n
+--   
+--   m^n
 power2 :: Term
 
 -- | λm. λn. n prd m

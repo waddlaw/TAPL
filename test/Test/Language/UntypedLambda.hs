@@ -1,7 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.UntypedLambda where
 
-import           Prelude                         hiding (id, not, or)
+import           Prelude                         hiding (and, fst, id, not, or,
+                                                  snd)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
@@ -17,7 +18,7 @@ test_ul :: TestTree
 test_ul = testGroup "UntypedLambda"
   [ testCase "pretty" $ do
       prettyText (TmVar "x") @?= "x"
-      prettyText (TmLam "x" "x") @?= "\\x. x"
+      prettyText (TmLam "x" "x") @?= "λx. x"
       prettyText (TmApp "x" "y") @?= "x y"
   , testCase "parser" $ do
       runUlParser "x" @?= Right "x"
@@ -31,6 +32,31 @@ test_ul = testGroup "UntypedLambda"
       runUlParser "λx. λy. x y x" @?= Right UL.example2
       runUlParser "λx. λy. x y x" @?= runUlParser "λx. (λy. ((x y) x))"
       runUlParser "(λx.x) ((λx.x) (λz.(λx.x) z))" @?= Right UL.example3
+
+      -- Bool
+      runUlParser "tru"  @?= Right tru
+      runUlParser "fls"  @?= Right fls
+      runUlParser "test" @?= Right test
+      runUlParser "and"  @?= Right and
+      runUlParser "or"   @?= Right or
+      runUlParser "not"  @?= Right not
+
+      -- pair
+      runUlParser "pair" @?= Right pair
+      runUlParser "fst"  @?= Right fst
+      runUlParser "snd"  @?= Right snd
+
+      -- church
+      runUlParser "c10"  @?= Right (c 10)
+      runUlParser "c0"   @?= Right (c 0)
+      runUlParser "c123" @?= Right (c 123)
+      runUlParser "scc" @?= Right scc
+      runUlParser "plus" @?= Right plus
+      runUlParser "times" @?= Right times
+      runUlParser "iszro" @?= Right iszro
+      runUlParser "prd" @?= Right prd
+      runUlParser "subtract" @?= Right subtract1
+      runUlParser "equal" @?= Right equal
   , testCase "isClosed" $ do
       isClosed UL.example1 @?= False
       isClosed UL.example2 @?= True

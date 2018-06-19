@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Prelude
   ( id
+  , prelude
   -- * Church ブール値
   , tru
   , fls
@@ -38,6 +39,17 @@ import           Prelude                      hiding (and, fst, id, not, or,
                                                snd)
 
 import           Language.UntypedLambda.Types
+
+import           Data.Map                     (Map)
+import qualified Data.Map                     as Map (fromList)
+import           Data.Text                    (Text)
+
+prelude :: Map Text Term
+prelude = Map.fromList
+  [ ("id", id), ("tru", tru), ("fls", fls), ("test", test), ("and", and), ("or", or), ("not", not)
+  , ("pair", pair), ("fst", fst), ("snd", snd)
+  , ("scc", scc), ("plus", plus), ("times", times), ("power", power1), ("iszro", iszro), ("prd", prd), ("subtract", subtract1), ("equal", equal)
+  ]
 
 -- | λx. x
 id :: Term

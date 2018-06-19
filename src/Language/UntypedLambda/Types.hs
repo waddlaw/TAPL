@@ -16,7 +16,7 @@ data Term
 
 instance Pretty Term where
   pretty (TmVar x)     = pretty x
-  pretty (TmLam x t)   = pretty "\\" <> pretty x <> pretty "." <+> pretty t
+  pretty (TmLam x t)   = pretty "λ" <> pretty x <> pretty "." <+> pretty t
   pretty (TmApp t1 t2) = ppr t1 <+> ppr t2
     where
       ppr t@(TmVar _) = pretty t
@@ -30,3 +30,4 @@ data Strategy
   | NormalOrder       -- ^ 正規順序戦略
   | CallByName        -- ^ 名前呼び戦略
   | CallByValue       -- ^ 値呼び戦略
+  deriving (Show, Read, Enum, Bounded)

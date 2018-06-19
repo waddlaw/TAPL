@@ -38,6 +38,6 @@ example5 = TmLam "z" (TmLam "x" (TmLam "y" (TmApp "x" (TmApp "y" "z"))))
 example6 :: Term
 example6 = TmApp (TmLam "x" (TmApp "x" (TmLam "x" "x"))) (TmApp "u" "r")
 
--- | tet tru tru fls
+-- | test tru tru fls
 example7 :: Term
 example7 = TmApp (TmApp (TmApp test tru) tru) fls

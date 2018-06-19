@@ -9,6 +9,7 @@ module Language.UntypedLambda
   , evalWithTrace
   , evalOneStep
   , trace
+  , steps
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -39,6 +40,10 @@ evalWithTrace s acc t
   where
     result = evalOneStep s t
     acc'   = result:acc
+
+-- | 簡約ステップ数を返す
+steps :: Term -> Int
+steps = length . evalWithTrace NormalOrder []
 
 -- | 1ステップのみ、指定された評価戦略で評価する
 evalOneStep :: Strategy -> Term -> Term

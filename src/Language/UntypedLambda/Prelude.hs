@@ -47,6 +47,7 @@ import           Data.Text                    (Text)
 prelude :: Map Text Term
 prelude = Map.fromList
   [ ("id", id), ("tru", tru), ("fls", fls), ("test", test), ("and", and), ("or", or), ("not", not)
+  , ("pair", pair), ("fst", fst), ("snd", snd)
   ]
 
 -- | λx. x

@@ -51,6 +51,8 @@ $ hlint .
 $ stack exec proofb
 
 $ stack exec nb
+
+$ stack exec untyped-lambda
 ```
 
 ## ディレクトリ構成

@@ -14,7 +14,8 @@ module Language.UntypedLambda.Prelude
   , snd
   ) where
 
-import           Prelude                hiding (and, id, not, or, fst, snd)
+import           Prelude                      hiding (and, fst, id, not, or,
+                                               snd)
 
 import           Language.UntypedLambda.Types
 

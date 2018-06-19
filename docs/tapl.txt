@@ -73,6 +73,78 @@ instance GHC.Classes.Eq Language.UntypedLambda.Types.Term
 instance Data.Text.Prettyprint.Doc.Internal.Pretty Language.UntypedLambda.Types.Term
 instance Data.String.IsString Language.UntypedLambda.Types.Term
 
+module Language.UntypedLambda.Prelude
+
+-- | λx. x
+id :: Term
+
+-- | λt. λf. t
+tru :: Term
+
+-- | λt. λf. f
+fls :: Term
+
+-- | λl. λm. λn. l m n
+test :: Term
+
+-- | λb. λc. b c fls
+and :: Term
+
+-- | λb. λc. b tru c
+or :: Term
+
+-- | λb. b fls tru
+not :: Term
+
+-- | λf. λs. λb. b f s
+pair :: Term
+
+-- | λp. p tru
+fst :: Term
+
+-- | λp. p fls
+snd :: Term
+
+-- | c0 = λs. λz. z c1 = λs. λz. s z c2 = λs. λz. s (s z) c3 = λs. λz. s (s
+--   (s z))
+c :: Int -> Term
+
+-- | λn. λs. λz. s (n s z)
+scc :: Term
+
+-- | λn. λs. λz. n s (s z)
+scc2 :: Term
+
+-- | λm. λn. λs. λz. m s (n s z)
+plus :: Term
+
+-- | λm. λn. m (plus n) c0
+times :: Term
+
+-- | λm. λn. λs. λz. m (n s) z
+times2 :: Term
+
+-- | λm. λn. λs. m (n s)
+times3 :: Term
+
+-- | λn. λm. m (times n) c1 n^m
+power1 :: Term
+
+-- | λn. λm. m n m^n
+power2 :: Term
+
+-- | λm. m (λx. fls) tru
+iszro :: Term
+
+-- | λm. fst (m ss zz)
+prd :: Term
+
+-- | λm. λn. n prd m
+subtract1 :: Term
+
+-- | λm. λn. and (iszro (m prd n)) (iszro (n prd m))
+equal :: Term
+
 module Language.Utils
 trim :: String -> String
 render :: Pretty a => a -> String
@@ -100,13 +172,17 @@ reduceCallByValue :: Term -> Term
 -- | 指定された評価戦略で項を正規系に評価する
 eval :: Strategy -> Term -> Term
 
+-- | 簡約ステップ列を返す
+evalWithTrace :: Strategy -> [Term] -> Term -> [Term]
+
 -- | 1ステップのみ、指定された評価戦略で評価する
 evalOneStep :: Strategy -> Term -> Term
 
-module Language.UntypedLambda.Prelude
+-- | デバッグ用
+trace :: Strategy -> Term -> IO ()
 
--- | λx. x
-id :: Term
+-- | 簡約ステップ数を返す
+steps :: Term -> Int
 
 module Language.UntypedLambda.Examples
 
@@ -127,6 +203,18 @@ example5 :: Term
 
 -- | (λx. x (λx. x)) (u r)
 example6 :: Term
+
+-- | test tru tru fls
+example7 :: Term
+
+-- | and tru tru
+example8 :: Term
+
+-- | and tru fls
+example9 :: Term
+
+-- | fst (pair v w)
+example10 :: Term
 
 module Language.NB.Parser
 runNbParser :: String -> Either String Term

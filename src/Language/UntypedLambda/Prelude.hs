@@ -1,31 +1,31 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Prelude
   ( id
-  -- Church ブール値
+  -- * Church ブール値
   , tru
   , fls
   , test
   , and
-  , or  -- ^ 演習 5.2.1
-  , not -- ^ 演習 5.2.1
-  -- 二つ組
+  , or  -- ** 演習 5.2.1
+  , not -- ** 演習 5.2.1
+  -- * 二つ組
   , pair
   , fst
   , snd
-  -- Church 数
+  -- * Church 数
   , c
   , scc
-  , scc2 -- ^ 演習5.2.2
+  , scc2 -- ** 演習5.2.2
   , plus
   , times
-  , times2 -- ^ 演習5.2.3
-  , times3 -- ^ 演習5.2.3
-  , power1 -- ^ 演習5.2.4
-  , power2 -- ^ 演習5.2.4
+  , times2 -- ** 演習5.2.3
+  , times3 -- ** 演習5.2.3
+  , power1 -- ** 演習5.2.4
+  , power2 -- ** 演習5.2.4
   , iszro
   , prd
-  , subtract1 -- ^ 演習5.2.5
-  , equal -- ^ 演習5.2.6
+  , subtract1 -- ** 演習5.2.5
+  , equal -- ** 演習5.2.6
   ) where
 
 import           Prelude                      hiding (and, fst, id, not, or,

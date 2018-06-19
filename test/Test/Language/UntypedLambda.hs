@@ -87,4 +87,8 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder (TmApp not tru) @?= fls
       eval CallByName  (TmApp not tru) @?= fls
       eval CallByValue (TmApp not tru) @?= fls
+  , testCase "二つ組" $ do
+      eval NormalOrder UL.example10 @?= TmVar "v"
+      eval CallByName  UL.example10 @?= TmVar "v"
+      eval CallByValue UL.example10 @?= TmVar "v"
   ]

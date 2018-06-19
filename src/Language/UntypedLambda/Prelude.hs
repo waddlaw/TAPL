@@ -8,11 +8,15 @@ module Language.UntypedLambda.Prelude
   , and
   , or  -- ^ 演習 5.2.1
   , not -- ^ 演習 5.2.1
+  -- 二つ組
+  , pair
+  , fst
+  , snd
   ) where
 
-import           Prelude                hiding (and, id, not, or)
+import           Prelude                hiding (and, id, not, or, fst, snd)
 
-import           Language.UntypedLambda
+import           Language.UntypedLambda.Types
 
 -- | λx. x
 id :: Term
@@ -41,3 +45,15 @@ or = TmLam "b" (TmLam "c" (TmApp (TmApp "b" tru) "c"))
 -- | λb. b fls tru
 not :: Term
 not = TmLam "b" (TmApp (TmApp "b" fls) tru)
+
+-- | λf. λs. λb. b f s
+pair :: Term
+pair = TmLam "f" (TmLam "s" (TmLam "b" (TmApp (TmApp "b" "f") "s")))
+
+-- | λp. p tru
+fst :: Term
+fst = TmLam "p" (TmApp "p" tru)
+
+-- | λp. p fls
+snd :: Term
+snd = TmLam "p" (TmApp "p" fls)

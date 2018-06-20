@@ -31,12 +31,18 @@ module Language.UntypedLambda.Prelude
   , power2
   -- ** 演習5.2.5
   , subtract1
-  -- ** 演習5.2.6
+  -- ** 演習5.2.7
   , equal
+  -- ** 演習5.2.8
+  , nil
+  , cons
+  , isnil
+  , head
+  , tail
   ) where
 
-import           Prelude                      hiding (and, fst, id, not, or,
-                                               snd)
+import           Prelude                      hiding (and, fst, head, id, not,
+                                               or, snd, tail)
 
 import           Language.UntypedLambda.Types
 
@@ -49,6 +55,7 @@ prelude = Map.fromList
   [ ("id", id), ("tru", tru), ("fls", fls), ("test", test), ("and", and), ("or", or), ("not", not)
   , ("pair", pair), ("fst", fst), ("snd", snd)
   , ("scc", scc), ("plus", plus), ("times", times), ("power", power1), ("iszro", iszro), ("prd", prd), ("subtract", subtract1), ("equal", equal)
+  , ("nil", nil), ("cons", cons), ("isnil", isnil), ("head", head), ("tail", tail)
   ]
 
 -- | λx. x
@@ -166,3 +173,31 @@ equal = TmLam "m" (TmLam "n" (TmApp (TmApp and (TmApp iszro l)) (TmApp iszro r))
   where
     l = TmApp (TmApp "m" prd) "n"
     r = TmApp (TmApp "n" prd) "m"
+
+-- | λc. λn. n
+nil :: Term
+nil = TmLam "c" (TmLam "n" "n")
+
+-- | λh. λt. λc. λn. c h (t c n)
+cons :: Term
+cons = TmLam "h" (TmLam "t" (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "h") (TmApp (TmApp "t" "c") "n")))))
+
+-- | λl. l (λh. λt. fls) tru
+isnil :: Term
+isnil = TmLam "l" (TmApp (TmApp "l" (TmLam "h" (TmLam "t" fls))) tru)
+
+-- | λl. l (λh. λt. h) l
+head :: Term
+head = TmLam "l" (TmApp (TmApp "l" (TmLam "h" (TmLam "t" "h"))) "l")
+
+-- | pair nil nil
+nn :: Term
+nn = TmApp (TmApp pair nil) nil
+
+-- | λh. λp. pair (snd p) (cons h (snd p))
+cc :: Term
+cc = TmLam "h" (TmLam "p" (TmApp (TmApp pair (TmApp snd "p")) (TmApp (TmApp cons "h") (TmApp snd "p"))))
+
+-- | λl. fst (l cc nn)
+tail :: Term
+tail = TmLam "l" (TmApp fst (TmApp (TmApp "l" cc) nn))

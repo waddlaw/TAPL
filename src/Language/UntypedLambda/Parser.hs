@@ -23,7 +23,7 @@ exprP = lefty <$> factorP <*> termsP
     termsP = many (space *> factorP)
 
 factorP :: Parser Term
-factorP = (char '(' *> (exprP <* char ')')) <|> varP <|> lambdaP
+factorP = (char '(' *> (exprP <* char ')')) <|> try numP <|> varP <|> lambdaP
 
 lambdaP :: Parser Term
 lambdaP = TmLam <$  symbol "λ"
@@ -31,12 +31,14 @@ lambdaP = TmLam <$  symbol "λ"
                 <*  dot
                 <*> token exprP
 
+numP :: Parser Term
+numP = c . read <$  char 'c'
+                <*> some digit
+
 varP :: Parser Term
 varP = toTerm <$> oneOf ['a'..'z'] <*> many alphaNum
   where
-    -- TODO
-    toTerm 'c' xs = c (read xs ::Int)
-    toTerm x xs   = lifty $ T.pack (x:xs)
+    toTerm x xs = lifty $ T.pack (x:xs)
     lifty var = Map.findWithDefault (TmVar var) var prelude
 
 identP :: Parser Text

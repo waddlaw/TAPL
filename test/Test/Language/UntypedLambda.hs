@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.UntypedLambda where
 
-import           Prelude                         hiding (and, fst, id, not, or,
-                                                  snd)
+import           Prelude                         hiding (and, fst, head, id,
+                                                  not, or, snd, tail)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
@@ -47,16 +47,23 @@ test_ul = testGroup "UntypedLambda"
       runUlParser "snd"  @?= Right snd
 
       -- church
-      runUlParser "c10"  @?= Right (c 10)
-      runUlParser "c0"   @?= Right (c 0)
-      runUlParser "c123" @?= Right (c 123)
-      runUlParser "scc" @?= Right scc
-      runUlParser "plus" @?= Right plus
-      runUlParser "times" @?= Right times
-      runUlParser "iszro" @?= Right iszro
-      runUlParser "prd" @?= Right prd
+      runUlParser "c10"      @?= Right (c 10)
+      runUlParser "c0"       @?= Right (c 0)
+      runUlParser "c123"     @?= Right (c 123)
+      runUlParser "scc"      @?= Right scc
+      runUlParser "plus"     @?= Right plus
+      runUlParser "times"    @?= Right times
+      runUlParser "iszro"    @?= Right iszro
+      runUlParser "prd"      @?= Right prd
       runUlParser "subtract" @?= Right subtract1
-      runUlParser "equal" @?= Right equal
+      runUlParser "equal"    @?= Right equal
+
+      -- list
+      runUlParser "nil"   @?= Right nil
+      runUlParser "head"  @?= Right head
+      runUlParser "isnil" @?= Right isnil
+      runUlParser "cons"  @?= Right cons
+      runUlParser "tail"  @?= Right tail
   , testCase "isClosed" $ do
       isClosed UL.example1 @?= False
       isClosed UL.example2 @?= True
@@ -169,4 +176,21 @@ test_ul = testGroup "UntypedLambda"
       -- equal
       eval NormalOrder (TmApp (TmApp equal (c 10)) (c 2)) @?= fls
       eval NormalOrder (TmApp (TmApp equal (c 2))  (c 2)) @?= tru
+
+      -- cons
+      eval NormalOrder (TmApp (TmApp cons "x") nil) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n"))
+
+      -- isnil
+      eval NormalOrder (TmApp isnil nil) @?= tru
+      eval NormalOrder (TmApp isnil (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= fls
+      eval NormalOrder (TmApp isnil (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x1") (TmApp (TmApp "c" "x2") "n"))))) @?= fls
+
+      -- head
+      eval NormalOrder (TmApp head nil) @?= nil
+      eval NormalOrder (TmApp head (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= "x"
+
+      -- tail
+      eval NormalOrder (TmApp tail nil) @?= nil
+      eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= nil
+      eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") (TmApp (TmApp "c" "y") "n"))))) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "y") "n"))
   ]

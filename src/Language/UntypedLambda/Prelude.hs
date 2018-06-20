@@ -181,10 +181,10 @@ nil = TmLam "c" (TmLam "n" "n")
 cons :: Term
 cons = TmLam "h" (TmLam "t" (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "h") (TmApp (TmApp "t" "c") "n")))))
 
--- | λt. t (λx. λxs. fls) tru
+-- | λl. l (λh. λt. fls) tru
 isnil :: Term
-isnil = TmLam "t" (TmApp (TmApp "t" (TmLam "x" (TmLam "xs" fls))) tru)
+isnil = TmLam "l" (TmApp (TmApp "l" (TmLam "h" (TmLam "t" fls))) tru)
 
--- | λt. t (λx. λxs. x) t
+-- | λl. l (λh. λt. h) l
 head :: Term
-head = TmLam "t" (TmApp (TmApp "t" (TmLam "x" (TmLam "xs" "x"))) "t")
+head = TmLam "l" (TmApp (TmApp "l" (TmLam "h" (TmLam "t" "h"))) "l")

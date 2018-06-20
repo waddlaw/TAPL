@@ -45,3 +45,7 @@ example9 = TmApp (TmApp and tru) fls
 -- | fst (pair v w)
 example10 :: Term
 example10 = TmApp fst (TmApp (TmApp pair "v") "w")
+
+-- | [x]
+example11 :: Term
+example11 = TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n"))

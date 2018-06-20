@@ -2,7 +2,7 @@
 module Test.Language.UntypedLambda where
 
 import           Prelude                         hiding (and, fst, id, not, or,
-                                                  snd)
+                                                  snd, head)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
@@ -169,4 +169,16 @@ test_ul = testGroup "UntypedLambda"
       -- equal
       eval NormalOrder (TmApp (TmApp equal (c 10)) (c 2)) @?= fls
       eval NormalOrder (TmApp (TmApp equal (c 2))  (c 2)) @?= tru
+
+      -- cons
+      eval NormalOrder (TmApp (TmApp cons "x") nil) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n"))
+
+      -- isnil
+      eval NormalOrder (TmApp isnil nil) @?= tru
+      eval NormalOrder (TmApp isnil (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= fls
+      eval NormalOrder (TmApp isnil (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x1") (TmApp (TmApp "c" "x2") "n"))))) @?= fls
+
+      -- head
+      eval NormalOrder (TmApp head nil) @?= nil
+      eval NormalOrder (TmApp head (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= "x"
   ]

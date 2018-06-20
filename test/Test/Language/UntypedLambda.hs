@@ -2,7 +2,7 @@
 module Test.Language.UntypedLambda where
 
 import           Prelude                         hiding (and, fst, head, id,
-                                                  not, or, snd)
+                                                  not, or, snd, tail)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
@@ -63,6 +63,7 @@ test_ul = testGroup "UntypedLambda"
       runUlParser "head"  @?= Right head
       runUlParser "isnil" @?= Right isnil
       runUlParser "cons"  @?= Right cons
+      runUlParser "tail"  @?= Right tail
   , testCase "isClosed" $ do
       isClosed UL.example1 @?= False
       isClosed UL.example2 @?= True
@@ -187,4 +188,9 @@ test_ul = testGroup "UntypedLambda"
       -- head
       eval NormalOrder (TmApp head nil) @?= nil
       eval NormalOrder (TmApp head (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= "x"
+
+      -- tail
+      eval NormalOrder (TmApp tail nil) @?= nil
+      eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= nil
+      eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") (TmApp (TmApp "c" "y") "n"))))) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "y") "n"))
   ]

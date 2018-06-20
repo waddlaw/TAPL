@@ -38,10 +38,11 @@ module Language.UntypedLambda.Prelude
   , cons
   , isnil
   , head
+  , tail
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
-                                               or, snd)
+                                               or, snd, tail)
 
 import           Language.UntypedLambda.Types
 
@@ -54,7 +55,7 @@ prelude = Map.fromList
   [ ("id", id), ("tru", tru), ("fls", fls), ("test", test), ("and", and), ("or", or), ("not", not)
   , ("pair", pair), ("fst", fst), ("snd", snd)
   , ("scc", scc), ("plus", plus), ("times", times), ("power", power1), ("iszro", iszro), ("prd", prd), ("subtract", subtract1), ("equal", equal)
-  , ("nil", nil), ("cons", cons), ("isnil", isnil), ("head", head)
+  , ("nil", nil), ("cons", cons), ("isnil", isnil), ("head", head), ("tail", tail)
   ]
 
 -- | λx. x
@@ -188,3 +189,15 @@ isnil = TmLam "l" (TmApp (TmApp "l" (TmLam "h" (TmLam "t" fls))) tru)
 -- | λl. l (λh. λt. h) l
 head :: Term
 head = TmLam "l" (TmApp (TmApp "l" (TmLam "h" (TmLam "t" "h"))) "l")
+
+-- | pair nil nil
+nn :: Term
+nn = TmApp (TmApp pair nil) nil
+
+-- | λh. λp. pair (snd p) (cons h (snd p))
+cc :: Term
+cc = TmLam "h" (TmLam "p" (TmApp (TmApp pair (TmApp snd "p")) (TmApp (TmApp cons "h") (TmApp snd "p"))))
+
+-- | λl. fst (l cc nn)
+tail :: Term
+tail = TmLam "l" (TmApp fst (TmApp (TmApp "l" cc) nn))

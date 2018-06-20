@@ -159,6 +159,21 @@ subtract1 :: Term
 -- | λm. λn. and (iszro (m prd n)) (iszro (n prd m))
 equal :: Term
 
+-- | λc. λn. n
+nil :: Term
+
+-- | λh. λt. λc. λn. c h (t c n)
+cons :: Term
+
+-- | λl. l (λh. λt. fls) tru
+isnil :: Term
+
+-- | λl. l (λh. λt. h) l
+head :: Term
+
+-- | λl. fst (l cc nn)
+tail :: Term
+
 module Language.Utils
 trim :: String -> String
 render :: Pretty a => a -> String
@@ -230,6 +245,11 @@ example9 :: Term
 
 -- | fst (pair v w)
 example10 :: Term
+
+-- | <ul>
+--   <li><i>x</i></li>
+--   </ul>
+example11 :: Term
 
 module Language.NB.Parser
 runNbParser :: String -> Either String Term

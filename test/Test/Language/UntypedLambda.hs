@@ -47,16 +47,16 @@ test_ul = testGroup "UntypedLambda"
       runUlParser "snd"  @?= Right snd
 
       -- church
-      runUlParser "c10"  @?= Right (c 10)
-      runUlParser "c0"   @?= Right (c 0)
-      runUlParser "c123" @?= Right (c 123)
-      runUlParser "scc" @?= Right scc
-      runUlParser "plus" @?= Right plus
-      runUlParser "times" @?= Right times
-      runUlParser "iszro" @?= Right iszro
-      runUlParser "prd" @?= Right prd
+      runUlParser "c10"      @?= Right (c 10)
+      runUlParser "c0"       @?= Right (c 0)
+      runUlParser "c123"     @?= Right (c 123)
+      runUlParser "scc"      @?= Right scc
+      runUlParser "plus"     @?= Right plus
+      runUlParser "times"    @?= Right times
+      runUlParser "iszro"    @?= Right iszro
+      runUlParser "prd"      @?= Right prd
       runUlParser "subtract" @?= Right subtract1
-      runUlParser "equal" @?= Right equal
+      runUlParser "equal"    @?= Right equal
   , testCase "isClosed" $ do
       isClosed UL.example1 @?= False
       isClosed UL.example2 @?= True

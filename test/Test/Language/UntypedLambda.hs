@@ -57,6 +57,12 @@ test_ul = testGroup "UntypedLambda"
       runUlParser "prd"      @?= Right prd
       runUlParser "subtract" @?= Right subtract1
       runUlParser "equal"    @?= Right equal
+
+      -- list
+      runUlParser "nil"   @?= Right nil
+      runUlParser "head"  @?= Right head
+      runUlParser "isnil" @?= Right isnil
+      runUlParser "cons"  @?= Right cons
   , testCase "isClosed" $ do
       isClosed UL.example1 @?= False
       isClosed UL.example2 @?= True

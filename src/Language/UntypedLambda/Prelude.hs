@@ -40,8 +40,8 @@ module Language.UntypedLambda.Prelude
   , head
   ) where
 
-import           Prelude                      hiding (and, fst, id, not, or,
-                                               snd, head)
+import           Prelude                      hiding (and, fst, head, id, not,
+                                               or, snd)
 
 import           Language.UntypedLambda.Types
 

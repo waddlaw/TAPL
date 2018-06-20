@@ -25,3 +25,12 @@
 - [プログラミングの基礎](http://pllab.is.ocha.ac.jp/~asai/book/Top.html)
 
 ![プログラミングの基礎](http://pllab.is.ocha.ac.jp/~asai/book/Top_files/2007-978-4-7819-1160-1.jpg)
+
+## 発展的内容
+
+- [Advanced Topics in Types and Programming Languages](https://www.amazon.co.jp/dp/0262162288)
+
+![Advanced Topics in Types and Programming Languages](https://images-na.ssl-images-amazon.com/images/I/51zsCnON7eL.jpg)
+
+- [Software Foundations](https://softwarefoundations.cis.upenn.edu/)
+- [ソフトウェアの基礎](http://proofcafe.org/sf/)

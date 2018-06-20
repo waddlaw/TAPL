@@ -54,7 +54,7 @@ prelude = Map.fromList
   [ ("id", id), ("tru", tru), ("fls", fls), ("test", test), ("and", and), ("or", or), ("not", not)
   , ("pair", pair), ("fst", fst), ("snd", snd)
   , ("scc", scc), ("plus", plus), ("times", times), ("power", power1), ("iszro", iszro), ("prd", prd), ("subtract", subtract1), ("equal", equal)
-  , ("nil", nil), ("cons", cons)
+  , ("nil", nil), ("cons", cons), ("isnil", isnil), ("head", head)
   ]
 
 -- | λx. x

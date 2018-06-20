@@ -31,7 +31,7 @@ module Language.UntypedLambda.Prelude
   , power2
   -- ** 演習5.2.5
   , subtract1
-  -- ** 演習5.2.6
+  -- ** 演習5.2.7
   , equal
   ) where
 

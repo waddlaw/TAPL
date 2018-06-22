@@ -15,6 +15,7 @@ ghc-options:
 dependencies:
   - base
   - containers
+  - extensible
   - hashable
   - parsers
   - prettyprinter
@@ -23,6 +24,12 @@ dependencies:
   - transformers
   - trifecta
   - unordered-containers
+
+default-extensions:
+- DataKinds
+- OverloadedLabels
+- TypeApplications
+- TypeOperators
 
 when:
   - condition: impl(ghc == 8.2.2)

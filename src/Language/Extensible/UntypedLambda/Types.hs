@@ -16,9 +16,9 @@ import           Data.Text.Prettyprint.Doc
 newtype Term = Term
   { unwrapTerm :: Variant
       '[ "var"    >: Text
-      , "lambda" >: (Text, Term)
-      , "app"    >: (Term, Term)
-      ]
+       , "lambda" >: (Text, Term)
+       , "app"    >: (Term, Term)
+       ]
    }
 
 instance Pretty Term where

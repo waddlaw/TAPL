@@ -1,13 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Language.Extensible.UntypedLambda.Prelude
+module Extensible.Language.UntypedLambda.Prelude
   ( id
   ) where
 
 import Prelude hiding (id)
 
-import           Language.Extensible.UntypedLambda.Types
+import           Extensible.Language.UntypedLambda.Types
 
-import Data.Extensible
 import Control.Lens    (( # ))
 
 -- | λx. x

@@ -1,4 +1,4 @@
-module Language.Extensible.UntypedLambda.Types
+module Extensible.Language.UntypedLambda.Types
   ( Term (..)
   , Strategy (..)
   ) where

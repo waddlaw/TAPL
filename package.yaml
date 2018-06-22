@@ -17,6 +17,7 @@ dependencies:
   - containers
   - extensible
   - hashable
+  - lens
   - parsers
   - prettyprinter
   - QuickCheck

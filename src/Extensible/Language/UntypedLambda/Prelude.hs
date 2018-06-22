@@ -2,9 +2,11 @@
 module Extensible.Language.UntypedLambda.Prelude
   ( id
   , tru, fls, test, and, or, not
+  , pair, fst, snd
+  , c
   ) where
 
-import Prelude hiding (id, and, or, not)
+import Prelude hiding (id, and, or, not, fst, snd)
 
 import           Extensible.Language.UntypedLambda.Types
 
@@ -55,3 +57,39 @@ not = Term $ #lambda # ("b", t1)
   where
     t1 = Term $ #app # (t2, tru)
     t2 = Term $ #app # ("b", fls)
+
+-- | λf. λs. λb. b f s
+pair :: Term
+pair = Term $ #lambda # ("f", t1)
+  where
+    t1 = Term $ #lambda # ("s", t2)
+    t2 = Term $ #lambda # ("b", t3)
+    t3 = Term $ #app    # (t4, "s")
+    t4 = Term $ #app    # ("b", "f")
+
+-- | λp. p tru
+fst :: Term
+fst = Term $ #lambda # ("p", t)
+  where
+    t = Term $ #app # ("p", tru)
+
+-- | λp. p fls
+snd :: Term
+snd = Term $ #lambda # ("p", t)
+  where
+    t = Term $ #app # ("p", fls)
+
+-- |
+-- c0 = λs. λz. z
+--
+-- c1 = λs. λz. s z
+--
+-- c2 = λs. λz. s (s z)
+--
+-- c3 = λs. λz. s (s (s z))
+c :: Int -> Term
+c n = Term $ #lambda # ("s", t)
+  where
+    t = Term $ #lambda # ("z", body)
+    body = foldr go "z" $ replicate n "s"
+    go x acc = Term $ #app # (x, acc)

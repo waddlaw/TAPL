@@ -6,10 +6,10 @@ module Extensible.Language.UntypedLambda.Types
   , app
   ) where
 
-import Language.UntypedLambda.Types (Strategy (..))
+import           Language.UntypedLambda.Types (Strategy (..))
 
 import           Data.Extensible
-import Control.Lens    (( # ))
+import           Control.Lens    (( # ))
 
 import           Data.String
 import           Data.Text (Text)
@@ -50,4 +50,4 @@ ppr = matchField pm . unwrapTerm
       <: nil
 
 instance IsString Term where
-  fromString v = Term $ #var # T.pack v
+  fromString = var . T.pack

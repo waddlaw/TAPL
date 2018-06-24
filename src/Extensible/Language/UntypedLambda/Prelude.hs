@@ -1,16 +1,28 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Extensible.Language.UntypedLambda.Prelude
-  ( id
+  ( prelude
+  , id
   , tru, fls, test, and, or, not
   , pair, fst, snd
   , c
   ) where
 
-import Prelude hiding (id, and, or, not, fst, snd)
+import           Prelude                                 hiding (and, fst, id,
+                                                          not, or, snd)
 
 import           Extensible.Language.UntypedLambda.Types
 
-import Control.Lens    (( # ))
+import           Data.Map                                (Map)
+import qualified Data.Map                                as Map
+import           Data.Text                               (Text)
+
+prelude :: Map Text Term
+prelude = Map.fromList
+  [ ("id", id), ("tru", tru), ("fls", fls), ("test", test), ("and", and), ("or", or), ("not", not)
+  , ("pair", pair), ("fst", fst), ("snd", snd)
+  -- , ("scc", scc), ("plus", plus), ("times", times), ("power", power1), ("iszro", iszro), ("prd", prd), ("subtract", subtract1), ("equal", equal)
+  -- , ("nil", nil), ("cons", cons), ("isnil", isnil), ("head", head), ("tail", tail)
+  ]
 
 -- | λx. x
 id :: Term

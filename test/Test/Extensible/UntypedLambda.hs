@@ -42,4 +42,16 @@ test_extensible_untyped_lambda = testGroup "Extensible UntypedLambda" $
       runExUlParser "pair" @?= Right pair
       runExUlParser "fst"  @?= Right fst
       runExUlParser "snd"  @?= Right snd
+
+      -- church
+      runExUlParser "c10"      @?= Right (c 10)
+      runExUlParser "c0"       @?= Right (c 0)
+      runExUlParser "c123"     @?= Right (c 123)
+      runExUlParser "scc"      @?= Right scc
+      runExUlParser "plus"     @?= Right plus
+      runExUlParser "times"    @?= Right times
+      runExUlParser "iszro"    @?= Right iszro
+      runExUlParser "prd"      @?= Right prd
+      runExUlParser "subtract" @?= Right subtract1
+      runExUlParser "equal"    @?= Right equal
   ]

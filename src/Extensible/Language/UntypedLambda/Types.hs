@@ -31,7 +31,7 @@ newtype Term = Term
        , "lambda" >: (Text, Term)
        , "app"    >: (Term, Term)
        ]
-   }
+   } deriving (Eq, Show)
 
 instance Pretty Term where
   pretty = matchField prettyTerm . unwrapTerm

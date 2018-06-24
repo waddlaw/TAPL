@@ -12,16 +12,21 @@ import           Extensible.Language.UntypedLambda
 import           Extensible.Language.UntypedLambda.Prelude
 import           Language.Utils.Pretty
 
-import Control.Lens    (( # ))
+import Data.Either
 
 test_extensible_untyped_lambda :: TestTree
 test_extensible_untyped_lambda = testGroup "Extensible UntypedLambda" $
   [ testCase "pretty" $ do
-      let termVar = "x" :: Term
-          termLam = Term $ #lambda # ("x", "x")
-          termApp = Term $ #app    # ("x", "y")
-
-      prettyText termVar @?= "x"
-      prettyText termLam @?= "λx. x"
-      prettyText termApp @?= "x y"
+      prettyText (var "x") @?= "x"
+      prettyText (lambda "x" "x") @?= "λx. x"
+      prettyText (app "x" "y") @?= "x y"
+  , testCase "parser" $ do
+      runExUlParser "x" @?= Right "x"
+      runExUlParser "x1y" @?= Right "x1y"
+      isLeft (runExUlParser "Xyz") @?= True
+      isLeft (runExUlParser "123x") @?= True
+      runExUlParser "λx. t" @?= Right (lambda "x" "t")
+      isLeft (runExUlParser "λ. Ab") @?= True
+      runExUlParser "s t u" @?= runExUlParser "(s t) u"
+      runExUlParser "λx. λy. x y x" @?= runExUlParser "λx. (λy. ((x y) x))"
   ]

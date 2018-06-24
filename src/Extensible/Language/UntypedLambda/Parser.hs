@@ -2,6 +2,7 @@ module Extensible.Language.UntypedLambda.Parser
   ( runExUlParser
   ) where
 
+import           Extensible.Language.UntypedLambda.Prelude (c, prelude)
 import           Extensible.Language.UntypedLambda.Types
 import           Extensible.Language.UntypedLambda.Prelude (c)
 import Language.Utils.Parser
@@ -41,5 +42,5 @@ numP = c . read <$  char 'c'
 varP :: Parser Term
 varP = toTerm <$> oneOf ['a'..'z'] <*> many alphaNum
   where
-    toTerm x xs = Term $ #var # T.pack (x:xs) -- lifty $ T.pack (x:xs)
-    -- lifty var = Map.findWithDefault (TmVar var) var prelude
+    toTerm x xs = lifty $ T.pack (x:xs)
+    lifty x = Map.findWithDefault (var x) x prelude

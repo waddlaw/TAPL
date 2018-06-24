@@ -29,4 +29,17 @@ test_extensible_untyped_lambda = testGroup "Extensible UntypedLambda" $
       isLeft (runExUlParser "λ. Ab") @?= True
       runExUlParser "s t u" @?= runExUlParser "(s t) u"
       runExUlParser "λx. λy. x y x" @?= runExUlParser "λx. (λy. ((x y) x))"
+
+      -- Bool
+      runExUlParser "tru"  @?= Right tru
+      runExUlParser "fls"  @?= Right fls
+      runExUlParser "test" @?= Right test
+      runExUlParser "and"  @?= Right and
+      runExUlParser "or"   @?= Right or
+      runExUlParser "not"  @?= Right not
+
+      -- pair
+      runExUlParser "pair" @?= Right pair
+      runExUlParser "fst"  @?= Right fst
+      runExUlParser "snd"  @?= Right snd
   ]

@@ -14,70 +14,43 @@ import Control.Lens    (( # ))
 
 -- | λx. x
 id :: Term
-id = Term $ #lambda # ("x", "x")
+id = lambda "x" "x"
 
 -- | λt. λf. t
 tru :: Term
-tru = Term $ #lambda # ("t", t)
-  where t = Term $ #lambda # ("f", "t")
+tru = lambda "t" $ lambda "f" "t"
 
 -- | λt. λf. f
 fls :: Term
-fls = Term $ #lambda # ("t", t)
-  where t = Term $ #lambda # ("f", "f")
+fls = lambda "t" $ lambda "f" "f"
 
 -- | λl. λm. λn. l m n
 test :: Term
-test = Term $ #lambda # ("l", t1)
-  where
-    t1 = Term $ #lambda # ("m", t2)
-    t2 = Term $ #lambda # ("n", t3)
-    t3 = Term $ #app    # (t4, "n")
-    t4 = Term $ #app    # ("l", "m")
+test = lambda "l" $ lambda "m" $ lambda "n" $ app (app "l" "m") "n"
 
 -- | λb. λc. b c fls
 and :: Term
-and = Term $ #lambda # ("b", t1)
-  where
-    t1 = Term $ #lambda # ("c", t2)
-    t2 = Term $ #app    # (t3, fls)
-    t3 = Term $ #app    # ("b", "c")
+and = lambda "b" $ lambda "c" $ app (app "b" "c") fls
 
 -- | λb. λc. b tru c
 or :: Term
-or = Term $ #lambda # ("b", t1)
-  where
-    t1 = Term $ #lambda # ("c", t2)
-    t2 = Term $ #app    # (t3, "c")
-    t3 = Term $ #app    # ("b", tru)
+or = lambda "b" $ lambda "c" $ app (app "b" tru) "c"
 
 -- | λb. b fls tru
 not :: Term
-not = Term $ #lambda # ("b", t1)
-  where
-    t1 = Term $ #app # (t2, tru)
-    t2 = Term $ #app # ("b", fls)
+not = lambda "b" $ app (app "b" fls) tru
 
 -- | λf. λs. λb. b f s
 pair :: Term
-pair = Term $ #lambda # ("f", t1)
-  where
-    t1 = Term $ #lambda # ("s", t2)
-    t2 = Term $ #lambda # ("b", t3)
-    t3 = Term $ #app    # (t4, "s")
-    t4 = Term $ #app    # ("b", "f")
+pair = lambda "f" $ lambda "s" $ lambda "b" $ app (app "b" "f") "s"
 
 -- | λp. p tru
 fst :: Term
-fst = Term $ #lambda # ("p", t)
-  where
-    t = Term $ #app # ("p", tru)
+fst = lambda "p" $ app "p" tru
 
 -- | λp. p fls
 snd :: Term
-snd = Term $ #lambda # ("p", t)
-  where
-    t = Term $ #app # ("p", fls)
+snd = lambda "p" $ app "p" fls
 
 -- |
 -- c0 = λs. λz. z
@@ -88,8 +61,6 @@ snd = Term $ #lambda # ("p", t)
 --
 -- c3 = λs. λz. s (s (s z))
 c :: Int -> Term
-c n = Term $ #lambda # ("s", t)
+c n = lambda "s" $ lambda "z" body
   where
-    t = Term $ #lambda # ("z", body)
-    body = foldr go "z" $ replicate n "s"
-    go x acc = Term $ #app # (x, acc)
+    body = foldr app "z" $ replicate n "s"

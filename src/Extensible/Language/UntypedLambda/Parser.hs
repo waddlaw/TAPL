@@ -4,15 +4,13 @@ module Extensible.Language.UntypedLambda.Parser
 
 import           Extensible.Language.UntypedLambda.Prelude (c, prelude)
 import           Extensible.Language.UntypedLambda.Types
-import           Extensible.Language.UntypedLambda.Prelude (c)
-import Language.Utils.Parser
-
-import Control.Lens          ((#))
+import           Language.Utils.Parser
 
 import           Text.Trifecta
 
 import           Control.Applicative
-import qualified Data.Text                      as T
+import qualified Data.Map                                  as Map
+import qualified Data.Text                                 as T
 
 runExUlParser :: String -> Either String Term
 runExUlParser = runParserString exprP
@@ -20,20 +18,17 @@ runExUlParser = runParserString exprP
 exprP :: Parser Term
 exprP = lefty <$> factorP <*> termsP
   where
-    lefty x xs = foldl1 go (x:xs)
-    go acc x = Term $ #app # (acc, x)
+    lefty x xs = foldl1 app (x:xs)
     termsP = many (space *> factorP)
 
 factorP :: Parser Term
 factorP = (char '(' *> (exprP <* char ')')) <|> try numP <|> varP <|> lambdaP
 
 lambdaP :: Parser Term
-lambdaP = toLam <$  symbol "λ"
+lambdaP = lambda <$  symbol "λ"
                 <*> identP
                 <*  dot
                 <*> token exprP
-  where
-    toLam v t = Term $ #lambda # (v, t)
 
 numP :: Parser Term
 numP = c . read <$  char 'c'

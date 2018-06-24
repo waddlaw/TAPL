@@ -54,4 +54,11 @@ test_extensible_untyped_lambda = testGroup "Extensible UntypedLambda" $
       runExUlParser "prd"      @?= Right prd
       runExUlParser "subtract" @?= Right subtract1
       runExUlParser "equal"    @?= Right equal
+
+      -- list
+      runExUlParser "nil"   @?= Right nil
+      runExUlParser "head"  @?= Right head
+      runExUlParser "isnil" @?= Right isnil
+      runExUlParser "cons"  @?= Right cons
+      runExUlParser "tail"  @?= Right tail
   ]

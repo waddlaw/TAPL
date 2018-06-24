@@ -6,10 +6,11 @@ module Extensible.Language.UntypedLambda.Prelude
   , pair, fst, snd
   , c, scc, plus, times, iszro, prd
   , scc2, times2, times3, power1, power2, subtract1, equal
+  , nil, cons, isnil, head, tail
   ) where
 
 import           Prelude                                 hiding (and, fst, id,
-                                                          not, or, snd)
+                                                          not, or, snd, head, tail)
 
 import           Extensible.Language.UntypedLambda.Types
 
@@ -22,7 +23,7 @@ prelude = Map.fromList
   [ ("id", id), ("tru", tru), ("fls", fls), ("test", test), ("and", and), ("or", or), ("not", not)
   , ("pair", pair), ("fst", fst), ("snd", snd)
   , ("scc", scc), ("plus", plus), ("times", times), ("power", power1), ("iszro", iszro), ("prd", prd), ("subtract", subtract1), ("equal", equal)
-  -- , ("nil", nil), ("cons", cons), ("isnil", isnil), ("head", head), ("tail", tail)
+  , ("nil", nil), ("cons", cons), ("isnil", isnil), ("head", head), ("tail", tail)
   ]
 
 -- | λx. x
@@ -141,3 +142,30 @@ equal = lambda "m" $ lambda "n" $ app (app and (app iszro l)) (app iszro r)
     l = app (app "m" prd) "n"
     r = app (app "n" prd) "m"
 
+-- | λc. λn. n
+nil :: Term
+nil = lambda "c" $ lambda "n" "n"
+
+-- | λh. λt. λc. λn. c h (t c n)
+cons :: Term
+cons = lambda "h" $ lambda "t" $ lambda "c" $ lambda "n" $ app (app "c" "h") (app (app "t" "c") "n")
+
+-- | λl. l (λh. λt. fls) tru
+isnil :: Term
+isnil = lambda "l" $ app (app "l" (lambda "h" $ lambda "t" fls)) tru
+
+-- | λl. l (λh. λt. h) l
+head :: Term
+head = lambda "l" $ app (app "l" (lambda "h" $ lambda "t" "h")) "l"
+
+-- | pair nil nil
+nn :: Term
+nn = app (app pair nil) nil
+
+-- | λh. λp. pair (snd p) (cons h (snd p))
+cc :: Term
+cc = lambda "h" $ lambda "p" $ app (app pair (app snd "p")) (app (app cons "h") (app snd "p"))
+
+-- | λl. fst (l cc nn)
+tail :: Term
+tail = lambda "l" $ app fst (app (app "l" cc) nn)

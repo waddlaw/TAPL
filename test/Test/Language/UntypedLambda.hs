@@ -11,6 +11,7 @@ import           Test.Tasty.HUnit
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples as UL
 import           Language.UntypedLambda.Prelude
+import           Language.UntypedLambda.Lib.NB
 import           Language.Utils.Pretty
 
 import           Data.Either
@@ -194,4 +195,13 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder (TmApp tail nil) @?= nil
       eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= nil
       eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") (TmApp (TmApp "c" "y") "n"))))) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "y") "n"))
+  , testCase "convert NB <-> church" $ do
+      eval NormalOrder (TmApp realbool fls) @?= TmVar "false"
+      eval NormalOrder (TmApp realbool tru) @?= TmVar "true"
+      eval NormalOrder (TmApp (TmApp realeq (c 0)) (c 0)) @?= TmVar "true"
+      eval NormalOrder (TmApp (TmApp realeq (c 0)) (c 1)) @?= TmVar "false"
+      eval NormalOrder (TmApp realnat (c 2)) @?= TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmVar "0"))
+
+      eval NormalOrder (TmApp (TmApp equal (c 4)) (TmApp (TmApp times (c 2)) (c 2))) @?= tru
+      eval NormalOrder (TmApp realnat (TmApp (TmApp times (c 2)) (c 2))) @?= TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmVar "0"))))
   ]

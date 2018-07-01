@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE TypeApplications  #-}
 module Test.Language.UntypedLambda where
 
 import           Prelude                         hiding (and, fst, head, id,
@@ -10,8 +10,8 @@ import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples as UL
-import           Language.UntypedLambda.Prelude
 import           Language.UntypedLambda.Lib.NB
+import           Language.UntypedLambda.Prelude
 import           Language.Utils.Pretty
 
 import           Data.Either

@@ -18,13 +18,12 @@
 
 ## Quick Start Guide
 
-stack のバージョンは 1.7.1 以上を利用しましょう。
+stack のバージョンは 1.8.0 以上を利用しましょう。
 
 ```shell
 $ git clone https://github.com/waddlaw/TAPL.git
 $ cd TAPL
-$ stack build
-$ stack exec untyped-lambda
+$ stack run
 ```
 
 ## 開発
@@ -69,9 +68,9 @@ $ hlint .
 ## 実行方法
 
 ```shell
-$ stack exec proofb
+$ stack run proofb
 
-$ stack exec nb
+$ stack run nb
 
-$ stack exec untyped-lambda
+$ stack run untyped-lambda
 ```

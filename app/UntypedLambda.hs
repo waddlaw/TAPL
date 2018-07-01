@@ -10,7 +10,7 @@ import           Control.Monad.Trans.State.Strict
 import           Data.List
 import           System.Console.Haskeline
 
-type UntypedLambda = InputT (StateT Env IO) ()
+type UntypedLambdaREPL = InputT (StateT Env IO) ()
 
 data Env = Env
   { envStrategy :: Strategy
@@ -29,7 +29,7 @@ main = do
 
   putStrLn "Leaving untyped lambda repl"
 
-main' :: UntypedLambda
+main' :: UntypedLambdaREPL
 main' = do
   minput <- getInputLine "UntypedLambda> "
   case trim <$> minput of
@@ -46,7 +46,7 @@ main' = do
          -- main process
          | otherwise -> evalCmd input >> main'
 
-helpCmd :: UntypedLambda
+helpCmd :: UntypedLambdaREPL
 helpCmd = mapM_ outputStrLn $ "available commands" : commands
 
 commands :: [String]
@@ -61,18 +61,18 @@ commands =
   , "  :q                       -- 終了"
   ]
 
-printEnvCmd :: UntypedLambda
+printEnvCmd :: UntypedLambdaREPL
 printEnvCmd = do
   env <- getEnv
   outputStrLn $ show env
 
-updateEnvTraceCmd :: Bool -> UntypedLambda
+updateEnvTraceCmd :: Bool -> UntypedLambdaREPL
 updateEnvTraceCmd isTrace = do
   env <- getEnv
   putEnv $ env { envIsTrace = isTrace }
   printEnvCmd
 
-updateEnvStrategyCmd :: String -> UntypedLambda
+updateEnvStrategyCmd :: String -> UntypedLambdaREPL
 updateEnvStrategyCmd input = do
   env <- getEnv
   putEnv $ env { envStrategy = strategy }
@@ -80,15 +80,15 @@ updateEnvStrategyCmd input = do
   where
     strategy = read $ last $ words input
 
-listStrategyCmd :: UntypedLambda
+listStrategyCmd :: UntypedLambdaREPL
 listStrategyCmd = mapM_ (outputStrLn . show) strategies
   where
     strategies = [minBound .. maxBound] :: [Strategy]
 
-listPreludeCmd :: UntypedLambda
+listPreludeCmd :: UntypedLambdaREPL
 listPreludeCmd = outputStrLn $ renderPrelude prelude
 
-evalCmd :: String -> UntypedLambda
+evalCmd :: String -> UntypedLambdaREPL
 evalCmd input = do
   isTrace<- envIsTrace <$> getEnv
   strategy <- envStrategy <$> getEnv

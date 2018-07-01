@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications  #-}
 module Test.Language.UntypedLambda where
 
 import           Prelude                         hiding (and, fst, head, id,
@@ -9,6 +10,7 @@ import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples as UL
+import           Language.UntypedLambda.Lib.NB
 import           Language.UntypedLambda.Prelude
 import           Language.Utils.Pretty
 
@@ -17,9 +19,9 @@ import           Data.Either
 test_ul :: TestTree
 test_ul = testGroup "UntypedLambda"
   [ testCase "pretty" $ do
-      prettyText (TmVar "x") @?= "x"
-      prettyText (TmLam "x" "x") @?= "λx. x"
-      prettyText (TmApp "x" "y") @?= "x y"
+      prettyText @UntypedLambda (TmVar "x") @?= "x"
+      prettyText @UntypedLambda (TmLam "x" "x") @?= "λx. x"
+      prettyText @UntypedLambda (TmApp "x" "y") @?= "x y"
   , testCase "parser" $ do
       runUlParser "x" @?= Right "x"
       runUlParser "x1y" @?= Right "x1y"
@@ -193,4 +195,13 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder (TmApp tail nil) @?= nil
       eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= nil
       eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") (TmApp (TmApp "c" "y") "n"))))) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "y") "n"))
+  , testCase "convert NB <-> church" $ do
+      eval NormalOrder (TmApp realbool fls) @?= TmVar "false"
+      eval NormalOrder (TmApp realbool tru) @?= TmVar "true"
+      eval NormalOrder (TmApp (TmApp realeq (c 0)) (c 0)) @?= TmVar "true"
+      eval NormalOrder (TmApp (TmApp realeq (c 0)) (c 1)) @?= TmVar "false"
+      eval NormalOrder (TmApp realnat (c 2)) @?= TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmVar "0"))
+
+      eval NormalOrder (TmApp (TmApp equal (c 4)) (TmApp (TmApp times (c 2)) (c 2))) @?= tru
+      eval NormalOrder (TmApp realnat (TmApp (TmApp times (c 2)) (c 2))) @?= TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmVar "0"))))
   ]

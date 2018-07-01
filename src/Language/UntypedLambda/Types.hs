@@ -1,6 +1,10 @@
+{-# LANGUAGE FlexibleContexts     #-}
+{-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE TypeSynonymInstances #-}
 module Language.UntypedLambda.Types
   ( Term (..)
   , Strategy (..)
+  , UntypedLambda
   ) where
 
 import           Data.String
@@ -8,13 +12,15 @@ import           Data.Text                 (Text)
 import qualified Data.Text                 as T
 import           Data.Text.Prettyprint.Doc
 
-data Term
-  = TmVar Text
-  | TmLam Text Term
-  | TmApp Term Term
+type UntypedLambda = Term Text
+
+data Term a
+  = TmVar a
+  | TmLam Text (Term a)
+  | TmApp (Term a) (Term a)
   deriving (Eq, Show)
 
-instance Pretty Term where
+instance Pretty UntypedLambda where
   pretty (TmVar x)     = pretty x
   pretty (TmLam x t)   = pretty "λ" <> pretty x <> pretty "." <+> pretty t
   pretty (TmApp t1 t2) = ppr t1 <+> ppr t2
@@ -22,7 +28,7 @@ instance Pretty Term where
       ppr t@(TmVar _) = pretty t
       ppr t           = parens (pretty t)
 
-instance IsString Term where
+instance IsString UntypedLambda where
   fromString = TmVar . T.pack
 
 data Strategy

@@ -66,7 +66,12 @@ reduceCallByName = undefined
 
 -- | 値呼び戦略
 reduceCallByValue :: Term -> Term
-reduceCallByValue = undefined
+reduceCallByValue = matchField pm . unwrapTerm
+  where
+    pm = #var @= var
+      <: #lambda @= uncurry lambda
+      <: #app @= (\(t, new) -> )
+      <: nil
 -- reduceCallByValue (TmApp t@(TmLam x old) new)
 --   | isValue new = subst x new old
 --   | otherwise   = TmApp t (reduceCallByValue new)
@@ -77,17 +82,12 @@ reduceCallByValue = undefined
 
 -- | β-reduction
 subst :: Text -> Term -> Term -> Term
-subst = undefined
--- subst v1 new t@(TmVar v2)
---   | v1 == v2  = new
---   | otherwise = t
--- subst v1 new t@(TmLam v2 t')
---   | v1 == v2  = t
---   | otherwise = TmLam v2 (subst v1 new t')
--- subst v new (TmApp t1 t2) = TmApp t1' t2'
---   where
---     t1' = subst v new t1
---     t2' = subst v new t2
+subst v1 new = matchField pm . unwrapTerm
+  where
+    pm = #var @= (\v2 -> if v1 == v2 then new else var v2)
+      <: #lambda @= (\t@(v2,t') -> if v1 == v2 then lambda v2 t' else lambda v2 (subst v1 new t'))
+      <: #app @= (\(t1,t2) -> app (subst v1 new t1) (subst v1 new t2))
+      <: nil
 
 -- | 与えられた項が閉じているかどうか判定する述語
 isClosed :: Term -> Bool
@@ -98,17 +98,9 @@ freeVars :: Set Text -> Term -> Set Text
 freeVars fv = matchField pm . unwrapTerm
   where
     pm = #var    @= (\v -> if Set.member v fv then Set.empty else Set.singleton v)
-      <: #lambda @= (\v t -> freeVars (Set.insert v fv) t)
-      <: #app    @= (Set.union <$> freeVars fv <*> freeVars fv)
+      <: #lambda @= (\(v,t) -> freeVars (Set.insert v fv) t)
+      <: #app    @= (\(t1,t2) -> freeVars fv t1 `Set.union` freeVars fv t2)
       <: nil
-
--- freeVars fv (TmLam v t) = freeVars fv' t
---   where
---     fv' = Set.insert v fv
--- freeVars fv (TmApp t1 t2) = fv1 `Set.union` fv2
---   where
---     fv1 = freeVars fv t1
---     fv2 = freeVars fv t2
 
 -- | 与えられた項が値かどうか判定する述語
 isValue :: Term -> Bool

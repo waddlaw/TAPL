@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
 module Test.Language.UntypedLambda where
 
 import           Prelude                         hiding (and, fst, head, id,
@@ -17,9 +18,9 @@ import           Data.Either
 test_ul :: TestTree
 test_ul = testGroup "UntypedLambda"
   [ testCase "pretty" $ do
-      prettyText (TmVar "x") @?= "x"
-      prettyText (TmLam "x" "x") @?= "λx. x"
-      prettyText (TmApp "x" "y") @?= "x y"
+      prettyText @UntypedLambda (TmVar "x") @?= "x"
+      prettyText @UntypedLambda (TmLam "x" "x") @?= "λx. x"
+      prettyText @UntypedLambda (TmApp "x" "y") @?= "x y"
   , testCase "parser" $ do
       runUlParser "x" @?= Right "x"
       runUlParser "x1y" @?= Right "x1y"

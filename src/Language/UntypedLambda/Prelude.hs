@@ -46,6 +46,9 @@ module Language.UntypedLambda.Prelude
   -- ** 演習5.2.11
   , sumlist
   , sumlist'
+  -- extra
+  , int
+  , succI
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
@@ -229,3 +232,30 @@ sumlist = TmApp fix ff
 
 sumlist' :: UntypedLambda
 sumlist' = TmLam "l" $ TmApp (TmApp "l" plus) (c 0)
+
+int :: Int -> UntypedLambda
+int n
+  | n < 0     = TmApp (TmApp pair fls) (c $ abs n)
+  | otherwise = TmApp (TmApp pair tru) (c n)
+
+-- | if isZero i
+--   then (True, 1)
+--   else if isNegative i
+--        then (fst i, prd (snd i))
+--        else (fst i, scc (snd i))
+--
+succI :: UntypedLambda
+succI = TmLam "i" $ TmApp (TmApp (TmApp test c1) t1) t2
+  where
+    c1 = TmApp isZeroI "i"
+    t1 = TmApp (TmApp pair tru) (c 1)
+    t2 = TmApp (TmApp (TmApp test c2) t3) t4
+    c2 = TmApp isPositiveI "i"
+    t3 = TmApp (TmApp pair (TmApp fst "i")) (TmApp scc (TmApp snd "i"))
+    t4 = TmApp (TmApp pair (TmApp fst "i")) (TmApp prd (TmApp snd "i"))
+
+isZeroI :: UntypedLambda
+isZeroI = TmLam "i" $ TmApp iszro (TmApp snd "i")
+
+isPositiveI :: UntypedLambda
+isPositiveI = TmLam "i" $ TmApp fst "i"

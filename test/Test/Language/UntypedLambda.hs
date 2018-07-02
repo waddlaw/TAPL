@@ -215,4 +215,13 @@ test_ul = testGroup "UntypedLambda"
       subst "x" (TmLam "z" (TmApp "z" "w")) (TmLam "y" "x") @?= TmLam "y" (TmLam "z" (TmApp "z" "w"))
       subst "x" "y" (TmLam "x" "x") @?= TmLam "x" "x"
       subst "x" "z" (TmLam "z" "x") @?= TmLam "z" "x"
+  , testCase "int" $ do
+      eval CallByValue (int 0)    @?= eval CallByValue (TmApp (TmApp pair tru) (c 0))
+      eval CallByValue (int (-3)) @?= eval CallByValue (TmApp (TmApp pair fls) (c 3))
+      eval CallByValue (int 3)    @?= eval CallByValue (TmApp (TmApp pair tru) (c 3))
+
+      eval CallByValue (TmApp succI (int 0))    @?= eval CallByValue (int 1)
+      -- 振る舞い等価
+      -- eval CallByValue (TmApp succI (int (-1))) @?= eval CallByValue (int 0)
+      -- eval CallByValue (TmApp succI (int 1))    @?= eval CallByValue (int 2)
   ]

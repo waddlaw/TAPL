@@ -4,7 +4,9 @@
 
 - [オーム社の公式ページ](https://www.ohmsha.co.jp/book/9784274069116/)
 - [日本語版サポートページ](http://tapl.proofcafe.org/)
+  - [正誤表](http://tapl.proofcafe.org/errata)
 - [原著サポートページ](http://www.cis.upenn.edu/~bcpierce/)
+  - [Errata](http://www.cis.upenn.edu/~bcpierce/tapl/index.html)
 
 ## スクリーンショット
 

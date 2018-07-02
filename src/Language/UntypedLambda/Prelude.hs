@@ -235,6 +235,11 @@ sumlist = TmApp fix ff
 sumlist' :: UntypedLambda
 sumlist' = TmLam "l" $ TmApp (TmApp "l" plus) (c 0)
 
+-- | type Int = (Bool, Nat)
+-- 1  = (True, 1)
+-- -1 = (False, 1)
+-- -0 = (False, 0)
+-- +0 = (True, 0)
 int :: Int -> UntypedLambda
 int n
   | n < 0     = TmApp (TmApp pair fls) (c $ abs n)

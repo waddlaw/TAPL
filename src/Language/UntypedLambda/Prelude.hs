@@ -50,6 +50,7 @@ module Language.UntypedLambda.Prelude
   , int
   , succI
   , succNI
+  , plusI
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
@@ -243,12 +244,21 @@ int n
 -- plusI i1 i2
 --   | i1 >= 0 && i2 >= 0 = succNI (snd i1) i2
 plusI :: UntypedLambda
-plusI = undefined -- TmLam "i1" $ TmLam "i2" $ TmApp (TmApp (TmApp test c1) t1) t2
-  -- where
-  --   c1  = TmApp (TmApp and c1l) c1r
-  --   c1l = TmApp fst "i1"
-  --   c1r = TmApp fst "i2"
-  --   t1  =
+plusI = TmLam "i1" $ TmLam "i2" $ TmApp (TmApp (TmApp test isPP) pp) t2
+  where
+    isPP = TmApp (TmApp and c1l) c1r
+    c1l  = TmApp fst "i1"
+    c1r  = TmApp fst "i2"
+    -- positive + positive
+    pp = TmApp succNI (TmApp (TmApp pair (TmApp snd "i1")) "i2")
+    t2 = TmApp (TmApp (TmApp test isNN) nn) t3
+    isNN = TmApp (TmApp and c2l) c2r
+    c2l  = TmApp not (TmApp fst "i1")
+    c2r  = TmApp not (TmApp fst "i2")
+    -- negative + negative
+    nn   = TmApp (TmApp pair fls) (TmApp snd (TmApp succNI (TmApp (TmApp pair (TmApp snd "i1")) (TmApp (TmApp pair tru) (TmApp snd "i2")))))
+    -- cmp 作るの疲れたから left: positive, right: negative とする
+    t3 = TmApp succNI (TmApp (TmApp pair (TmApp snd "i1")) "i2")
 
 succNI :: UntypedLambda
 succNI = TmApp fix ff

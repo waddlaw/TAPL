@@ -224,4 +224,7 @@ test_ul = testGroup "UntypedLambda"
       -- 振る舞い等価
       -- eval CallByValue (TmApp succI (int (-1))) @?= eval CallByValue (int 0)
       -- eval CallByValue (TmApp succI (int 1))    @?= eval CallByValue (int 2)
+
+      eval CallByValue (TmApp succNI (TmApp (TmApp pair (c 1)) (int 0))) @?= eval CallByValue (int 1)
+      eval CallByValue (TmApp (TmApp plusI (int 1)) (int 1)) @?= eval CallByValue (int 2)
   ]

@@ -10,6 +10,7 @@ module Language.UntypedLambda
   , evalOneStep
   , trace
   , steps
+  , subst
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -81,16 +82,18 @@ reduceCallByValue t = t
 
 -- | β-reduction
 subst :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda
-subst v1 new t@(TmVar v2)
-  | v1 == v2  = new
+subst v1 after t@(TmVar v2)
+  | v1 == v2  = after
   | otherwise = t
-subst v1 new t@(TmLam v2 t')
-  | v1 == v2  = t
-  | otherwise = TmLam v2 (subst v1 new t')
-subst v new (TmApp t1 t2) = TmApp t1' t2'
+subst v1 after t@(TmLam v2 t')
+  | v1 /= v2 && v2 `notIn` after = TmLam v2 (subst v1 after t')
+  | otherwise = t -- TODO
   where
-    t1' = subst v new t1
-    t2' = subst v new t2
+    notIn v term = v `Set.notMember` freeVars Set.empty term
+subst v after (TmApp t1 t2) = TmApp t1' t2'
+  where
+    t1' = subst v after t1
+    t2' = subst v after t2
 
 -- | 与えられた項が閉じているかどうか判定する述語
 isClosed :: UntypedLambda -> Bool
@@ -101,9 +104,7 @@ freeVars :: Set Text -> UntypedLambda -> Set Text
 freeVars fv (TmVar v)
   | Set.member v fv = Set.empty
   | otherwise = Set.singleton v
-freeVars fv (TmLam v t) = freeVars fv' t
-  where
-    fv' = Set.insert v fv
+freeVars fv (TmLam v t) = freeVars fv t `Set.difference` Set.singleton v
 freeVars fv (TmApp t1 t2) = fv1 `Set.union` fv2
   where
     fv1 = freeVars fv t1

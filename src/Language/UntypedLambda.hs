@@ -10,6 +10,7 @@ module Language.UntypedLambda
   , evalOneStep
   , trace
   , steps
+  , subst
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -86,7 +87,8 @@ subst v1 after t@(TmVar v2)
   | otherwise = t
 subst v1 after t@(TmLam v2 t')
   | v1 == v2  = t
-  | otherwise = TmLam v2 (subst v1 after t')
+  | v1 /= v2 && v2 `Set.notMember` freeVars Set.empty after = TmLam v2 (subst v1 after t')
+  | otherwise = t -- TODO
 subst v after (TmApp t1 t2) = TmApp t1' t2'
   where
     t1' = subst v after t1

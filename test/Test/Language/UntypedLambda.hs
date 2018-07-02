@@ -211,4 +211,8 @@ test_ul = testGroup "UntypedLambda"
       let l = TmApp (TmApp cons (c 2)) (TmApp (TmApp cons (c 3)) (TmApp (TmApp cons (c 4)) nil))
       eval CallByValue (TmApp (TmApp equal (TmApp sumlist l)) (c 9))  @?= tru
       eval CallByValue (TmApp (TmApp equal (TmApp sumlist' l)) (c 9)) @?= tru
+  , testCase "subst" $ do
+      subst "x" (TmLam "z" (TmApp "z" "w")) (TmLam "y" "x") @?= TmLam "y" (TmLam "z" (TmApp "z" "w"))
+      subst "x" "y" (TmLam "x" "x") @?= TmLam "x" "x"
+      subst "x" "z" (TmLam "z" "x") @?= TmLam "z" "x"
   ]

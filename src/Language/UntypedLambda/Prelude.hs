@@ -240,9 +240,6 @@ int n
   | n < 0     = TmApp (TmApp pair fls) (c $ abs n)
   | otherwise = TmApp (TmApp pair tru) (c n)
 
--- |
--- plusI i1 i2
---   | i1 >= 0 && i2 >= 0 = succNI (snd i1) i2
 plusI :: UntypedLambda
 plusI = TmLam "i1" $ TmLam "i2" $ TmApp (TmApp (TmApp test isPP) pp) t2
   where

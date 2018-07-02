@@ -253,12 +253,12 @@ plusI = TmLam "i1" $ TmLam "i2" $ TmApp (TmApp (TmApp test isPP) pp) t2
     c1r  = TmApp fst "i2"
     -- positive + positive
     pp = TmApp succNI (TmApp (TmApp pair (TmApp snd "i1")) "i2")
-    t2 = TmApp (TmApp (TmApp test isNN) nn) t3
+    t2 = TmApp (TmApp (TmApp test isNN) nn') t3
     isNN = TmApp (TmApp and c2l) c2r
     c2l  = TmApp not (TmApp fst "i1")
     c2r  = TmApp not (TmApp fst "i2")
     -- negative + negative
-    nn   = TmApp (TmApp pair fls) (TmApp snd (TmApp succNI (TmApp (TmApp pair (TmApp snd "i1")) (TmApp (TmApp pair tru) (TmApp snd "i2")))))
+    nn'  = TmApp (TmApp pair fls) (TmApp snd (TmApp succNI (TmApp (TmApp pair (TmApp snd "i1")) (TmApp (TmApp pair tru) (TmApp snd "i2")))))
     -- cmp 作るの疲れたから left: positive, right: negative とする
     t3 = TmApp succNI (TmApp (TmApp pair (TmApp snd "i1")) "i2")
 

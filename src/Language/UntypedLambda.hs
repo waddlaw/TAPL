@@ -81,16 +81,16 @@ reduceCallByValue t = t
 
 -- | β-reduction
 subst :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda
-subst v1 new t@(TmVar v2)
-  | v1 == v2  = new
+subst v1 after t@(TmVar v2)
+  | v1 == v2  = after
   | otherwise = t
-subst v1 new t@(TmLam v2 t')
+subst v1 after t@(TmLam v2 t')
   | v1 == v2  = t
-  | otherwise = TmLam v2 (subst v1 new t')
-subst v new (TmApp t1 t2) = TmApp t1' t2'
+  | otherwise = TmLam v2 (subst v1 after t')
+subst v after (TmApp t1 t2) = TmApp t1' t2'
   where
-    t1' = subst v new t1
-    t2' = subst v new t2
+    t1' = subst v after t1
+    t2' = subst v after t2
 
 -- | 与えられた項が閉じているかどうか判定する述語
 isClosed :: UntypedLambda -> Bool

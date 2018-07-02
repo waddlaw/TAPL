@@ -101,9 +101,7 @@ freeVars :: Set Text -> UntypedLambda -> Set Text
 freeVars fv (TmVar v)
   | Set.member v fv = Set.empty
   | otherwise = Set.singleton v
-freeVars fv (TmLam v t) = freeVars fv' t
-  where
-    fv' = Set.insert v fv
+freeVars fv (TmLam v t) = freeVars fv t `Set.difference` Set.singleton v
 freeVars fv (TmApp t1 t2) = fv1 `Set.union` fv2
   where
     fv1 = freeVars fv t1

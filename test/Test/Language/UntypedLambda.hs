@@ -206,4 +206,9 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder (TmApp realnat (TmApp (TmApp times (c 2)) (c 2))) @?= TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmVar "0"))))
 
       eval CallByValue (TmApp (TmApp equal (c 6)) (TmApp factorial (c 3))) @?= tru
+
+      -- 演習52.11
+      let l = TmApp (TmApp cons (c 2)) (TmApp (TmApp cons (c 3)) (TmApp (TmApp cons (c 4)) nil))
+      eval CallByValue (TmApp (TmApp equal (TmApp sumlist l)) (c 9))  @?= tru
+      eval CallByValue (TmApp (TmApp equal (TmApp sumlist' l)) (c 9)) @?= tru
   ]

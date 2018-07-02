@@ -43,6 +43,9 @@ module Language.UntypedLambda.Prelude
   , fix
   -- ** 演習5.2.9
   , factorial
+  -- ** 演習5.2.11
+  , sumlist
+  , sumlist'
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
@@ -216,4 +219,13 @@ factorial :: UntypedLambda
 factorial = TmApp fix ff
   where
     ff = TmLam "f" $ TmLam "n" $ TmApp (TmApp (TmApp (TmApp test (TmApp iszro "n")) (TmLam "x" $ c 1)) t) (c 0)
-    t = TmLam "x" $ TmApp (TmApp times "n") (TmApp "f" (TmApp prd "n"))
+    t  = TmLam "x" $ TmApp (TmApp times "n") (TmApp "f" (TmApp prd "n"))
+
+sumlist :: UntypedLambda
+sumlist = TmApp fix ff
+  where
+    ff = TmLam "f" $ TmLam "l" $ TmApp (TmApp (TmApp (TmApp test (TmApp isnil "l")) (TmLam "x" $ c 0)) t) (c 0)
+    t  = TmLam "x" $ TmApp (TmApp plus (TmApp head "l")) (TmApp "f" (TmApp tail "l"))
+
+sumlist' :: UntypedLambda
+sumlist' = TmLam "l" $ TmApp (TmApp "l" plus) (c 0)

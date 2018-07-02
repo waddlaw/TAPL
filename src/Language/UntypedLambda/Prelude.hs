@@ -49,6 +49,7 @@ module Language.UntypedLambda.Prelude
   -- extra
   , int
   , succI
+  , succNI
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
@@ -238,12 +239,28 @@ int n
   | n < 0     = TmApp (TmApp pair fls) (c $ abs n)
   | otherwise = TmApp (TmApp pair tru) (c n)
 
+-- |
+-- plusI i1 i2
+--   | i1 >= 0 && i2 >= 0 = succNI (snd i1) i2
+plusI :: UntypedLambda
+plusI = undefined -- TmLam "i1" $ TmLam "i2" $ TmApp (TmApp (TmApp test c1) t1) t2
+  -- where
+  --   c1  = TmApp (TmApp and c1l) c1r
+  --   c1l = TmApp fst "i1"
+  --   c1r = TmApp fst "i2"
+  --   t1  =
+
+succNI :: UntypedLambda
+succNI = TmApp fix ff
+  where
+    ff = TmLam "f" $ TmLam "p" $ TmApp (TmApp (TmApp (TmApp test (TmApp iszro (TmApp fst "p"))) (TmLam "x" $ TmApp snd "p")) t) (c 0)
+    t  = TmLam "x" $ TmApp succI (TmApp "f" (TmApp (TmApp pair (TmApp prd (TmApp fst "p"))) (TmApp snd "p")))
+
 -- | if isZero i
 --   then (True, 1)
 --   else if isNegative i
 --        then (fst i, prd (snd i))
 --        else (fst i, scc (snd i))
---
 succI :: UntypedLambda
 succI = TmLam "i" $ TmApp (TmApp (TmApp test c1) t1) t2
   where

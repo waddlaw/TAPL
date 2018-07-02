@@ -4,6 +4,8 @@ module Language.UntypedLambda.Lib.NB
   , churchbool
   , realeq
   , realnat
+  -- * 演習5.2.10
+  , churchnat
   ) where
 
 import           Language.UntypedLambda.Prelude
@@ -25,3 +27,11 @@ realeq = TmLam "m" $ TmLam "n" $ TmApp (TmApp (TmApp (TmApp equal "m") "n") "tru
 -- | Church 数からプリミティブな数への変換
 realnat :: UntypedLambda
 realnat = TmLam "m" $ TmApp (TmApp "m" (TmLam "x" (TmApp "succ" "x"))) "0"
+
+-- | プリミティブな自然数を、対応する Church 数に変換する関数
+-- | TODO: fake
+churchnat :: UntypedLambda
+churchnat = TmApp fix cn
+  where
+    cn = TmLam "f" $ TmLam "m" $ TmApp (TmApp (TmApp (TmApp test (TmApp iszro "m")) (TmLam "x" $ c 0)) t) (c 0)
+    t  = TmLam "x" $ TmApp (TmApp scc "n") (TmApp "f" (TmApp prd "m"))

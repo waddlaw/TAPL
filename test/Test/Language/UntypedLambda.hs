@@ -204,4 +204,6 @@ test_ul = testGroup "UntypedLambda"
 
       eval CallByValue (TmApp (TmApp equal (c 4)) (TmApp (TmApp times (c 2)) (c 2))) @?= tru
       eval NormalOrder (TmApp realnat (TmApp (TmApp times (c 2)) (c 2))) @?= TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmVar "0"))))
+
+      eval CallByValue (TmApp (TmApp equal (c 6)) (TmApp factorial (c 3))) @?= tru
   ]

@@ -41,6 +41,8 @@ module Language.UntypedLambda.Prelude
   , tail
   -- * fix
   , fix
+  -- ** 演習5.2.9
+  , factorial
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
@@ -203,10 +205,15 @@ cc = TmLam "h" (TmLam "p" (TmApp (TmApp pair (TmApp snd "p")) (TmApp (TmApp cons
 -- | λl. fst (l cc nn)
 tail :: UntypedLambda
 tail = TmLam "l" (TmApp fst (TmApp (TmApp "l" cc) nn))
-tail = TmLam "l" (TmApp fst (TmApp (TmApp "l" cc) nn))
 
 -- | λf. (λx. f (λy. x x y)) (λx. f (λy. x x y))
 fix :: UntypedLambda
 fix = TmLam "f" $ TmApp t t
   where
     t = TmLam "x" $ TmApp "f" (TmLam "y" (TmApp (TmApp "x" "x") "y"))
+
+factorial :: UntypedLambda
+factorial = TmApp fix ff
+  where
+    ff = TmLam "f" $ TmLam "n" $ TmApp (TmApp (TmApp (TmApp test (TmApp iszro "n")) (TmLam "x" $ c 1)) t) (c 0)
+    t = TmLam "x" $ TmApp (TmApp times "n") (TmApp "f" (TmApp prd "n"))

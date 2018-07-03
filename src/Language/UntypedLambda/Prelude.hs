@@ -48,6 +48,7 @@ module Language.UntypedLambda.Prelude
   , sumlist'
   -- helper
   , mkTest
+  , mkPair
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
@@ -102,6 +103,10 @@ not = TmLam "b" (TmApp (TmApp "b" fls) tru)
 -- | λf. λs. λb. b f s
 pair :: UntypedLambda
 pair = TmLam "f" (TmLam "s" (TmLam "b" (TmApp (TmApp "b" "f") "s")))
+
+-- | λf. λs. pair f s
+mkPair :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkPair f s = pair @@ f @@ s
 
 -- | λp. p tru
 fst :: UntypedLambda

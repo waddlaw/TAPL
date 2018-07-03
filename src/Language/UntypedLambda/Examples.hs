@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Examples where
 
-import           Prelude                        hiding (and, fst, id)
+import           Prelude                         hiding (and, fst, id)
 
 import           Language.UntypedLambda
-import           Language.UntypedLambda.Prelude
+import           Language.UntypedLambda.Lib.Base
+import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Pair
 
 -- | s t u
 example1 :: UntypedLambda

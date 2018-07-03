@@ -20,7 +20,7 @@ type UntypedLambda = Term Text
 t1 @@ t2 = TmApp t1 t2
 
 λ :: Text -> UntypedLambda -> UntypedLambda
-λ v t = TmLam v t
+λ = TmLam
 
 data Term a
   = TmVar a

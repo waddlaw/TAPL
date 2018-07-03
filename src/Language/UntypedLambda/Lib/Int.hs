@@ -6,9 +6,9 @@ module Language.UntypedLambda.Lib.Int
   , plusI
   ) where
 
-import           Prelude                        hiding (fst, snd, not, and)
+import           Prelude                         hiding (and, fst, not, snd)
 
-import           Language.UntypedLambda.Prelude
+import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Types
 
 -- | type Int = (Bool, Nat)

@@ -10,6 +10,8 @@ import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples as UL
+import           Language.UntypedLambda.Lib.Base
+import           Language.UntypedLambda.Lib.List
 import           Language.UntypedLambda.Prelude
 import           Language.Utils.Pretty
 

@@ -8,7 +8,7 @@ module Language.UntypedLambda.Lib.NB
   , churchnat
   ) where
 
-import           Language.UntypedLambda.Prelude
+import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Types
 
 -- | Church ブール値をプリミティブなブール値に変換

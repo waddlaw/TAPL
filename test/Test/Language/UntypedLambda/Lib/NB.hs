@@ -5,6 +5,7 @@ import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
+import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.NB
 import           Language.UntypedLambda.Prelude
 

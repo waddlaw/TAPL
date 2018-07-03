@@ -9,16 +9,17 @@ module Language.UntypedLambda.Lib.Int
 import           Prelude                         hiding (and, fst, not, snd)
 
 import           Language.UntypedLambda.Lib.Base
+import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Types
 
 -- | type Int = (Bool, Nat)
--- 1  = (True, 1)
+-- +1  = (True, 1)
 -- -1 = (False, 1)
 -- -0 = (False, 0)
 -- +0 = (True, 0)
 int :: Int -> UntypedLambda
 int n
-  | n < 0     = mkPair fls (c $ abs n)
+  | n <= 0     = mkPair fls (c $ abs n)
   | otherwise = mkPair tru (c n)
 
 plusI :: UntypedLambda
@@ -34,7 +35,10 @@ plusI = λ "n" $ λ "m" $ mkTest isPP pp $ mkTest isNN nn' t3
     -- cmp 作るの疲れたから left: positive, right: negative とする
     t3 = succNI @@ mkPair (snd @@ "n") "m"
 
--- | λf. λp. test (iszro (fst p)) (λx. snd p) (λx. succI (f (pair (prd (fst p)) (snd p)))) c0
+-- |
+-- match = iszro (fst p)
+-- base  = snd p
+-- rec   = succI (f (mkPair (prd (fst p)) (snd p))
 succNI :: UntypedLambda
 succNI = mkFix "p" match base rec
   where

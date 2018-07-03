@@ -1,15 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Base
   ( id
-  -- * Church ブール値
-  , tru
-  , fls
-  , test
-  , mkTest
-  , and
-  -- ** 演習 5.2.1
-  , or
-  , not
     -- * 二つ組
   , pair
   , mkPair
@@ -40,44 +31,16 @@ module Language.UntypedLambda.Lib.Base
   , mkFix
   ) where
 
-import           Prelude                      hiding (and, fst, id, not, or,
-                                               snd)
+import           Prelude                         hiding (and, fst, id, snd)
 
+import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Types
 
-import           Data.Text                    (Text)
+import           Data.Text                       (Text)
 
 -- | λx. x
 id :: UntypedLambda
 id = λ "x" "x"
-
--- | λt. λf. t
-tru :: UntypedLambda
-tru = λ "t" $ λ "f" "t"
-
--- | λt. λf. f
-fls :: UntypedLambda
-fls = λ "t" $ λ "f" "f"
-
--- | λl. λm. λn. l m n
-test :: UntypedLambda
-test = λ "l" $ λ "m" $ λ "n" $ "l" @@ "m" @@ "n"
-
--- | λb. λt1. λt2. test b t1 t2
-mkTest :: UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
-mkTest b t1 t2 = test @@ b @@ t1 @@ t2
-
--- | λb. λc. b c fls
-and :: UntypedLambda
-and = λ "b" $ λ "c" $ "b" @@ "c" @@ fls
-
--- | λb. λc. b tru c
-or :: UntypedLambda
-or = λ "b" $ λ "c"$ "b" @@ tru @@ "c"
-
--- | λb. b fls tru
-not :: UntypedLambda
-not = λ "b" $ "b" @@ fls @@ tru
 
 -- | λf. λs. λb. b f s
 pair :: UntypedLambda
@@ -170,8 +133,7 @@ equal = λ "m" $ λ "n" $ and @@ mkT "m" "n" @@ mkT "n" "m"
   where
     mkT x y = iszro @@ (x @@ prd @@ y)
 
--- | factorial = fix ff
---   ff = λf. λn. test match base rec c0
+-- |
 --   match = iszro n
 --   base = λx. c1
 --   rec  = λx. times n (f (prd n))

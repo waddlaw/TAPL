@@ -7,6 +7,7 @@ import           Prelude                         hiding (and, fst, head, id,
                                                   not, or, snd, tail)
 
 import           Language.UntypedLambda.Lib.Base
+import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Lib.List
 import           Language.UntypedLambda.Types
 

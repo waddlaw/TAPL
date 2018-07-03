@@ -10,9 +10,10 @@ module Language.UntypedLambda.Lib.List
   , sumlist'
   ) where
 
-import           Prelude                         hiding (head, tail, fst, snd)
+import           Prelude                         hiding (fst, head, snd, tail)
 
 import           Language.UntypedLambda.Lib.Base
+import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Types
 
 -- | λc. λn. n
@@ -43,11 +44,10 @@ cc = λ "h" $ λ "p" $ mkPair (snd @@ "p") (cons @@ "h" @@ (snd @@ "p"))
 tail :: UntypedLambda
 tail = λ "l" $ fst @@ ("l" @@ cc @@ nn)
 
--- | sumlist = fix ff
---   ff = λf. λl. test match base rec c0
+-- |
 --   match = isnil l
---   base  = λx. c0
---   rec   = λx. plus (head l) (f (tail l))
+--   base  = c0
+--   rec   = plus (head l) (f (tail l))
 sumlist :: UntypedLambda
 sumlist = mkFix "l" match base rec
   where

@@ -9,6 +9,7 @@ module Language.UntypedLambda.Lib.NB
   ) where
 
 import           Language.UntypedLambda.Lib.Base
+import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Types
 
 -- | Church ブール値をプリミティブなブール値に変換
@@ -35,6 +36,7 @@ realnat = λ "m" $ "m" @@ λ "x" ("succ" @@ "x") @@ "0"
 -- | プリミティブな自然数を、対応する Church 数に変換する関数
 -- match = iszro m
 -- base  = λx
+-- rec   = scc n (f (prd m))
 -- | TODO: fake
 churchnat :: UntypedLambda
 churchnat = mkFix "m" match base rec

@@ -11,8 +11,8 @@ import           Test.Tasty.HUnit
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples as UL
 import           Language.UntypedLambda.Lib.Base
+import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Lib.List
-import           Language.UntypedLambda.Prelude
 import           Language.Utils.Pretty
 
 import           Data.Either
@@ -95,34 +95,6 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder UL.example3 @?= TmLam "z" "z"
       eval CallByName  UL.example3 @?= TmLam "z" (TmApp id "z")
       eval CallByValue UL.example3 @?= TmLam "z" (TmApp id "z")
-  , testCase "Church ブール値" $ do
-      eval NormalOrder UL.example7 @?= tru
-      eval CallByName  UL.example7 @?= tru
-      eval CallByValue UL.example7 @?= tru
-
-      -- and
-      eval NormalOrder UL.example8 @?= tru
-      eval CallByName  UL.example8 @?= tru
-      eval CallByValue UL.example8 @?= tru
-      eval NormalOrder UL.example9 @?= fls
-      eval CallByName  UL.example9 @?= fls
-      eval CallByValue UL.example9 @?= fls
-
-      -- or
-      eval NormalOrder (TmApp (TmApp or tru) fls) @?= tru
-      eval CallByName  (TmApp (TmApp or tru) fls) @?= tru
-      eval CallByValue (TmApp (TmApp or tru) fls) @?= tru
-      eval NormalOrder (TmApp (TmApp or fls) fls) @?= fls
-      eval CallByName  (TmApp (TmApp or fls) fls) @?= fls
-      eval CallByValue (TmApp (TmApp or fls) fls) @?= fls
-
-      -- not
-      eval NormalOrder (TmApp not fls) @?= tru
-      eval CallByName  (TmApp not fls) @?= tru
-      eval CallByValue (TmApp not fls) @?= tru
-      eval NormalOrder (TmApp not tru) @?= fls
-      eval CallByName  (TmApp not tru) @?= fls
-      eval CallByValue (TmApp not tru) @?= fls
   , testCase "二つ組" $ do
       eval NormalOrder UL.example10 @?= TmVar "v"
       eval CallByName  UL.example10 @?= TmVar "v"
@@ -180,31 +152,10 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder (TmApp (TmApp equal (c 10)) (c 2)) @?= fls
       eval NormalOrder (TmApp (TmApp equal (c 2))  (c 2)) @?= tru
       eval CallByValue (equal @@ c 4 @@ (times @@ c 2 @@ c 2)) @?= tru
-
-      -- cons
-      eval NormalOrder (TmApp (TmApp cons "x") nil) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n"))
-
-      -- isnil
-      eval NormalOrder (TmApp isnil nil) @?= tru
-      eval NormalOrder (TmApp isnil (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= fls
-      eval NormalOrder (TmApp isnil (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x1") (TmApp (TmApp "c" "x2") "n"))))) @?= fls
-
-      -- head
-      eval NormalOrder (TmApp head nil) @?= nil
-      eval NormalOrder (TmApp head (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= "x"
-
-      -- tail
-      eval NormalOrder (TmApp tail nil) @?= nil
-      eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= nil
-      eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") (TmApp (TmApp "c" "y") "n"))))) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "y") "n"))
   , testCase "subst" $ do
       subst "x" (TmLam "z" (TmApp "z" "w")) (TmLam "y" "x") @?= TmLam "y" (TmLam "z" (TmApp "z" "w"))
       subst "x" "y" (TmLam "x" "x") @?= TmLam "x" "x"
       subst "x" "z" (TmLam "z" "x") @?= TmLam "z" "x"
-  , testCase "" $ do
+  , testCase "" $
       eval CallByValue (TmApp (TmApp equal (c 6)) (TmApp factorial (c 3))) @?= tru
-      -- 演習5.2.11
-      let l = TmApp (TmApp cons (c 2)) (TmApp (TmApp cons (c 3)) (TmApp (TmApp cons (c 4)) nil))
-      eval CallByValue (TmApp (TmApp equal (TmApp sumlist l)) (c 9))  @?= tru
-      eval CallByValue (TmApp (TmApp equal (TmApp sumlist' l)) (c 9)) @?= tru
   ]

@@ -70,19 +70,19 @@ prelude = Map.fromList
 
 -- | λx. x
 id :: UntypedLambda
-id = TmLam "x" "x"
+id = λ "x" "x"
 
 -- | λt. λf. t
 tru :: UntypedLambda
-tru = TmLam "t" (TmLam "f" "t")
+tru = λ "t" $ λ "f" "t"
 
 -- | λt. λf. f
 fls :: UntypedLambda
-fls = TmLam "t" (TmLam "f" "f")
+fls = λ "t" $ λ "f" "f"
 
 -- | λl. λm. λn. l m n
 test :: UntypedLambda
-test = TmLam "l" (TmLam "m" (TmLam "n" (TmApp (TmApp "l" "m") "n")))
+test = λ "l" $ λ "m" $ λ "n" $ "l" @@ "m" @@ "n"
 
 -- | λb. λt1. λt2. test b t1 t2
 mkTest :: UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
@@ -90,19 +90,19 @@ mkTest b t1 t2 = test @@ b @@ t1 @@ t2
 
 -- | λb. λc. b c fls
 and :: UntypedLambda
-and = TmLam "b" (TmLam "c" (TmApp (TmApp "b" "c") fls))
+and = λ "b" $ λ "c" $ "b" @@ "c" @@ fls
 
 -- | λb. λc. b tru c
 or :: UntypedLambda
-or = TmLam "b" (TmLam "c" (TmApp (TmApp "b" tru) "c"))
+or = λ "b" $ λ "c"$ "b" @@ tru @@ "c"
 
 -- | λb. b fls tru
 not :: UntypedLambda
-not = TmLam "b" (TmApp (TmApp "b" fls) tru)
+not = λ "b" $ "b" @@ fls @@ tru
 
 -- | λf. λs. λb. b f s
 pair :: UntypedLambda
-pair = TmLam "f" (TmLam "s" (TmLam "b" (TmApp (TmApp "b" "f") "s")))
+pair = λ "f" $ λ "s" $ λ "b" $ "b" @@ "f" @@ "s"
 
 -- | λf. λs. pair f s
 mkPair :: UntypedLambda -> UntypedLambda -> UntypedLambda
@@ -110,11 +110,11 @@ mkPair f s = pair @@ f @@ s
 
 -- | λp. p tru
 fst :: UntypedLambda
-fst = TmLam "p" (TmApp "p" tru)
+fst = λ "p" $ "p" @@ tru
 
 -- | λp. p fls
 snd :: UntypedLambda
-snd = TmLam "p" (TmApp "p" fls)
+snd = λ "p" $ "p" @@ fls
 
 -- |
 -- c0 = λs. λz. z
@@ -125,118 +125,132 @@ snd = TmLam "p" (TmApp "p" fls)
 --
 -- c3 = λs. λz. s (s (s z))
 c :: Int -> UntypedLambda
-c n = TmLam "s" (TmLam "z" body)
+c n = λ "s" $ λ "z" body
   where
-    body = foldr TmApp "z" $ replicate n "s"
+    body = foldr (@@) "z" $ replicate n "s"
 
 -- | λn. λs. λz. s (n s z)
 scc :: UntypedLambda
-scc = TmLam "n" (TmLam "s" (TmLam "z" (TmApp "s" (TmApp (TmApp "n" "s") "z"))))
+scc = λ "n" $ λ "s" $ λ "z" $ "s" @@ ("n" @@ "s" @@ "z")
 
 -- | λn. λs. λz. n s (s z)
 scc2 :: UntypedLambda
-scc2 = TmLam "n" (TmLam "s" (TmLam "z" (TmApp (TmApp "n" "s") (TmApp "s" "z"))))
+scc2 = λ "n" $ λ "s" $ λ "z" $ "n" @@ "s" @@ ("s" @@ "z")
 
 -- | λm. λn. λs. λz. m s (n s z)
 plus :: UntypedLambda
-plus = TmLam "m" (TmLam "n" (TmLam "s" (TmLam "z" (TmApp (TmApp "m" "s") (TmApp (TmApp "n" "s") "z")))))
+plus = λ "m" $ λ "n" $ λ "s" $ λ "z" $ "m" @@ "s" @@ ("n" @@ "s" @@ "z")
 
 -- | λm. λn. m (plus n) c0
 times :: UntypedLambda
-times = TmLam "m" (TmLam "n" (TmApp (TmApp "m" (TmApp plus "n")) (c 0)))
+times = λ "m" $ λ "n" $ "m" @@ (plus @@ "n") @@ c 0
 
 -- | λm. λn. λs. λz. m (n s) z
 times2 :: UntypedLambda
-times2 = TmLam "m" (TmLam "n" (TmLam "s" (TmLam "z" (TmApp (TmApp "m" (TmApp "n" "s")) "z"))))
+times2 = λ "m" $ λ "n" $ λ "s" $ λ "z" $ "m" @@ ("n" @@ "s") @@ "z"
 
 -- | λm. λn. λs. m (n s)
 times3 :: UntypedLambda
-times3 = TmLam "m" (TmLam "n" (TmLam "s" (TmApp "m" (TmApp "n" "s"))))
+times3 = λ "m" $ λ "n" $ λ "s" $ "m" @@ ("n" @@ "s")
 
 -- | λn. λm. m (times n) c1
 --
 -- n^m
 power1 :: UntypedLambda
-power1 = TmLam "n" (TmLam "m" (TmApp (TmApp "m" (TmApp times "n")) (c 1)))
+power1 = λ "n" $ λ "m" $ "m" @@ (times @@ "n") @@ c 1
 
 -- | λn. λm. m n
 --
 -- m^n
 power2 :: UntypedLambda
-power2 = TmLam "n" (TmLam "m" (TmApp "m" "n"))
+power2 = λ "n" $ λ "m" $ "m" @@ "n"
 
 -- | λm. m (λx. fls) tru
 iszro :: UntypedLambda
-iszro = TmLam "m" (TmApp (TmApp "m" (TmLam "x" fls)) tru)
+iszro = λ "m" $ "m" @@ λ "x" fls @@ tru
 
 -- | pair c0 c0
 zz :: UntypedLambda
-zz = TmApp (TmApp pair (c 0)) (c 0)
+zz = mkPair (c 0) (c 0)
 
 -- | λp. pair (snd p) (plus c1 (snd p))
 ss :: UntypedLambda
-ss = TmLam "p" (TmApp (TmApp pair (TmApp snd "p")) (TmApp (TmApp plus (c 1)) (TmApp snd "p")))
+ss = λ "p" $ mkPair (snd @@ "p") (plus @@ c 1 @@ (snd @@ "p"))
 
 -- | λm. fst (m ss zz)
 prd :: UntypedLambda
-prd = TmLam "m" (TmApp fst (TmApp (TmApp "m" ss) zz))
+prd = λ "m" $ fst @@ ("m" @@ ss @@ zz)
 
 -- | λm. λn. n prd m
 subtract1 :: UntypedLambda
-subtract1 = TmLam "m" (TmLam "n" (TmApp (TmApp "n" prd) "m"))
+subtract1 = λ "m" $ λ "n" $ "n" @@ prd @@ "m"
 
 -- | λm. λn. and (iszro (m prd n)) (iszro (n prd m))
 equal :: UntypedLambda
-equal = TmLam "m" (TmLam "n" (TmApp (TmApp and (TmApp iszro l)) (TmApp iszro r)))
+equal = λ "m" $ λ "n" $ and @@ mkT "m" "n" @@ mkT "n" "m"
   where
-    l = TmApp (TmApp "m" prd) "n"
-    r = TmApp (TmApp "n" prd) "m"
+    mkT x y = iszro @@ (x @@ prd @@ y)
 
 -- | λc. λn. n
 nil :: UntypedLambda
-nil = TmLam "c" (TmLam "n" "n")
+nil = λ "c" $ λ "n" "n"
 
 -- | λh. λt. λc. λn. c h (t c n)
 cons :: UntypedLambda
-cons = TmLam "h" (TmLam "t" (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "h") (TmApp (TmApp "t" "c") "n")))))
+cons = λ "h" $ λ "t" $ λ "c" $ λ "n" $ "c" @@ "h" @@ ("t" @@ "c" @@ "n")
 
 -- | λl. l (λh. λt. fls) tru
 isnil :: UntypedLambda
-isnil = TmLam "l" (TmApp (TmApp "l" (TmLam "h" (TmLam "t" fls))) tru)
+isnil = λ "l" $ "l" @@ λ "h" (λ "t" fls) @@ tru
 
 -- | λl. l (λh. λt. h) l
 head :: UntypedLambda
-head = TmLam "l" (TmApp (TmApp "l" (TmLam "h" (TmLam "t" "h"))) "l")
+head = λ "l" $ "l" @@ λ "h" (λ "t" "h") @@ "l"
 
 -- | pair nil nil
 nn :: UntypedLambda
-nn = TmApp (TmApp pair nil) nil
+nn = mkPair nil nil
 
 -- | λh. λp. pair (snd p) (cons h (snd p))
 cc :: UntypedLambda
-cc = TmLam "h" (TmLam "p" (TmApp (TmApp pair (TmApp snd "p")) (TmApp (TmApp cons "h") (TmApp snd "p"))))
+cc = λ "h" $ λ "p" $ mkPair (snd @@ "p") (cons @@ "h" @@ (snd @@ "p"))
 
 -- | λl. fst (l cc nn)
 tail :: UntypedLambda
-tail = TmLam "l" (TmApp fst (TmApp (TmApp "l" cc) nn))
+tail = λ "l" $ fst @@ ("l" @@ cc @@ nn)
 
 -- | λf. (λx. f (λy. x x y)) (λx. f (λy. x x y))
 fix :: UntypedLambda
-fix = TmLam "f" $ TmApp t t
+fix = λ "f" $ t @@ t
   where
-    t = TmLam "x" $ TmApp "f" (TmLam "y" (TmApp (TmApp "x" "x") "y"))
+    t = λ "x" $ "f" @@ λ "y" ("x" @@ "x" @@ "y")
 
+-- | factorial = fix ff
+--   ff = λf. λn. test match base rec c0
+--   match = iszro n
+--   base = λx. c1
+--   rec  = λx. times n (f (prd n))
 factorial :: UntypedLambda
-factorial = TmApp fix ff
+factorial = fix @@ ff
   where
-    ff = TmLam "f" $ TmLam "n" $ TmApp (TmApp (TmApp (TmApp test (TmApp iszro "n")) (TmLam "x" $ c 1)) t) (c 0)
-    t  = TmLam "x" $ TmApp (TmApp times "n") (TmApp "f" (TmApp prd "n"))
+    ff = λ "f" $ λ "n" $ mkTest match base rec @@ c 0
+    match = iszro @@ "n"
+    base  = λ "x" $ c 1
+    rec   = λ "x" $ times @@ "n" @@ ("f" @@ (prd @@ "n"))
 
+-- | sumlist = fix ff
+--   ff = λf. λl. test match base rec c0
+--   match = isnil l
+--   base  = λx. c0
+--   rec   = λx. plus (head l) (f (tail l))
 sumlist :: UntypedLambda
-sumlist = TmApp fix ff
+sumlist = fix @@ ff
   where
-    ff = TmLam "f" $ TmLam "l" $ TmApp (TmApp (TmApp (TmApp test (TmApp isnil "l")) (TmLam "x" $ c 0)) t) (c 0)
-    t  = TmLam "x" $ TmApp (TmApp plus (TmApp head "l")) (TmApp "f" (TmApp tail "l"))
+    ff = λ "f" $ λ "l" $ mkTest match base rec @@ c 0
+    match = isnil @@ "l"
+    base = λ "x" $ c 0
+    rec  = λ "x" $ plus @@ (head @@ "l") @@ ("f" @@ (tail @@ "l"))
 
+-- | λl. l plus c0
 sumlist' :: UntypedLambda
-sumlist' = TmLam "l" $ TmApp (TmApp "l" plus) (c 0)
+sumlist' = λ "l" $ "l" @@ plus @@ c 0

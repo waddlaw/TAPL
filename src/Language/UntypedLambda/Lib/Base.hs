@@ -1,11 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Base
   ( id
-    -- * 二つ組
-  , pair
-  , mkPair
-  , fst
-  , snd
   -- ** 演習5.2.2
   , scc2
   -- ** 演習5.2.3
@@ -34,6 +29,7 @@ module Language.UntypedLambda.Lib.Base
 import           Prelude                         hiding (and, fst, id, snd)
 
 import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Pair
 import           Language.UntypedLambda.Types
 
 import           Data.Text                       (Text)
@@ -41,22 +37,6 @@ import           Data.Text                       (Text)
 -- | λx. x
 id :: UntypedLambda
 id = λ "x" "x"
-
--- | λf. λs. λb. b f s
-pair :: UntypedLambda
-pair = λ "f" $ λ "s" $ λ "b" $ "b" @@ "f" @@ "s"
-
--- | λf. λs. pair f s
-mkPair :: UntypedLambda -> UntypedLambda -> UntypedLambda
-mkPair f s = pair @@ f @@ s
-
--- | λp. p tru
-fst :: UntypedLambda
-fst = λ "p" $ "p" @@ tru
-
--- | λp. p fls
-snd :: UntypedLambda
-snd = λ "p" $ "p" @@ fls
 
 -- |
 -- c0 = λs. λz. z

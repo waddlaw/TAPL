@@ -13,6 +13,7 @@ import qualified Language.UntypedLambda.Examples as UL
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Lib.List
+import           Language.UntypedLambda.Lib.Pair
 import           Language.Utils.Pretty
 
 import           Data.Either

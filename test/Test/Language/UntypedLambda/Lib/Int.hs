@@ -7,6 +7,7 @@ import           Language.UntypedLambda
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Lib.Int
+import           Language.UntypedLambda.Lib.Pair
 
 test_ul :: TestTree
 test_ul = testGroup "UntypedLambda.Lib.Int"

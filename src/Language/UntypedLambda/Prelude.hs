@@ -9,6 +9,7 @@ import           Prelude                         hiding (and, fst, head, id,
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Lib.List
+import           Language.UntypedLambda.Lib.Pair
 import           Language.UntypedLambda.Types
 
 import           Data.Map                        (Map)

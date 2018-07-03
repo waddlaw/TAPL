@@ -6,6 +6,7 @@ import           Prelude                         hiding (and, fst, id)
 import           Language.UntypedLambda
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Pair
 
 -- | s t u
 example1 :: UntypedLambda

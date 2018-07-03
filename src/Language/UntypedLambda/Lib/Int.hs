@@ -10,6 +10,7 @@ import           Prelude                         hiding (and, fst, not, snd)
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Pair
 import           Language.UntypedLambda.Types
 
 -- | type Int = (Bool, Nat)

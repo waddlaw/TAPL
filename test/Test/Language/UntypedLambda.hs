@@ -2,16 +2,17 @@
 {-# LANGUAGE TypeApplications  #-}
 module Test.Language.UntypedLambda where
 
-import           Prelude                         hiding (and, fst, head, id,
-                                                  not, or, snd, tail)
+import           Prelude                           hiding (and, fst, head, id,
+                                                    not, or, snd, tail)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
-import qualified Language.UntypedLambda.Examples as UL
+import qualified Language.UntypedLambda.Examples   as UL
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Church
 import           Language.UntypedLambda.Lib.List
 import           Language.UntypedLambda.Lib.Pair
 import           Language.Utils.Pretty
@@ -96,10 +97,6 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder UL.example3 @?= TmLam "z" "z"
       eval CallByName  UL.example3 @?= TmLam "z" (TmApp id "z")
       eval CallByValue UL.example3 @?= TmLam "z" (TmApp id "z")
-  , testCase "二つ組" $ do
-      eval NormalOrder UL.example10 @?= TmVar "v"
-      eval CallByName  UL.example10 @?= TmVar "v"
-      eval CallByValue UL.example10 @?= TmVar "v"
   , testCase "Church数" $ do
       c 0 @?= TmLam "s" (TmLam "z" "z")
       c 1 @?= TmLam "s" (TmLam "z" (TmApp "s" "z"))

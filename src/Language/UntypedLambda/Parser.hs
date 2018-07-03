@@ -2,15 +2,15 @@ module Language.UntypedLambda.Parser
   ( runUlParser
   ) where
 
-import           Language.UntypedLambda.Lib.Base (c)
-import           Language.UntypedLambda.Prelude  (prelude)
+import           Language.UntypedLambda.Lib.Church (c)
+import           Language.UntypedLambda.Prelude    (prelude)
 import           Language.UntypedLambda.Types
 import           Language.Utils.Parser
 
 import           Control.Applicative
-import qualified Data.Map                        as Map
-import           Data.Text                       (Text)
-import qualified Data.Text                       as T
+import qualified Data.Map                          as Map
+import           Data.Text                         (Text)
+import qualified Data.Text                         as T
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta
 

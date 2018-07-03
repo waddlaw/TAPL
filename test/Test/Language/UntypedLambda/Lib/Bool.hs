@@ -1,19 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.UntypedLambda.Lib.Bool where
 
-import           Prelude                         hiding (and, not, or)
+import           Test.Utils
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
-import           Language.UntypedLambda
 import           Language.UntypedLambda.Lib.Bool
-
-evalAllStrategy :: UntypedLambda -> UntypedLambda  -> IO ()
-evalAllStrategy term expected = do
-  eval NormalOrder term @?= expected
-  eval CallByName  term @?= expected
-  eval CallByValue term @?= expected
 
 test_ul :: TestTree
 test_ul = testGroup "UntypedLambda.Lib.Base"

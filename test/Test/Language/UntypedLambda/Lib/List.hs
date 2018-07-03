@@ -1,14 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.UntypedLambda.Lib.List where
 
-import           Prelude                         hiding (head, tail)
+import           Prelude                           hiding (head, tail)
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
-import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Church
 import           Language.UntypedLambda.Lib.List
 
 test_ul :: TestTree

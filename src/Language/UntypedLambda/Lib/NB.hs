@@ -10,6 +10,7 @@ module Language.UntypedLambda.Lib.NB
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Church
 import           Language.UntypedLambda.Types
 
 -- | Church ブール値をプリミティブなブール値に変換

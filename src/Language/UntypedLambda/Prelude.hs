@@ -3,18 +3,19 @@ module Language.UntypedLambda.Prelude
   ( prelude
   ) where
 
-import           Prelude                         hiding (and, fst, head, id,
-                                                  not, or, snd, tail)
+import           Prelude                           hiding (and, fst, head, id,
+                                                    not, or, snd, tail)
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Church
 import           Language.UntypedLambda.Lib.List
 import           Language.UntypedLambda.Lib.Pair
 import           Language.UntypedLambda.Types
 
-import           Data.Map                        (Map)
-import qualified Data.Map                        as Map (fromList)
-import           Data.Text                       (Text)
+import           Data.Map                          (Map)
+import qualified Data.Map                          as Map (fromList)
+import           Data.Text                         (Text)
 
 prelude :: Map Text UntypedLambda
 prelude = Map.fromList

@@ -10,10 +10,11 @@ module Language.UntypedLambda.Lib.List
   , sumlist'
   ) where
 
-import           Prelude                         hiding (fst, head, snd, tail)
+import           Prelude                           hiding (fst, head, snd, tail)
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
+import           Language.UntypedLambda.Lib.Church
 import           Language.UntypedLambda.Lib.Pair
 import           Language.UntypedLambda.Types
 

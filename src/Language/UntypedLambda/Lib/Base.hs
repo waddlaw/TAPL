@@ -131,4 +131,4 @@ fix = λ "f" $ t @@ t
     t = λ "x" $ "f" @@ λ "y" ("x" @@ "x" @@ "y")
 
 mkFix :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
-mkFix v match base rec = fix @@ λ "f" (λ v $ mkTest match (λ "x" base) (λ "x" rec) @@ c 0)
+mkFix v match base rec = fix @@ λ "f" (λ v $ mkTest match (λ "x" base) (λ "x" rec) @@ id)

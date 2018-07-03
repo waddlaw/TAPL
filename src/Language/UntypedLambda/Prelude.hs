@@ -49,6 +49,7 @@ module Language.UntypedLambda.Prelude
   -- helper
   , mkTest
   , mkPair
+  , mkFix
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
@@ -225,15 +226,17 @@ fix = λ "f" $ t @@ t
   where
     t = λ "x" $ "f" @@ λ "y" ("x" @@ "x" @@ "y")
 
+mkFix :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
+mkFix v match base rec = fix @@ λ "f" (λ v $ mkTest match base rec @@ c 0)
+
 -- | factorial = fix ff
 --   ff = λf. λn. test match base rec c0
 --   match = iszro n
 --   base = λx. c1
 --   rec  = λx. times n (f (prd n))
 factorial :: UntypedLambda
-factorial = fix @@ ff
+factorial = mkFix "n" match base rec
   where
-    ff = λ "f" $ λ "n" $ mkTest match base rec @@ c 0
     match = iszro @@ "n"
     base  = λ "x" $ c 1
     rec   = λ "x" $ times @@ "n" @@ ("f" @@ (prd @@ "n"))
@@ -244,9 +247,8 @@ factorial = fix @@ ff
 --   base  = λx. c0
 --   rec   = λx. plus (head l) (f (tail l))
 sumlist :: UntypedLambda
-sumlist = fix @@ ff
+sumlist = mkFix "l" match base rec
   where
-    ff = λ "f" $ λ "l" $ mkTest match base rec @@ c 0
     match = isnil @@ "l"
     base = λ "x" $ c 0
     rec  = λ "x" $ plus @@ (head @@ "l") @@ ("f" @@ (tail @@ "l"))

@@ -36,9 +36,8 @@ plusI = λ "n" $ λ "m" $ mkTest isPP pp $ mkTest isNN nn' t3
 
 -- | λf. λp. test (iszro (fst p)) (λx. snd p) (λx. succI (f (pair (prd (fst p)) (snd p)))) c0
 succNI :: UntypedLambda
-succNI = fix @@ ff
+succNI = mkFix "p" match base rec
   where
-    ff = λ "f" $ λ "p" $ mkTest match base rec @@ c 0
     match = iszro @@ (fst @@ "p")
     base = λ "x" $ snd @@ "p"
     rec  = λ "x" $ succI @@ ("f" @@ mkPair (prd @@ (fst @@ "p")) (snd @@ "p"))

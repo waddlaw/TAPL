@@ -6,6 +6,7 @@ module Language.UntypedLambda.Types
   , Strategy (..)
   , UntypedLambda
   , (@@)
+  , λ
   ) where
 
 import           Data.String
@@ -17,6 +18,9 @@ type UntypedLambda = Term Text
 
 (@@) :: UntypedLambda -> UntypedLambda -> UntypedLambda
 t1 @@ t2 = TmApp t1 t2
+
+λ :: Text -> UntypedLambda -> UntypedLambda
+λ v t = TmLam v t
 
 data Term a
   = TmVar a

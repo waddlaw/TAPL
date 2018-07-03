@@ -14,7 +14,7 @@ test_ul = testGroup "UntypedLambda.Lib.Int"
       eval CallByValue (int (-3)) @?= eval CallByValue (mkPair fls (c 3))
       eval CallByValue (int 3)    @?= eval CallByValue (mkPair tru (c 3))
   , testCase "succI" $
-      eval CallByValue (succI @@ (int 0)) @?= eval CallByValue (int 1)
+      eval CallByValue (succI @@ int 0) @?= eval CallByValue (int 1)
       -- 振る舞い等価
       -- eval CallByValue (TmApp succI (int (-1))) @?= eval CallByValue (int 0)
       -- eval CallByValue (TmApp succI (int 1))    @?= eval CallByValue (int 2)

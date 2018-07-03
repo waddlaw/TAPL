@@ -2,7 +2,6 @@ module Test.Utils
   ( evalAllStrategy
   ) where
 
-import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda

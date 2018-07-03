@@ -46,6 +46,8 @@ module Language.UntypedLambda.Prelude
   -- ** 演習5.2.11
   , sumlist
   , sumlist'
+  -- helper
+  , mkTest
   ) where
 
 import           Prelude                      hiding (and, fst, head, id, not,
@@ -80,6 +82,10 @@ fls = TmLam "t" (TmLam "f" "f")
 -- | λl. λm. λn. l m n
 test :: UntypedLambda
 test = TmLam "l" (TmLam "m" (TmLam "n" (TmApp (TmApp "l" "m") "n")))
+
+-- | λb. λt1. λt2. test b t1 t2
+mkTest :: UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
+mkTest b t1 t2 = test @@ b @@ t1 @@ t2
 
 -- | λb. λc. b c fls
 and :: UntypedLambda

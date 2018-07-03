@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Base
   ( id
-  -- * fix
   , fix
+  -- * helper
   , mkFix
   ) where
 

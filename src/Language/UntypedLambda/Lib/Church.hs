@@ -1,7 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Church
-  ( -- * value
-    c
+  ( c
   , scc
   , plus
   , times
@@ -21,6 +20,11 @@ module Language.UntypedLambda.Lib.Church
   , equal
   -- ** 演習5.2.9
   , factorial
+  -- * helper
+  , mkPlus
+  , mkTimes
+  , mkSubtract
+  , mkEqual
   ) where
 
 import           Prelude                         hiding (and, fst, snd)
@@ -115,3 +119,15 @@ factorial = mkFix "n" match base rec
     match = iszro @@ "n"
     base  = c 1
     rec   = times @@ "n" @@ ("f" @@ (prd @@ "n"))
+
+mkPlus :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkPlus c1 c2 = plus @@ c1 @@ c2
+
+mkTimes :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkTimes c1 c2 = times @@ c1 @@ c2
+
+mkSubtract :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkSubtract c1 c2 = subtract1 @@ c1 @@ c2
+
+mkEqual :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkEqual c1 c2 = equal @@ c1 @@ c2

@@ -39,8 +39,8 @@ succNI :: UntypedLambda
 succNI = mkFix "p" match base rec
   where
     match = iszro @@ (fst @@ "p")
-    base = λ "x" $ snd @@ "p"
-    rec  = λ "x" $ succI @@ ("f" @@ mkPair (prd @@ (fst @@ "p")) (snd @@ "p"))
+    base = snd @@ "p"
+    rec  = succI @@ ("f" @@ mkPair (prd @@ (fst @@ "p")) (snd @@ "p"))
 
 -- | if isZero i
 --   then (True, 1)

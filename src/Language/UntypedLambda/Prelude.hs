@@ -227,7 +227,7 @@ fix = λ "f" $ t @@ t
     t = λ "x" $ "f" @@ λ "y" ("x" @@ "x" @@ "y")
 
 mkFix :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
-mkFix v match base rec = fix @@ λ "f" (λ v $ mkTest match base rec @@ c 0)
+mkFix v match base rec = fix @@ λ "f" (λ v $ mkTest match (λ "x" base) (λ "x" rec) @@ c 0)
 
 -- | factorial = fix ff
 --   ff = λf. λn. test match base rec c0
@@ -238,8 +238,8 @@ factorial :: UntypedLambda
 factorial = mkFix "n" match base rec
   where
     match = iszro @@ "n"
-    base  = λ "x" $ c 1
-    rec   = λ "x" $ times @@ "n" @@ ("f" @@ (prd @@ "n"))
+    base  = c 1
+    rec   = times @@ "n" @@ ("f" @@ (prd @@ "n"))
 
 -- | sumlist = fix ff
 --   ff = λf. λl. test match base rec c0
@@ -250,8 +250,8 @@ sumlist :: UntypedLambda
 sumlist = mkFix "l" match base rec
   where
     match = isnil @@ "l"
-    base = λ "x" $ c 0
-    rec  = λ "x" $ plus @@ (head @@ "l") @@ ("f" @@ (tail @@ "l"))
+    base  = c 0
+    rec   = plus @@ (head @@ "l") @@ ("f" @@ (tail @@ "l"))
 
 -- | λl. l plus c0
 sumlist' :: UntypedLambda

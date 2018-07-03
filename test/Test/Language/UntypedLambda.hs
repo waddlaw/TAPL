@@ -10,7 +10,6 @@ import           Test.Tasty.HUnit
 
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples as UL
-import           Language.UntypedLambda.Lib.NB
 import           Language.UntypedLambda.Prelude
 import           Language.Utils.Pretty
 
@@ -178,6 +177,7 @@ test_ul = testGroup "UntypedLambda"
       -- equal
       eval NormalOrder (TmApp (TmApp equal (c 10)) (c 2)) @?= fls
       eval NormalOrder (TmApp (TmApp equal (c 2))  (c 2)) @?= tru
+      eval CallByValue (equal @@ c 4 @@ (times @@ c 2 @@ c 2)) @?= tru
 
       -- cons
       eval NormalOrder (TmApp (TmApp cons "x") nil) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n"))
@@ -195,24 +195,14 @@ test_ul = testGroup "UntypedLambda"
       eval NormalOrder (TmApp tail nil) @?= nil
       eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") "n")))) @?= nil
       eval NormalOrder (TmApp tail (TmLam "c" (TmLam "n" (TmApp (TmApp "c" "x") (TmApp (TmApp "c" "y") "n"))))) @?= TmLam "c" (TmLam "n" (TmApp (TmApp "c" "y") "n"))
-  , testCase "convert NB <-> church" $ do
-      eval CallByValue (TmApp realbool fls) @?= TmVar "false"
-      eval CallByValue (TmApp realbool tru) @?= TmVar "true"
-      eval CallByValue (TmApp (TmApp realeq (c 0)) (c 0)) @?= TmVar "true"
-      eval CallByValue (TmApp (TmApp realeq (c 0)) (c 1)) @?= TmVar "false"
-      eval NormalOrder (TmApp realnat (c 2)) @?= TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmVar "0"))
-
-      eval CallByValue (TmApp (TmApp equal (c 4)) (TmApp (TmApp times (c 2)) (c 2))) @?= tru
-      eval NormalOrder (TmApp realnat (TmApp (TmApp times (c 2)) (c 2))) @?= TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmApp (TmVar "succ") (TmVar "0"))))
-
-      eval CallByValue (TmApp (TmApp equal (c 6)) (TmApp factorial (c 3))) @?= tru
-
-      -- 演習52.11
-      let l = TmApp (TmApp cons (c 2)) (TmApp (TmApp cons (c 3)) (TmApp (TmApp cons (c 4)) nil))
-      eval CallByValue (TmApp (TmApp equal (TmApp sumlist l)) (c 9))  @?= tru
-      eval CallByValue (TmApp (TmApp equal (TmApp sumlist' l)) (c 9)) @?= tru
   , testCase "subst" $ do
       subst "x" (TmLam "z" (TmApp "z" "w")) (TmLam "y" "x") @?= TmLam "y" (TmLam "z" (TmApp "z" "w"))
       subst "x" "y" (TmLam "x" "x") @?= TmLam "x" "x"
       subst "x" "z" (TmLam "z" "x") @?= TmLam "z" "x"
+  , testCase "" $ do
+      eval CallByValue (TmApp (TmApp equal (c 6)) (TmApp factorial (c 3))) @?= tru
+      -- 演習5.2.11
+      let l = TmApp (TmApp cons (c 2)) (TmApp (TmApp cons (c 3)) (TmApp (TmApp cons (c 4)) nil))
+      eval CallByValue (TmApp (TmApp equal (TmApp sumlist l)) (c 9))  @?= tru
+      eval CallByValue (TmApp (TmApp equal (TmApp sumlist' l)) (c 9)) @?= tru
   ]

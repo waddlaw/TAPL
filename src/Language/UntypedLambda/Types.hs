@@ -5,6 +5,7 @@ module Language.UntypedLambda.Types
   ( Term (..)
   , Strategy (..)
   , UntypedLambda
+  , (@@)
   ) where
 
 import           Data.String
@@ -13,6 +14,9 @@ import qualified Data.Text                 as T
 import           Data.Text.Prettyprint.Doc
 
 type UntypedLambda = Term Text
+
+(@@) :: UntypedLambda -> UntypedLambda -> UntypedLambda
+t1 @@ t2 = TmApp t1 t2
 
 data Term a
   = TmVar a

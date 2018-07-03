@@ -20,6 +20,8 @@ module Language.UntypedLambda.Lib.Church
   , equal
   -- ** 演習5.2.9
   , factorial
+  -- * extra
+  , isone
   -- * helper
   , mkPlus
   , mkTimes
@@ -119,6 +121,9 @@ factorial = mkFix "n" match base rec
     match = iszro @@ "n"
     base  = c 1
     rec   = times @@ "n" @@ ("f" @@ (prd @@ "n"))
+
+isone :: UntypedLambda
+isone = λ "n" $ equal @@ "n" @@ c 1
 
 mkPlus :: UntypedLambda -> UntypedLambda -> UntypedLambda
 mkPlus c1 c2 = plus @@ c1 @@ c2

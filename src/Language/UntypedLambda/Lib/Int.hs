@@ -4,6 +4,8 @@ module Language.UntypedLambda.Lib.Int
   , succI
   , succNI
   , plusI
+  , isZeroI
+  , isAbsOneI
   ) where
 
 import           Prelude                           hiding (and, fst, not, snd)
@@ -14,14 +16,15 @@ import           Language.UntypedLambda.Lib.Church
 import           Language.UntypedLambda.Lib.Pair
 import           Language.UntypedLambda.Types
 
--- | type Int = (Bool, Nat)
--- +1  = (True, 1)
--- -1 = (False, 1)
--- -0 = (False, 0)
--- +0 = (True, 0)
+-- | int = λb. λs. λz. z
+--       | λb. λs. λz. pair b (s z)
+-- 0  = λs. λz. z
+-- -1 = λs. λz. pair fls (s z)
+-- +1 = λs. λz. pair tru (s z)
 int :: Int -> UntypedLambda
 int n
-  | n <= 0     = mkPair fls (c $ abs n)
+  | n == 0 = λ "b" $ c 0
+  | n <  0 = mkPair fls (c $ abs n)
   | otherwise = mkPair tru (c n)
 
 plusI :: UntypedLambda
@@ -56,19 +59,27 @@ succNI = mkFix "p" match base rec
 --
 -- λi. test (isZeroI i) (pair tru c1) (test (isPositiveI i) (pair (fst i) (scc (snd i))) (pair (fst i) (prd (snd i))))
 succI :: UntypedLambda
-succI = λ "i" $ mkTest c1 t1 $ mkTest c2 t2 t3
+succI = λ "i" $ mkTest c1 t1 $ mkTest c2 t2 $ mkTest c3 t3 t4
   where
     c1 = isZeroI @@ "i"
     c2 = isPositiveI @@ "i"
+    c3 = isAbsOneI @@ "i"
     t1 = mkPair tru (c 1)
     t2 = mkPair (fst @@ "i") (scc @@ (snd @@ "i"))
-    t3 = mkPair (fst @@ "i") (prd @@ (snd @@ "i"))
+    t3 = int 0
+    t4 = mkPair (fst @@ "i") (prd @@ (snd @@ "i"))
 
 -- | λi. iszro (snd i)
 isZeroI :: UntypedLambda
 isZeroI = λ "i" $ iszro @@ (snd @@ "i")
 
+-- | λi. isone (snd i)
+isAbsOneI :: UntypedLambda
+isAbsOneI = λ "i" $ and @@ c1 @@ c2
+  where
+    c1 = not @@ (isZeroI @@ "i")
+    c2 = isone @@ (snd @@ "i")
+
 -- | λi. fst i
 isPositiveI :: UntypedLambda
 isPositiveI = λ "i" $ fst @@ "i"
-

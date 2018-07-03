@@ -65,4 +65,8 @@ test_ul = testGroup "UntypedLambda.Lib.Church"
       eval CallByValue (iszro @@ mkTimes (c 0) (c 2)) @?= tru
       eval CallByValue (mkEqual (c 4) (mkTimes (c 2) (c 2))) @?= tru
       eval CallByValue (mkEqual (c 6) (factorial @@ c 3)) @?= tru
+  , testCase "isone" $ do
+      eval CallByValue (isone @@ c 0) @?= fls
+      eval CallByValue (isone @@ c 1) @?= tru
+      eval CallByValue (isone @@ c 2) @?= fls
   ]

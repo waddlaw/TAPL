@@ -45,8 +45,8 @@ wrapper content = do
       meta_ [ name_ "viewport", content_ "width=device-width, initial-scale=1" ]
       title_ [] "TAPL"
       link_  [rel_ "stylesheet", href_ "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css"]
-      link_  [rel_ "stylesheet", href_ "./hilight.css"]
-      link_  [rel_ "stylesheet", href_ "./base.css"]
+      link_  [rel_ "stylesheet", href_ "./css/hilight.css"]
+      link_  [rel_ "stylesheet", href_ "./css/base.css"]
       script_ [ defer_ T.empty , src_ "https://use.fontawesome.com/releases/v5.1.0/js/all.js" ] T.empty
       script_ [ async_ T.empty, src_ "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML" ] T.empty
     body_ $

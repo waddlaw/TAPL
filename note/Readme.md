@@ -6,6 +6,11 @@
 
 [html](./html) フォルダに生成されるので、それをブラウザで確認。
 
+- [mmark](https://github.com/mmark-md/mmark)
+- [mmark-ext](https://github.com/mmark-md/mmark-ext)
+- [mmark-cli](https://github.com/mmark-md/mmark-cli)
+- [mathjax](http://docs.mathjax.org/en/latest/)
+
 # 実用的情報
 
 ## 日本語書籍情報

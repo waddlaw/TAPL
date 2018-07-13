@@ -1,0 +1,12 @@
+.source-code pre { background-color: black; }
+.source-code pre span { font-weight: bold;}
+span.va { color: #F5A500; }
+span.cr { color: #6EC7E2; }
+span.dt { color: #ACDDF7; }
+span.kw { color: #F3ADCB; }
+span.sy { color: white; }
+span.ot { color: white; }
+span.fu { color: white; }
+span.co { color: #F9E900; }
+span.op { color: white; }
+span.it { color: white; }

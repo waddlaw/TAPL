@@ -4,16 +4,17 @@
 
 module Main (main) where
 
-import Data.Text (Text)
-import qualified Data.Text as T
+import           Control.Monad
+import           Data.Text                   (Text)
+import qualified Data.Text                   as T
 import qualified Data.Text.IO                as T
 import qualified Data.Text.Lazy.IO           as TL
-import Lucid
+import           Lucid
 import qualified Text.MMark                  as MMark
+import           Text.MMark.Extension        (Block (..), Extension,
+                                              Inline (..))
+import qualified Text.MMark.Extension        as Ext
 import qualified Text.MMark.Extension.Common as Ext
-import Text.MMark.Extension (Extension, Inline (..), Block (..))
-import qualified Text.MMark.Extension as Ext
-import Control.Monad
 
 main :: IO ()
 main = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07"] $ \input -> do

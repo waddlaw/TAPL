@@ -1,4 +1,4 @@
-resolver: nightly-2018-06-08
+resolver: lts-12.1
 build:
   haddock: false
   haddock-arguments:

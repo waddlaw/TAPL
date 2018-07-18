@@ -10,6 +10,7 @@ module Language.UntypedLambda.Types
   , Context
   , VarName
   , NamelessTerm (..)
+  , getNlTermVar
   ) where
 
 import           Data.String
@@ -29,6 +30,10 @@ data NamelessTerm
   | NlTmLam NamelessTerm
   | NlTmApp NamelessTerm NamelessTerm
   deriving (Eq, Show)
+
+getNlTermVar :: NamelessTerm -> Int
+getNlTermVar (NlTmVar k) = k
+getNlTermVar _           = error "panic"
 
 instance IsString NamelessTerm where
   fromString = NlTmVar . read

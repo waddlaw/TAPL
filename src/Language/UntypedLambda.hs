@@ -18,6 +18,8 @@ module Language.UntypedLambda
   , restorenames
   -- * 定義 6.2.1
   , shift
+  -- * 定義 6.2.4
+  , namelessSubst
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -183,3 +185,11 @@ shift c d (NlTmVar k)
   | otherwise = NlTmVar (k + d)
 shift c d (NlTmLam t) = NlTmLam $ shift (c+1) d t
 shift c d (NlTmApp t1 t2) = (NlTmApp `on` shift c d) t1 t2
+
+-- | 定義6.2.4 (P.60)
+namelessSubst :: Int -> NamelessTerm -> NamelessTerm -> NamelessTerm
+namelessSubst j s t@(NlTmVar k)
+  | k == j = s
+  | otherwise = t
+namelessSubst j s (NlTmLam t) = NlTmLam $ namelessSubst (j+1) (shift 0 1 s) t
+namelessSubst j s (NlTmApp t1 t2) = (NlTmApp `on` namelessSubst j s) t1 t2

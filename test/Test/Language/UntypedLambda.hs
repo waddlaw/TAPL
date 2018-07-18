@@ -124,4 +124,30 @@ test_ul = testGroup "UntypedLambda"
   , testCase "shift" $ do
       shift 0 2 (NlTmLam $ NlTmLam $ NlTmApp "1" (NlTmApp "0" "2")) @?= (NlTmLam $ NlTmLam $ NlTmApp "1" (NlTmApp "0" "4"))
       shift 0 2 (NlTmLam $ NlTmApp (NlTmApp "0" "1") (NlTmLam $ NlTmApp (NlTmApp "0" "1") "2")) @?= NlTmLam (NlTmApp (NlTmApp "0" "3") (NlTmLam $ NlTmApp (NlTmApp "0" "1") "4"))
+  , testCase "namelessSubst" $ do
+      -- 演習6.2.5
+      let g = ["b", "a"]
+      let t1 = TmApp "b" (TmLam "x" $ TmLam "y" "b")
+          k1 = getNlTermVar $ removenames g "b"
+          s1 = removenames g "a"
+          nt1= removenames g t1
+      namelessSubst k1 s1 nt1 @?= NlTmApp "1" (NlTmLam $ NlTmLam "3")
+
+      let t2 = TmApp "b" (TmLam "x" "b")
+          k2 = getNlTermVar $ removenames g "b"
+          s2 = removenames g $ TmApp "a" (TmLam "z" "a")
+          nt2= removenames g t2
+      namelessSubst k2 s2 nt2 @?= NlTmApp (NlTmApp "1" (NlTmLam "2")) (NlTmLam $ NlTmApp "2" (NlTmLam "3"))
+
+      let t3 = TmLam "b" (TmApp "b" "a")
+          k3 = getNlTermVar $ removenames g "b"
+          s3 = removenames g "a"
+          nt3= removenames g t3
+      namelessSubst k3 s3 nt3 @?= NlTmLam (NlTmApp "0" "2")
+
+      let t4 = TmLam "a" (TmApp "b" "a")
+          k4 = getNlTermVar $ removenames g "b"
+          s4 = removenames g "a"
+          nt4= removenames g t4
+      namelessSubst k4 s4 nt4 @?= NlTmLam (NlTmApp "2" "0")
   ]

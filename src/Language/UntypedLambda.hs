@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda
   ( module Language.UntypedLambda.Types
   , module Language.UntypedLambda.Parser
@@ -12,6 +13,9 @@ module Language.UntypedLambda
   , steps
   , subst
   , size
+  -- * 演習6.1.5
+  , removenames
+  , restorenames
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -19,9 +23,12 @@ import           Language.UntypedLambda.Types
 import           Language.Utils
 
 import           Data.Function
+import           Data.List
+import           Data.Maybe
 import           Data.Set                      (Set)
 import qualified Data.Set                      as Set
 import           Data.Text                     (Text)
+import qualified Data.Text                     as T
 
 -- | 指定された評価戦略で項を正規系に評価する
 eval :: Strategy -> UntypedLambda -> UntypedLambda
@@ -107,7 +114,7 @@ isClosed = Set.null . freeVars Set.empty
 -- | 項に含まれる自由変数を返す
 --
 -- 定義5.3.2 (p.52)
-freeVars :: Set Text -> UntypedLambda -> Set Text
+freeVars :: Set VarName -> UntypedLambda -> Set VarName
 freeVars fv (TmVar v)
   | Set.member v fv = Set.empty
   | otherwise = Set.singleton v
@@ -127,3 +134,38 @@ size :: UntypedLambda -> Int
 size (TmVar _)     = 1
 size (TmLam _ t)   = 1 + size t
 size (TmApp t1 t2) = size t1 + size t2
+
+-- | 演習6.1.5 (P.59)
+--
+-- 仮定: FV(t) ⊆ dom(Γ）)
+removenames :: Context -> UntypedLambda -> NamelessTerm
+removenames g t
+  | freeVars Set.empty t `Set.isSubsetOf` Set.fromList g = removenames' g t
+  | otherwise = error "Does not satisfy: FV(t) `isSubsetOf` dom(Γ)"
+  where
+    removenames' g' (TmVar x)     = NlTmVar $ fromMaybe (error "Can't find variable") $ elemIndex x g'
+    removenames' g' (TmLam x t1)  = NlTmLam $ removenames (x:g') t1
+    removenames' g' (TmApp t1 t2) = (NlTmApp `on` removenames' g') t1 t2
+
+-- | 演習6.1.5 (P.59)
+--
+-- 仮定1: Γに含まれる名前は互いに異なる
+-- 仮定2: 変数名の集合Vは順序付けられている
+restorenames :: Context -> NamelessTerm -> UntypedLambda
+restorenames g nt
+  | isValid g = restorenames' g nt
+  | otherwise = error "Error: duplicate variables in context."
+  where
+    isValid g' = ((==) `on` (length . nub)) g' g'
+    restorenames' g' (NlTmVar k) = TmVar (g' !! k)
+    restorenames' g' (NlTmLam t) =
+      let x = mkFreshVarName g'
+       in TmLam x $ restorenames (x:g') t
+    restorenames' g' (NlTmApp t1 t2) = (TmApp `on` restorenames' g') t1 t2
+
+mkFreshVarName :: Context -> VarName
+mkFreshVarName [] = "a0"
+mkFreshVarName (v:_) =  T.pack $ mconcat ["a", show $ textToInt v + 1]
+  where
+    textToInt :: Text -> Int
+    textToInt = read . T.unpack . T.tail

@@ -13,9 +13,11 @@ module Language.UntypedLambda
   , steps
   , subst
   , size
-  -- * 演習6.1.5
+  -- * 演習 6.1.5
   , removenames
   , restorenames
+  -- * 定義 6.2.1
+  , shift
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -169,3 +171,15 @@ mkFreshVarName (v:_) =  T.pack $ mconcat ["a", show $ textToInt v + 1]
   where
     textToInt :: Text -> Int
     textToInt = read . T.unpack . T.tail
+
+-- | 定義6.2.1 (P.60)
+--
+-- c: 打ち切り値
+--
+-- d: シフト数
+shift :: Int -> Int -> NamelessTerm -> NamelessTerm
+shift c d (NlTmVar k)
+  | k < c = NlTmVar k
+  | otherwise = NlTmVar (k + d)
+shift c d (NlTmLam t) = NlTmLam $ shift (c+1) d t
+shift c d (NlTmApp t1 t2) = (NlTmApp `on` shift c d) t1 t2

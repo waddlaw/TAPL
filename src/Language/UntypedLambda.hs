@@ -124,6 +124,6 @@ isValue _           = False
 --
 -- 演習5.3.3 (P.52)
 size :: UntypedLambda -> Int
-size (TmVar _) = 1
-size (TmLam _ t) = 1 + size t
+size (TmVar _)     = 1
+size (TmLam _ t)   = 1 + size t
 size (TmApp t1 t2) = size t1 + size t2

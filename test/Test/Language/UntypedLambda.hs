@@ -101,4 +101,7 @@ test_ul = testGroup "UntypedLambda"
       subst "x" (TmLam "z" (TmApp "z" "w")) (TmLam "y" "x") @?= TmLam "y" (TmLam "z" (TmApp "z" "w"))
       subst "x" "y" (TmLam "x" "x") @?= TmLam "x" "x"
       subst "x" "z" (TmLam "z" "x") @?= TmLam "z" "x"
+  , testCase "size" $ do
+      size "x" @?= 1
+      size (TmApp "x" "x") @?= 2
   ]

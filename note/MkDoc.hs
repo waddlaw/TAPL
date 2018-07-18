@@ -53,7 +53,7 @@ wrapper content = do
     body_ $
       section_ [class_ "section"] $
         div_ [class_ "container"] $
-          div_ [class_ "content"] $ do
+          div_ [class_ "content"]
             content
 
 mathJaxBlock :: Extension

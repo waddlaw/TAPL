@@ -11,6 +11,7 @@ module Language.UntypedLambda
   , trace
   , steps
   , subst
+  , size
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -115,3 +116,16 @@ isValue :: UntypedLambda -> Bool
 isValue (TmVar _)   = True
 isValue (TmLam _ _) = True
 isValue _           = False
+-- | 与えられた項が値かどうか判定する述語
+isValue :: UntypedLambda -> Bool
+isValue (TmVar _)   = True
+isValue (TmLam _ _) = True
+isValue _           = False
+
+-- | 項のサイズを計算する
+--
+-- 演習5.3.3 (P.52)
+size :: UntypedLambda -> Int
+size (TmVar _) = 1
+size (TmLam _ t) = 1 + size t
+size (TmApp t1 t2) = size t1 + size t2

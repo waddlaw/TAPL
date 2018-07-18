@@ -33,7 +33,7 @@ data NamelessTerm
 
 getNlTermVar :: NamelessTerm -> Int
 getNlTermVar (NlTmVar k) = k
-getNlTermVar _ = error "panic"
+getNlTermVar _           = error "panic"
 
 instance IsString NamelessTerm where
   fromString = NlTmVar . read

@@ -20,6 +20,7 @@ module Language.UntypedLambda
   , shift
   -- * 定義 6.2.4
   , namelessSubst
+  , reduceNameless
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -193,3 +194,11 @@ namelessSubst j s t@(NlTmVar k)
   | otherwise = t
 namelessSubst j s (NlTmLam t) = NlTmLam $ namelessSubst (j+1) (shift 0 1 s) t
 namelessSubst j s (NlTmApp t1 t2) = (NlTmApp `on` namelessSubst j s) t1 t2
+
+-- | 名前無し項のβ簡約 (値呼び)
+reduceNameless :: NamelessTerm -> NamelessTerm
+reduceNameless (NlTmApp (NlTmLam t12) v2) = shift 0 (-1) $ namelessSubst 0 (shift 0 1 v2) t12
+reduceNameless (NlTmApp t1@(NlTmApp _ _) t2@(NlTmApp _ _)) = (NlTmApp `on` reduceNameless) t1 t2
+reduceNameless (NlTmApp t1@(NlTmApp _ _) t2) = NlTmApp (reduceNameless t1) t2
+reduceNameless (NlTmApp t1 t2@(NlTmApp _ _)) = NlTmApp t1 (reduceNameless t2)
+reduceNameless t = t

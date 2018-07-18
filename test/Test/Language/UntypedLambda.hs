@@ -113,4 +113,12 @@ test_ul = testGroup "UntypedLambda"
       removenames [] fix @?= NlTmLam (NlTmApp t t)
       let foo = TmApp (TmLam "x" $ TmLam "x" "x") (TmLam "x" "x")
       removenames [] foo @?= NlTmApp (NlTmLam $ NlTmLam "0") (NlTmLam "0")
+  , testCase "restorenames" $ do
+      restorenames [] (NlTmLam (NlTmLam "0")) @?= TmLam "a0" (TmLam "a1" "a1")
+      restorenames [] (NlTmLam (NlTmLam (NlTmApp "1" (NlTmApp "1" "0")))) @?= TmLam "a0" (TmLam "a1" (TmApp "a0" (TmApp "a0" "a1")))
+      restorenames [] (NlTmLam (NlTmLam (NlTmLam (NlTmLam (NlTmApp (NlTmApp "3" "1") (NlTmApp (NlTmApp "2" "1") "0"))))))  @?= TmLam "a0" (TmLam "a1" (TmLam "a2" (TmLam "a3" $ TmApp (TmApp "a0" "a2") (TmApp (TmApp "a1" "a2") "a3"))))
+      let t  = NlTmLam $ NlTmApp "1" $ NlTmLam $ NlTmApp (NlTmApp "1" "1") "0"
+          t' = TmLam "a1" $ TmApp "a0" $ TmLam "a2" $ TmApp (TmApp "a1" "a1") "a2"
+      restorenames [] (NlTmLam (NlTmApp t t)) @?= TmLam "a0" (TmApp t' t')
+      restorenames [] (NlTmApp (NlTmLam $ NlTmLam "0") (NlTmLam "0")) @?= TmApp (TmLam "a0" $ TmLam "a1" "a1") (TmLam "a0" "a0")
   ]

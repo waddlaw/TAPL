@@ -7,6 +7,9 @@ module Language.UntypedLambda.Types
   , UntypedLambda
   , (@@)
   , λ
+  , Context
+  , VarName
+  , NamelessTerm (..)
   ) where
 
 import           Data.String
@@ -16,6 +19,20 @@ import           Data.Text.Prettyprint.Doc
 
 type UntypedLambda = Term Text
 
+type VarName = Text
+
+-- | 教科書とは逆で ["x", "y", "z"] は [0, 1, 2] と左からインデックスを付ける
+type Context = [VarName]
+
+data NamelessTerm
+  = NlTmVar Int
+  | NlTmLam NamelessTerm
+  | NlTmApp NamelessTerm NamelessTerm
+  deriving (Eq, Show)
+
+instance IsString NamelessTerm where
+  fromString = NlTmVar . read
+
 (@@) :: UntypedLambda -> UntypedLambda -> UntypedLambda
 t1 @@ t2 = TmApp t1 t2
 
@@ -24,7 +41,7 @@ t1 @@ t2 = TmApp t1 t2
 
 data Term a
   = TmVar a
-  | TmLam Text (Term a)
+  | TmLam VarName (Term a)
   | TmApp (Term a) (Term a)
   deriving (Eq, Show)
 
@@ -45,3 +62,4 @@ data Strategy
   | CallByName        -- ^ 名前呼び戦略
   | CallByValue       -- ^ 値呼び戦略
   deriving (Show, Read, Enum, Bounded)
+

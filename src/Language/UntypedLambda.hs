@@ -12,6 +12,8 @@ module Language.UntypedLambda
   , steps
   , subst
   , size
+  -- * 演習6.1.5
+  , removenames
   ) where
 
 import           Language.UntypedLambda.Parser
@@ -19,6 +21,8 @@ import           Language.UntypedLambda.Types
 import           Language.Utils
 
 import           Data.Function
+import           Data.List
+import           Data.Maybe
 import           Data.Set                      (Set)
 import qualified Data.Set                      as Set
 import           Data.Text                     (Text)
@@ -107,7 +111,7 @@ isClosed = Set.null . freeVars Set.empty
 -- | 項に含まれる自由変数を返す
 --
 -- 定義5.3.2 (p.52)
-freeVars :: Set Text -> UntypedLambda -> Set Text
+freeVars :: Set VarName -> UntypedLambda -> Set VarName
 freeVars fv (TmVar v)
   | Set.member v fv = Set.empty
   | otherwise = Set.singleton v
@@ -127,3 +131,13 @@ size :: UntypedLambda -> Int
 size (TmVar _)     = 1
 size (TmLam _ t)   = 1 + size t
 size (TmApp t1 t2) = size t1 + size t2
+
+-- | 演習6.1.5 (P.59)
+removenames :: Context -> UntypedLambda -> NamelessTerm
+removenames g t
+  | freeVars Set.empty t `Set.isSubsetOf` Set.fromList g = removenames' g t
+  | otherwise = error "Does not satisfy: FV(t) `isSubsetOf` dom(Γ)"
+  where
+    removenames' g' (TmVar x)     = NlTmVar $ fromMaybe (error "Can't find variable") $ elemIndex x g'
+    removenames' g' (TmLam x t1)  = NlTmLam $ removenames (x:g') t1
+    removenames' g' (TmApp t1 t2) = (NlTmApp `on` removenames' g') t1 t2

@@ -26,7 +26,7 @@ jobs:
             - .circleci/code/.stack-work
   hlint:
     docker:
-      - image: ubuntu:16.04
+      - image: ubuntu:18.04
     steps:
       - checkout
       - run:

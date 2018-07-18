@@ -11,12 +11,14 @@ module Language.UntypedLambda
   , trace
   , steps
   , subst
+  , size
   ) where
 
 import           Language.UntypedLambda.Parser
 import           Language.UntypedLambda.Types
 import           Language.Utils
 
+import           Data.Function
 import           Data.Set                      (Set)
 import qualified Data.Set                      as Set
 import           Data.Text                     (Text)
@@ -81,6 +83,8 @@ reduceCallByValue (TmApp t1 t2@(TmApp _ _)) = TmApp t1 (reduceCallByValue t2)
 reduceCallByValue t = t
 
 -- | β-reduction
+--
+-- 定義5.3.5 (P.54)
 subst :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda
 subst v1 after t@(TmVar v2)
   | v1 == v2  = after
@@ -90,28 +94,36 @@ subst v1 after t@(TmLam v2 t')
   | otherwise = t -- TODO
   where
     notIn v term = v `Set.notMember` freeVars Set.empty term
-subst v after (TmApp t1 t2) = TmApp t1' t2'
-  where
-    t1' = subst v after t1
-    t2' = subst v after t2
+subst v after (TmApp t1 t2) = (TmApp `on` subst v after) t1 t2
 
 -- | 与えられた項が閉じているかどうか判定する述語
+--
+-- 項が閉じている = 自由変数が無い
+--
+-- 閉じた項はコンビネータとも呼ばれる。
 isClosed :: UntypedLambda -> Bool
 isClosed = Set.null . freeVars Set.empty
 
 -- | 項に含まれる自由変数を返す
+--
+-- 定義5.3.2 (p.52)
 freeVars :: Set Text -> UntypedLambda -> Set Text
 freeVars fv (TmVar v)
   | Set.member v fv = Set.empty
   | otherwise = Set.singleton v
 freeVars fv (TmLam v t) = freeVars fv t `Set.difference` Set.singleton v
-freeVars fv (TmApp t1 t2) = fv1 `Set.union` fv2
-  where
-    fv1 = freeVars fv t1
-    fv2 = freeVars fv t2
+freeVars fv (TmApp t1 t2) = (Set.union `on` freeVars fv) t1 t2
 
 -- | 与えられた項が値かどうか判定する述語
 isValue :: UntypedLambda -> Bool
 isValue (TmVar _)   = True
 isValue (TmLam _ _) = True
 isValue _           = False
+
+-- | 項のサイズを計算する
+--
+-- 演習5.3.3 (P.52)
+size :: UntypedLambda -> Int
+size (TmVar _)     = 1
+size (TmLam _ t)   = 1 + size t
+size (TmApp t1 t2) = size t1 + size t2

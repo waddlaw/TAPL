@@ -54,12 +54,6 @@ $ stack bench tapl:bench:gauge --benchmark-arguments "--small"
 $ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ```
 
-### GHC 8.2.2
-
-```shell
-$ stack test --fast --file-watch --stack-yaml stack-8.2.2.yaml
-```
-
 ### チェック
 
 ```shell

@@ -24,17 +24,8 @@ dependencies:
   - trifecta
   - unordered-containers
 
-when:
-  - condition: impl(ghc == 8.2.2)
-    dependencies:
-      - set-monad
-
 library:
   source-dirs: src
-  when:
-    - condition: impl(ghc == 8.2.2)
-      other-modules:
-        - Term.MonadSet
 
 executables:
   proofb:

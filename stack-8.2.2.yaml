@@ -1,6 +1,0 @@
-resolver: lts-11.13
-build:
-  haddock: false
-  haddock-arguments:
-    haddock-args:
-      - --odir=docs

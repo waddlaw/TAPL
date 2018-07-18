@@ -104,4 +104,13 @@ test_ul = testGroup "UntypedLambda"
   , testCase "size" $ do
       size "x" @?= 1
       size (TmApp "x" "x") @?= 2
+  , testCase "removenames" $ do
+      -- 演習6.1.1
+      removenames [] (c 0) @?= NlTmLam (NlTmLam "0")
+      removenames [] (c 2) @?= NlTmLam (NlTmLam (NlTmApp "1" (NlTmApp "1" "0")))
+      removenames [] plus @?= NlTmLam (NlTmLam (NlTmLam (NlTmLam (NlTmApp (NlTmApp "3" "1") (NlTmApp (NlTmApp "2" "1") "0")))))
+      let t = NlTmLam $ NlTmApp "1" $ NlTmLam $ NlTmApp (NlTmApp "1" "1") "0"
+      removenames [] fix @?= NlTmLam (NlTmApp t t)
+      let foo = TmApp (TmLam "x" $ TmLam "x" "x") (TmLam "x" "x")
+      removenames [] foo @?= NlTmApp (NlTmLam $ NlTmLam "0") (NlTmLam "0")
   ]

@@ -48,7 +48,7 @@ executables:
     main: app/UntypedLambda.hs
     dependencies:
       - tapl
-      -
+      - haskeline
     ghc-options:
       - -threaded
       - -rtsopts

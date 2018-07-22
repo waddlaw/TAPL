@@ -38,7 +38,8 @@ aliases:
     run:
       name: Display stack version
       command: |
-        stack upgrade --binary-version=$STACK_VERSION
+        # stack upgrade --binary-version=$STACK_VERSION
+        stack upgrade --git
         stack --version
 
 jobs:

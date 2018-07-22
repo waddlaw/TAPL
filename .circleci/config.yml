@@ -55,9 +55,10 @@ jobs:
           name: Install dependencies
           command: |
             stack setup
-            stack install tapl:exe:mkdoc -j 1 --only-dependencies --no-terminal hxt
-            stack install tapl:exe:mkdoc -j 1 --only-dependencies --no-terminal lucid
-            stack install tapl:exe:mkdoc -j 1 --only-dependencies --no-terminal mmark
+            stack install -j 1 --only-dependencies --no-terminal hxt
+            stack install -j 1 --only-dependencies --no-terminal lucid
+            stack install -j 1 --only-dependencies --no-terminal lens
+            stack install -j 1 --only-dependencies --no-terminal mmark
             stack test -j 1 --only-dependencies --no-terminal --no-run-tests
           no_output_timeout: 120m
       - run:

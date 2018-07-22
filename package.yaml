@@ -52,15 +52,15 @@ executables:
     ghc-options:
       - -threaded
       - -rtsopts
-  mkdoc:
-    main: app/MkDoc.hs
-    dependencies:
-      - lucid
-      - mmark
-      - mmark-ext
-    ghc-options:
-      - -threaded
-      - -rtsopts
+  # mkdoc:
+  #   main: app/MkDoc.hs
+  #   dependencies:
+  #     - lucid
+  #     - mmark
+  #     - mmark-ext
+  #   ghc-options:
+  #     - -threaded
+  #     - -rtsopts
 
 tests:
   test:

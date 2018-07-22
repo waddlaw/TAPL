@@ -1,73 +1,89 @@
 version: 2
+
+aliases:
+  - &default_env
+    environment:
+      CACHE_KEY: 0
+      STACK_VERSION: 1.7.1
+  - &create_cache_key_file
+    run:
+      name: Create cache control key file
+      command: echo $CACHE_KEY > cache_key
+  - &restore_build_results
+    restore_cache:
+      keys:
+        - stack-{{ checksum "cache_key" }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+        - stack-{{ checksum "cache_key" }}-{{ checksum "stack.yaml" }}
+        - stack-{{ checksum "cache_key" }}
+  - &save_build_results
+      save_cache:
+        key: stack-{{ checksum "cache_key" }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+        paths:
+          - ~/.stack
+          - ~/.local/bin
+          - .stack-work
+  - &display_stack_version
+    run:
+      name: Display stack version
+      command: |
+        stack upgrade --binary-version=$STACK_VERSION
+        stack --version
+        
 jobs:
-  test:
-    machine:
-      docker_layer_caching: true
+  build:
+    docker:
+      - image: quay.io/haskell_works/stack-build-minimal
+    <<: *default_env
     steps:
       - checkout
+      - *create_cache_key_file
+      - *restore_build_results
+      - *display_stack_version
       - run:
-          name: Build docker image
-          command: |
-            rsync -ave --exclude='.circleci' ./ .circleci/code
-            docker-compose -f .circleci/docker-compose.yml build
-      - restore_cache:
-          keys:
-            - stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-            - stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-
-            - stack-{{ .Environment.COMMON_CACHE_KEY }}-
+          name: Install dependencies
+          command: stack test -j 1 --only-dependencies --no-terminal --no-run-tests
+          no_output_timeout: 120m
       - run:
           name: Run stack test
-          command: |
-            docker-compose -f .circleci/docker-compose.yml run app stack clean --allow-different-user
-            docker-compose -f .circleci/docker-compose.yml run app stack test --fast --allow-different-user
-      - save_cache:
-          key: stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-          paths:
-            - .circleci/code/.stack-work
-  hlint:
-    docker:
-      - image: ubuntu:18.04
-    steps:
-      - checkout
-      - run:
-          name: Run hlint
-          command: |
-            apt update
-            apt install -y curl
-            curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s .
+          command: stack test --fast
+      - *save_build_results
   pedantic:
-    machine:
-      docker_layer_caching: true
+    docker:
+      - image: quay.io/haskell_works/stack-build-minimal
+    <<: *default_env
     steps:
       - checkout
-      - run:
-          name: Build docker image
-          command: |
-            rsync -ave --exclude='.circleci' ./ .circleci/code
-            docker-compose -f .circleci/docker-compose.yml build
-      - restore_cache:
-          keys:
-            - stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-            - stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-
-            - stack-{{ .Environment.COMMON_CACHE_KEY }}-
+      - *create_cache_key_file
+      - *restore_build_results
+      - *display_stack_version
       - run:
           name: Run stack test --pedantic
           command: |
-            docker-compose -f .circleci/docker-compose.yml run app stack clean --allow-different-user
-            docker-compose -f .circleci/docker-compose.yml run app stack test --no-run-tests --pedantic --fast --allow-different-user
-      - save_cache:
-          key: stack-{{ .Environment.COMMON_CACHE_KEY }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-          paths:
-            - .circleci/code/.stack-work
+            stack clean
+            stack test --pedantic --fast --no-run-tests
+  check:
+    docker:
+      - image: quay.io/haskell_works/stack-build-minimal
+    steps:
+      - checkout
+      - run:
+          name: Run HLint
+          command: |
+            curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s -- --version
+            curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s .
+      - run:
+          name: Run stylish-haskell
+          command: |
+            # TODO: https://github.com/jaspervdj/stylish-haskell/pull/218
+            curl -sL https://raw.githubusercontent.com/waddlaw/stylish-haskell/master/scripts/latest.sh | sh -s -- -i $(find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*')
+            git --no-pager diff --exit-code
 
 workflows:
   version: 2
-  test-hlint-pedantic:
+  test-check:
     jobs:
-      - test
-      - hlint:
-          requires:
-            - test
+      - build
       - pedantic:
           requires:
-            - test
+            - build
+      - check

@@ -67,6 +67,23 @@ stylish-haskell の適用
 $ find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*' -exec stylish-haskell -i {} \;
 ```
 
+### ドキュメントの生成
+
+```shell
+# 初回のみ
+$ mkdir _site
+
+$ stack build
+$ stack exec mkdoc
+```
+
+[/_site](../_site) フォルダに生成されるので、それをブラウザで確認。
+
+- [mmark](https://github.com/mmark-md/mmark)
+- [mmark-ext](https://github.com/mmark-md/mmark-ext)
+- [mmark-cli](https://github.com/mmark-md/mmark-cli)
+- [mathjax](http://docs.mathjax.org/en/latest/)
+
 ## 実行方法
 
 ```shell

@@ -43,6 +43,12 @@ executables:
     dependencies:
       - tapl
       - haskeline
+  mkdoc:
+    main: app/MkDoc.hs
+    dependencies:
+      - lucid
+      - mmark
+      - mmark-ext
 
 tests:
   test:

@@ -25,12 +25,11 @@ aliases:
   - &restore_preview_results
     restore_cache:
       keys:
-        - stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}-{{ checksum "./note/MkDoc.hs" }}
-        - stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}-
+        - stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}
         - stack-{{ checksum "cache_key" }}-
   - &save_preview_results
       save_cache:
-        key: stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}-{{ checksum "./note/MkDoc.hs" }}
+        key: stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}
         paths:
           - ~/.stack
           - ~/.local/bin
@@ -59,7 +58,14 @@ jobs:
       - run:
           name: Run stack test
           command: stack test --fast
+      - run:
+          name: Generate docs
+          command: ./note/MkDoc.hs
       - *save_build_results
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./_site
 
   preview:
     working_directory: ~/TAPL
@@ -71,9 +77,8 @@ jobs:
       - *create_cache_key_file
       - *restore_preview_results
       - *display_stack_version
-      - run:
-          name: Generate docs
-          command: ./note/MkDoc.hs
+      - attach_workspace:
+          at: .
       - store_artifacts:
           path: _site
       - run:

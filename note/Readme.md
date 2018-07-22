@@ -4,7 +4,7 @@
 ./MkDoc.hs
 ```
 
-[html](./html) フォルダに生成されるので、それをブラウザで確認。
+[/_site](../_site) フォルダに生成されるので、それをブラウザで確認。
 
 - [mmark](https://github.com/mmark-md/mmark)
 - [mmark-ext](https://github.com/mmark-md/mmark-ext)

@@ -22,13 +22,26 @@ aliases:
           - ~/.stack
           - ~/.local/bin
           - .stack-work
+  - &restore_preview_results
+    restore_cache:
+      keys:
+        - stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}-{{ checksum "./note/MkDoc.hs" }}
+        - stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}-
+        - stack-{{ checksum "cache_key" }}-
+  - &save_preview_results
+      save_cache:
+        key: stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}-{{ checksum "./note/MkDoc.hs" }}
+        paths:
+          - ~/.stack
+          - ~/.local/bin
+          - .stack-work
   - &display_stack_version
     run:
       name: Display stack version
       command: |
         stack upgrade --binary-version=$STACK_VERSION
         stack --version
-        
+
 jobs:
   build:
     docker:
@@ -47,6 +60,27 @@ jobs:
           name: Run stack test
           command: stack test --fast
       - *save_build_results
+
+  preview:
+    working_directory: ~/TAPL
+    docker:
+      - image: quay.io/haskell_works/stack-build-minimal
+    <<: *default_env
+    steps:
+      - checkout
+      - *create_cache_key_file
+      - *restore_preview_results
+      - *display_stack_version
+      - run:
+          name: Generate docs
+          command: ./note/MkDoc.hs
+      - store_artifacts:
+          path: _site
+      - run:
+          name: Send Artifacts URL to GitHub when PR
+          command: ./.circleci/preview.hs
+      - *save_preview_results
+
   pedantic:
     docker:
       - image: quay.io/haskell_works/stack-build-minimal
@@ -87,3 +121,4 @@ workflows:
           requires:
             - build
       - check
+      - preview

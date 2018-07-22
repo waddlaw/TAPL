@@ -23,7 +23,7 @@ main = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07"] $ \input -> do
     Left errs -> putStrLn (MMark.parseErrorsPretty txt errs)
     Right r ->
       let toc = MMark.runScanner r (Ext.tocScanner (> 1))
-      in  TL.writeFile (mconcat ["html/", input, ".html"])
+      in  TL.writeFile (mkPath input)
           . renderText
           . wrapper
           . MMark.render
@@ -36,6 +36,8 @@ main = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07"] $ \input -> do
             , mathJaxBlock
             ]
           $ r
+  where
+    mkPath path = mconcat ["../_site/", path, ".html"]
 
 wrapper :: Html () -> Html ()
 wrapper content = do

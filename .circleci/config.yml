@@ -60,7 +60,7 @@ jobs:
             # stack install -j 1 --only-dependencies --no-terminal lens
             # stack install -j 1 --only-dependencies --no-terminal mmark
             # stack test -j 1 --only-dependencies --no-terminal --no-run-tests
-          no_output_timeout: 120m
+          # no_output_timeout: 120m
       - run:
           name: Run stack test
           command: stack test --fast

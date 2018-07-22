@@ -61,6 +61,12 @@ $ stack clean && stack test --fast --pedantic --file-watch
 $ hlint .
 ```
 
+stylish-haskell の適用
+
+```shell
+$ find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*' -exec stylish-haskell -i {} \;
+```
+
 ## 実行方法
 
 ```shell

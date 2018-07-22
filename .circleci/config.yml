@@ -122,8 +122,10 @@ workflows:
   test-check:
     jobs:
       - build
+      - check
       - pedantic:
           requires:
             - build
-      - check
-      - preview
+      - preview:
+          requires:
+            - build

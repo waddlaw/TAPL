@@ -33,16 +33,34 @@ executables:
     dependencies:
       - tapl
       - haskeline
+    ghc-options:
+      - -threaded
+      - -rtsopts
   nb:
     main: app/NB.hs
     dependencies:
       - tapl
       - haskeline
+    ghc-options:
+      - -threaded
+      - -rtsopts
   untyped-lambda:
     main: app/UntypedLambda.hs
     dependencies:
       - tapl
       - haskeline
+    ghc-options:
+      - -threaded
+      - -rtsopts
+  # mkdoc:
+  #   main: app/MkDoc.hs
+  #   dependencies:
+  #     - lucid
+  #     - mmark
+  #     - mmark-ext
+  #   ghc-options:
+  #     - -threaded
+  #     - -rtsopts
 
 tests:
   test:

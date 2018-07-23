@@ -1,29 +1,27 @@
 #!/usr/bin/env stack
--- stack script --resolver lts-12.0
+-- stack --resolver lts-12.1 script
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main (main) where
 
 import           Control.Monad
-import           Data.Text                   (Text)
 import qualified Data.Text                   as T
 import qualified Data.Text.IO                as T
 import qualified Data.Text.Lazy.IO           as TL
 import           Lucid
 import qualified Text.MMark                  as MMark
-import           Text.MMark.Extension        (Block (..), Extension,
-                                              Inline (..))
+import           Text.MMark.Extension        (Block (..), Extension)
 import qualified Text.MMark.Extension        as Ext
 import qualified Text.MMark.Extension.Common as Ext
 
 main :: IO ()
 main = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07"] $ \input -> do
-  txt <- T.readFile $ input <> ".md"
+  txt <- T.readFile $ mconcat ["note/", input, ".md"]
   case MMark.parse input txt of
     Left errs -> putStrLn (MMark.parseErrorsPretty txt errs)
     Right r ->
       let toc = MMark.runScanner r (Ext.tocScanner (> 1))
-      in  TL.writeFile (mconcat ["html/", input, ".html"])
+      in  TL.writeFile (mkPath input)
           . renderText
           . wrapper
           . MMark.render
@@ -36,6 +34,8 @@ main = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07"] $ \input -> do
             , mathJaxBlock
             ]
           $ r
+  where
+    mkPath path = mconcat ["_site/", path, ".html"]
 
 wrapper :: Html () -> Html ()
 wrapper content = do

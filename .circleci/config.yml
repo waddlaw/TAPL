@@ -3,7 +3,7 @@ version: 2
 aliases:
   - &default_env
     environment:
-      CACHE_KEY: 0
+      CACHE_KEY: 1
       STACK_VERSION: 1.7.1
   - &create_cache_key_file
     run:
@@ -22,13 +22,25 @@ aliases:
           - ~/.stack
           - ~/.local/bin
           - .stack-work
+  - &restore_preview_results
+    restore_cache:
+      keys:
+        - stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}
+        - stack-{{ checksum "cache_key" }}-
+  - &save_preview_results
+      save_cache:
+        key: stack-{{ checksum "cache_key" }}-{{ checksum "./.circleci/preview.hs" }}
+        paths:
+          - ~/.stack
+          - ~/.local/bin
+          - .stack-work
   - &display_stack_version
     run:
       name: Display stack version
       command: |
         stack upgrade --binary-version=$STACK_VERSION
         stack --version
-        
+
 jobs:
   build:
     docker:
@@ -41,12 +53,39 @@ jobs:
       - *display_stack_version
       - run:
           name: Install dependencies
-          command: stack test -j 1 --only-dependencies --no-terminal --no-run-tests
+          command:  stack test --only-dependencies --no-terminal --no-run-tests
           no_output_timeout: 120m
       - run:
           name: Run stack test
           command: stack test --fast
+      # - run:
+      #     name: Generate docs
+      #     command: stack exec mkdoc
       - *save_build_results
+      # - persist_to_workspace:
+      #     root: .
+      #     paths:
+      #       - ./_site
+
+  # preview:
+  #   working_directory: ~/TAPL
+  #   docker:
+  #     - image: quay.io/haskell_works/stack-build-minimal
+  #   <<: *default_env
+  #   steps:
+  #     - checkout
+  #     - *create_cache_key_file
+  #     - *restore_preview_results
+  #     - *display_stack_version
+  #     - attach_workspace:
+  #         at: .
+  #     - store_artifacts:
+  #         path: _site
+  #     - run:
+  #         name: Send Artifacts URL to GitHub when PR
+  #         command: ./.circleci/preview.hs
+  #     - *save_preview_results
+
   pedantic:
     docker:
       - image: quay.io/haskell_works/stack-build-minimal
@@ -74,8 +113,7 @@ jobs:
       - run:
           name: Run stylish-haskell
           command: |
-            # TODO: https://github.com/jaspervdj/stylish-haskell/pull/218
-            curl -sL https://raw.githubusercontent.com/waddlaw/stylish-haskell/master/scripts/latest.sh | sh -s -- -i $(find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*')
+            curl -sL https://raw.github.com/jaspervdj/stylish-haskell/master/scripts/latest.sh | sh -s -- -i $(find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*')
             git --no-pager diff --exit-code
 
 workflows:
@@ -83,7 +121,10 @@ workflows:
   test-check:
     jobs:
       - build
+      - check
       - pedantic:
           requires:
             - build
-      - check
+      # - preview:
+      #     requires:
+      #       - build

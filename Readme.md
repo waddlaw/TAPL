@@ -67,6 +67,23 @@ stylish-haskell の適用
 $ find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*' -exec stylish-haskell -i {} \;
 ```
 
+### ドキュメントの生成
+
+[note/](./note) 以下のマークダウンファイルを編集してください。
+
+```shell
+# 初回のみ
+$ mkdir _site
+
+$ ./MkDoc
+$ firefox _site/ch03.html
+```
+
+- [mmark](https://github.com/mmark-md/mmark)
+- [mmark-ext](https://github.com/mmark-md/mmark-ext)
+- [mmark-cli](https://github.com/mmark-md/mmark-cli)
+- [mathjax](http://docs.mathjax.org/en/latest/)
+
 ## 実行方法
 
 ```shell

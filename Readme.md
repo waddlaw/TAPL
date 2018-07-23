@@ -69,15 +69,15 @@ $ find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*' -exec 
 
 ### ドキュメントの生成
 
+[note/](./note) 以下のマークダウンファイルを編集してください。
+
 ```shell
 # 初回のみ
 $ mkdir _site
 
-$ stack build
-$ stack exec mkdoc
+$ ./MkDoc
+$ firefox _site/ch03.html
 ```
-
-[/_site](../_site) フォルダに生成されるので、それをブラウザで確認。
 
 - [mmark](https://github.com/mmark-md/mmark)
 - [mmark-ext](https://github.com/mmark-md/mmark-ext)

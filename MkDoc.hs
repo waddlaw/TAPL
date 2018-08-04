@@ -15,7 +15,7 @@ import qualified Text.MMark.Extension        as Ext
 import qualified Text.MMark.Extension.Common as Ext
 
 main :: IO ()
-main = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07"] $ \input -> do
+main = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07", "ch08"] $ \input -> do
   txt <- T.readFile $ mconcat ["note/", input, ".md"]
   case MMark.parse input txt of
     Left errs -> putStrLn (MMark.parseErrorsPretty txt errs)

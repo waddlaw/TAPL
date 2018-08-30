@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
--- stack --resolver lts-12.1 script
+-- stack --resolver lts-12.8 script
 {-# LANGUAGE OverloadedStrings #-}
 
 module Main (main) where

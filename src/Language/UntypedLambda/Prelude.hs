@@ -5,6 +5,7 @@ module Language.UntypedLambda.Prelude
   ) where
 
 import RIO hiding (id, fst, snd, not, or, and)
+import qualified RIO.Map as Map
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
@@ -13,8 +14,6 @@ import           Language.UntypedLambda.Lib.List
 import           Language.UntypedLambda.Lib.Pair
 import           Language.UntypedLambda.Types
 
-import           Data.Map                          (Map)
-import qualified Data.Map                          as Map (fromList)
 
 prelude :: Map Text UntypedLambda
 prelude = Map.fromList

@@ -9,9 +9,8 @@ import RIO
 import qualified RIO.Text as Text
 import qualified RIO.List as L
 import qualified RIO.Char as C
+import qualified RIO.Map as Map
 
-import           Data.Map                                (Map)
-import qualified Data.Map                                as Map
 import           Data.Text.Prettyprint.Doc
 import           Data.Text.Prettyprint.Doc.Render.String
 

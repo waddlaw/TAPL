@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.UntypedLambda
   ( module Language.UntypedLambda.Types
   , module Language.UntypedLambda.Parser
@@ -27,13 +28,14 @@ import RIO hiding (trace)
 import qualified RIO.Text as Text
 import qualified RIO.Text.Partial as Text.Partial
 import qualified RIO.List as L
+import qualified RIO.List.Partial as List.Partial
+import qualified RIO.Set as Set
+import qualified RIO.ByteString as B
+
 
 import           Language.UntypedLambda.Parser
 import           Language.UntypedLambda.Types
 import           Language.Utils
-
-import           Data.Set                      (Set)
-import qualified Data.Set                      as Set
 
 -- | 指定された評価戦略で項を正規系に評価する
 eval :: Strategy -> UntypedLambda -> UntypedLambda
@@ -45,7 +47,7 @@ eval s t
 
 -- | デバッグ用
 trace :: Strategy -> UntypedLambda -> IO ()
-trace s t = mapM_ (putStrLn . render) $ reverse $ evalWithTrace s [t] t
+trace s t = mapM_ (B.hPutStr stdout . fromString . render) $ reverse $ evalWithTrace s [t] t
 
 -- | 簡約ステップ列を返す
 evalWithTrace :: Strategy -> [UntypedLambda] -> UntypedLambda -> [UntypedLambda]
@@ -162,7 +164,7 @@ restorenames g nt
   | otherwise = error "Error: duplicate variables in context."
   where
     isValid g' = ((==) `on` (length . L.nub)) g' g'
-    restorenames' g' (NlTmVar k) = TmVar (g' !! k)
+    restorenames' g' (NlTmVar k) = TmVar (g' List.Partial.!! k)
     restorenames' g' (NlTmLam t) =
       let x = mkFreshVarName g'
        in TmLam x $ restorenames (x:g') t
@@ -173,7 +175,7 @@ mkFreshVarName [] = "a0"
 mkFreshVarName (v:_) =  Text.pack $ mconcat ["a", show $ textToInt v + 1]
   where
     textToInt :: Text -> Int
-    textToInt = read . Text.unpack . Text.Partial.tail
+    textToInt = fromMaybe 0 . readMaybe . Text.unpack . Text.Partial.tail -- FIXME
 
 -- | 定義6.2.1 (P.60)
 --

@@ -6,13 +6,13 @@ module Language.UntypedLambda.Parser
 import RIO hiding (try)
 import qualified RIO.Text as Text
 import qualified RIO.List.Partial as L.Partial
+import qualified RIO.Map as Map
 
 import           Language.UntypedLambda.Lib.Church (c)
 import           Language.UntypedLambda.Prelude    (prelude)
 import           Language.UntypedLambda.Types
 import           Language.Utils.Parser
 
-import qualified Data.Map                          as Map
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta
 

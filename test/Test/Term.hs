@@ -1,21 +1,16 @@
-{-# LANGUAGE CPP #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Test.Term where
 
+import RIO
+import qualified RIO.Set as Set
+import qualified RIO.HashSet as HS
+
 import qualified Term.HashSet
-#if __GLASGOW_HASKELL__ == 822
-import qualified Term.MonadSet
-#endif
 import qualified Term.Set
 
 import           Test.Tasty
 import           Test.Tasty.HUnit
 import           Test.Tasty.QuickCheck
-
-import qualified Data.HashSet          as HashSet
-import qualified Data.Set              as Set
-#if __GLASGOW_HASKELL__ == 822
-import qualified Data.Set.Monad        as MonadSet
-#endif
 
 test_size :: TestTree
 test_size = testGroup "集合 s のサイズチェック"
@@ -24,18 +19,11 @@ test_size = testGroup "集合 s のサイズチェック"
       Set.size (Term.Set.s 1) @?= 3
       Set.size (Term.Set.s 2) @?= 39
       Set.size (Term.Set.s 3) @?= 59439
-  , testCase "HashSet.size (s n)" $ do
-      HashSet.size (Term.HashSet.s 0) @?= 0
-      HashSet.size (Term.HashSet.s 1) @?= 3
-      HashSet.size (Term.HashSet.s 2) @?= 39
-      HashSet.size (Term.HashSet.s 3) @?= 59439
-#if __GLASGOW_HASKELL__ == 822
-  , testCase "MonadSet.size (s n)" $ do
-      MonadSet.size (Term.MonadSet.s 0) @?= 0
-      MonadSet.size (Term.MonadSet.s 1) @?= 3
-      MonadSet.size (Term.MonadSet.s 2) @?= 39
-      MonadSet.size (Term.MonadSet.s 3) @?= 59439
-#endif
+  , testCase "Hs.size (s n)" $ do
+      HS.size (Term.HashSet.s 0) @?= 0
+      HS.size (Term.HashSet.s 1) @?= 3
+      HS.size (Term.HashSet.s 2) @?= 39
+      HS.size (Term.HashSet.s 3) @?= 59439
   ]
 
 prop_inv01:: Term.Set.Term -> Property

@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 module Language.B
   ( module Language.B.Parser
@@ -8,10 +9,10 @@ module Language.B
   , reduction
   ) where
 
+import           RIO
+
 import           Language.B.Parser
 import           Language.B.Types
-
-import           Data.Maybe
 
 -- | 項の評価関係
 --

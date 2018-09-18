@@ -1,3 +1,4 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.B.Types
   ( Term (..)
   , Rule (..)
@@ -5,6 +6,8 @@ module Language.B.Types
   , Premise
   , Conclusion
   ) where
+
+import           RIO
 
 import           Data.Text.Prettyprint.Doc
 

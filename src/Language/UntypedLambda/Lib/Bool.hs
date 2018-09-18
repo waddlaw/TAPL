@@ -1,3 +1,4 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Bool
   ( -- * value
@@ -15,7 +16,7 @@ module Language.UntypedLambda.Lib.Bool
   , mkNot
   ) where
 
-import           Prelude                      hiding (and, not, or)
+import           RIO                          hiding (and, not, or)
 
 import           Language.UntypedLambda.Types
 

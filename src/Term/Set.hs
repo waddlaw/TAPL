@@ -1,3 +1,4 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Term.Set
   ( module Term.Types
   , s
@@ -7,10 +8,11 @@ module Term.Set
   , minT
   ) where
 
-import           Term.Types
+import           RIO
+import qualified RIO.List.Partial as List.Partial
+import qualified RIO.Set          as Set
 
-import           Data.Set   (Set)
-import qualified Data.Set   as Set
+import           Term.Types
 
 type T = Set Term
 
@@ -92,7 +94,7 @@ depth Zero          = 1
 depth (Succ t)      = depth t + 1
 depth (Pred t)      = depth t + 1
 depth (IsZero t)    = depth t + 1
-depth (If t1 t2 t3) = maximum [depth t1, depth t2, depth t3] + 1
+depth (If t1 t2 t3) = List.Partial.maximum [depth t1, depth t2, depth t3] + 1
 
 -- | 与えられた Term が含まれる、最小の集合 T を作る
 --

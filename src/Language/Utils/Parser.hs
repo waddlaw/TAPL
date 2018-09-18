@@ -1,6 +1,9 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.Utils.Parser
   ( runParserString
   ) where
+
+import           RIO
 
 import           Text.Trifecta
 

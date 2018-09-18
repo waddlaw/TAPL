@@ -51,10 +51,10 @@ instance GHC.Classes.Eq Language.NB.Types.Term
 instance Data.Text.Prettyprint.Doc.Internal.Pretty Language.NB.Types.Term
 
 module Language.UntypedLambda.Types
-data Term
-TmVar :: Text -> Term
-TmLam :: Text -> Term -> Term
-TmApp :: Term -> Term -> Term
+data Term a
+TmVar :: a -> Term a
+TmLam :: VarName -> (Term a) -> Term a
+TmApp :: (Term a) -> (Term a) -> Term a
 data Strategy
 
 -- | 完全ベータ簡約
@@ -68,47 +68,78 @@ CallByName :: Strategy
 
 -- | 値呼び戦略
 CallByValue :: Strategy
+type UntypedLambda = Term Text
+(@@) :: UntypedLambda -> UntypedLambda -> UntypedLambda
+λ :: Text -> UntypedLambda -> UntypedLambda
+
+-- | 教科書とは逆で ["x", "y", "z"] は [0, 1, 2] と左からインデックスを付ける
+type Context = [VarName]
+type VarName = Text
+data NamelessTerm
+NlTmVar :: Int -> NamelessTerm
+NlTmLam :: NamelessTerm -> NamelessTerm
+NlTmApp :: NamelessTerm -> NamelessTerm -> NamelessTerm
+getNlTermVar :: NamelessTerm -> Int
 instance GHC.Enum.Bounded Language.UntypedLambda.Types.Strategy
 instance GHC.Enum.Enum Language.UntypedLambda.Types.Strategy
 instance GHC.Read.Read Language.UntypedLambda.Types.Strategy
 instance GHC.Show.Show Language.UntypedLambda.Types.Strategy
-instance GHC.Show.Show Language.UntypedLambda.Types.Term
-instance GHC.Classes.Eq Language.UntypedLambda.Types.Term
-instance Data.Text.Prettyprint.Doc.Internal.Pretty Language.UntypedLambda.Types.Term
-instance Data.String.IsString Language.UntypedLambda.Types.Term
+instance GHC.Show.Show a => GHC.Show.Show (Language.UntypedLambda.Types.Term a)
+instance GHC.Classes.Eq a => GHC.Classes.Eq (Language.UntypedLambda.Types.Term a)
+instance GHC.Show.Show Language.UntypedLambda.Types.NamelessTerm
+instance GHC.Classes.Eq Language.UntypedLambda.Types.NamelessTerm
+instance Data.Text.Prettyprint.Doc.Internal.Pretty Language.UntypedLambda.Types.UntypedLambda
+instance Data.String.IsString Language.UntypedLambda.Types.UntypedLambda
+instance Data.String.IsString Language.UntypedLambda.Types.NamelessTerm
 
-module Language.UntypedLambda.Prelude
-
--- | λx. x
-id :: Term
-prelude :: Map Text Term
+module Language.UntypedLambda.Lib.Bool
 
 -- | λt. λf. t
-tru :: Term
+tru :: UntypedLambda
 
 -- | λt. λf. f
-fls :: Term
+fls :: UntypedLambda
 
 -- | λl. λm. λn. l m n
-test :: Term
+test :: UntypedLambda
 
 -- | λb. λc. b c fls
-and :: Term
+and :: UntypedLambda
 
 -- | λb. λc. b tru c
-or :: Term
+or :: UntypedLambda
 
 -- | λb. b fls tru
-not :: Term
+not :: UntypedLambda
+mkTest :: UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
+mkAnd :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkOr :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkNot :: UntypedLambda -> UntypedLambda
+
+module Language.UntypedLambda.Lib.Pair
 
 -- | λf. λs. λb. b f s
-pair :: Term
+pair :: UntypedLambda
 
 -- | λp. p tru
-fst :: Term
+fst :: UntypedLambda
 
 -- | λp. p fls
-snd :: Term
+snd :: UntypedLambda
+
+-- | λf. λs. pair f s
+mkPair :: UntypedLambda -> UntypedLambda -> UntypedLambda
+
+module Language.UntypedLambda.Lib.Base
+
+-- | λx. x
+id :: UntypedLambda
+
+-- | λf. (λx. f (λy. x x y)) (λx. f (λy. x x y))
+fix :: UntypedLambda
+mkFix :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
+
+module Language.UntypedLambda.Lib.Church
 
 -- | c0 = λs. λz. z
 --   
@@ -117,62 +148,123 @@ snd :: Term
 --   c2 = λs. λz. s (s z)
 --   
 --   c3 = λs. λz. s (s (s z))
-c :: Int -> Term
+c :: Int -> UntypedLambda
 
 -- | λn. λs. λz. s (n s z)
-scc :: Term
+scc :: UntypedLambda
 
 -- | λm. λn. λs. λz. m s (n s z)
-plus :: Term
+plus :: UntypedLambda
 
 -- | λm. λn. m (plus n) c0
-times :: Term
+times :: UntypedLambda
 
 -- | λm. m (λx. fls) tru
-iszro :: Term
+iszro :: UntypedLambda
 
 -- | λm. fst (m ss zz)
-prd :: Term
+prd :: UntypedLambda
 
 -- | λn. λs. λz. n s (s z)
-scc2 :: Term
+scc2 :: UntypedLambda
 
 -- | λm. λn. λs. λz. m (n s) z
-times2 :: Term
+times2 :: UntypedLambda
 
 -- | λm. λn. λs. m (n s)
-times3 :: Term
+times3 :: UntypedLambda
 
 -- | λn. λm. m (times n) c1
 --   
 --   n^m
-power1 :: Term
+power1 :: UntypedLambda
 
 -- | λn. λm. m n
 --   
 --   m^n
-power2 :: Term
+power2 :: UntypedLambda
 
 -- | λm. λn. n prd m
-subtract1 :: Term
+subtract1 :: UntypedLambda
 
 -- | λm. λn. and (iszro (m prd n)) (iszro (n prd m))
-equal :: Term
+equal :: UntypedLambda
+
+-- | match = iszro n base = λx. c1 rec = λx. times n (f (prd n))
+factorial :: UntypedLambda
+isone :: UntypedLambda
+mkPlus :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkTimes :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkSubtract :: UntypedLambda -> UntypedLambda -> UntypedLambda
+mkEqual :: UntypedLambda -> UntypedLambda -> UntypedLambda
+
+module Language.UntypedLambda.Lib.NB
+
+-- | Church ブール値をプリミティブなブール値に変換 λb. b true false
+realbool :: UntypedLambda
+
+-- | プリミティブなブール値を Church ブール値に変換 λb. test b tru fls TODO: fake
+churchbool :: UntypedLambda
+
+-- | プリミティブなブール値を返す equal λm. λn. equal m n true false
+realeq :: UntypedLambda
+
+-- | Church 数からプリミティブな数への変換 λm. m (λx. succ x) 0
+realnat :: UntypedLambda
+
+-- | プリミティブな自然数を、対応する Church 数に変換する関数 match = iszro m base = λx rec = scc n
+--   (f (prd m)) | TODO: fake
+churchnat :: UntypedLambda
+
+module Language.UntypedLambda.Lib.List
 
 -- | λc. λn. n
-nil :: Term
+nil :: UntypedLambda
 
 -- | λh. λt. λc. λn. c h (t c n)
-cons :: Term
+cons :: UntypedLambda
 
 -- | λl. l (λh. λt. fls) tru
-isnil :: Term
+isnil :: UntypedLambda
 
 -- | λl. l (λh. λt. h) l
-head :: Term
+head :: UntypedLambda
 
 -- | λl. fst (l cc nn)
-tail :: Term
+tail :: UntypedLambda
+
+-- | match = isnil l base = c0 rec = plus (head l) (f (tail l))
+sumlist :: UntypedLambda
+
+-- | λl. l plus c0
+sumlist' :: UntypedLambda
+
+module Language.UntypedLambda.Prelude
+prelude :: Map Text UntypedLambda
+
+module Language.UntypedLambda.Lib.Int
+
+-- | int = λb. λs. λz. z | λb. λs. λz. pair b (s z) 0 = λs. λz. z -1 = λs.
+--   λz. pair fls (s z) +1 = λs. λz. pair tru (s z)
+int :: Int -> UntypedLambda
+
+-- | if isZero i then (True, 1) else if isNegative i then (fst i, prd (snd
+--   i)) else (fst i, scc (snd i))
+--   
+--   λi. test (isZeroI i) (pair tru c1) (test (isPositiveI i) (pair (fst i)
+--   (scc (snd i))) (pair (fst i) (prd (snd i))))
+succI :: UntypedLambda
+
+-- | match = iszro (fst p) base = snd p rec = succI (f (mkPair (prd (fst
+--   p)) (snd p))
+succNI :: UntypedLambda
+plusI :: UntypedLambda
+
+-- | λi. iszro (snd i)
+isZeroI :: UntypedLambda
+
+-- | λi. isone (snd i)
+isAbsOneI :: UntypedLambda
 
 module Language.Utils
 trim :: String -> String
@@ -183,73 +275,110 @@ module Language.Utils.Parser
 runParserString :: Parser a -> String -> Either String a
 
 module Language.UntypedLambda.Parser
-runUlParser :: String -> Either String Term
+runUlParser :: String -> Either String UntypedLambda
 
 module Language.UntypedLambda
 
 -- | 与えられた項が閉じているかどうか判定する述語
-isClosed :: Term -> Bool
+--   
+--   項が閉じている = 自由変数が無い
+--   
+--   閉じた項はコンビネータとも呼ばれる。
+isClosed :: UntypedLambda -> Bool
 
 -- | 正規順序戦略
-reduceNormalOrder :: Term -> Term
+reduceNormalOrder :: UntypedLambda -> UntypedLambda
 
 -- | 名前呼び戦略
-reduceCallByName :: Term -> Term
+reduceCallByName :: UntypedLambda -> UntypedLambda
 
 -- | 値呼び戦略
-reduceCallByValue :: Term -> Term
+reduceCallByValue :: UntypedLambda -> UntypedLambda
 
 -- | 指定された評価戦略で項を正規系に評価する
-eval :: Strategy -> Term -> Term
+eval :: Strategy -> UntypedLambda -> UntypedLambda
 
 -- | 簡約ステップ列を返す
-evalWithTrace :: Strategy -> [Term] -> Term -> [Term]
+evalWithTrace :: Strategy -> [UntypedLambda] -> UntypedLambda -> [UntypedLambda]
 
 -- | 1ステップのみ、指定された評価戦略で評価する
-evalOneStep :: Strategy -> Term -> Term
+evalOneStep :: Strategy -> UntypedLambda -> UntypedLambda
 
 -- | デバッグ用
-trace :: Strategy -> Term -> IO ()
+trace :: Strategy -> UntypedLambda -> IO ()
 
 -- | 簡約ステップ数を返す
-steps :: Term -> Int
+steps :: UntypedLambda -> Int
+
+-- | β-reduction
+--   
+--   定義5.3.5 (P.54)
+subst :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda
+
+-- | 項のサイズを計算する
+--   
+--   演習5.3.3 (P.52)
+size :: UntypedLambda -> Int
+
+-- | 演習6.1.5 (P.59)
+--   
+--   仮定: FV(t) ⊆ dom(Γ）)
+removenames :: Context -> UntypedLambda -> NamelessTerm
+
+-- | 演習6.1.5 (P.59)
+--   
+--   仮定1: Γに含まれる名前は互いに異なる 仮定2: 変数名の集合Vは順序付けられている
+restorenames :: Context -> NamelessTerm -> UntypedLambda
+
+-- | 定義6.2.1 (P.60)
+--   
+--   c: 打ち切り値
+--   
+--   d: シフト数
+shift :: Int -> Int -> NamelessTerm -> NamelessTerm
+
+-- | 定義6.2.4 (P.60)
+namelessSubst :: Int -> NamelessTerm -> NamelessTerm -> NamelessTerm
+
+-- | 名前無し項のβ簡約 (値呼び)
+reduceNameless :: NamelessTerm -> NamelessTerm
 
 module Language.UntypedLambda.Examples
 
 -- | s t u
-example1 :: Term
+example1 :: UntypedLambda
 
 -- | λx. (λy. ((x y) x))
-example2 :: Term
+example2 :: UntypedLambda
 
 -- | (λx.x) ((λx.x) (λz. (λx.x) z))
-example3 :: Term
+example3 :: UntypedLambda
 
 -- | (λx.x) x
-example4 :: Term
+example4 :: UntypedLambda
 
 -- | λz. λx. λy. x (y z)
-example5 :: Term
+example5 :: UntypedLambda
 
 -- | (λx. x (λx. x)) (u r)
-example6 :: Term
+example6 :: UntypedLambda
 
 -- | test tru tru fls
-example7 :: Term
+example7 :: UntypedLambda
 
 -- | and tru tru
-example8 :: Term
+example8 :: UntypedLambda
 
 -- | and tru fls
-example9 :: Term
+example9 :: UntypedLambda
 
 -- | fst (pair v w)
-example10 :: Term
+example10 :: UntypedLambda
 
 -- | <ul>
 --   <li><i>x</i></li>
 --   </ul>
-example11 :: Term
+example11 :: UntypedLambda
 
 module Language.NB.Parser
 runNbParser :: String -> Either String Term

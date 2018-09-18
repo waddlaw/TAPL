@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE TypeSynonymInstances #-}
 module Language.UntypedLambda.Types
   ( Term (..)
@@ -13,9 +14,9 @@ module Language.UntypedLambda.Types
   , getNlTermVar
   ) where
 
-import           Data.String
-import           Data.Text                 (Text)
-import qualified Data.Text                 as T
+import           RIO
+import qualified RIO.Text                  as Text
+
 import           Data.Text.Prettyprint.Doc
 
 type UntypedLambda = Term Text
@@ -36,7 +37,7 @@ getNlTermVar (NlTmVar k) = k
 getNlTermVar _           = error "panic"
 
 instance IsString NamelessTerm where
-  fromString = NlTmVar . read
+  fromString = NlTmVar . fromMaybe 0 . readMaybe -- FIXME
 
 (@@) :: UntypedLambda -> UntypedLambda -> UntypedLambda
 t1 @@ t2 = TmApp t1 t2
@@ -59,7 +60,7 @@ instance Pretty UntypedLambda where
       ppr t           = parens (pretty t)
 
 instance IsString UntypedLambda where
-  fromString = TmVar . T.pack
+  fromString = TmVar . Text.pack
 
 data Strategy
   = FullBetaReduction -- ^ 完全ベータ簡約

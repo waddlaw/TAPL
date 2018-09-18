@@ -1,8 +1,10 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.Utils.Pretty
- ( prettyText
- ) where
+  ( prettyText
+  ) where
 
-import           Data.Text                             (Text)
+import           RIO
+
 import           Data.Text.Prettyprint.Doc
 import           Data.Text.Prettyprint.Doc.Render.Text
 

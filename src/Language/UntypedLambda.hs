@@ -1,3 +1,4 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda
   ( module Language.UntypedLambda.Types
@@ -23,17 +24,18 @@ module Language.UntypedLambda
   , reduceNameless
   ) where
 
+import           RIO                           hiding (trace)
+import qualified RIO.ByteString                as B
+import qualified RIO.List                      as L
+import qualified RIO.List.Partial              as List.Partial
+import qualified RIO.Set                       as Set
+import qualified RIO.Text                      as Text
+import qualified RIO.Text.Partial              as Text.Partial
+
+
 import           Language.UntypedLambda.Parser
 import           Language.UntypedLambda.Types
 import           Language.Utils
-
-import           Data.Function
-import           Data.List
-import           Data.Maybe
-import           Data.Set                      (Set)
-import qualified Data.Set                      as Set
-import           Data.Text                     (Text)
-import qualified Data.Text                     as T
 
 -- | 指定された評価戦略で項を正規系に評価する
 eval :: Strategy -> UntypedLambda -> UntypedLambda
@@ -45,7 +47,7 @@ eval s t
 
 -- | デバッグ用
 trace :: Strategy -> UntypedLambda -> IO ()
-trace s t = mapM_ (putStrLn . render) $ reverse $ evalWithTrace s [t] t
+trace s t = mapM_ (B.hPutStr stdout . fromString . render) $ reverse $ evalWithTrace s [t] t
 
 -- | 簡約ステップ列を返す
 evalWithTrace :: Strategy -> [UntypedLambda] -> UntypedLambda -> [UntypedLambda]
@@ -148,7 +150,7 @@ removenames g t
   | freeVars Set.empty t `Set.isSubsetOf` Set.fromList g = removenames' g t
   | otherwise = error "Does not satisfy: FV(t) `isSubsetOf` dom(Γ)"
   where
-    removenames' g' (TmVar x)     = NlTmVar $ fromMaybe (error "Can't find variable") $ elemIndex x g'
+    removenames' g' (TmVar x)     = NlTmVar $ fromMaybe (error "Can't find variable") $ L.elemIndex x g'
     removenames' g' (TmLam x t1)  = NlTmLam $ removenames (x:g') t1
     removenames' g' (TmApp t1 t2) = (NlTmApp `on` removenames' g') t1 t2
 
@@ -161,8 +163,8 @@ restorenames g nt
   | isValid g = restorenames' g nt
   | otherwise = error "Error: duplicate variables in context."
   where
-    isValid g' = ((==) `on` (length . nub)) g' g'
-    restorenames' g' (NlTmVar k) = TmVar (g' !! k)
+    isValid g' = ((==) `on` (length . L.nub)) g' g'
+    restorenames' g' (NlTmVar k) = TmVar (g' List.Partial.!! k)
     restorenames' g' (NlTmLam t) =
       let x = mkFreshVarName g'
        in TmLam x $ restorenames (x:g') t
@@ -170,10 +172,10 @@ restorenames g nt
 
 mkFreshVarName :: Context -> VarName
 mkFreshVarName [] = "a0"
-mkFreshVarName (v:_) =  T.pack $ mconcat ["a", show $ textToInt v + 1]
+mkFreshVarName (v:_) =  Text.pack $ mconcat ["a", show $ textToInt v + 1]
   where
     textToInt :: Text -> Int
-    textToInt = read . T.unpack . T.tail
+    textToInt = fromMaybe 0 . readMaybe . Text.unpack . Text.Partial.tail -- FIXME
 
 -- | 定義6.2.1 (P.60)
 --

@@ -4,7 +4,7 @@ module Language.B.Parser
   , stepCmdParser
   ) where
 
-import RIO
+import           RIO
 
 import           Language.B.Types
 import           Language.Utils.Parser

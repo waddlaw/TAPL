@@ -4,7 +4,7 @@ module Language.NB.Types
   , TmError (..)
   ) where
 
-import RIO
+import           RIO
 
 import           Data.Text.Prettyprint.Doc
 

@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.NB
   ( realbool
   , churchbool
@@ -9,7 +9,7 @@ module Language.UntypedLambda.Lib.NB
   , churchnat
   ) where
 
-import RIO
+import           RIO
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool

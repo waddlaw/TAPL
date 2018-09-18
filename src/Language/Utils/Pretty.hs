@@ -3,7 +3,7 @@ module Language.Utils.Pretty
   ( prettyText
   ) where
 
-import RIO
+import           RIO
 
 import           Data.Text.Prettyprint.Doc
 import           Data.Text.Prettyprint.Doc.Render.Text

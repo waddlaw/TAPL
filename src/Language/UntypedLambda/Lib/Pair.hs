@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Pair
   ( pair
   , fst
@@ -8,7 +8,7 @@ module Language.UntypedLambda.Lib.Pair
   , mkPair
   ) where
 
-import RIO hiding (fst, snd)
+import           RIO                             hiding (fst, snd)
 
 import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Types

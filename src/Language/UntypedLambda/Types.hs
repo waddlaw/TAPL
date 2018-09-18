@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE FlexibleInstances    #-}
+{-# LANGUAGE NoImplicitPrelude    #-}
 {-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.UntypedLambda.Types
   ( Term (..)
   , Strategy (..)
@@ -14,8 +14,8 @@ module Language.UntypedLambda.Types
   , getNlTermVar
   ) where
 
-import RIO
-import qualified RIO.Text as Text
+import           RIO
+import qualified RIO.Text                  as Text
 
 import           Data.Text.Prettyprint.Doc
 

@@ -5,7 +5,7 @@ module Term.Types
   ( Term(..)
   ) where
 
-import RIO
+import           RIO
 
 import           Test.QuickCheck
 

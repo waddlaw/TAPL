@@ -1,9 +1,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 module Test.Term where
 
-import RIO
-import qualified RIO.Set as Set
-import qualified RIO.HashSet as HS
+import           RIO
+import qualified RIO.HashSet           as HS
+import qualified RIO.Set               as Set
 
 import qualified Term.HashSet
 import qualified Term.Set

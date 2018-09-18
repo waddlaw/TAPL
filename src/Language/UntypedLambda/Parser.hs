@@ -3,10 +3,10 @@ module Language.UntypedLambda.Parser
   ( runUlParser
   ) where
 
-import RIO hiding (try)
-import qualified RIO.Text as Text
-import qualified RIO.List.Partial as L.Partial
-import qualified RIO.Map as Map
+import           RIO                               hiding (try)
+import qualified RIO.List.Partial                  as L.Partial
+import qualified RIO.Map                           as Map
+import qualified RIO.Text                          as Text
 
 import           Language.UntypedLambda.Lib.Church (c)
 import           Language.UntypedLambda.Prelude    (prelude)

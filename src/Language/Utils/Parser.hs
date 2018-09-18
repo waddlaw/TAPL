@@ -3,7 +3,7 @@ module Language.Utils.Parser
   ( runParserString
   ) where
 
-import RIO
+import           RIO
 
 import           Text.Trifecta
 

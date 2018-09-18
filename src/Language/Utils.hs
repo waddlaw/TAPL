@@ -5,11 +5,11 @@ module Language.Utils
   , renderPrelude
   ) where
 
-import RIO
-import qualified RIO.Text as Text
-import qualified RIO.List as L
-import qualified RIO.Char as C
-import qualified RIO.Map as Map
+import           RIO
+import qualified RIO.Char                                as C
+import qualified RIO.List                                as L
+import qualified RIO.Map                                 as Map
+import qualified RIO.Text                                as Text
 
 import           Data.Text.Prettyprint.Doc
 import           Data.Text.Prettyprint.Doc.Render.String

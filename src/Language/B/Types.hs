@@ -7,7 +7,7 @@ module Language.B.Types
   , Conclusion
   ) where
 
-import RIO
+import           RIO
 
 import           Data.Text.Prettyprint.Doc
 

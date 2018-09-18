@@ -3,7 +3,7 @@ module Language.NB.Parser
   ( runNbParser
   ) where
 
-import RIO
+import           RIO
 
 import           Language.NB.Types
 import           Language.Utils.Parser

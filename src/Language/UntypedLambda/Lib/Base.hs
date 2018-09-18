@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Base
   ( id
   , fix
@@ -7,7 +7,7 @@ module Language.UntypedLambda.Lib.Base
   , mkFix
   ) where
 
-import RIO hiding (id, fix)
+import           RIO                             hiding (fix, id)
 
 import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Types

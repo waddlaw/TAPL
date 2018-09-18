@@ -1,5 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Church
   ( c
   , scc
@@ -30,7 +30,7 @@ module Language.UntypedLambda.Lib.Church
   , mkEqual
   ) where
 
-import RIO hiding (and, fst, snd)
+import           RIO                             hiding (and, fst, snd)
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool

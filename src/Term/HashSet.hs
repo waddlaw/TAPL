@@ -8,8 +8,8 @@ module Term.HashSet
   , minT
   ) where
 
-import RIO
-import qualified RIO.HashSet as HS
+import           RIO
+import qualified RIO.HashSet      as HS
 import qualified RIO.List.Partial as List.Partial
 
 import           Term.Types

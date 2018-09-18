@@ -8,9 +8,9 @@ module Term.Set
   , minT
   ) where
 
-import RIO
-import qualified RIO.Set as Set
+import           RIO
 import qualified RIO.List.Partial as List.Partial
+import qualified RIO.Set          as Set
 
 import           Term.Types
 

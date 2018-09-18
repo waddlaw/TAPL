@@ -6,19 +6,19 @@ module Language.SimpleLambda.Parser
 -- λs:Bool.λz:Bool.s (s z)
 -- λf:Bool.(λx:Bool.f (λy:Bool. (x x) y)) (λx:Bool. f (λy:Bool. (x x) y))
 
-import           RIO                               hiding (try)
-import qualified RIO.List.Partial                  as L.Partial
-import qualified RIO.Map                           as Map
-import qualified RIO.Text                          as Text
-import qualified RIO.List as L
+import           RIO                         hiding (try)
+import qualified RIO.List                    as L
+import qualified RIO.List.Partial            as L.Partial
+import qualified RIO.Map                     as Map
+import qualified RIO.Text                    as Text
 
+import           Language.SimpleLambda.Types
 import           Language.Utils.Parser
-import Language.SimpleLambda.Types
 
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta
 
-import Control.Monad.Trans.State
+import           Control.Monad.Trans.State
 
 type Env = [Text]
 

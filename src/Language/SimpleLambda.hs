@@ -3,12 +3,12 @@ module Language.SimpleLambda
   ( typeof
   ) where
 
-import RIO
-import qualified RIO.List.Partial as L.Partial
+import           RIO
+import qualified RIO.List.Partial             as L.Partial
 
-import Language.SimpleLambda.Types
+import           Language.SimpleLambda.Types
 
-import Language.UntypedLambda.Types (UntypedLambda)
+import           Language.UntypedLambda.Types (UntypedLambda)
 import qualified Language.UntypedLambda.Types as Untyped
 
 typeof :: Context -> Term -> Ty
@@ -44,7 +44,7 @@ getTypeFromContext :: Context -> Int -> Ty
 getTypeFromContext ctx i =
   case getBinding ctx i of
     (VarBind tyT) -> tyT
-    _ -> error "getTypeFromContext"
+    _             -> error "getTypeFromContext"
 
 getBinding :: Context -> Int -> Binding
 getBinding ctx i = snd $ ctx L.Partial.!! i

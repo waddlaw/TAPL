@@ -1,18 +1,18 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE RecordWildCards   #-}
 module Language.Options
   ( evalCmd
   , helpCmd
   ) where
 
-import RIO hiding (trace)
-import qualified RIO.Text as Text
+import           RIO                          hiding (trace)
+import qualified RIO.Text                     as Text
 
-import Language.UntypedLambda
-import Language.UntypedLambda.Types
-import Language.Utils
-import Language.Types
+import           Language.Types
+import           Language.UntypedLambda
+import           Language.UntypedLambda.Types
+import           Language.Utils
 
 import           Data.Text.Prettyprint.Doc
 

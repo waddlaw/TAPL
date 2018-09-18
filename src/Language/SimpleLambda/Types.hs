@@ -7,7 +7,7 @@ module Language.SimpleLambda.Types
   , TypedLambda
   ) where
 
-import RIO
+import           RIO
 
 import           Data.Text.Prettyprint.Doc
 
@@ -44,5 +44,5 @@ instance Pretty Term where
   pretty (TmIf t1 t2 t3) = pretty "if" <+> pretty t1 <+> pretty "then" <+> pretty t2 <+> pretty "else" <+> pretty t3
 
 instance Pretty Ty where
-  pretty TyBool = pretty "Bool"
+  pretty TyBool          = pretty "Bool"
   pretty (TyArr ty1 ty2) = pretty ty1 <+> pretty "->" <+> pretty ty2

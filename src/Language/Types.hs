@@ -5,10 +5,10 @@ module Language.Types
   , EvalFunc
   ) where
 
-import RIO
+import           RIO
 import           RIO.Process
 
-import Language.UntypedLambda.Types
+import           Language.UntypedLambda.Types
 
 type ParseFunc term = Text -> Either String term
 type EvalFunc term = Strategy -> term -> term

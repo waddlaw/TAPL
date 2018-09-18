@@ -1,21 +1,21 @@
+{-# LANGUAGE MultiWayIf        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE MultiWayIf #-}
 module Main (main) where
 
-import RIO
+import           RIO
 import           RIO.Process
-import qualified RIO.Text as Text
+import qualified RIO.Text                     as Text
 
-import Language.Utils
-import Language.Options
-import Language.Types
-import Language.UntypedLambda.Types
-import Language.SimpleLambda.Types as SimpleLambda
-import Language.SimpleLambda.Parser
+import           Language.Options
+import           Language.SimpleLambda.Parser
+import           Language.SimpleLambda.Types  as SimpleLambda
+import           Language.Types
+import           Language.UntypedLambda.Types
+import           Language.Utils
 
-import           System.Console.Haskeline hiding (display)
-import System.Environment
+import           System.Console.Haskeline     hiding (display)
+import           System.Environment
 
 instance MonadException (RIO env) where
   controlIO f = RIO $ controlIO $ \(RunIO run) -> let

@@ -32,7 +32,6 @@ import qualified RIO.Set                       as Set
 import qualified RIO.Text                      as Text
 import qualified RIO.Text.Partial              as Text.Partial
 
-
 import           Language.UntypedLambda.Parser
 import           Language.UntypedLambda.Types
 import           Language.Utils

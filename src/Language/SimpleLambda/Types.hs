@@ -45,4 +45,7 @@ instance Pretty Term where
 
 instance Pretty Ty where
   pretty TyBool          = pretty "Bool"
-  pretty (TyArr ty1 ty2) = pretty ty1 <+> pretty "->" <+> pretty ty2
+  pretty (TyArr ty1 ty2) = ppr ty1 <+> pretty "->" <+> pretty ty2
+    where
+      ppr t@TyBool = pretty t
+      ppr t        = parens (pretty t)

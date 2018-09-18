@@ -20,7 +20,7 @@ import           Language.Utils
 import           Data.Text.Prettyprint.Doc
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> Text -> RIO ReplEnv ()
-evalCmd parser eval input = ask >>= \ReplEnv{..} -> do
+evalCmd parser eval input = ask >>= \ReplEnv{..} ->
   case parser input of
     Left err -> logError $ display $ Text.pack err
     Right term ->
@@ -32,13 +32,12 @@ evalCmd parser eval input = ask >>= \ReplEnv{..} -> do
         logInfo $ display $ Text.pack $ render $ eval appStrategy term
 
 tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> RIO ReplEnv ()
-tcCmd parser checker input = do
+tcCmd parser checker input =
   case Text.stripPrefix ":t " input of
     Nothing -> do
       logInfo "コマンドがの書式が間違っています。"
       return ()
-    Just input' -> do
-      logInfo $ display $ "input: " <> input'
+    Just input' ->
       case parser input' of
         Left err   -> logError $ display $ Text.pack err
         Right term -> logInfo $ display $ Text.pack $ render $ checker term

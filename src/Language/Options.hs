@@ -7,10 +7,10 @@ module Language.Options
   , helpCmd
   ) where
 
-import RIO hiding (trace)
-import qualified RIO.Text as Text
-import RIO.Partial as Partial
-import RIO.List.Partial as L.Partial
+import           RIO                          hiding (trace)
+import           RIO.List.Partial             as L.Partial
+import           RIO.Partial                  as Partial
+import qualified RIO.Text                     as Text
 
 import           Language.Types
 import           Language.UntypedLambda
@@ -40,7 +40,7 @@ tcCmd parser checker input = do
     Just input' -> do
       logInfo $ display $ "input: " <> input'
       case parser input' of
-        Left err -> logError $ display $ Text.pack err
+        Left err   -> logError $ display $ Text.pack err
         Right term -> logInfo $ display $ Text.pack $ render $ checker term
 
 helpCmd :: HasLogFunc env => RIO env ()

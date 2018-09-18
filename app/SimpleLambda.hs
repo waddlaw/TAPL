@@ -7,12 +7,13 @@ import           RIO
 import           RIO.Process
 import qualified RIO.Text                     as Text
 
-import           Language.Options
-import           Language.SimpleLambda.Parser
-import           Language.SimpleLambda.Types  as SimpleLambda
-import           Language.Types
-import           Language.UntypedLambda.Types
-import           Language.Utils
+import Language.Utils
+import Language.Options
+import Language.Types
+import Language.UntypedLambda.Types
+import Language.SimpleLambda as SimpleLambda
+import Language.SimpleLambda.Types as SimpleLambda
+import Language.SimpleLambda.Parser
 
 import           System.Console.Haskeline     hiding (display)
 import           System.Environment
@@ -55,10 +56,16 @@ main' = do
     Just ":q"    -> return ()
     Just input ->
       if  | ":help" `Text.isPrefixOf` input -> lift helpCmd >> main'
-          | otherwise -> lift (evalCmd parser eval input) >> main'
+          | ":t" `Text.isPrefixOf` input -> lift (tcCmd parser typecheck input) >> main'
+          | otherwise -> do
+              lift (evalCmd parser eval input)
+              main'
 
 parser :: Text -> Either String SimpleLambda.Term
 parser = runSimpleLambdaParser . Text.unpack
+
+typecheck :: SimpleLambda.Term -> SimpleLambda.Ty
+typecheck = SimpleLambda.typeof []
 
 eval :: EvalFunc SimpleLambda.Term
 eval _ = id -- FIXME

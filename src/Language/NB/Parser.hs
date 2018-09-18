@@ -1,11 +1,13 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.NB.Parser
   ( runNbParser
   ) where
 
+import RIO
+
 import           Language.NB.Types
 import           Language.Utils.Parser
 
-import           Control.Applicative
 import           Text.Trifecta
 
 runNbParser :: String -> Either String Term

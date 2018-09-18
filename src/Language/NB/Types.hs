@@ -1,7 +1,10 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.NB.Types
   ( Term (..)
   , TmError (..)
   ) where
+
+import RIO
 
 import           Data.Text.Prettyprint.Doc
 

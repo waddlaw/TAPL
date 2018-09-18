@@ -1,12 +1,14 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.B.Parser
   ( bparser
   , stepCmdParser
   ) where
 
+import RIO
+
 import           Language.B.Types
 import           Language.Utils.Parser
 
-import           Control.Applicative
 import           Text.Trifecta
 
 bparser :: String -> Either String EvalRelation

@@ -1,4 +1,5 @@
 {-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.NB
   ( module Language.NB.Parser
   , module Language.NB.Types
@@ -6,6 +7,8 @@ module Language.NB
   , isVal
   , eval
   ) where
+
+import RIO
 
 import           Language.NB.Parser
 import           Language.NB.Types

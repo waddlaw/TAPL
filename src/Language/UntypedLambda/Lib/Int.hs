@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.UntypedLambda.Lib.Int
   ( int
   , succI
@@ -8,7 +9,7 @@ module Language.UntypedLambda.Lib.Int
   , isAbsOneI
   ) where
 
-import           Prelude                           hiding (and, fst, not, snd)
+import RIO hiding (and, not, fst, snd)
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool

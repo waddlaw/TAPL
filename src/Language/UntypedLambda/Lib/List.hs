@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.UntypedLambda.Lib.List
   ( nil
   , cons
@@ -10,7 +11,7 @@ module Language.UntypedLambda.Lib.List
   , sumlist'
   ) where
 
-import           Prelude                           hiding (fst, head, snd, tail)
+import RIO hiding (fst, snd)
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool

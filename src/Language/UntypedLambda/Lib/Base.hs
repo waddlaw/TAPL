@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.UntypedLambda.Lib.Base
   ( id
   , fix
@@ -6,12 +7,10 @@ module Language.UntypedLambda.Lib.Base
   , mkFix
   ) where
 
-import           Prelude                         hiding (id)
+import RIO hiding (id, fix)
 
 import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Types
-
-import           Data.Text                       (Text)
 
 -- | λx. x
 id :: UntypedLambda

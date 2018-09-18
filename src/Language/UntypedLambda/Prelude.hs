@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.UntypedLambda.Prelude
   ( prelude
   ) where
 
-import           Prelude                           hiding (and, fst, head, id,
-                                                    not, or, snd, tail)
+import RIO hiding (id, fst, snd, not, or, and)
 
 import           Language.UntypedLambda.Lib.Base
 import           Language.UntypedLambda.Lib.Bool
@@ -15,7 +15,6 @@ import           Language.UntypedLambda.Types
 
 import           Data.Map                          (Map)
 import qualified Data.Map                          as Map (fromList)
-import           Data.Text                         (Text)
 
 prelude :: Map Text UntypedLambda
 prelude = Map.fromList

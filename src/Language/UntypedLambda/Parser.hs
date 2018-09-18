@@ -1,16 +1,18 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Language.UntypedLambda.Parser
   ( runUlParser
   ) where
+
+import RIO hiding (try)
+import qualified RIO.Text as Text
+import qualified RIO.List.Partial as L.Partial
 
 import           Language.UntypedLambda.Lib.Church (c)
 import           Language.UntypedLambda.Prelude    (prelude)
 import           Language.UntypedLambda.Types
 import           Language.Utils.Parser
 
-import           Control.Applicative
 import qualified Data.Map                          as Map
-import           Data.Text                         (Text)
-import qualified Data.Text                         as T
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta
 
@@ -20,7 +22,7 @@ runUlParser = runParserString exprP
 exprP :: Parser UntypedLambda
 exprP = lefty <$> factorP <*> termsP
   where
-    lefty x xs = foldl1 TmApp (x:xs)
+    lefty x xs = L.Partial.foldl1 TmApp (x:xs)
     termsP = many (space *> factorP)
 
 factorP :: Parser UntypedLambda
@@ -32,14 +34,15 @@ lambdaP = TmLam <$  symbol "λ"
                 <*  dot
                 <*> token exprP
 
+-- FIXME
 numP :: Parser UntypedLambda
-numP = c . read <$  char 'c'
+numP = c . fromMaybe 0 . readMaybe <$  char 'c'
                 <*> some digit
 
 varP :: Parser UntypedLambda
 varP = toTerm <$> oneOf ['a'..'z'] <*> many alphaNum
   where
-    toTerm x xs = lifty $ T.pack (x:xs)
+    toTerm x xs = lifty $ Text.pack (x:xs)
     lifty var = Map.findWithDefault (TmVar var) var prelude
 
 identP :: Parser Text

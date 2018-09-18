@@ -13,13 +13,13 @@ ghc-options:
 - -Wtabs
 
 dependencies:
+- rio
 - base
 - containers
 - hashable
 - parsers
 - prettyprinter
 - QuickCheck
-- text
 - transformers
 - trifecta
 - unordered-containers

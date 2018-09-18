@@ -1,3 +1,4 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 module Term.HashSet
   ( module Term.Types
   , s
@@ -7,10 +8,11 @@ module Term.HashSet
   , minT
   ) where
 
-import           Term.Types
+import RIO
+import qualified RIO.HashSet as HS
+import qualified RIO.List.Partial as List.Partial
 
-import           Data.HashSet (HashSet)
-import qualified Data.HashSet as HashSet
+import           Term.Types
 
 type T = HashSet Term
 
@@ -26,13 +28,13 @@ fromList [TTrue,TFalse,Zero]
 -}
 -- 簡略化のため Int を Nat として扱う。エラー処理は実装しない。
 s :: Int -> T
-s 0 = HashSet.empty
-s i = HashSet.unions [s1, s2, s3]
+s 0 = HS.empty
+s i = HS.unions [s1, s2, s3]
   where
-    s1 = HashSet.fromList [TTrue, TFalse, Zero]
-    s2 = HashSet.fromList $ concat [[Succ t1, Pred t1, IsZero t1] | t1 <- si]
-    s3 = HashSet.fromList [If t1 t2 t3 | t1 <- si, t2 <- si, t3 <- si]
-    si = HashSet.toList $ s (i-1)
+    s1 = HS.fromList [TTrue, TFalse, Zero]
+    s2 = HS.fromList $ concat [[Succ t1, Pred t1, IsZero t1] | t1 <- si]
+    s3 = HS.fromList [If t1 t2 t3 | t1 <- si, t2 <- si, t3 <- si]
+    si = HS.toList $ s (i-1)
 
 {- |
 [定義 3.3.1 項tに現れる定数の集合を Consts(t) と書き、次のように定義する]:
@@ -44,13 +46,13 @@ fromList [TTrue]
 fromList [Zero]
 -}
 consts :: Term -> T
-consts TTrue         = HashSet.singleton TTrue
-consts TFalse        = HashSet.singleton TFalse
-consts Zero          = HashSet.singleton Zero
+consts TTrue         = HS.singleton TTrue
+consts TFalse        = HS.singleton TFalse
+consts Zero          = HS.singleton Zero
 consts (Succ t)      = consts t
 consts (Pred t)      = consts t
 consts (IsZero t)    = consts t
-consts (If t1 t2 t3) = HashSet.unions $ map consts [t1, t2, t3]
+consts (If t1 t2 t3) = HS.unions $ map consts [t1, t2, t3]
 
 {- |
 [定義 3.3.2 項tのサイズを size(t) と書き、次のように定義する]:
@@ -92,7 +94,7 @@ depth Zero          = 1
 depth (Succ t)      = depth t + 1
 depth (Pred t)      = depth t + 1
 depth (IsZero t)    = depth t + 1
-depth (If t1 t2 t3) = maximum [depth t1, depth t2, depth t3] + 1
+depth (If t1 t2 t3) = List.Partial.maximum [depth t1, depth t2, depth t3] + 1
 
 -- | 与えられた Term が含まれる、最小の集合 T を作る
 --

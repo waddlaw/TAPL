@@ -15,13 +15,11 @@ ghc-options:
 dependencies:
 - rio
 - base
-- hashable
 - parsers
 - prettyprinter
 - QuickCheck
 - transformers
 - trifecta
-- unordered-containers
 
 library:
   source-dirs: src

@@ -12,8 +12,8 @@ import Language.UntypedLambda.Types (UntypedLambda)
 import qualified Language.UntypedLambda.Types as Untyped
 
 typeof :: Context -> Term -> Ty
-typeof ctx (TmVar i _) = getTypeFromContext ctx i
-typeof ctx (TmAbs x tyT1 t2) = TyArr tyT1 tyT2
+typeof ctx (TmVar i) = getTypeFromContext ctx i
+typeof ctx (TmLam x tyT1 t2) = TyArr tyT1 tyT2
   where
     tyT2 = typeof ctx' t2
     ctx' = addBinding ctx x (VarBind tyT1)

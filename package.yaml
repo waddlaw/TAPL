@@ -15,6 +15,7 @@ ghc-options:
 dependencies:
 - rio
 - base
+- haskeline
 - parsers
 - prettyprinter
 - QuickCheck
@@ -29,7 +30,7 @@ executables:
     main: app/ProofB.hs
     dependencies:
       - tapl
-      - haskeline
+
     ghc-options:
       - -threaded
       - -rtsopts
@@ -37,7 +38,7 @@ executables:
     main: app/NB.hs
     dependencies:
       - tapl
-      - haskeline
+
     ghc-options:
       - -threaded
       - -rtsopts
@@ -45,7 +46,15 @@ executables:
     main: app/UntypedLambda.hs
     dependencies:
       - tapl
-      - haskeline
+
+    ghc-options:
+      - -threaded
+      - -rtsopts
+  simple-lambda:
+    main: app/SimpleLambda.hs
+    dependencies:
+      - tapl
+
     ghc-options:
       - -threaded
       - -rtsopts

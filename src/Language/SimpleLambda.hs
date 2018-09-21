@@ -1,12 +1,17 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 module Language.SimpleLambda
-  ( typeof
+  ( module Language.SimpleLambda.Types
+  , module Language.SimpleLambda.Parser
+  , module Language.SimpleLambda.Pretty
+  , typeof
   ) where
 
 import           RIO
 import qualified RIO.List.Partial             as L.Partial
 
 import           Language.SimpleLambda.Types
+import           Language.SimpleLambda.Parser
+import           Language.SimpleLambda.Pretty
 
 import           Language.UntypedLambda.Types (UntypedLambda)
 import qualified Language.UntypedLambda.Types as Untyped

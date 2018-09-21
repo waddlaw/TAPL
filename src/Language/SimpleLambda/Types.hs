@@ -31,14 +31,16 @@ instance IsString Context where
 
 addContext :: (Text, Binding) -> Context -> Context
 addContext v = Context . (v:) . unCtx
+
 data Binding
-  = NameBind
-  | VarBind Ty
+  = NameBind   -- ^ 型無しの変数
+  | VarBind Ty -- ^ 型付きの変数
+  deriving (Eq, Show)
 
 data Ty
   = TyArr Ty Ty  -- ^ 関数型
   | TyBool       -- ^ Bool型
-  deriving Eq
+  deriving (Eq, Show)
 
 data Term
   = TmVar Int -- FIXME
@@ -50,23 +52,26 @@ data Term
   deriving Eq
 
 instance Pretty Term where
-  pretty = pprSimple []
+  pretty = pprSimple mempty
 
-pprSimple :: [Text] -> Term -> Doc ann
-pprSimple fvs (TmVar n)  = if length fvs <= n
-                    then pretty "FV" <> pretty n
-                    else pretty (fvs L.Partial.!! n)
-pprSimple fvs (TmLam x ty t) = pretty "λ" <> pretty x <> pretty ":" <> pretty ty <> pretty "." <+> pprSimple fvs' t
-  where fvs' = x:fvs
-pprSimple fvs (TmApp t1 t2)  = ppr t1 <+> ppr t2
+pprSimple :: Context -> Term -> Doc ann
+pprSimple ctx (TmVar n)  = if length ctx' <= n
+                           then pretty "FV" <> pretty n
+                           else pretty fv
   where
-    ppr t@(TmVar _) = pprSimple fvs t
-    ppr t@TmTrue    = pprSimple fvs t
-    ppr t@TmFalse   = pprSimple fvs t
-    ppr t           = parens (pprSimple fvs t)
+    ctx' = unCtx ctx
+    fv = fst (ctx' L.Partial.!! n)
+pprSimple ctx (TmLam x ty t) = pretty "λ" <> pretty x <> pretty ":" <> pretty ty <> pretty "." <+> pprSimple ctx' t
+  where ctx' = addContext (x, VarBind ty) ctx
+pprSimple ctx (TmApp t1 t2)  = ppr t1 <+> ppr t2
+  where
+    ppr t@(TmVar _) = pprSimple ctx t
+    ppr t@TmTrue    = pprSimple ctx t
+    ppr t@TmFalse   = pprSimple ctx t
+    ppr t           = parens (pprSimple ctx t)
 pprSimple _ TmTrue  = pretty "true"
 pprSimple _ TmFalse = pretty "false"
-pprSimple fvs (TmIf t1 t2 t3) = pretty "if" <+> pprSimple fvs t1 <+> pretty "then" <+> pprSimple fvs t2 <+> pretty "else" <+> pprSimple fvs t3
+pprSimple ctx (TmIf t1 t2 t3) = pretty "if" <+> pprSimple ctx t1 <+> pretty "then" <+> pprSimple ctx t2 <+> pretty "else" <+> pprSimple ctx t3
 
 instance Pretty Ty where
   pretty TyBool          = pretty "Bool"

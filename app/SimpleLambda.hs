@@ -8,12 +8,10 @@ import           RIO.Process
 import qualified RIO.Text                     as Text
 
 import           Language.Options
-import           Language.Orphans
+import           Language.Orphans ()
 import           Language.SimpleLambda        as SimpleLambda
-import           Language.SimpleLambda.Parser
-import           Language.SimpleLambda.Types  as SimpleLambda
 import           Language.Types
-import           Language.UntypedLambda.Types
+import qualified Language.UntypedLambda.Types as UntypedLambda
 import           Language.Utils
 
 import           System.Console.Haskeline     hiding (display)
@@ -30,7 +28,7 @@ runApp m = liftIO $ do
     let app = ReplEnv
           { appLogFunc = lf
           , appProcessContext = pc
-          , appStrategy = NormalOrder
+          , appStrategy = UntypedLambda.NormalOrder
           , appIsTrace = False
           }
      in runRIO app m
@@ -52,16 +50,16 @@ main' = do
     Just ":q"    -> return ()
     Just input ->
       if  | ":help" `Text.isPrefixOf` input -> lift helpCmd >> main'
-          | ":t" `Text.isPrefixOf` input -> lift (tcCmd parser typecheck input) >> main'
+          | ":t" `Text.isPrefixOf` input -> lift (tcCmd (parser mempty) typecheck input) >> main'
           | otherwise -> do
-              lift (evalCmd parser eval input)
+              lift (evalCmd (parser mempty) eval input)
               main'
 
-parser :: Text -> Either String SimpleLambda.Term
-parser = runSimpleLambdaParser . Text.unpack
+parser :: Context -> Text -> Either String SimpleLambda.Term
+parser ctx = runSimpleLambdaParser ctx . Text.unpack
 
 typecheck :: SimpleLambda.Term -> SimpleLambda.Ty
-typecheck = SimpleLambda.typeof []
+typecheck = SimpleLambda.typeof mempty
 
 eval :: EvalFunc SimpleLambda.Term
 eval _ = id -- FIXME

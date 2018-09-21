@@ -10,5 +10,5 @@ import           Language.SimpleLambda.Types
 import           Data.Text.Prettyprint.Doc
 import           Data.Text.Prettyprint.Doc.Render.Text
 
-prettySimpleText :: [Text] -> SimpleTypedLambda -> Text
-prettySimpleText fvs = renderStrict . layoutCompact . pprSimple fvs
+prettySimpleText :: Context -> SimpleTypedLambda -> Text
+prettySimpleText ctx = renderStrict . layoutCompact . pprSimple ctx

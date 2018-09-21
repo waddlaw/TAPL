@@ -43,7 +43,7 @@ typeof ctx (TmIf t1 t2 t3) =
     tyT2 = typeof ctx t2
 
 addBinding :: Context -> Text -> Binding -> Context
-addBinding ctx x bind = (x, bind) : ctx
+addBinding ctx x bind = addContext (x, bind) ctx
 
 getTypeFromContext :: Context -> Int -> Ty
 getTypeFromContext ctx i =
@@ -52,7 +52,8 @@ getTypeFromContext ctx i =
     _             -> error "getTypeFromContext"
 
 getBinding :: Context -> Int -> Binding
-getBinding ctx i = snd $ ctx L.Partial.!! i
+getBinding ctx i = snd $ ctx' L.Partial.!! i
+  where ctx' = unCtx ctx
 
 -- FIXME
 -- erase :: TypedLambda -> UntypedLambda

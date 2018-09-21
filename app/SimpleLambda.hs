@@ -8,6 +8,7 @@ import           RIO.Process
 import qualified RIO.Text                     as Text
 
 import           Language.Options
+import           Language.Orphans
 import           Language.SimpleLambda        as SimpleLambda
 import           Language.SimpleLambda.Parser
 import           Language.SimpleLambda.Types  as SimpleLambda
@@ -17,11 +18,6 @@ import           Language.Utils
 
 import           System.Console.Haskeline     hiding (display)
 import           System.Environment
-
-instance MonadException (RIO env) where
-  controlIO f = RIO $ controlIO $ \(RunIO run) -> let
-    run' = RunIO (fmap RIO . run . unRIO)
-    in fmap unRIO $ f run'
 
 type SimpleLambdaREPL = InputT (RIO ReplEnv) ()
 

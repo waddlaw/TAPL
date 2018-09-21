@@ -14,7 +14,6 @@ import           Language.SimpleLambda.Pretty
 import           Language.SimpleLambda.Types
 
 import           Language.UntypedLambda.Types (UntypedLambda)
-import qualified Language.UntypedLambda.Types as Untyped
 
 typeof :: Context -> Term -> Ty
 typeof ctx (TmVar i) = getTypeFromContext ctx i

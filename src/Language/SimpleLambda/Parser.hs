@@ -36,7 +36,11 @@ exprP = do
 
 factorP :: StateT Context Parser Term
 -- factorP = (char '(' *> (exprP <* char ')')) <|> try numP <|> varP <|> lambdaP
-factorP = (char '(' *> (exprP <* char ')')) <|> varP <|> lambdaP
+factorP =  (char '(' *> (exprP <* char ')'))
+       <|> ifP
+       <|> lambdaP
+       <|> token constP
+       <|> varP
 
 lambdaP :: StateT Context Parser Term
 lambdaP = TmLam <$  lift (symbol "λ")
@@ -62,6 +66,18 @@ typeBoolP = TyBool <$ string "Bool"
 -- numP :: Parser Term
 -- numP = c . fromMaybe 0 . readMaybe <$  char 'c'
 --                 <*> some digit
+
+constP :: StateT Context Parser Term
+constP =  TmTrue  <$ string "true"
+      <|> TmFalse <$ string "false"
+
+ifP :: StateT Context Parser Term
+ifP = TmIf <$  symbol "if"
+           <*> (parens exprP <|> token exprP)
+           <*  symbol "then"
+           <*> (parens exprP <|> token exprP)
+           <*  symbol "else"
+           <*> (parens exprP <|> token exprP)
 
 varP :: StateT Context Parser Term
 varP = do

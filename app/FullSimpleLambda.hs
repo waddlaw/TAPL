@@ -1,5 +1,5 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE MultiWayIf        #-}
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
@@ -7,8 +7,8 @@ import           RIO
 import           RIO.Process
 import qualified RIO.Text                     as Text
 
-import           Language.Orphans             ()
 import           Language.Options
+import           Language.Orphans             ()
 import           Language.Types
 import           Language.Utils
 

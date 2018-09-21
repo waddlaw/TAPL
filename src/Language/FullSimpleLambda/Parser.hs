@@ -3,10 +3,10 @@ module Language.FullSimpleLambda.Parser
   ( runFullSimpleLambdaParser
   ) where
 
-import           RIO                         hiding (try)
-import qualified RIO.List                    as L
-import qualified RIO.List.Partial            as L.Partial
-import qualified RIO.Text                    as Text
+import           RIO                             hiding (try)
+import qualified RIO.List                        as L
+import qualified RIO.List.Partial                as L.Partial
+import qualified RIO.Text                        as Text
 
 import           Language.FullSimpleLambda.Types
 import           Language.Utils.Parser

@@ -4,6 +4,6 @@ module Language.FullSimpleLambda
   , module Language.FullSimpleLambda.Pretty
   ) where
 
-import Language.FullSimpleLambda.Types
-import Language.FullSimpleLambda.Parser
-import Language.FullSimpleLambda.Pretty
+import           Language.FullSimpleLambda.Parser
+import           Language.FullSimpleLambda.Pretty
+import           Language.FullSimpleLambda.Types

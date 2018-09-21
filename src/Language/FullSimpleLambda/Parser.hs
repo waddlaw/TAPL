@@ -93,7 +93,7 @@ identP = do
 
 defaultIdentStyle :: IdentifierStyle Parser
 defaultIdentStyle = IdentifierStyle
-  { _styleName              = "SimpleLambda"
+  { _styleName              = "FullSimpleLambda"
   , _styleStart             = oneOf ['a'..'z']
   , _styleLetter            = alphaNum
   , _styleReserved          = mempty

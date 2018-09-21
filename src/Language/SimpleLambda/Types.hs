@@ -49,7 +49,7 @@ data Term
   | TmTrue
   | TmFalse
   | TmIf Term Term Term
-  deriving Eq
+  deriving (Eq, Show)
 
 instance Pretty Term where
   pretty = pprSimple mempty

@@ -11,8 +11,8 @@ module Language.SimpleLambda.Types
   ) where
 
 import           RIO
-import qualified RIO.Text as Text
 import qualified RIO.List.Partial          as L.Partial
+import qualified RIO.Text                  as Text
 
 import           Data.Text.Prettyprint.Doc
 

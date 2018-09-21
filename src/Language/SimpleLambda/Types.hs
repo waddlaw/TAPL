@@ -4,14 +4,16 @@ module Language.SimpleLambda.Types
   , Term (..)
   , Context
   , Binding (..)
-  , TypedLambda
+  , SimpleTypedLambda
+  , pprSimple
   ) where
 
 import           RIO
+import qualified RIO.List.Partial as L.Partial
 
 import           Data.Text.Prettyprint.Doc
 
-type TypedLambda = Term
+type SimpleTypedLambda = Term
 type Context = [(Text, Binding)]
 
 data Binding
@@ -33,19 +35,27 @@ data Term
   deriving Eq
 
 instance Pretty Term where
-  pretty (TmVar x)      = pretty x
-  pretty (TmLam x ty t) = pretty "λ" <> pretty x <> pretty ":" <> pretty ty <> pretty "." <+> pretty t
-  pretty (TmApp t1 t2)  = ppr t1 <+> ppr t2
-    where
-      ppr t@(TmVar _) = pretty t
-      ppr t           = parens (pretty t)
-  pretty TmTrue = pretty "true"
-  pretty TmFalse = pretty "false"
-  pretty (TmIf t1 t2 t3) = pretty "if" <+> pretty t1 <+> pretty "then" <+> pretty t2 <+> pretty "else" <+> pretty t3
+  pretty = pprSimple []
+
+pprSimple :: [Text] -> Term -> Doc ann
+pprSimple fvs (TmVar n)  = if length fvs <= n
+                    then pretty "FV" <> pretty n
+                    else pretty (fvs L.Partial.!! n)
+pprSimple fvs (TmLam x ty t) = pretty "λ" <> pretty x <> pretty ":" <> pretty ty <> pretty "." <+> pprSimple fvs' t
+  where fvs' = x:fvs
+pprSimple fvs (TmApp t1 t2)  = ppr t1 <+> ppr t2
+  where
+    ppr t@(TmVar _) = pprSimple fvs t
+    ppr t@TmTrue    = pprSimple fvs t
+    ppr t@TmFalse   = pprSimple fvs t
+    ppr t           = parens (pprSimple fvs t)
+pprSimple _ TmTrue  = pretty "true"
+pprSimple _ TmFalse = pretty "false"
+pprSimple fvs (TmIf t1 t2 t3) = pretty "if" <+> pprSimple fvs t1 <+> pretty "then" <+> pprSimple fvs t2 <+> pretty "else" <+> pprSimple fvs t3
 
 instance Pretty Ty where
   pretty TyBool          = pretty "Bool"
-  pretty (TyArr ty1 ty2) = ppr ty1 <+> pretty "->" <+> pretty ty2
+  pretty (TyArr ty1 ty2) = ppr' ty1 <+> pretty "->" <+> pretty ty2
     where
-      ppr t@TyBool = pretty t
-      ppr t        = parens (pretty t)
+      ppr' t@TyBool = pretty t
+      ppr' t        = parens (pretty t)

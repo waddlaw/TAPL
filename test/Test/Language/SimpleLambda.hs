@@ -1,9 +1,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications  #-}
 module Test.Language.SimpleLambda where
 
-import RIO
+import           RIO
 
 import           Test.Tasty
 import           Test.Tasty.HUnit

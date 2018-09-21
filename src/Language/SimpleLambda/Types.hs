@@ -9,7 +9,7 @@ module Language.SimpleLambda.Types
   ) where
 
 import           RIO
-import qualified RIO.List.Partial as L.Partial
+import qualified RIO.List.Partial          as L.Partial
 
 import           Data.Text.Prettyprint.Doc
 

@@ -2,7 +2,7 @@
 {-# GHC_OPTIONS -f-no-warn-orphans #-}
 module Language.Orphans () where
 
-import RIO
+import           RIO
 
 import           System.Console.Haskeline hiding (display)
 

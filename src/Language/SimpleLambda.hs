@@ -9,9 +9,9 @@ module Language.SimpleLambda
 import           RIO
 import qualified RIO.List.Partial             as L.Partial
 
-import           Language.SimpleLambda.Types
 import           Language.SimpleLambda.Parser
 import           Language.SimpleLambda.Pretty
+import           Language.SimpleLambda.Types
 
 import           Language.UntypedLambda.Types (UntypedLambda)
 import qualified Language.UntypedLambda.Types as Untyped

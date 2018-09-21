@@ -3,19 +3,34 @@ module Language.SimpleLambda.Types
   ( Ty (..)
   , Term (..)
   , Context
+  , addContext
+  , unCtx
   , Binding (..)
   , SimpleTypedLambda
   , pprSimple
   ) where
 
 import           RIO
+import qualified RIO.Text as Text
 import qualified RIO.List.Partial          as L.Partial
 
 import           Data.Text.Prettyprint.Doc
 
 type SimpleTypedLambda = Term
-type Context = [(Text, Binding)]
+newtype Context = Context { unCtx :: [(Text, Binding)] }
+  deriving (Eq, Show)
 
+instance Semigroup Context where
+  ctx1 <> ctx2 = Context (unCtx ctx1 <> unCtx ctx2)
+
+instance Monoid Context where
+  mempty = Context []
+
+instance IsString Context where
+  fromString v = Context [(Text.pack v, NameBind)]
+
+addContext :: (Text, Binding) -> Context -> Context
+addContext v = Context . (v:) . unCtx
 data Binding
   = NameBind
   | VarBind Ty

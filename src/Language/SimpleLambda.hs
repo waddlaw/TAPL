@@ -13,8 +13,6 @@ import           Language.SimpleLambda.Parser
 import           Language.SimpleLambda.Pretty
 import           Language.SimpleLambda.Types
 
-import           Language.UntypedLambda.Types (UntypedLambda)
-
 typeof :: Context -> Term -> Ty
 typeof ctx (TmVar i) = getTypeFromContext ctx i
 typeof ctx (TmLam x tyT1 t2) = TyArr tyT1 tyT2

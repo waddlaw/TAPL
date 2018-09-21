@@ -8,19 +8,15 @@ module Language.Options
   ) where
 
 import           RIO                          hiding (trace)
-import           RIO.List.Partial             as L.Partial
-import           RIO.Partial                  as Partial
 import qualified RIO.Text                     as Text
 
 import           Language.Types
-import           Language.UntypedLambda
-import           Language.UntypedLambda.Types
 import           Language.Utils
 
 import           Data.Text.Prettyprint.Doc
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> Text -> RIO ReplEnv ()
-evalCmd parser eval input = ask >>= \ReplEnv{..} ->
+evalCmd parser evalate input = ask >>= \ReplEnv{..} ->
   case parser input of
     Left err -> logError $ display $ Text.pack err
     Right term ->
@@ -29,7 +25,7 @@ evalCmd parser eval input = ask >>= \ReplEnv{..} ->
           -- _ <- liftIO $ trace appStrategy term
           return ()
       else
-        logInfo $ display $ Text.pack $ render $ eval appStrategy term
+        logInfo $ display $ Text.pack $ render $ evalate appStrategy term
 
 tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> RIO ReplEnv ()
 tcCmd parser checker input =

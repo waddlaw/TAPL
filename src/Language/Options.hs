@@ -7,8 +7,8 @@ module Language.Options
   , helpCmd
   ) where
 
-import           RIO                          hiding (trace)
-import qualified RIO.Text                     as Text
+import           RIO                       hiding (trace)
+import qualified RIO.Text                  as Text
 
 import           Language.Types
 import           Language.Utils

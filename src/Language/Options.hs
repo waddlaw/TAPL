@@ -25,7 +25,7 @@ evalCmd parser eval input = ask >>= \ReplEnv{..} ->
     Left err -> logError $ display $ Text.pack err
     Right term ->
       if appIsTrace
-      then do
+      then
           -- _ <- liftIO $ trace appStrategy term
           return ()
       else

@@ -57,6 +57,7 @@ instance Pretty Term where
   pretty = pprFullSimple mempty
 
 pprFullSimple :: Context -> Term -> Doc ann
+pprFullSimple _ TmUnit = pretty "unit"
 pprFullSimple ctx (TmVar n) =
     if length ctx' <= n
     then pretty "FV" <> pretty n
@@ -78,6 +79,7 @@ pprFullSimple ctx (TmIf t1 t2 t3) = pretty "if" <+> pprFullSimple ctx t1 <+> pre
 
 instance Pretty Ty where
   pretty TyBool = pretty "Bool"
+  pretty TyUnit = pretty "Unit"
   pretty (TyArr ty1 ty2) = ppr' ty1 <+> pretty "->" <+> pretty ty2
     where
       ppr' t@TyBool = pretty t

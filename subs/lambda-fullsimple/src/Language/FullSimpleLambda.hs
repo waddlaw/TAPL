@@ -4,6 +4,7 @@ module Language.FullSimpleLambda
   , module Language.FullSimpleLambda.Parser
   , module Language.FullSimpleLambda.Pretty
   , typeof
+  , isValue
   ) where
 
 import           RIO

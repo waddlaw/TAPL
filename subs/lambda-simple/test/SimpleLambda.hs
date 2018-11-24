@@ -1,6 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Test.Language.SimpleLambda where
+module SimpleLambda where
 
 import           RIO
 

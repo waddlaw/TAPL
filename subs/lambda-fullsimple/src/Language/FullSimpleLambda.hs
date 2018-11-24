@@ -71,7 +71,7 @@ isValue TmLam{}  = True
 isValue TmTrue   = True
 isValue TmFalse  = True
 isValue TmUnit   = True -- 11.2 Unit型
-isValue TmPair{} = True -- 11.6 組
+isValue (TmPair t1 t2) = isValue t1 && isValue t2 -- 11.6 組
 isValue t        = isNumericValue t
 
 isNumericValue :: Term -> Bool

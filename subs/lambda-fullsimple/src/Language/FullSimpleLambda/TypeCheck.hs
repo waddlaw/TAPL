@@ -33,6 +33,10 @@ typeof ctx (TmIf t1 t2 t3) =  -- T-IF
     else error "guard of conditional not a boolean"
   where
     tyT2 = typeof ctx t2
+typeof _ TmZero = TyNat -- T-ZERO
+typeof ctx (TmSucc t) = if typeof ctx t == TyNat then TyNat else error "type mismatch" -- T-SUCC
+typeof ctx (TmPred t) = if typeof ctx t == TyNat then TyNat else error "type mismatch" -- T-PRED
+typeof ctx (TmIsZero t) = if typeof ctx t == TyNat then TyBool else error "type mismatch" -- T-ISZERO
 typeof _ TmUnit = TyUnit  -- T-UNIT
 typeof ctx (TmSeq TmUnit tyT2) = typeof ctx tyT2 -- T-SEQ
 typeof ctx (TmWildcard tyT1 t2) = TyArr tyT1 (typeof ctx t2)  -- T-WILDCARD

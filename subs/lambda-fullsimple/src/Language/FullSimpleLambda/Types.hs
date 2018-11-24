@@ -43,7 +43,8 @@ data Binding
 
 data Ty
   = TyArr Ty Ty  -- ^ 関数型
-  | TyBool       -- ^ Bool型
+  | TyBool       -- ^ ブール値型
+  | TyNat        -- ^ 自然数型
   | TyUnit       -- ^ 11.2 Unit型
   | TyProd Ty Ty -- ^ 11.6 直積型
   deriving (Eq, Show)
@@ -64,6 +65,10 @@ data Term
   | TmTrue
   | TmFalse
   | TmIf Term Term Term
+  | TmZero
+  | TmSucc Term
+  | TmPred Term
+  | TmIsZero Term
   | TmUnit                -- ^ 11.2 Unit 型
   | TmSeq Term Term       -- ^ 11.3 逐次実行
   | TmWildcard Ty Term    -- ^ 11.3 ワイルドカード

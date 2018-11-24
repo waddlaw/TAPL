@@ -21,6 +21,13 @@ eval :: Term -> Term
 eval (TmIf TmTrue t2 _t3) = t2 -- E-IFTRUE
 eval (TmIf TmFalse _t2 t3) = t3 -- E-IFFALSE
 eval (TmIf t1 t2 t3) = TmIf (eval t1) t2 t3 -- E-IF
+eval (TmSucc t) = TmSucc (eval t) -- E-SUCC
+eval (TmPred TmZero) = TmZero -- E-PREDZERO
+eval (TmPred (TmSucc nv@(isNumericValue -> True))) = nv -- E-PREDSUCC
+eval (TmPred t1) = TmPred (eval t1) -- E-PRED
+eval (TmIsZero TmZero) = TmTrue -- E-ISZEROZERO
+eval (TmIsZero (TmSucc nv@(isNumericValue -> True))) = TmFalse -- E-ISZEROSUCC
+eval (TmIsZero t) = TmIsZero (eval t) -- E-ISZERO
 eval (TmApp (TmLam x _ t1) v2@(isValue -> True)) = subst x v2 t1 -- E-APPABS
 eval (TmApp (TmWildcard _ t12) _t2@(isValue -> True)) = t12 -- E-WILDCARD
 eval (TmApp v1@(isValue -> True) t2) = TmApp v1 (eval t2) -- E-APP2
@@ -63,4 +70,9 @@ isValue TmVar{}  = True
 isValue TmLam{}  = True
 isValue TmUnit   = True -- 11.2 Unit型
 isValue TmPair{} = True -- 11.6 組
-isValue _        = False
+isValue t        = isNumericValue t
+
+isNumericValue :: Term -> Bool
+isNumericValue TmZero     = True
+isNumericValue (TmSucc t) = isNumericValue t
+isNumericValue _          = False

@@ -44,11 +44,12 @@ data Binding
   deriving (Eq, Show)
 
 data Ty
-  = TyArr Ty Ty  -- ^ 関数型
-  | TyBool       -- ^ ブール値型
-  | TyNat        -- ^ 自然数型
-  | TyUnit       -- ^ 11.2 Unit型
-  | TyProd Ty Ty -- ^ 11.6 直積型
+  = TyArr Ty Ty   -- ^ 関数型
+  | TyBool        -- ^ ブール値型
+  | TyNat         -- ^ 自然数型
+  | TyUnit        -- ^ 11.2 Unit型
+  | TyProd Ty Ty  -- ^ 11.6 直積型
+  | TyTuple [Ty]  -- ^ 11.7 組の型
   deriving (Eq, Show)
 
 instance Pretty Ty where
@@ -60,6 +61,7 @@ instance Pretty Ty where
       ppr' t@TyBool = pretty t
       ppr' t        = parens (pretty t)
   pretty (TyProd ty1 ty2) = pretty ty1 <+> pretty "×" <+> pretty ty2
+  pretty (TyTuple ts) = encloseSep lbrace rbrace comma (map pretty ts)
 
 data Term
   = TmVar Int
@@ -77,9 +79,11 @@ data Term
   | TmWildcard Ty Term    -- ^ 11.3 ワイルドカード
   | TmAscribe Term Ty     -- ^ 11.4 型指定
   | TmLet VarName Term Term  -- ^ 11.5 let
-  | TmPair Term Term      -- ^ 11.6 組
+  | TmPair Term Term      -- ^ 11.6 2つ組
   | TmPairFst Term        -- ^ 11.6 第一要素の射影
   | TmPairSnd Term        -- ^ 11.6 第二要素の射影
+  | TmTuple [Term]        -- ^ 11.7 組
+  | TmTupleProj Int Term  -- ^ 11.7 射影
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -117,3 +121,5 @@ pprFullSimple ctx (TmLet var tlet tbody) = pretty "let" <+> pretty var <> pretty
 pprFullSimple ctx (TmPair t1 t2) = pretty "{" <> pprFullSimple ctx t1 <> pretty "," <> pprFullSimple ctx t2 <> pretty "}"
 pprFullSimple ctx (TmPairFst t) = pprFullSimple ctx t <> pretty ".1"
 pprFullSimple ctx (TmPairSnd t) = pprFullSimple ctx t <> pretty ".2"
+pprFullSimple ctx (TmTuple ts) = encloseSep lbrace rbrace comma (map (pprFullSimple ctx) ts)
+pprFullSimple ctx (TmTupleProj i t) = pprFullSimple ctx t <> pretty "." <> pretty i

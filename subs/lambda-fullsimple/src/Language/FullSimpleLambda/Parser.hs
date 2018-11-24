@@ -9,7 +9,7 @@ import qualified RIO.List.Partial                as L.Partial
 import qualified RIO.Text                        as Text
 
 import           Language.FullSimpleLambda.Types
-import           Language.Utils.Parser
+import           Language.Core.Parser
 
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta

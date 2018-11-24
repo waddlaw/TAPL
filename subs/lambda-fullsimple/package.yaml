@@ -1,0 +1,36 @@
+name:                lambda-fullsimple
+version:             0.1.0.0
+github:              "githubuser/lambda-fullsimple"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2018 Author name here"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+description:         Please see the README on GitHub at <https://github.com/githubuser/lambda-fullsimple#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- lambda-core
+- parsers
+- prettyprinter
+- rio
+- transformers
+- trifecta
+
+library:
+  source-dirs: src
+
+tests:
+  lambda-fullsimple-test:
+    main: Driver.hs
+    source-dirs: test
+    dependencies:
+    - lambda-fullsimple
+    - tasty
+    - tasty-discover
+    - tasty-hunit
+    - tasty-quickcheck

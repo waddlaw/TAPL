@@ -40,6 +40,7 @@ data Binding
 data Ty
   = TyArr Ty Ty  -- ^ 関数型
   | TyBool       -- ^ Bool型
+  | TyUnit       -- ^ 11.2 Unit型
   deriving (Eq, Show)
 
 data Term
@@ -49,6 +50,7 @@ data Term
   | TmTrue
   | TmFalse
   | TmIf Term Term Term
+  | TmUnit                -- ^ 11.2 Unit 型
   deriving (Eq, Show)
 
 instance Pretty Term where

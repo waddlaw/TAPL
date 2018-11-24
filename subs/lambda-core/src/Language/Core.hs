@@ -1,5 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-module Language.Utils
+module Language.Core
   ( trim
   , render
   , renderPrelude

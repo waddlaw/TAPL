@@ -1,0 +1,29 @@
+name:                lambda-core
+version:             0.1.0.0
+github:              "githubuser/lambda-core"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2018 Author name here"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+description:         Please see the README on GitHub at <https://github.com/githubuser/lambda-core#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- prettyprinter
+- rio
+- trifecta
+
+library:
+  source-dirs: src
+
+tests:
+  lambda-core-test:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+    - lambda-core

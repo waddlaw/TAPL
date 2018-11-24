@@ -1,5 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-module Language.Utils.Pretty
+module Language.Core.Pretty
   ( prettyText
   ) where
 

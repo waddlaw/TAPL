@@ -1,5 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-module Language.Utils.Parser
+module Language.Core.Parser
   ( runParserString
   ) where
 

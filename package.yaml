@@ -71,17 +71,6 @@ executables:
   #     - -threaded
   #     - -rtsopts
 
-tests:
-  test:
-    main: Driver.hs
-    source-dirs: test
-    dependencies:
-    - tapl
-    - tasty
-    - tasty-discover
-    - tasty-hunit
-    - tasty-quickcheck
-
 benchmarks:
   gauge:
     main: bench/Gauge.hs

@@ -1,0 +1,32 @@
+name:                term
+version:             0.1.0.0
+github:              "githubuser/term"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2018 Author name here"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+description:         Please see the README on GitHub at <https://github.com/githubuser/term#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- QuickCheck
+- rio
+
+library:
+  source-dirs: src
+
+tests:
+  term-test:
+    main: Driver.hs
+    source-dirs: test
+    dependencies:
+    - term
+    - tasty
+    - tasty-discover
+    - tasty-hunit
+    - tasty-quickcheck

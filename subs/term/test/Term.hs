@@ -1,5 +1,5 @@
 {-# LANGUAGE NoImplicitPrelude #-}
-module Test.Term where
+module Term where
 
 import           RIO
 import qualified RIO.HashSet           as HS

@@ -1,6 +1,7 @@
 resolver: lts-12.19
 packages:
 - .
+- ./subs/term
 - ./subs/bool
 - ./subs/arith
 - ./subs/lambda-core

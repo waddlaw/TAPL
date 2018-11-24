@@ -29,6 +29,8 @@ eval (TmSeq t1@(isValue -> False) t2)  = TmSeq (eval t1) t2  -- E-SEQ
 eval (TmSeq _t1@(isValue -> True) t2)  = t2                  -- E-SEQNEXT
 eval (TmAscribe v@(isValue -> True) _)     = v                       -- E-ASCRIBE
 eval (TmAscribe t1@(isValue -> False) tyT) = TmAscribe (eval t1) tyT -- E-ASCRIBE1
+eval (TmLet x v1@(isValue -> True) t2)  = subst x v1 t2        -- E-LETV
+eval (TmLet x t1@(isValue -> False) t2) = TmLet x (eval t1) t2 -- E-LET
 eval _ = error "unexpected: eval"
 
 subst :: Text -> Value -> Term -> Term

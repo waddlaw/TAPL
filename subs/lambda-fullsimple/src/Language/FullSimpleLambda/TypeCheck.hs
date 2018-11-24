@@ -36,7 +36,13 @@ typeof ctx (TmIf t1 t2 t3) =  -- T-IF
 typeof _ TmUnit = TyUnit  -- T-UNIT
 typeof ctx (TmSeq TmUnit tyT2) = typeof ctx tyT2 -- T-SEQ
 typeof ctx (TmWildcard tyT1 t2) = TyArr tyT1 (typeof ctx t2)  -- T-WILDCARD
-typeof ctx (TmAscribe t1 tyT) = if tyT == typeof ctx t1 then tyT else error "ascribe type mismatch error" -- T-ASCRIBE
+typeof ctx (TmAscribe t1 tyT) -- T-ASCRIBE
+  | tyT == typeof ctx t1 = tyT
+  | otherwise = error "ascribe type mismatch error"
+typeof ctx (TmLet var t1 t2) = typeof ctx' t2
+  where
+    tyT1 = typeof ctx t1
+    ctx' = addBinding ctx var (VarBind tyT1)
 typeof _ _ = error "unexpected: typeof"
 
 ----------------------

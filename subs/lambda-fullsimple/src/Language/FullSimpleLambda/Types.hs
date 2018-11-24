@@ -46,6 +46,14 @@ data Ty
   | TyUnit       -- ^ 11.2 Unit型
   deriving (Eq, Show)
 
+instance Pretty Ty where
+  pretty TyBool = pretty "Bool"
+  pretty TyUnit = pretty "Unit"
+  pretty (TyArr ty1 ty2) = ppr' ty1 <+> pretty "->" <+> pretty ty2
+    where
+      ppr' t@TyBool = pretty t
+      ppr' t        = parens (pretty t)
+
 data Term
   = TmVar Int
   | TmLam Text Ty Term
@@ -59,11 +67,3 @@ data Term
   | TmAscribe Term Ty     -- ^ 11.4 型指定
   | TmLet Text Term Term  -- ^ 11.5 let
   deriving (Eq, Show)
-
-instance Pretty Ty where
-  pretty TyBool = pretty "Bool"
-  pretty TyUnit = pretty "Unit"
-  pretty (TyArr ty1 ty2) = ppr' ty1 <+> pretty "->" <+> pretty ty2
-    where
-      ppr' t@TyBool = pretty t
-      ppr' t        = parens (pretty t)

@@ -121,3 +121,5 @@ pprFullSimple ctx (TmLet var tlet tbody) = pretty "let" <+> pretty var <> pretty
 pprFullSimple ctx (TmPair t1 t2) = pretty "{" <> pprFullSimple ctx t1 <> pretty "," <> pprFullSimple ctx t2 <> pretty "}"
 pprFullSimple ctx (TmPairFst t) = pprFullSimple ctx t <> pretty ".1"
 pprFullSimple ctx (TmPairSnd t) = pprFullSimple ctx t <> pretty ".2"
+pprFullSimple ctx (TmTuple ts) = encloseSep lbrace rbrace comma (map (pprFullSimple ctx) ts)
+pprFullSimple ctx (TmTupleProj i t) = pprFullSimple ctx t <> pretty "." <> pretty i

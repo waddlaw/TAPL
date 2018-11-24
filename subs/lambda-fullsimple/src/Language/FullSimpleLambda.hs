@@ -49,8 +49,8 @@ eval (TmTupleProj j (TmTuple ts)) -- E-PROJTUPLE
   | all isValue ts = if j < length ts then ts L.Partial.!! j else error "タプルのサイズより大きな値が指定されています"
   | otherwise = error "eval: 値ではない項が存在します。"
 eval (TmTupleProj i t) = TmTupleProj i (eval t) -- E-PROJ
-eval (TmTuple ts) = TmTuple (vs ++ [eval t] ++ ts) -- E-TUPLE
-  where (vs, t, ts) = splitTerm ts
+eval (TmTuple ts) = TmTuple (vs ++ [eval t] ++ ts') -- E-TUPLE
+  where (vs, t, ts') = splitTerm ts
 eval _ = error "unexpected: eval"
 
 -- | 対象の構文
@@ -91,5 +91,5 @@ subst = error "subst is not implemented yet."
 
 -- | 少なくとも1つは項である
 splitTerm :: [Term] -> ([Value], Term, [Term])
-splitTerm ts = (vs, L.Partial.head ts, L.Partial.tail ts)
-  where (vs, ts) = span isValue ts
+splitTerm ts = (vs, L.Partial.head ts', L.Partial.tail ts')
+  where (vs, ts') = span isValue ts

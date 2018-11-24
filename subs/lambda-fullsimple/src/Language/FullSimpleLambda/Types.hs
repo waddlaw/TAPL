@@ -55,6 +55,7 @@ instance Pretty Ty where
     where
       ppr' t@TyBool = pretty t
       ppr' t        = parens (pretty t)
+  pretty (TyProd ty1 ty2) = pretty ty1 <+> pretty "×" <+> pretty ty2
 
 data Term
   = TmVar Int
@@ -101,3 +102,6 @@ pprFullSimple ctx (TmWildcard ty t) = pretty "λ_:" <> pretty ty <> pretty "." <
 pprFullSimple ctx (TmAscribe t ty) = pprFullSimple ctx t <+> pretty "as" <+> pretty ty <+> pretty ":" <+> pretty ty
 pprFullSimple ctx (TmLet var tlet tbody) = pretty "let" <+> pretty var <> pretty "=" <> pprFullSimple ctx tlet <+> pretty "in" <+> pprFullSimple ctx' tbody
   where ctx' = addContext (var, undefined) ctx
+pprFullSimple ctx (TmPair t1 t2) = pretty "{" <> pprFullSimple ctx t1 <> pretty "," <> pprFullSimple ctx t2 <> pretty "}"
+pprFullSimple ctx (TmPairFst t) = pprFullSimple ctx t <> pretty ".1"
+pprFullSimple ctx (TmPairSnd t) = pprFullSimple ctx t <> pretty ".2"

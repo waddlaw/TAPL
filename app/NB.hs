@@ -1,7 +1,7 @@
 module Main (main) where
 
+import           Language.Core
 import           Language.NB
-import           Language.Utils
 
 import           System.Console.Haskeline
 

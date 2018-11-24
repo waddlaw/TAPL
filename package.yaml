@@ -16,11 +16,14 @@ dependencies:
 - rio
 - base
 - haskeline
-- parsers
 - prettyprinter
-- QuickCheck
 - transformers
-- trifecta
+- bool
+- arith
+- lambda-core
+- lambda-untyped
+- lambda-simple
+- lambda-fullsimple
 
 library:
   source-dirs: src
@@ -70,17 +73,6 @@ executables:
   #   ghc-options:
   #     - -threaded
   #     - -rtsopts
-
-tests:
-  test:
-    main: Driver.hs
-    source-dirs: test
-    dependencies:
-      - tapl
-      - tasty
-      - tasty-discover
-      - tasty-hunit
-      - tasty-quickcheck
 
 benchmarks:
   gauge:

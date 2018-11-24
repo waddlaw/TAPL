@@ -53,6 +53,7 @@ data Ty
 
 instance Pretty Ty where
   pretty TyBool = pretty "Bool"
+  pretty TyNat  = pretty "Nat"
   pretty TyUnit = pretty "Unit"
   pretty (TyArr ty1 ty2) = ppr' ty1 <+> pretty "->" <+> pretty ty2
     where
@@ -104,6 +105,10 @@ pprFullSimple ctx (TmApp t1 t2)  = ppr t1 <+> ppr t2
 pprFullSimple _ TmTrue  = pretty "true"
 pprFullSimple _ TmFalse = pretty "false"
 pprFullSimple ctx (TmIf t1 t2 t3) = pretty "if" <+> pprFullSimple ctx t1 <+> pretty "then" <+> pprFullSimple ctx t2 <+> pretty "else" <+> pprFullSimple ctx t3
+pprFullSimple _ TmZero = pretty "0"
+pprFullSimple ctx (TmSucc t) = pretty "succ" <+> pprFullSimple ctx t
+pprFullSimple ctx (TmPred t) = pretty "pred" <+> pprFullSimple ctx t
+pprFullSimple ctx (TmIsZero t) = pretty "iszero" <+> pprFullSimple ctx t
 pprFullSimple ctx (TmSeq t1 t2) = pprFullSimple ctx t1 <> pretty ";" <> pprFullSimple ctx t2
 pprFullSimple ctx (TmWildcard ty t) = pretty "λ_:" <> pretty ty <> pretty "." <+> pprFullSimple ctx t
 pprFullSimple ctx (TmAscribe t ty) = pprFullSimple ctx t <+> pretty "as" <+> pretty ty <+> pretty ":" <+> pretty ty

@@ -50,7 +50,6 @@ typeof ctx (TmLet var t1 t2) = typeof ctx' t2 -- T-LET
 typeof ctx (TmPair t1 t2) = TyProd (typeof ctx t1) (typeof ctx t2) -- T-PAIR
 typeof ctx (TmPairFst t) = typeof ctx t -- T-PORJ1
 typeof ctx (TmPairSnd t) = typeof ctx t -- T-PROJ2
-typeof _ _ = error "unexpected: typeof"
 
 ----------------------
 -- helper functions --

@@ -11,7 +11,6 @@ module Language.FullSimpleLambda
   ) where
 
 import           RIO
-import qualified RIO.Set                             as Set
 
 import           Language.FullSimpleLambda.Parser
 import           Language.FullSimpleLambda.Pretty
@@ -27,7 +26,7 @@ eval (TmPred TmZero) = TmZero -- E-PREDZERO
 eval (TmPred (TmSucc nv@(isNumericValue -> True))) = nv -- E-PREDSUCC
 eval (TmPred t1) = TmPred (eval t1) -- E-PRED
 eval (TmIsZero TmZero) = TmTrue -- E-ISZEROZERO
-eval (TmIsZero (TmSucc nv@(isNumericValue -> True))) = TmFalse -- E-ISZEROSUCC
+eval (TmIsZero (TmSucc (isNumericValue -> True))) = TmFalse -- E-ISZEROSUCC
 eval (TmIsZero t) = TmIsZero (eval t) -- E-ISZERO
 eval (TmApp (TmLam x _ t1) v2@(isValue -> True)) = subst x v2 t1 -- E-APPABS
 eval (TmApp (TmWildcard _ t12) _t2@(isValue -> True)) = t12 -- E-WILDCARD

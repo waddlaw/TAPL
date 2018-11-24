@@ -47,6 +47,14 @@ data Ty
   | TyUnit       -- ^ 11.2 Unit型
   deriving (Eq, Show)
 
+instance Pretty Ty where
+  pretty TyBool = pretty "Bool"
+  pretty TyUnit = pretty "Unit"
+  pretty (TyArr ty1 ty2) = ppr' ty1 <+> pretty "->" <+> pretty ty2
+    where
+      ppr' t@TyBool = pretty t
+      ppr' t        = parens (pretty t)
+
 data Term
   = TmVar Int
   | TmLam Text Ty Term
@@ -58,6 +66,7 @@ data Term
   | TmSeq Term Term       -- ^ 11.3 逐次実行
   | TmWildcard Ty Term    -- ^ 11.3 ワイルドカード
   | TmAscribe Term Ty     -- ^ 11.4 型指定
+  | TmLet Text Term Term  -- ^ 11.5 let
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -83,14 +92,8 @@ pprFullSimple ctx (TmApp t1 t2)  = ppr t1 <+> ppr t2
 pprFullSimple _ TmTrue  = pretty "true"
 pprFullSimple _ TmFalse = pretty "false"
 pprFullSimple ctx (TmIf t1 t2 t3) = pretty "if" <+> pprFullSimple ctx t1 <+> pretty "then" <+> pprFullSimple ctx t2 <+> pretty "else" <+> pprFullSimple ctx t3
-pprFullSimple _ (TmSeq t1 t2) = pretty t1 <> pretty ";" <> pretty t2
+pprFullSimple ctx (TmSeq t1 t2) = pprFullSimple ctx t1 <> pretty ";" <> pprFullSimple ctx t2
 pprFullSimple ctx (TmWildcard ty t) = pretty "λ_:" <> pretty ty <> pretty "." <+> pprFullSimple ctx t
 pprFullSimple ctx (TmAscribe t ty) = pprFullSimple ctx t <+> pretty "as" <+> pretty ty <+> pretty ":" <+> pretty ty
-
-instance Pretty Ty where
-  pretty TyBool = pretty "Bool"
-  pretty TyUnit = pretty "Unit"
-  pretty (TyArr ty1 ty2) = ppr' ty1 <+> pretty "->" <+> pretty ty2
-    where
-      ppr' t@TyBool = pretty t
-      ppr' t        = parens (pretty t)
+pprFullSimple ctx (TmLet var tlet tbody) = pretty "let" <+> pretty var <> pretty "=" <> pprFullSimple ctx tlet <+> pretty "in" <+> pprFullSimple ctx' tbody
+  where ctx' = addContext (var, undefined) ctx

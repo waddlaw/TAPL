@@ -28,4 +28,6 @@ test_sl = testGroup "FullSimpleLambda"
       runFullSimpleLambdaParser mempty "λx:Bool. λy:Bool. λz:Bool. x (y z)" @?= Right (TmLam "x" TyBool (TmLam "y" TyBool (TmLam "z" TyBool (TmApp (TmVar 2) (TmApp (TmVar 1) (TmVar 0))))))
   -- , testCase "parser (そのうち直す" $ do
   --     runFullSimpleLambdaParser "f" "λx:Bool. f (if f x then false else x)" @?= Left
+  , testCase "unit" $
+      typeof "" TmUnit @?= TyUnit
   ]

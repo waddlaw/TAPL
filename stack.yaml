@@ -1,4 +1,9 @@
 resolver: lts-12.9
+packages:
+- .
+- ./subs/lambda-core
+- ./subs/lambda-fullsimple
+
 # extra-deps:
 #   - git: https://github.com/mmark-md/mmark
 #     commit: 4febdb513633d6f18a5df2fd175ece937a775a72

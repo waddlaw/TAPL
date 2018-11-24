@@ -54,7 +54,7 @@ typeof ctx (TmTuple ts) = TyTuple $ map (typeof ctx) ts -- T-TUPLE
 typeof ctx (TmTupleProj j t) =  -- T-PROJ
   case typeof ctx t of
     TyTuple tys -> tys L.Partial.!! j
-    _ -> error "type mismatch"
+    _           -> error "type mismatch"
 
 ----------------------
 -- helper functions --

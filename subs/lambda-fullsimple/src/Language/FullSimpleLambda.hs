@@ -11,11 +11,11 @@ module Language.FullSimpleLambda
   ) where
 
 import           RIO
-import qualified RIO.List.Partial                 as L.Partial
 
 import           Language.FullSimpleLambda.Parser
 import           Language.FullSimpleLambda.Pretty
 import           Language.FullSimpleLambda.Types
+import           Language.FullSimpleLambda.TypeCheck
 
 eval :: Term -> Term
 eval (TmIf TmTrue t2 _t3)                             = t2                     -- E-IFTRUE
@@ -34,37 +34,6 @@ eval _ = error "unexpected: eval"
 subst :: Text -> Value -> Term -> Term
 subst = error "not implemented"
 
-typeof :: Context -> Term -> Ty
-typeof ctx (TmVar i) = getTypeFromContext ctx i -- T-VAR
-typeof ctx (TmLam x tyT1 t2) = TyArr tyT1 tyT2  -- T-ABS
-  where
-    tyT2 = typeof ctx' t2
-    ctx' = addBinding ctx x (VarBind tyT1)
-typeof ctx (TmApp t1 t2) =  -- T-APP
-  case tyT1 of
-    TyArr tyT11 tyT12 -> if tyT2 == tyT11
-                         then tyT12
-                         else error "parameter type mismatch"
-    _ -> error "arrow type expected"
-  where
-    tyT1 = typeof ctx t1
-    tyT2 = typeof ctx t2
-typeof _ TmTrue = TyBool      -- T-TRUE
-typeof _ TmFalse = TyBool     -- T-FALSE
-typeof ctx (TmIf t1 t2 t3) =  -- T-IF
-    if typeof ctx t1 == TyBool
-    then if tyT2 == typeof ctx t3
-        then tyT2
-        else error "arms of conditional have different types"
-    else error "guard of conditional not a boolean"
-  where
-    tyT2 = typeof ctx t2
-typeof _ TmUnit = TyUnit  -- T-UNIT
-typeof ctx (TmSeq TmUnit tyT2) = typeof ctx tyT2 -- T-SEQ
-typeof ctx (TmWildcard tyT1 t2) = TyArr tyT1 (typeof ctx t2)  -- T-WILDCARD
-typeof ctx (TmAscribe t1 tyT) = if tyT == typeof ctx t1 then tyT else error "ascribe type mismatch error" -- T-ASCRIBE
-typeof _ _ = error "unexpected: typeof"
-
 -- | 対象の構文
 --
 -- TmSeq
@@ -79,19 +48,6 @@ desugar term              = term
 ----------------------
 -- helper functions --
 ----------------------
-
-addBinding :: Context -> Text -> Binding -> Context
-addBinding ctx x bind = addContext (x, bind) ctx
-
-getTypeFromContext :: Context -> Int -> Ty
-getTypeFromContext ctx i =
-  case getBinding ctx i of
-    (VarBind tyT) -> tyT
-    _             -> error "getTypeFromContext"
-
-getBinding :: Context -> Int -> Binding
-getBinding ctx i = snd $ ctx' L.Partial.!! i
-  where ctx' = unCtx ctx
 
 -- | 与えられた項が値かどうか判定する述語
 isValue :: Term -> Bool

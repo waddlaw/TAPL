@@ -7,6 +7,7 @@ module Language.FullSimpleLambda
   , module Language.FullSimpleLambda.Pretty
   , typeof
   , desugar
+  , eval
   ) where
 
 import           RIO
@@ -17,18 +18,19 @@ import           Language.FullSimpleLambda.Pretty
 import           Language.FullSimpleLambda.Types
 
 eval :: Term -> Term
-eval (TmIf TmTrue t2 t3)                             = t2                                    -- E-IFTRUE
-eval (TmIf TmFalse t2 t3)                            = t3                                   -- E-IFFALSE
+eval (TmIf TmTrue t2 _t3)                             = t2                                    -- E-IFTRUE
+eval (TmIf TmFalse _t2 t3)                            = t3                                   -- E-IFFALSE
 eval (TmIf t1@(isValue -> False) t2 t3)              = TmIf (eval t1) t2 t3   -- E-IF
 eval (TmApp (TmLam x _ t1) v2@(isValue -> True))     = subst x v2 t1 -- E-APPABS
-eval (TmApp (TmWildcard _ t12) t2@(isValue -> True)) = t12       -- E-WILDCARD
+eval (TmApp (TmWildcard _ t12) _t2@(isValue -> True)) = t12       -- E-WILDCARD
 eval (TmApp t1@(isValue -> False) t2)                = TmApp (eval t1) t2       -- E-APP1
 eval (TmApp v1@(isValue -> True) t2)                 = TmApp v1 (eval t2)        -- E-APP2
 eval (TmSeq t1@(isValue -> False) t2)                = TmSeq (eval t1) t2       -- E-SEQ
-eval (TmSeq t1@(isValue -> True) t2)                 = t2                        -- E-SEQNEXT
+eval (TmSeq _t1@(isValue -> True) t2)                 = t2                        -- E-SEQNEXT
+eval _ = error "unexpected: eval"
 
 subst :: Text -> Value -> Term -> Term
-subst = undefined
+subst = error "not implemented"
 
 typeof :: Context -> Term -> Ty
 typeof ctx (TmVar i) = getTypeFromContext ctx i -- T-VAR
@@ -58,6 +60,7 @@ typeof ctx (TmIf t1 t2 t3) =  -- T-IF
 typeof _ TmUnit = TyUnit  -- T-UNIT
 typeof ctx (TmSeq TmUnit tyT2) = typeof ctx tyT2 -- T-SEQ
 typeof ctx (TmWildcard tyT1 t2) = TyArr tyT1 (typeof ctx t2)  -- T-WILDCARD
+typeof _ _ = error "unexpected: typeof"
 
 -- | 対象の構文
 --

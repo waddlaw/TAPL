@@ -82,6 +82,8 @@ pprFullSimple ctx (TmApp t1 t2)  = ppr t1 <+> ppr t2
 pprFullSimple _ TmTrue  = pretty "true"
 pprFullSimple _ TmFalse = pretty "false"
 pprFullSimple ctx (TmIf t1 t2 t3) = pretty "if" <+> pprFullSimple ctx t1 <+> pretty "then" <+> pprFullSimple ctx t2 <+> pretty "else" <+> pprFullSimple ctx t3
+pprFullSimple _ (TmSeq t1 t2) = pretty t1 <> pretty ";" <> pretty t2
+pprFullSimple ctx (TmWildcard ty t) = pretty "λ_:" <> pretty ty <> pretty "." <+> pprFullSimple ctx t
 
 instance Pretty Ty where
   pretty TyBool = pretty "Bool"

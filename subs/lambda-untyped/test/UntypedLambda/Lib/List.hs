@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Test.Language.UntypedLambda.Lib.List where
+module UntypedLambda.Lib.List where
 
 import           Prelude                           hiding (head, tail)
 

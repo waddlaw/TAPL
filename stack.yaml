@@ -2,6 +2,7 @@ resolver: lts-12.9
 packages:
 - .
 - ./subs/lambda-core
+- ./subs/lambda-untyped
 - ./subs/lambda-fullsimple
 
 # extra-deps:

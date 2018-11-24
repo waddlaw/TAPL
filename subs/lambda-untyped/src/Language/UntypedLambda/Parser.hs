@@ -11,7 +11,7 @@ import qualified RIO.Text                          as Text
 import           Language.UntypedLambda.Lib.Church (c)
 import           Language.UntypedLambda.Prelude    (prelude)
 import           Language.UntypedLambda.Types
-import           Language.Utils.Parser
+import           Language.Core.Parser
 
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta

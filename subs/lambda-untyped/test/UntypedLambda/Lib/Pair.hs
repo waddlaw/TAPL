@@ -1,9 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Test.Language.UntypedLambda.Lib.Pair where
+module UntypedLambda.Lib.Pair where
 
 import           Prelude                         hiding (fst, snd)
 
-import           Test.Utils
+import           Utils
 
 import           Test.Tasty
 import           Test.Tasty.HUnit

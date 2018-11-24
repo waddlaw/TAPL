@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Test.Language.UntypedLambda.Lib.Bool where
+module UntypedLambda.Lib.Bool where
 
-import           Test.Utils
+import           Utils
 
 import           Test.Tasty
 import           Test.Tasty.HUnit

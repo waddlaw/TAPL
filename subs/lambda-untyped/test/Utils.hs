@@ -1,4 +1,4 @@
-module Test.Utils
+module Utils
   ( evalAllStrategy
   ) where
 

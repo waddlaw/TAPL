@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Test.Language.UntypedLambda.Lib.NB where
+module UntypedLambda.Lib.NB where
 
 import           Test.Tasty
 import           Test.Tasty.HUnit

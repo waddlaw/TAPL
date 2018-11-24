@@ -34,7 +34,7 @@ import qualified RIO.Text.Partial              as Text.Partial
 
 import           Language.UntypedLambda.Parser
 import           Language.UntypedLambda.Types
-import           Language.Utils
+import           Language.Core
 
 -- | 指定された評価戦略で項を正規系に評価する
 eval :: Strategy -> UntypedLambda -> UntypedLambda

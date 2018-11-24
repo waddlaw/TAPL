@@ -76,11 +76,11 @@ tests:
     main: Driver.hs
     source-dirs: test
     dependencies:
-      - tapl
-      - tasty
-      - tasty-discover
-      - tasty-hunit
-      - tasty-quickcheck
+    - tapl
+    - tasty
+    - tasty-discover
+    - tasty-hunit
+    - tasty-quickcheck
 
 benchmarks:
   gauge:

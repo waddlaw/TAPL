@@ -73,6 +73,7 @@ typeof _ _ = error "unexpected: typeof"
 desugar :: Term -> Term
 desugar (TmSeq t1 t2)     = TmApp (TmLam "x" TyUnit t2) t1 -- FIXME x notin FV(t2)
 desugar (TmWildcard ty t) = TmLam "x" ty t -- FIXME x notin FV(t)
+desugar (TmAscribe t ty)  = TmApp (TmLam "x" ty (TmVar 0)) t -- FIXME x notin FV(t)
 desugar term              = term
 
 ----------------------

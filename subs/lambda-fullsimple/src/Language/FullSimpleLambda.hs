@@ -1,10 +1,10 @@
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE ViewPatterns #-}
 module Language.FullSimpleLambda
   ( module Language.FullSimpleLambda.Types
   , module Language.FullSimpleLambda.Parser
   , module Language.FullSimpleLambda.Pretty
   , typeof
-  , isValue
   ) where
 
 import           RIO
@@ -13,6 +13,17 @@ import qualified RIO.List.Partial                 as L.Partial
 import           Language.FullSimpleLambda.Parser
 import           Language.FullSimpleLambda.Pretty
 import           Language.FullSimpleLambda.Types
+
+eval :: Term -> Term
+eval (TmIf TmTrue t2 t3) = t2                                    -- E-IFTRUE
+eval (TmIf TmFalse t2 t3) = t3                                   -- E-IFFALSE
+eval (TmIf t1@(isValue -> False) t2 t3) = TmIf (eval t1) t2 t3   -- E-IF
+eval (TmApp t1@(isValue -> False) t2) = TmApp (eval t1) t2       -- E-APP1
+eval (TmApp v1 t2@(isValue -> False)) = TmApp v1 (eval t2)       -- E-APP2
+eval (TmApp (TmLam x _ t1) v2@(isValue -> True)) = subst x v2 t1 -- E-APPABS
+
+subst :: Text -> Value -> Term -> Term
+subst = undefined
 
 typeof :: Context -> Term -> Ty
 typeof ctx (TmVar i) = getTypeFromContext ctx i
@@ -59,7 +70,7 @@ getBinding ctx i = snd $ ctx' L.Partial.!! i
   where ctx' = unCtx ctx
 
 -- | 与えられた項が値かどうか判定する述語
-isValue :: FullSimpleTypedLambda -> Bool
+isValue :: Term -> Bool
 isValue TmVar{} = True
 isValue TmLam{} = True
 isValue TmUnit  = True  -- ^ 11.2 Unit型

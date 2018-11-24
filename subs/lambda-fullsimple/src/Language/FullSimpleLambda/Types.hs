@@ -9,6 +9,7 @@ module Language.FullSimpleLambda.Types
   , Binding (..)
   , FullSimpleTypedLambda
   , pprFullSimple
+  , VarName
   ) where
 
 import           RIO
@@ -20,6 +21,7 @@ import           Data.Text.Prettyprint.Doc
 type FullSimpleTypedLambda = Term
 
 type Value = Term -- ^ Term の部分集合
+type VarName = Text
 
 newtype Context = Context { unCtx :: [(Text, Binding)] }
   deriving (Eq, Show)
@@ -60,7 +62,7 @@ instance Pretty Ty where
 
 data Term
   = TmVar Int
-  | TmLam Text Ty Term
+  | TmLam VarName Ty Term
   | TmApp Term Term
   | TmTrue
   | TmFalse
@@ -73,7 +75,7 @@ data Term
   | TmSeq Term Term       -- ^ 11.3 逐次実行
   | TmWildcard Ty Term    -- ^ 11.3 ワイルドカード
   | TmAscribe Term Ty     -- ^ 11.4 型指定
-  | TmLet Text Term Term  -- ^ 11.5 let
+  | TmLet VarName Term Term  -- ^ 11.5 let
   | TmPair Term Term      -- ^ 11.6 組
   | TmPairFst Term        -- ^ 11.6 第一要素の射影
   | TmPairSnd Term        -- ^ 11.6 第二要素の射影

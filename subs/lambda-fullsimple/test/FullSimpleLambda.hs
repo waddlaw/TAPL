@@ -30,4 +30,23 @@ test_sl = testGroup "FullSimpleLambda"
   --     runFullSimpleLambdaParser "f" "λx:Bool. f (if f x then false else x)" @?= Left
   , testCase "unit" $
       typeof "" TmUnit @?= TyUnit
+  , testCase "pair" $ do
+      let n4 = TmSucc (TmSucc (TmSucc (TmSucc TmZero)))
+          tl = TmPred n4
+          tr = TmIf TmTrue TmFalse TmFalse
+          tp = TmPair tl tr
+          t = TmPairFst tp
+      eval t @?= TmPairFst (TmPair (TmSucc (TmSucc (TmSucc TmZero))) tr)
+      eval (eval t) @?= TmPairFst (TmPair (TmSucc (TmSucc (TmSucc TmZero))) TmFalse)
+      eval (eval (eval t)) @?= TmSucc (TmSucc (TmSucc TmZero))
+  -- TODO
+  -- , testCase "pair" $ do
+  --     let n3 = TmSucc (TmSucc (TmSucc TmZero))
+  --         n4 = TmSucc n3
+  --         n5 = TmSucc n4
+  --         ty = TyProd TyNat TyNat
+  --         tlam = TmLam "x" ty (TmPairSnd (TmVar 0))
+  --         tp2 = TmPair n4 n5
+  --         t2 = TmApp tlam tp2
+  --     eval t2 @?= TmApp t2 (TmPair (TmSucc (TmSucc (TmSucc TmZero))) n5)
   ]

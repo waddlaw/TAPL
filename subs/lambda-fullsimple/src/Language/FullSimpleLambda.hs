@@ -11,6 +11,7 @@ module Language.FullSimpleLambda
   ) where
 
 import           RIO
+import qualified RIO.Set                       as Set
 
 import           Language.FullSimpleLambda.Parser
 import           Language.FullSimpleLambda.Pretty
@@ -46,9 +47,6 @@ eval (TmPair v1@(isValue -> True) t2) = TmPair v1 (eval t2) -- E-PAIR2
 eval (TmPair t1 t2) = TmPair (eval t1) t2
 eval _ = error "unexpected: eval"
 
-subst :: Text -> Value -> Term -> Term
-subst = error "not implemented"
-
 -- | 対象の構文
 --
 -- TmSeq
@@ -74,7 +72,12 @@ isValue TmUnit   = True -- 11.2 Unit型
 isValue (TmPair t1 t2) = isValue t1 && isValue t2 -- 11.6 組
 isValue t        = isNumericValue t
 
+-- | 与えられた項が数項かどうか判定
 isNumericValue :: Term -> Bool
 isNumericValue TmZero     = True
 isNumericValue (TmSucc t) = isNumericValue t
 isNumericValue _          = False
+
+-- | TODO nameless term の実装
+subst :: VarName -> Value -> Term -> Term
+subst = error "subst is not implemented yet."

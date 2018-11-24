@@ -20,9 +20,10 @@ eval :: Term -> Term
 eval (TmIf TmTrue t2 t3) = t2                                    -- E-IFTRUE
 eval (TmIf TmFalse t2 t3) = t3                                   -- E-IFFALSE
 eval (TmIf t1@(isValue -> False) t2 t3) = TmIf (eval t1) t2 t3   -- E-IF
-eval (TmApp t1@(isValue -> False) t2) = TmApp (eval t1) t2       -- E-APP1
-eval (TmApp v1 t2@(isValue -> False)) = TmApp v1 (eval t2)       -- E-APP2
 eval (TmApp (TmLam x _ t1) v2@(isValue -> True)) = subst x v2 t1 -- E-APPABS
+eval (TmApp (TmWildcard _ t12) t2@(isValue -> True)) = t12       -- E-WILDCARD
+eval (TmApp t1@(isValue -> False) t2) = TmApp (eval t1) t2       -- E-APP1
+eval (TmApp v1@(isValue -> True) t2) = TmApp v1 (eval t2)        -- E-APP2
 eval (TmSeq t1@(isValue -> False) t2) = TmSeq (eval t1) t2       -- E-SEQ
 eval (TmSeq t1@(isValue -> True) t2) = t2                        -- E-SEQNEXT
 
@@ -56,12 +57,16 @@ typeof ctx (TmIf t1 t2 t3) =  -- T-IF
     tyT2 = typeof ctx t2
 typeof _ TmUnit = TyUnit  -- T-UNIT
 typeof ctx (TmSeq TmUnit tyT2) = typeof ctx tyT2 -- T-SEQ
+typeof ctx (TmWildcard tyT1 t2) = TyArr tyT1 (typeof ctx t2)  -- T-WILDCARD
 
 -- | 対象の構文
 --
 -- TmSeq
+-- 
+-- TmWildcard
 desugar :: Term -> Term
 desugar (TmSeq t1 t2) = TmApp (TmLam "x" TyUnit t2) t1 -- FIXME x notin FV(t2)
+desugar (TmWildcard ty t) = TmLam "x" ty t -- FIXME x notin FV(t)
 desugar term = term
 
 ----------------------

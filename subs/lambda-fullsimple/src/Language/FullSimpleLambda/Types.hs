@@ -56,6 +56,7 @@ data Term
   | TmIf Term Term Term
   | TmUnit                -- ^ 11.2 Unit 型
   | TmSeq Term Term       -- ^ 11.3 逐次実行
+  | TmWildcard Ty Term    -- ^ 11.3 ワイルドカード
   deriving (Eq, Show)
 
 instance Pretty Term where

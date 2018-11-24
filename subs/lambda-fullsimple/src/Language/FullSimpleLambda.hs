@@ -46,7 +46,7 @@ eval (TmPairSnd t) = TmPairSnd (eval t) -- E-PROJ2
 eval (TmPair v1@(isValue -> True) t2) = TmPair v1 (eval t2) -- E-PAIR2
 eval (TmPair t1 t2) = TmPair (eval t1) t2 -- E-PAIR1
 eval (TmTupleProj j (TmTuple ts)) -- E-PROJTUPLE
-  | and (map isValue ts) = if j < length ts then ts L.Partial.!! j else error "タプルのサイズより大きな値が指定されています"
+  | all isValue ts = if j < length ts then ts L.Partial.!! j else error "タプルのサイズより大きな値が指定されています"
   | otherwise = error "eval: 値ではない項が存在します。"
 eval (TmTupleProj i t) = TmTupleProj i (eval t) -- E-PROJ
 eval (TmTuple ts) = TmTuple (vs ++ [eval t] ++ ts) -- E-TUPLE
@@ -76,7 +76,7 @@ isValue TmTrue         = True
 isValue TmFalse        = True
 isValue TmUnit         = True -- 11.2 Unit型
 isValue (TmPair t1 t2) = isValue t1 && isValue t2 -- 11.6 2つ組
-isValue (TmTuple ts)   = and $ map isValue ts -- 11.7 組
+isValue (TmTuple ts)   = all isValue ts -- 11.7 組
 isValue t              = isNumericValue t
 
 -- | 与えられた項が数項かどうか判定

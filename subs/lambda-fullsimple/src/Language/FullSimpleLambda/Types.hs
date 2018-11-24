@@ -2,6 +2,7 @@
 module Language.FullSimpleLambda.Types
   ( Ty (..)
   , Term (..)
+  , Value
   , Context
   , addContext
   , unCtx
@@ -17,6 +18,9 @@ import qualified RIO.Text                  as Text
 import           Data.Text.Prettyprint.Doc
 
 type FullSimpleTypedLambda = Term
+
+type Value = Term -- ^ Term の部分集合
+
 newtype Context = Context { unCtx :: [(Text, Binding)] }
   deriving (Eq, Show)
 
@@ -51,6 +55,8 @@ data Term
   | TmFalse
   | TmIf Term Term Term
   | TmUnit                -- ^ 11.2 Unit 型
+  | TmSeq Term Term       -- ^ 11.3 逐次実行
+  | TmWildcard Ty Term    -- ^ 11.3 ワイルドカード
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -76,6 +82,8 @@ pprFullSimple ctx (TmApp t1 t2)  = ppr t1 <+> ppr t2
 pprFullSimple _ TmTrue  = pretty "true"
 pprFullSimple _ TmFalse = pretty "false"
 pprFullSimple ctx (TmIf t1 t2 t3) = pretty "if" <+> pprFullSimple ctx t1 <+> pretty "then" <+> pprFullSimple ctx t2 <+> pretty "else" <+> pprFullSimple ctx t3
+pprFullSimple _ (TmSeq t1 t2) = pretty t1 <> pretty ";" <> pretty t2
+pprFullSimple ctx (TmWildcard ty t) = pretty "λ_:" <> pretty ty <> pretty "." <+> pprFullSimple ctx t
 
 instance Pretty Ty where
   pretty TyBool = pretty "Bool"

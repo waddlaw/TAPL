@@ -54,14 +54,14 @@ main' = do
       if  | ":help" `Text.isPrefixOf` input -> lift helpCmd >> main'
           | ":t" `Text.isPrefixOf` input -> lift (tcCmd (parser mempty) typecheck input) >> main'
           | otherwise -> do
-              lift (evalCmd (parser mempty) eval input)
+              lift (evalCmd (parser mempty) evalTerm input)
               main'
 
 parser :: Context -> Text -> Either String Term
 parser ctx = runFullSimpleLambdaParser ctx . Text.unpack
 
 typecheck :: Term -> Ty
-typecheck = undefined
+typecheck = typeof mempty
 
-eval :: EvalFunc Term
-eval _ = undefined
+evalTerm :: EvalFunc Term
+evalTerm _ = eval

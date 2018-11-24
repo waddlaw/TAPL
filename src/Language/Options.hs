@@ -11,7 +11,7 @@ import           RIO                       hiding (trace)
 import qualified RIO.Text                  as Text
 
 import           Language.Types
-import           Language.Utils
+import           Language.Core
 
 import           Data.Text.Prettyprint.Doc
 

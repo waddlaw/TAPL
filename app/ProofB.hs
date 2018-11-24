@@ -3,7 +3,7 @@ module Main (main) where
 
 import           Language.B
 import qualified Language.B.Example                      as B
-import           Language.Utils
+import           Language.Core
 
 import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.State.Strict

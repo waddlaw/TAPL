@@ -10,7 +10,7 @@ import qualified RIO.Text                     as Text
 import           Language.Options
 import           Language.Orphans             ()
 import           Language.Types
-import           Language.Utils
+import           Language.Core
 
 import           Language.FullSimpleLambda
 

@@ -12,7 +12,7 @@ import           Language.Orphans             ()
 import           Language.SimpleLambda        as SimpleLambda
 import           Language.Types
 import qualified Language.UntypedLambda.Types as UntypedLambda
-import           Language.Utils
+import           Language.Core
 
 import           System.Console.Haskeline     hiding (display)
 import           System.Environment

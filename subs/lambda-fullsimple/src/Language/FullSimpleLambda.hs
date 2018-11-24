@@ -43,7 +43,7 @@ eval (TmPairSnd (TmPair _v1@(isValue -> True) v2@(isValue -> True))) = v2 -- E-P
 eval (TmPairFst t) = TmPairFst (eval t) -- E-PROJ1
 eval (TmPairSnd t) = TmPairSnd (eval t) -- E-PROJ2
 eval (TmPair v1@(isValue -> True) t2) = TmPair v1 (eval t2) -- E-PAIR2
-eval (TmPair t1 t2) = TmPair (eval t1) t2
+eval (TmPair t1 t2) = TmPair (eval t1) t2 -- E-PAIR1
 eval _ = error "unexpected: eval"
 
 -- | 対象の構文

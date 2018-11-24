@@ -2,6 +2,7 @@
 module Language.FullSimpleLambda.Types
   ( Ty (..)
   , Term (..)
+  , Value
   , Context
   , addContext
   , unCtx
@@ -17,6 +18,9 @@ import qualified RIO.Text                  as Text
 import           Data.Text.Prettyprint.Doc
 
 type FullSimpleTypedLambda = Term
+
+type Value = Term -- ^ Term の部分集合
+
 newtype Context = Context { unCtx :: [(Text, Binding)] }
   deriving (Eq, Show)
 

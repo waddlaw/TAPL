@@ -11,7 +11,7 @@ module Language.FullSimpleLambda
   ) where
 
 import           RIO
-import qualified RIO.Set                       as Set
+import qualified RIO.Set                             as Set
 
 import           Language.FullSimpleLambda.Parser
 import           Language.FullSimpleLambda.Pretty
@@ -64,13 +64,13 @@ desugar term              = term
 
 -- | 与えられた項が値かどうか判定する述語
 isValue :: Term -> Bool
-isValue TmVar{}  = True
-isValue TmLam{}  = True
-isValue TmTrue   = True
-isValue TmFalse  = True
-isValue TmUnit   = True -- 11.2 Unit型
+isValue TmVar{}        = True
+isValue TmLam{}        = True
+isValue TmTrue         = True
+isValue TmFalse        = True
+isValue TmUnit         = True -- 11.2 Unit型
 isValue (TmPair t1 t2) = isValue t1 && isValue t2 -- 11.6 組
-isValue t        = isNumericValue t
+isValue t              = isNumericValue t
 
 -- | 与えられた項が数項かどうか判定
 isNumericValue :: Term -> Bool

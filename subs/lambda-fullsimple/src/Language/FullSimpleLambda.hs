@@ -1,10 +1,12 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Language.FullSimpleLambda
   ( module Language.FullSimpleLambda.Types
   , module Language.FullSimpleLambda.Parser
   , module Language.FullSimpleLambda.Pretty
   , typeof
+  , desugar
   ) where
 
 import           RIO
@@ -54,6 +56,13 @@ typeof ctx (TmIf t1 t2 t3) =  -- T-IF
     tyT2 = typeof ctx t2
 typeof _ TmUnit = TyUnit  -- T-UNIT
 typeof ctx (TmSeq TmUnit tyT2) = typeof ctx tyT2 -- T-SEQ
+
+-- | 対象の構文
+--
+-- TmSeq
+desugar :: Term -> Term
+desugar (TmSeq t1 t2) = TmApp (TmLam "x" TyUnit t2) t1 -- FIXME x notin FV(t2)
+desugar term = term
 
 ----------------------
 -- helper functions --

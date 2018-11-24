@@ -33,17 +33,23 @@ typeof ctx (TmIf t1 t2 t3) =  -- T-IF
     else error "guard of conditional not a boolean"
   where
     tyT2 = typeof ctx t2
+typeof _ TmZero = TyNat -- T-ZERO
+typeof ctx (TmSucc t) = if typeof ctx t == TyNat then TyNat else error "type mismatch" -- T-SUCC
+typeof ctx (TmPred t) = if typeof ctx t == TyNat then TyNat else error "type mismatch" -- T-PRED
+typeof ctx (TmIsZero t) = if typeof ctx t == TyNat then TyBool else error "type mismatch" -- T-ISZERO
 typeof _ TmUnit = TyUnit  -- T-UNIT
-typeof ctx (TmSeq TmUnit tyT2) = typeof ctx tyT2 -- T-SEQ
+typeof ctx (TmSeq t1 t2) = if typeof ctx t1 == TyUnit then typeof ctx t2 else error "type mismatch" -- T-SEQ
 typeof ctx (TmWildcard tyT1 t2) = TyArr tyT1 (typeof ctx t2)  -- T-WILDCARD
 typeof ctx (TmAscribe t1 tyT) -- T-ASCRIBE
   | tyT == typeof ctx t1 = tyT
   | otherwise = error "ascribe type mismatch error"
-typeof ctx (TmLet var t1 t2) = typeof ctx' t2
+typeof ctx (TmLet var t1 t2) = typeof ctx' t2 -- T-LET
   where
     tyT1 = typeof ctx t1
     ctx' = addBinding ctx var (VarBind tyT1)
-typeof _ _ = error "unexpected: typeof"
+typeof ctx (TmPair t1 t2) = TyProd (typeof ctx t1) (typeof ctx t2) -- T-PAIR
+typeof ctx (TmPairFst t) = typeof ctx t -- T-PORJ1
+typeof ctx (TmPairSnd t) = typeof ctx t -- T-PROJ2
 
 ----------------------
 -- helper functions --

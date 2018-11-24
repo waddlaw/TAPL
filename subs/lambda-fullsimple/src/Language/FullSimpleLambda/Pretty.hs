@@ -5,10 +5,10 @@ module Language.FullSimpleLambda.Pretty
   ) where
 
 import           RIO
-import qualified RIO.List.Partial                 as L.Partial
+import qualified RIO.List.Partial                      as L.Partial
 
-import           Language.FullSimpleLambda.Types
 import           Language.FullSimpleLambda.TypeCheck
+import           Language.FullSimpleLambda.Types
 
 import           Data.Text.Prettyprint.Doc
 import           Data.Text.Prettyprint.Doc.Render.Text

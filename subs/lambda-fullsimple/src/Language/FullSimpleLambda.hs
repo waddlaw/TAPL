@@ -14,8 +14,8 @@ import           RIO
 
 import           Language.FullSimpleLambda.Parser
 import           Language.FullSimpleLambda.Pretty
-import           Language.FullSimpleLambda.Types
 import           Language.FullSimpleLambda.TypeCheck
+import           Language.FullSimpleLambda.Types
 
 eval :: Term -> Term
 eval (TmIf TmTrue t2 _t3)                             = t2                     -- E-IFTRUE

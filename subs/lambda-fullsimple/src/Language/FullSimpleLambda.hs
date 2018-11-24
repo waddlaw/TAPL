@@ -68,6 +68,8 @@ desugar term              = term
 isValue :: Term -> Bool
 isValue TmVar{}  = True
 isValue TmLam{}  = True
+isValue TmTrue   = True
+isValue TmFalse  = True
 isValue TmUnit   = True -- 11.2 Unit型
 isValue TmPair{} = True -- 11.6 組
 isValue t        = isNumericValue t

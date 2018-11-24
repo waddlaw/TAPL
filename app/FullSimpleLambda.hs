@@ -7,10 +7,10 @@ import           RIO
 import           RIO.Process
 import qualified RIO.Text                     as Text
 
+import           Language.Core
 import           Language.Options
 import           Language.Orphans             ()
 import           Language.Types
-import           Language.Core
 
 import           Language.FullSimpleLambda
 

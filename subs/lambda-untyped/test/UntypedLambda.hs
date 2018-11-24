@@ -8,6 +8,7 @@ import           Prelude                           hiding (and, fst, head, id,
 import           Test.Tasty
 import           Test.Tasty.HUnit
 
+import           Language.Core.Pretty
 import           Language.UntypedLambda
 import qualified Language.UntypedLambda.Examples   as UL
 import           Language.UntypedLambda.Lib.Base
@@ -15,7 +16,6 @@ import           Language.UntypedLambda.Lib.Bool
 import           Language.UntypedLambda.Lib.Church
 import           Language.UntypedLambda.Lib.List
 import           Language.UntypedLambda.Lib.Pair
-import           Language.Core.Pretty
 
 import           Data.Either
 

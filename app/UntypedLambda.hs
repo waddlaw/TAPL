@@ -1,9 +1,9 @@
 {-# LANGUAGE MultiWayIf #-}
 module Main (main) where
 
+import           Language.Core
 import           Language.UntypedLambda
 import           Language.UntypedLambda.Prelude   (prelude)
-import           Language.Core
 
 import           Control.Monad.Trans.Class
 import           Control.Monad.Trans.State.Strict

@@ -32,9 +32,9 @@ import qualified RIO.Set                       as Set
 import qualified RIO.Text                      as Text
 import qualified RIO.Text.Partial              as Text.Partial
 
+import           Language.Core
 import           Language.UntypedLambda.Parser
 import           Language.UntypedLambda.Types
-import           Language.Core
 
 -- | 指定された評価戦略で項を正規系に評価する
 eval :: Strategy -> UntypedLambda -> UntypedLambda

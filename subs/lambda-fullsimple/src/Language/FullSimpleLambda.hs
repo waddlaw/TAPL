@@ -6,8 +6,8 @@ module Language.FullSimpleLambda
   , typeof
   ) where
 
-import RIO
-import qualified RIO.List.Partial             as L.Partial
+import           RIO
+import qualified RIO.List.Partial                 as L.Partial
 
 import           Language.FullSimpleLambda.Parser
 import           Language.FullSimpleLambda.Pretty

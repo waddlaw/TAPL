@@ -10,8 +10,8 @@ module Language.Options
 import           RIO                       hiding (trace)
 import qualified RIO.Text                  as Text
 
-import           Language.Types
 import           Language.Core
+import           Language.Types
 
 import           Data.Text.Prettyprint.Doc
 

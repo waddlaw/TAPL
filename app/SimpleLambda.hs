@@ -7,12 +7,12 @@ import           RIO
 import           RIO.Process
 import qualified RIO.Text                     as Text
 
+import           Language.Core
 import           Language.Options
 import           Language.Orphans             ()
 import           Language.SimpleLambda        as SimpleLambda
 import           Language.Types
 import qualified Language.UntypedLambda.Types as UntypedLambda
-import           Language.Core
 
 import           System.Console.Haskeline     hiding (display)
 import           System.Environment

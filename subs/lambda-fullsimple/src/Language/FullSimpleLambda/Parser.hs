@@ -8,8 +8,8 @@ import qualified RIO.List                        as L
 import qualified RIO.List.Partial                as L.Partial
 import qualified RIO.Text                        as Text
 
-import           Language.FullSimpleLambda.Types
 import           Language.Core.Parser
+import           Language.FullSimpleLambda.Types
 
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta

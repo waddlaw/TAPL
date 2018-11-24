@@ -12,8 +12,8 @@ import qualified RIO.List.Partial            as L.Partial
 -- import qualified RIO.Map                     as Map
 import qualified RIO.Text                    as Text
 
-import           Language.SimpleLambda.Types
 import           Language.Core.Parser
+import           Language.SimpleLambda.Types
 
 import           Text.Parser.Token.Highlight
 import           Text.Trifecta

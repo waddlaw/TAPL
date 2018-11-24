@@ -39,10 +39,13 @@ typeof ctx (TmWildcard tyT1 t2) = TyArr tyT1 (typeof ctx t2)  -- T-WILDCARD
 typeof ctx (TmAscribe t1 tyT) -- T-ASCRIBE
   | tyT == typeof ctx t1 = tyT
   | otherwise = error "ascribe type mismatch error"
-typeof ctx (TmLet var t1 t2) = typeof ctx' t2
+typeof ctx (TmLet var t1 t2) = typeof ctx' t2 -- T-LET
   where
     tyT1 = typeof ctx t1
     ctx' = addBinding ctx var (VarBind tyT1)
+typeof ctx (TmPair t1 t2) = TyProd (typeof ctx t1) (typeof ctx t2) -- T-PAIR
+typeof ctx (TmPairFst t) = typeof ctx t -- T-PORJ1
+typeof ctx (TmPairSnd t) = typeof ctx t -- T-PROJ2
 typeof _ _ = error "unexpected: typeof"
 
 ----------------------

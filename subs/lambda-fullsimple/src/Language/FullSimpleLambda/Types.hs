@@ -45,6 +45,7 @@ data Ty
   = TyArr Ty Ty  -- ^ 関数型
   | TyBool       -- ^ Bool型
   | TyUnit       -- ^ 11.2 Unit型
+  | TyProd Ty Ty -- ^ 11.6 直積型
   deriving (Eq, Show)
 
 instance Pretty Ty where
@@ -67,6 +68,9 @@ data Term
   | TmWildcard Ty Term    -- ^ 11.3 ワイルドカード
   | TmAscribe Term Ty     -- ^ 11.4 型指定
   | TmLet Text Term Term  -- ^ 11.5 let
+  | TmPair Term Term      -- ^ 11.6 組
+  | TmPairFst Term        -- ^ 11.6 第一要素の射影
+  | TmPairSnd Term        -- ^ 11.6 第二要素の射影
   deriving (Eq, Show)
 
 instance Pretty Term where

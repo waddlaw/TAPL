@@ -7,7 +7,7 @@ module Language.B.Parser
 import           RIO
 
 import           Language.B.Types
-import           Language.Utils.Parser
+import           Language.Core.Parser
 
 import           Text.Trifecta
 

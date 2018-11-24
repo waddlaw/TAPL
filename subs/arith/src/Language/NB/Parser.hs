@@ -6,7 +6,7 @@ module Language.NB.Parser
 import           RIO
 
 import           Language.NB.Types
-import           Language.Utils.Parser
+import           Language.Core.Parser
 
 import           Text.Trifecta
 

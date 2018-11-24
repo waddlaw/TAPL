@@ -1,0 +1,34 @@
+name:                arith
+version:             0.1.0.0
+github:              "githubuser/arith"
+license:             BSD3
+author:              "Author name here"
+maintainer:          "example@example.com"
+copyright:           "2018 Author name here"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+description:         Please see the README on GitHub at <https://github.com/githubuser/arith#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- lambda-core
+- prettyprinter
+- rio
+- trifecta
+
+library:
+  source-dirs: src
+
+tests:
+  arith-test:
+    main: Driver.hs
+    source-dirs: test
+    dependencies:
+    - arith
+    - tasty
+    - tasty-discover
+    - tasty-hunit
+    - tasty-quickcheck

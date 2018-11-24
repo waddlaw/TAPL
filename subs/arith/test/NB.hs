@@ -1,4 +1,4 @@
-module Test.Language.NB where
+module NB where
 
 import           Test.Tasty
 import           Test.Tasty.HUnit

@@ -1,6 +1,6 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
-module Language.Orphans () where
+module Language.Core.Orphans () where
 
 import           RIO
 

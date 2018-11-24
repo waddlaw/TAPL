@@ -21,17 +21,19 @@ eval (TmIf t1@(isValue -> False) t2 t3) = TmIf (eval t1) t2 t3   -- E-IF
 eval (TmApp t1@(isValue -> False) t2) = TmApp (eval t1) t2       -- E-APP1
 eval (TmApp v1 t2@(isValue -> False)) = TmApp v1 (eval t2)       -- E-APP2
 eval (TmApp (TmLam x _ t1) v2@(isValue -> True)) = subst x v2 t1 -- E-APPABS
+eval (TmSeq t1@(isValue -> False) t2) = TmSeq (eval t1) t2       -- E-SEQ
+eval (TmSeq t1@(isValue -> True) t2) = t2                        -- E-SEQNEXT
 
 subst :: Text -> Value -> Term -> Term
 subst = undefined
 
 typeof :: Context -> Term -> Ty
-typeof ctx (TmVar i) = getTypeFromContext ctx i
-typeof ctx (TmLam x tyT1 t2) = TyArr tyT1 tyT2
+typeof ctx (TmVar i) = getTypeFromContext ctx i -- T-VAR
+typeof ctx (TmLam x tyT1 t2) = TyArr tyT1 tyT2  -- T-ABS
   where
     tyT2 = typeof ctx' t2
     ctx' = addBinding ctx x (VarBind tyT1)
-typeof ctx (TmApp t1 t2) =
+typeof ctx (TmApp t1 t2) =  -- T-APP
   case tyT1 of
     TyArr tyT11 tyT12 -> if tyT2 == tyT11
                          then tyT12
@@ -40,9 +42,9 @@ typeof ctx (TmApp t1 t2) =
   where
     tyT1 = typeof ctx t1
     tyT2 = typeof ctx t2
-typeof _ TmTrue = TyBool
-typeof _ TmFalse = TyBool
-typeof ctx (TmIf t1 t2 t3) =
+typeof _ TmTrue = TyBool      -- T-TRUE
+typeof _ TmFalse = TyBool     -- T-FALSE
+typeof ctx (TmIf t1 t2 t3) =  -- T-IF
     if typeof ctx t1 == TyBool
     then if tyT2 == typeof ctx t3
         then tyT2
@@ -50,7 +52,8 @@ typeof ctx (TmIf t1 t2 t3) =
     else error "guard of conditional not a boolean"
   where
     tyT2 = typeof ctx t2
-typeof _ TmUnit = TyUnit  -- ^ 11.2 Unit型
+typeof _ TmUnit = TyUnit  -- T-UNIT
+typeof ctx (TmSeq TmUnit tyT2) = typeof ctx tyT2 -- T-SEQ
 
 ----------------------
 -- helper functions --

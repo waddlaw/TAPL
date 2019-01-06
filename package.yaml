@@ -1,7 +1,10 @@
 name: tapl
-version: 0.0.0
+version: 0.1.0
 author: Shinya Yamaguchi
 github: waddlaw/TAPL
+
+extra-source-files:
+- package.yaml
 
 ghc-options:
 - -Wall
@@ -24,6 +27,12 @@ dependencies:
 - lambda-untyped
 - lambda-simple
 - lambda-fullsimple
+
+custom-setup:
+  dependencies:
+  - base
+  - Cabal
+  - hpack
 
 library:
   source-dirs: src

@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/waddlaw/TAPL.svg?style=svg)](https://circleci.com/gh/waddlaw/TAPL)
+[![CircleCI](https://circleci.com/gh/waddlaw/TAPL.svg?style=svg)](https://circleci.com/gh/waddlaw/TAPL) [![Build Status](https://travis-ci.org/waddlaw/TAPL.svg?branch=master)](https://travis-ci.org/waddlaw/TAPL)
 
 # 型システム入門 プログラミング言語と型の理論
 

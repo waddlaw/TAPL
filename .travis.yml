@@ -31,6 +31,9 @@ matrix:
   allow_failures:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
 
+before_install:
+  - cabal new-install tasty-discover
+
 install:
 - |
   set -ex

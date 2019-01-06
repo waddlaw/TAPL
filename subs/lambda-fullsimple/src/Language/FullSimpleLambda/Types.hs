@@ -27,7 +27,7 @@ newtype Context = Context { unCtx :: [(Text, Binding)] }
   deriving (Eq, Show)
 
 instance Semigroup Context where
-    ctx1 <> ctx2 = Context (unCtx ctx1 <> unCtx ctx2)
+  ctx1 <> ctx2 = Context (unCtx ctx1 <> unCtx ctx2)
 
 instance Monoid Context where
   mempty = Context []
@@ -74,16 +74,16 @@ data Term
   | TmSucc Term
   | TmPred Term
   | TmIsZero Term
-  | TmUnit                -- ^ 11.2 Unit 型
-  | TmSeq Term Term       -- ^ 11.3 逐次実行
-  | TmWildcard Ty Term    -- ^ 11.3 ワイルドカード
-  | TmAscribe Term Ty     -- ^ 11.4 型指定
+  | TmUnit                   -- ^ 11.2 Unit 型
+  | TmSeq Term Term          -- ^ 11.3 逐次実行
+  | TmWildcard Ty Term       -- ^ 11.3 ワイルドカード
+  | TmAscribe Term Ty        -- ^ 11.4 型指定
   | TmLet VarName Term Term  -- ^ 11.5 let
-  | TmPair Term Term      -- ^ 11.6 2つ組
-  | TmPairFst Term        -- ^ 11.6 第一要素の射影
-  | TmPairSnd Term        -- ^ 11.6 第二要素の射影
-  | TmTuple [Term]        -- ^ 11.7 組
-  | TmTupleProj Int Term  -- ^ 11.7 射影
+  | TmPair Term Term         -- ^ 11.6 2つ組
+  | TmPairFst Term           -- ^ 11.6 第一要素の射影
+  | TmPairSnd Term           -- ^ 11.6 第二要素の射影
+  | TmTuple [Term]           -- ^ 11.7 組
+  | TmTupleProj Int Term     -- ^ 11.7 射影
   deriving (Eq, Show)
 
 instance Pretty Term where

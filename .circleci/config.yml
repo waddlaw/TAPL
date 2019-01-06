@@ -4,7 +4,7 @@ aliases:
   - &default_env
     environment:
       CACHE_KEY: 1
-      STACK_VERSION: 1.7.1
+      STACK_VERSION: 1.9.3
   - &create_cache_key_file
     run:
       name: Create cache control key file

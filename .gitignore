@@ -3,3 +3,5 @@
 tapl.cabal
 note/html
 _site
+dist-newstyle/
+.ghc.environment.*

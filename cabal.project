@@ -1,0 +1,11 @@
+packages:
+  ./
+  ./subs/term
+  ./subs/bool
+  ./subs/arith
+  ./subs/lambda-core
+  ./subs/lambda-simple
+  ./subs/lambda-untyped
+  ./subs/lambda-fullsimple
+
+with-compiler: ghc-8.6.3

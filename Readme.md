@@ -32,7 +32,7 @@ $ stack run
 
 - [haddock](https://waddlaw.github.io/TAPL/)
 
-### GHC 8.4.3
+### GHC 8.6.3
 
 ```shell
 $ stack test --fast --file-watch

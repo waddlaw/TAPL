@@ -32,7 +32,7 @@ custom-setup:
   dependencies:
   - base
   - Cabal
-  - hpack == 0.31.1
+  - hpack
 
 library:
   source-dirs: src

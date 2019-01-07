@@ -64,6 +64,7 @@ before_install:
         ;;
       *)
         export PATH="$HOME"/.local/bin:$PATH
+        rm Setup.hs
         ;;
     esac
 
@@ -81,11 +82,15 @@ install:
       chmod u+x ./hpack
       mv hpack $HOME/.cabal/bin/
 
+      scripts/hpack.sh
+      cabal new-update
+      cabal new-install tasty-discover
+
       hpack --version
       cabal --numeric-version
       ghc --version
       ;;
-    stack|werror)
+    *)
       mkdir -p $HOME/.local/bin
 
       if [ `uname` = "Darwin" ]
@@ -114,14 +119,14 @@ script:
       hlint subs/
       ;;
     cabal)
-      scripts/hpack.sh
-      cabal new-update
-      cabal new-install tasty-discover
       cabal new-test all
       ;;
     stack)
-      rm Setup.hs
+      
       stack --no-terminal $ARGS test --haddock --no-haddock-deps
+      ;;
+    pedantic)
+      stack --no-terminal test --pedantic --no-run-tests
       ;;
     werror)
       stack --no-terminal $ARGS test --haddock --no-haddock-deps --ghc-options -Werror --ghc-options -Wcompat --ghc-options -Wincomplete-record-updates --ghc-options -Wincomplete-uni-patterns --ghc-options -Wredundant-constraints

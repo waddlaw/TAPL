@@ -51,7 +51,7 @@ matrix:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
     - os:  osx
     - env: BUILD=style
-    - env: BUILD=pedantic
+    - env: BUILD=pedantic ARGS="--resolver lts-13 --system-ghc --pedantic"
 
 before_install:
   - case "$BUILD" in

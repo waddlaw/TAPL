@@ -39,7 +39,6 @@ matrix:
 
       # osx
     - env: BUILD=stack
-      ghc: "8.6.3"
       os: osx
 
     - env: BUILD=style

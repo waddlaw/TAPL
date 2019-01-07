@@ -86,7 +86,7 @@ data Term
   | TmPairSnd Term           -- ^ 11.6 第二要素の射影
   | TmTuple [Term]           -- ^ 11.7 組
   | TmTupleProj Int Term     -- ^ 11.7 射影
-  | TmReocrd [(FieldLabel, Term)] -- ^ 11.8 レコード (フィールドの順序が異なれば、異なるレコードとして扱う)
+  | TmRecord [(FieldLabel, Term)] -- ^ 11.8 レコード (フィールドの順序が異なれば、異なるレコードとして扱う)
   deriving (Eq, Show)
 
 instance Pretty Term where

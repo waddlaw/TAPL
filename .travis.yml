@@ -74,8 +74,9 @@ install:
     cabal)
       ./scripts/get-hpack.sh
       chmod u+x ./hpack
+      mv hpack $HOME/.cabal/bin/
 
-      ./hpack --version
+      hpack --version
       cabal --numeric-version
       ghc --version
       ;;
@@ -106,7 +107,7 @@ script:
       hlint subs/
       ;;
     cabal)
-      ./hpack
+      scripts/hpack.sh
       cabal new-test all
       ;;
     stack)

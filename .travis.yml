@@ -40,22 +40,30 @@ matrix:
   allow_failures:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
 
+before_install:
+  - case "$BUILD" in
+      cabal)
+        PATH=$HOME/.cabal/bin:$PATH
+        ;;
+      *)
+        PATH=$HOME/.local/bin:$PATH
+        mkdir -p $HOME/.local/bin
+        ;;
+    esac
+
 install:
 - |
   set -ex
   case "$BUILD" in
     cabal)
-      PATH=$HOME/.cabal/bin:$PATH
-      cabal new-install --global tasty-discover
-      cabal new-install --global hpack
+      cabal new-install --ignore-project tasty-discover
+      cabal new-install --ignore-project hpack
 
       cabal --numeric-version
       ghc --version
       ;;
     stack|werror)
-      PATH=$HOME/.local/bin:$PATH
       stack install tasty-discover
-      mkdir -p ~/.local/bin
 
       if [ `uname` = "Darwin" ]
       then

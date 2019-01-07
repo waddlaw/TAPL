@@ -60,6 +60,7 @@ before_install:
         ;;
       cabal)
         PATH=$HOME/.cabal/bin:$PATH
+        mkdir -p $HOME/.cabal/bin
         ;;
       *)
         PATH=$HOME/.local/bin:$PATH

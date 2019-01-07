@@ -120,7 +120,7 @@ script:
       stack --no-terminal $ARGS test --haddock --no-haddock-deps
       ;;
     pedantic)
-      stack --no-terminal test --pedantic --no-run-tests
+      stack --no-terminal $ARGS test --no-run-tests
       ;;
     werror)
       stack --no-terminal $ARGS test --haddock --no-haddock-deps --ghc-options -Werror --ghc-options -Wcompat --ghc-options -Wincomplete-record-updates --ghc-options -Wincomplete-uni-patterns --ghc-options -Wredundant-constraints

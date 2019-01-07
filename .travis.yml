@@ -106,7 +106,7 @@ script:
       hlint subs/
       ;;
     cabal)
-      hpack
+      ./hpack
       cabal new-test all
       ;;
     stack)

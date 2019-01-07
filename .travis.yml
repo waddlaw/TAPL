@@ -83,6 +83,7 @@ install:
       ./scripts/get-hlint.sh
       ;;
     cabal)
+      stack build --dry-run
       cabal new-update
       cabal new-install tasty-discover
 

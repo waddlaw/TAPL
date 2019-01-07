@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 PACKAGE=hpack
-VERSION=0.31.1
+VERSION=$1
 echo "Downloading $PACKAGE now ..."
 
 RELEASES=$(curl --silent https://github.com/sol/$PACKAGE/releases)

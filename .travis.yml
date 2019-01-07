@@ -9,6 +9,7 @@ cache:
     - $TRAVIS_BUILD_DIR/.stack-work
 
 cabal: "2.4"
+env: STACK_VERSION=1.9.3 HPACK_VERSION=0.31.1
 
 matrix:
   fast_finish: true
@@ -21,7 +22,6 @@ matrix:
 
     - env: BUILD=cabal
       ghc: "8.2.2"
-
 
       # --system-ghc is used to take advantage of language: haskell and save build time. If the stack resolver ghc and system-ghc become different, stack will download the right ghc
     - env: BUILD=stack ARGS="--resolver lts-11 --system-ghc"
@@ -37,10 +37,6 @@ matrix:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
       ghc: "8.6.3"
 
-      # osx
-    - env: BUILD=stack
-      os: osx
-
     - env: BUILD=style
       ghc: "8.6.3"
 
@@ -49,7 +45,6 @@ matrix:
 
   allow_failures:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
-    - os:  osx
     - env: BUILD=style
     - env: BUILD=pedantic ARGS="--system-ghc --pedantic"
 
@@ -77,7 +72,7 @@ install:
     cabal)
       mkdir -p $HOME/.cabal/bin
 
-      ./scripts/get-hpack.sh
+      ./scripts/get-hpack.sh $HPACK_VERSION
       chmod u+x ./hpack
       mv hpack $HOME/.cabal/bin/
 
@@ -85,19 +80,16 @@ install:
       cabal new-update
       cabal new-install tasty-discover
 
-      hpack --version
       cabal --numeric-version
+      hpack --version
       ghc --version
       ;;
     *)
       mkdir -p $HOME/.local/bin
 
-      if [ `uname` = "Darwin" ]
-      then
-        travis_retry curl -skL https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
-      else
-        travis_retry curl -sL https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
-      fi
+      travis_retry curl -sL https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+      stack upgrade --binary-version=$STACK_VERSION
 
       stack install tasty-discover
 

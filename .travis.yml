@@ -38,7 +38,7 @@ matrix:
       ghc: "8.6.3"
 
       # osx
-    - env: BUILD=stack ARGS="--resolver lts-13 --system-ghc"
+    - env: BUILD=stack ARGS="--resolver lts-13"
       ghc: "8.6.3"
       os: osx
 

@@ -55,6 +55,9 @@ matrix:
 
 before_install:
   - case "$BUILD" in
+      style)
+        export PATH="$TRAVIS_BUILD_DIR"/hlint:$PATH
+        ;;
       cabal)
         PATH=$HOME/.cabal/bin:$PATH
         ;;

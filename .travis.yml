@@ -60,12 +60,10 @@ before_install:
         export PATH="$TRAVIS_BUILD_DIR"/hlint:$PATH
         ;;
       cabal)
-        export PATH=$HOME/.cabal/bin:$PATH
-        mkdir -p $HOME/.cabal/bin
+        export PATH="$HOME"/.cabal/bin:$PATH
         ;;
       *)
-        export PATH=$HOME/.local/bin:$PATH
-        mkdir -p $HOME/.local/bin
+        export PATH="$HOME"/.local/bin:$PATH
         ;;
     esac
 
@@ -77,6 +75,8 @@ install:
       ./scripts/get-hlint.sh
       ;;
     cabal)
+      mkdir -p $HOME/.cabal/bin
+      
       ./scripts/get-hpack.sh
       chmod u+x ./hpack
       mv hpack $HOME/.cabal/bin/
@@ -86,6 +86,8 @@ install:
       ghc --version
       ;;
     stack|werror)
+      mkdir -p $HOME/.local/bin
+
       if [ `uname` = "Darwin" ]
       then
         travis_retry curl -skL https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin

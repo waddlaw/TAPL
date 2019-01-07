@@ -63,14 +63,14 @@ install:
       ghc --version
       ;;
     stack|werror)
-      stack install tasty-discover
-
       if [ `uname` = "Darwin" ]
       then
         travis_retry curl --insecure -L https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
       else
         travis_retry curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
       fi
+
+      stack install tasty-discover
 
       stack --numeric-version
       ghc --version

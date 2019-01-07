@@ -68,11 +68,14 @@ install:
 - |
   set -ex
   case "$BUILD" in
+    style)
+      ./scripts/get-hlint.sh
+      ;;
     cabal)
-      cabal new-update --project-file=$HOME/.cabal/config
-      cabal new-install --project-file=$HOME/.cabal/config tasty-discover
-      cabal new-install --project-file=$HOME/.cabal/config hpack
+      ./scripts/get-hpack.sh
+      chmod u+x ./hpack
 
+      hpack --version
       cabal --numeric-version
       ghc --version
       ;;
@@ -96,7 +99,14 @@ script:
 - |
   set -ex
   case "$BUILD" in
+    style)
+      hlint app/
+      hlint bench/
+      hlint src/
+      hlint subs/
+      ;;
     cabal)
+      hpack
       cabal new-test all
       ;;
     stack)

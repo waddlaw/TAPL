@@ -59,16 +59,16 @@ typeof ctx (TmPair t1 t2) = TyProd (typeof ctx t1) (typeof ctx t2) -- T-PAIR
 typeof ctx (TmPairFst t) = -- T-PORJ1
   case typeof ctx t of
     TyProd t11 _t12 -> t11
-    _ -> error "type mismatch (T-PORJ1)"
+    _               -> error "type mismatch (T-PORJ1)"
 typeof ctx (TmPairSnd t) = -- T-PROJ2
   case typeof ctx t of
     TyProd _t11 t12 -> t12
-    _ -> error "type mismatch (T-PROJ2)"
+    _               -> error "type mismatch (T-PROJ2)"
 typeof ctx (TmTuple ts) = TyTuple $ map (typeof ctx) ts -- T-TUPLE
 typeof ctx (TmTupleProj j t) = -- T-PROJ
   case typeof ctx t of
     TyTuple tys -> tys L.Partial.!! j
-    _ -> error "type mismatch (T-PROJ)"
+    _           -> error "type mismatch (T-PROJ)"
 
 ----------------------
 -- helper functions --

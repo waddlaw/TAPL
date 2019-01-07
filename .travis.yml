@@ -11,6 +11,7 @@ cache:
 cabal: "2.4"
 
 matrix:
+  fast_finish: true
   include:
     - env: BUILD=cabal
       ghc: "8.6.3"
@@ -39,29 +40,32 @@ matrix:
   allow_failures:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
 
-before_install:
-  - cabal new-install tasty-discover --package-env myenv
-  - cabal new-install hpack --package-env myenv
-
 install:
 - |
   set -ex
   case "$BUILD" in
     cabal)
+      PATH=$HOME/.cabal/bin:$PATH
+      cabal new-install --global tasty-discover
+      cabal new-install --global hpack
+
       cabal --numeric-version
       ghc --version
       ;;
     stack|werror)
-      ghc --version
       PATH=$HOME/.local/bin:$PATH
+      stack install tasty-discover
       mkdir -p ~/.local/bin
+
       if [ `uname` = "Darwin" ]
       then
         travis_retry curl --insecure -L https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
       else
         travis_retry curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
       fi
+
       stack --numeric-version
+      ghc --version
       ;;
   esac
   set +ex

@@ -69,7 +69,7 @@ install:
   set -ex
   case "$BUILD" in
     cabal)
-      cabal new-update
+      cabal new-update --project-file=$HOME/.cabal/config
       cabal new-install --project-file=$HOME/.cabal/config tasty-discover
       cabal new-install --project-file=$HOME/.cabal/config hpack
 
@@ -79,9 +79,9 @@ install:
     stack|werror)
       if [ `uname` = "Darwin" ]
       then
-        travis_retry curl --insecure -L https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
+        travis_retry curl -skL https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
       else
-        travis_retry curl -L https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+        travis_retry curl -sL https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
       fi
 
       stack install tasty-discover

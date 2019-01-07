@@ -64,7 +64,6 @@ before_install:
         ;;
       *)
         export PATH="$HOME"/.local/bin:$PATH
-        rm "$TRAVIS_BUILD_DIR"/Setup.hs
         ;;
     esac
 
@@ -91,6 +90,7 @@ install:
       ghc --version
       ;;
     *)
+      rm "$TRAVIS_BUILD_DIR"/Setup.hs
       mkdir -p $HOME/.local/bin
 
       if [ `uname` = "Darwin" ]

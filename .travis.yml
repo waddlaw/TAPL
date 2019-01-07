@@ -24,21 +24,34 @@ matrix:
 
 
       # --system-ghc is used to take advantage of language: haskell and save build time. If the stack resolver ghc and system-ghc become different, stack will download the right ghc
-    - env: BUILD=stack ARGS="--resolver lts-11.22 --system-ghc"
+    - env: BUILD=stack ARGS="--resolver lts-11 --system-ghc"
       ghc: "8.2.2"
 
-    - env: BUILD=stack ARGS="--resolver lts-12.26 --system-ghc"
+    - env: BUILD=stack ARGS="--resolver lts-12 --system-ghc"
       ghc: "8.4.4"
 
-    - env: BUILD=stack ARGS="--system-ghc"
+    - env: BUILD=stack ARGS="--resolver lts-13 --system-ghc"
       ghc: "8.6.3"
 
       # nightly build
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
       ghc: "8.6.3"
 
+      # osx
+    - env: BUILD=stack ARGS="--resolver lts-13 --system-ghc"
+      ghc: "8.6.3"
+      os: osx
+
+    - env: BUILD=style
+
+    - env: BUILD=pedantic ARGS="--resolver lts-13 --system-ghc --pedantic"
+      ghc: "8.6.3"
+
   allow_failures:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
+    - os:  osx
+    - env: BUILD=style
+    - env: BUILD=pedantic
 
 before_install:
   - case "$BUILD" in
@@ -56,6 +69,7 @@ install:
   set -ex
   case "$BUILD" in
     cabal)
+      cabal new-update
       cabal new-install --project-file=$HOME/.cabal/config tasty-discover
       cabal new-install --project-file=$HOME/.cabal/config hpack
 
@@ -83,7 +97,6 @@ script:
   set -ex
   case "$BUILD" in
     cabal)
-      cabal new-update
       cabal new-test all
       ;;
     stack)

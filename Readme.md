@@ -32,7 +32,7 @@ $ stack run
 
 - [haddock](https://waddlaw.github.io/TAPL/)
 
-### GHC 8.6.3
+### stack
 
 ```shell
 $ stack test --fast --file-watch
@@ -52,6 +52,19 @@ $ stack bench tapl:bench:gauge --benchmark-arguments "--small"
 
 # criterion
 $ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
+```
+
+### cabal
+
+```shell
+# package.yaml から cabal ファイルを生成するため
+$ stack build --dry-run
+
+# ビルド
+$ cabal new-build
+
+# テスト
+$ cabal new-test all
 ```
 
 ### チェック

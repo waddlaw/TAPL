@@ -28,12 +28,6 @@ dependencies:
 - lambda-simple
 - lambda-fullsimple
 
-custom-setup:
-  dependencies:
-  - base
-  - Cabal
-  - hpack
-
 library:
   source-dirs: src
 

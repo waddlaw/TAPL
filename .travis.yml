@@ -70,39 +70,34 @@ before_install:
 install:
 - |
   set -ex
+
+  if [ `uname` = "Darwin" ]
+  then
+    travis_retry curl -skL https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
+  else
+    travis_retry curl -sL https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+  fi
+
   case "$BUILD" in
     style)
       ./scripts/get-hlint.sh
       ;;
     cabal)
-      mkdir -p $HOME/.cabal/bin
-
-      ./scripts/get-hpack.sh
-      chmod u+x ./hpack
-      mv hpack $HOME/.cabal/bin/
-
-      scripts/hpack.sh
       cabal new-update
       cabal new-install tasty-discover
 
-      hpack --version
       cabal --numeric-version
+      stack --numeric-version
+      stack --hpack-numeric-version
       ghc --version
       ;;
     *)
-      rm "$TRAVIS_BUILD_DIR"/Setup.hs
       mkdir -p $HOME/.local/bin
-
-      if [ `uname` = "Darwin" ]
-      then
-        travis_retry curl -skL https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
-      else
-        travis_retry curl -sL https://get.haskellstack.org/stable/linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
-      fi
 
       stack install tasty-discover
 
       stack --numeric-version
+      stack --hpack-numeric-version
       ghc --version
       ;;
   esac

@@ -76,7 +76,7 @@ install:
       ;;
     cabal)
       mkdir -p $HOME/.cabal/bin
-      
+
       ./scripts/get-hpack.sh
       chmod u+x ./hpack
       mv hpack $HOME/.cabal/bin/
@@ -115,6 +115,7 @@ script:
       ;;
     cabal)
       scripts/hpack.sh
+      cabal new-update
       cabal new-test all
       ;;
     stack)

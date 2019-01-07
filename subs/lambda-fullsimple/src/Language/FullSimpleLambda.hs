@@ -92,6 +92,35 @@ isNumericValue _          = False
 subst :: VarName -> Value -> Term -> Term
 subst = error "subst is not implemented yet."
 
+-- | 定義6.2.1 (P.60)
+--
+-- c: 打ち切り値
+--
+-- d: シフト数
+shift :: Int -> Int -> Term -> Term
+shift c d (TmVar k)
+  | k < c = TmVar k
+  | otherwise = TmVar (k + d)
+shift c d (TmLam x ty t) = TmLam x ty $ shift (c+1) d t
+shift c d (TmApp t1 t2) = (TmApp `on` shift c d) t1 t2
+shift _ _ TmTrue = TmTrue
+shift _ _ TmFalse = TmFalse
+shift c d (TmIf t1 t2 t3) = (TmIf `on` shift c d) t1 t2 t3
+shift _ _ TmZero = TmZero
+shift c d (TmSucc t) = TmSucc $ shift c d t
+shift c d (TmPred t) = TmPred $ shift c d t
+shift c d (TmIsZero t) = TmIsZero $ shift c d t
+shift _ _ TmUnit = TmUnit
+shift c d (TmSeq t1 t2) = (TmSeq `on` shift c d) t1 t2
+shift c d (TmWildcard ty t) = TmWildcard ty $ shift (c+1) d t
+shift c d (TmAscribe t ty) = TmAscribe (shift (c+1) d t) ty
+shift c d (TmLet x t1 t2) = undefined -- TODO
+shift c d (TmPair t1 t2) = (TmPair `on` shift c d) t1 t2
+shift c d (TmPairFst t) = TmPairFst $ shift c d t
+shift c d (TmPairSnd t) = TmPairSnd $ shift c d t
+shift c d (TmTuple ts) = TmTuple $ map (shift c d) ts
+shift c d (TmTupleProj i t) = TmTupleProj i $ shift (c+1) d t
+shift c d (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, shift c d t)) rs
 -- | 少なくとも1つは項である
 splitTerm :: [Term] -> ([Value], Term, [Term])
 splitTerm [] = error "empty list is not expected"

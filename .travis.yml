@@ -43,13 +43,13 @@ matrix:
     - env: BUILD=style
       ghc: "8.6.3"
 
-    - env: BUILD=pedantic ARGS="--system-ghc --pedantic"
+    - env: BUILD=pedantic ARGS="--system-ghc"
       ghc: "8.6.3"
 
   allow_failures:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
     - env: BUILD=style
-    - env: BUILD=pedantic ARGS="--system-ghc --pedantic"
+    - env: BUILD=pedantic ARGS="--system-ghc"
 
 before_install:
   - case "$BUILD" in
@@ -120,7 +120,7 @@ script:
       stack --no-terminal $ARGS test --haddock --no-haddock-deps
       ;;
     pedantic)
-      stack --no-terminal test $ARGS --no-run-tests
+      stack --no-terminal $ARGS test --pedantic --no-run-tests
       ;;
     werror)
       stack --no-terminal $ARGS test --haddock --no-haddock-deps --ghc-options -Werror --ghc-options -Wcompat --ghc-options -Wincomplete-record-updates --ghc-options -Wincomplete-uni-patterns --ghc-options -Wredundant-constraints

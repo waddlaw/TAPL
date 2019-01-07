@@ -75,7 +75,7 @@ install:
       ./scripts/get-hpack.sh
       chmod u+x ./hpack
 
-      hpack --version
+      ./hpack --version
       cabal --numeric-version
       ghc --version
       ;;

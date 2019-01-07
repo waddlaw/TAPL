@@ -20,7 +20,7 @@
 
 ## Quick Start Guide
 
-stack のバージョンは 1.10.0 以上を利用しましょう。
+stack のバージョンは 1.9.3 以上を利用しましょう。
 
 ```shell
 $ git clone https://github.com/waddlaw/TAPL.git
@@ -64,7 +64,7 @@ $ hlint .
 stylish-haskell の適用
 
 ```shell
-$ find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*' -exec stylish-haskell -i {} \;
+$ scripts/stylish.sh
 ```
 
 ### ドキュメントの生成

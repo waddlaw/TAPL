@@ -120,6 +120,7 @@ script:
       cabal new-test all
       ;;
     stack)
+      rm Setup.hs
       stack --no-terminal $ARGS test --haddock --no-haddock-deps
       ;;
     werror)

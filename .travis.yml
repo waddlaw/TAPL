@@ -56,8 +56,8 @@ install:
   set -ex
   case "$BUILD" in
     cabal)
-      cabal new-install --ignore-project tasty-discover
-      cabal new-install --ignore-project hpack
+      cabal new-install --project-file=$HOME/.cabal/config tasty-discover
+      cabal new-install --project-file=$HOME/.cabal/config hpack
 
       cabal --numeric-version
       ghc --version

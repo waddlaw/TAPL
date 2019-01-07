@@ -102,6 +102,7 @@ install:
       stack install tasty-discover
 
       stack --numeric-version
+      stack --hpack-numeric-version
       ghc --version
       ;;
   esac

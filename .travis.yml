@@ -43,6 +43,7 @@ matrix:
       os: osx
 
     - env: BUILD=style
+      ghc: "8.6.3"
 
     - env: BUILD=pedantic ARGS="--resolver lts-13 --system-ghc --pedantic"
       ghc: "8.6.3"
@@ -59,11 +60,11 @@ before_install:
         export PATH="$TRAVIS_BUILD_DIR"/hlint:$PATH
         ;;
       cabal)
-        PATH=$HOME/.cabal/bin:$PATH
+        export PATH=$HOME/.cabal/bin:$PATH
         mkdir -p $HOME/.cabal/bin
         ;;
       *)
-        PATH=$HOME/.local/bin:$PATH
+        export PATH=$HOME/.local/bin:$PATH
         mkdir -p $HOME/.local/bin
         ;;
     esac

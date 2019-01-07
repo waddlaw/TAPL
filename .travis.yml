@@ -71,6 +71,8 @@ install:
 - |
   set -ex
 
+  mkdir -p $HOME/.local/bin
+
   if [ `uname` = "Darwin" ]
   then
     travis_retry curl -skL https://get.haskellstack.org/stable/osx-x86_64.tar.gz | tar xz --strip-components=1 --include '*/stack' -C ~/.local/bin
@@ -93,8 +95,6 @@ install:
       ghc --version
       ;;
     *)
-      mkdir -p $HOME/.local/bin
-
       stack install tasty-discover
 
       stack --numeric-version

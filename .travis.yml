@@ -40,8 +40,8 @@ matrix:
     - env: BUILD=stack ARGS="--resolver nightly --system-ghc"
 
 before_install:
-  - cabal new-install tasty-discover
-  - cabal new-install hpack
+  - cabal new-install tasty-discover --package-env myenv
+  - cabal new-install hpack --package-env myenv
 
 install:
 - |
@@ -72,7 +72,6 @@ script:
   case "$BUILD" in
     cabal)
       cabal new-update
-      hpack
       cabal new-test all
       ;;
     stack)

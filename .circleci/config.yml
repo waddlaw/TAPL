@@ -53,7 +53,7 @@ jobs:
       - *display_stack_version
       - run:
           name: Install dependencies
-          command:  stack test --only-dependencies --no-terminal --no-run-tests
+          command: stack test --only-dependencies --no-terminal --no-run-tests
           no_output_timeout: 120m
       - run:
           name: Run stack test

@@ -72,6 +72,7 @@ install:
   case "$BUILD" in
     style)
       ./scripts/get-hlint.sh
+      hlint --version
       ;;
     cabal)
       mkdir -p $HOME/.cabal/bin
@@ -131,3 +132,6 @@ script:
       ;;
   esac
   set +ex
+
+notifications:
+  email: false

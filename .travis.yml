@@ -10,8 +10,9 @@ cache:
 
 cabal: "2.4"
 env:
-  - STACK_VERSION=1.9.3
-  - HPACK_VERSION=0.31.1
+  global:
+    - STACK_VERSION=1.9.3
+    - HPACK_VERSION=0.31.1
 
 matrix:
   fast_finish: true

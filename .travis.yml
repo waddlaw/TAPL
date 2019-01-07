@@ -122,7 +122,6 @@ script:
       cabal new-test all
       ;;
     stack)
-      
       stack --no-terminal $ARGS test --haddock --no-haddock-deps
       ;;
     pedantic)

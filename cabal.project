@@ -7,5 +7,3 @@ packages:
   ./subs/lambda-simple
   ./subs/lambda-untyped
   ./subs/lambda-fullsimple
-
-with-compiler: ghc-8.6.3

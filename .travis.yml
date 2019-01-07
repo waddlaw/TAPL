@@ -116,6 +116,7 @@ script:
     cabal)
       scripts/hpack.sh
       cabal new-update
+      cabal new-install tasty-discover
       cabal new-test all
       ;;
     stack)

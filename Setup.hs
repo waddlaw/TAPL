@@ -1,9 +1,10 @@
 module Main (main) where
 
-import Distribution.Simple
-import Distribution.Simple.Setup (BuildFlags)
-import Distribution.Types.HookedBuildInfo (HookedBuildInfo, emptyHookedBuildInfo)
-import Hpack
+import           Distribution.Simple
+import           Distribution.Simple.Setup          (BuildFlags)
+import           Distribution.Types.HookedBuildInfo (HookedBuildInfo,
+                                                     emptyHookedBuildInfo)
+import           Hpack
 
 main :: IO ()
 main = do

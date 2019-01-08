@@ -36,37 +36,22 @@ executables:
     main: app/ProofB.hs
     dependencies:
       - tapl
-    ghc-options:
-      - -threaded
-      - -rtsopts
   nb:
     main: app/NB.hs
     dependencies:
       - tapl
-    ghc-options:
-      - -threaded
-      - -rtsopts
   untyped-lambda:
     main: app/UntypedLambda.hs
     dependencies:
       - tapl
-    ghc-options:
-      - -threaded
-      - -rtsopts
   simple-lambda:
     main: app/SimpleLambda.hs
     dependencies:
       - tapl
-    ghc-options:
-      - -threaded
-      - -rtsopts
   fullsimple-lambda:
     main: app/FullSimpleLambda.hs
     dependencies:
       - tapl
-    ghc-options:
-      - -threaded
-      - -rtsopts
   # mkdoc:
   #   main: app/MkDoc.hs
   #   dependencies:

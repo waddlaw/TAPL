@@ -9,8 +9,14 @@ import           Test.Tasty.HUnit
 
 import           Language.FullSimpleLambda
 
+mkNat :: Int -> Term
+mkNat = foldr ($) TmZero . flip replicate TmSucc
+
+evalN :: Int -> Term -> Term
+evalN n term = foldr ($) term $ replicate n eval
+
 test_sl :: TestTree
-test_sl = testGroup "FullSimpleLambda"
+test_sl = testGroup "Basic Type"
   [ testCase "pretty" $ do
       prettyFullSimpleText "x" (TmVar 0) @?= "x"
       prettyFullSimpleText mempty (TmLam "x" TyBool (TmVar 0)) @?= "λx:Bool. x"
@@ -28,25 +34,51 @@ test_sl = testGroup "FullSimpleLambda"
       runFullSimpleLambdaParser mempty "λx:Bool. λy:Bool. λz:Bool. x (y z)" @?= Right (TmLam "x" TyBool (TmLam "y" TyBool (TmLam "z" TyBool (TmApp (TmVar 2) (TmApp (TmVar 1) (TmVar 0))))))
   -- , testCase "parser (そのうち直す" $ do
   --     runFullSimpleLambdaParser "f" "λx:Bool. f (if f x then false else x)" @?= Left
-  , testCase "unit" $
-      typeof "" TmUnit @?= TyUnit
-  , testCase "pair" $ do
-      let n4 = TmSucc (TmSucc (TmSucc (TmSucc TmZero)))
-          tl = TmPred n4
-          tr = TmIf TmTrue TmFalse TmFalse
-          tp = TmPair tl tr
-          t = TmPairFst tp
-      eval t @?= TmPairFst (TmPair (TmSucc (TmSucc (TmSucc TmZero))) tr)
-      eval (eval t) @?= TmPairFst (TmPair (TmSucc (TmSucc (TmSucc TmZero))) TmFalse)
-      eval (eval (eval t)) @?= TmSucc (TmSucc (TmSucc TmZero))
-  -- TODO
-  -- , testCase "pair" $ do
-  --     let n3 = TmSucc (TmSucc (TmSucc TmZero))
-  --         n4 = TmSucc n3
-  --         n5 = TmSucc n4
-  --         ty = TyProd TyNat TyNat
-  --         tlam = TmLam "x" ty (TmPairSnd (TmVar 0))
-  --         tp2 = TmPair n4 n5
-  --         t2 = TmApp tlam tp2
-  --     eval t2 @?= TmApp t2 (TmPair (TmSucc (TmSucc (TmSucc TmZero))) n5)
+  ]
+
+test_unit :: TestTree
+test_unit = testGroup "unit"
+  [ testGroup "typecheck"
+    [ testCase "unit:Unit" $
+        typeof mempty TmUnit @?= TyUnit
+    ]
+  ]
+
+test_pair :: TestTree
+test_pair = testGroup "pair"
+  [ testGroup "eval"
+    [ testCase "{pred 4, if true then false else false}.1" $ do
+        let n4 = mkNat 4
+            tl = TmPred n4
+            tr = TmIf TmTrue TmFalse TmFalse
+            tp = TmPair tl tr
+            t  = TmPairFst tp
+        evalN 1 t @?= TmPairFst (TmPair (mkNat 3) tr)
+        evalN 2 t @?= TmPairFst (TmPair (mkNat 3) TmFalse)
+        evalN 3 t @?= mkNat 3
+    , testCase "(λx:Nat*Nat. x.2) {pred 4, pred5}" $ do
+        let n3   = mkNat 3
+            n4   = mkNat 4
+            n5   = mkNat 5
+            ty   = TyProd TyNat TyNat
+            tlam = TmLam "x" ty (TmPairSnd (TmVar 0))
+            tp2  = TmPair (TmPred n4) (TmPred n5)
+            t    = TmApp tlam tp2
+        evalN 1 t @?= TmApp tlam (TmPair n3 (TmPred n5))
+        evalN 2 t @?= TmApp tlam (TmPair n3 n4)
+        evalN 3 t @?= TmPairSnd (TmPair n3 n4)
+        evalN 4 t @?= n4
+    ]
+  ]
+
+test_record :: TestTree
+test_record = testGroup "record"
+  [ testGroup "typecheck"
+    [ testCase "{x=5}:Nat" $ do
+        let t = TmRecord [("x", mkNat 5)]
+        typeof mempty t @?= TyRecord [("x", TyNat)]
+    , testCase "{partno=5524,cost=true}" $ do
+        let t = TmRecord [("partno", mkNat 5524), ("cost", TmTrue)]
+        typeof mempty t @?= TyRecord [("partno", TyNat), ("cost", TyBool)]
+    ]
   ]

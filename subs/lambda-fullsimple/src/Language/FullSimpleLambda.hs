@@ -18,6 +18,36 @@ import           Language.FullSimpleLambda.Pretty
 import           Language.FullSimpleLambda.TypeCheck
 import           Language.FullSimpleLambda.Types
 
+-- | 定義 6.2.4 (P.60)
+--
+-- j: 変数番号
+--
+-- s: 代入する値
+subst :: Int -> Value -> Term -> Term
+subst j s t@(TmVar k)
+  | k == j = s
+  | otherwise = t
+subst j s (TmLam x ty t) = TmLam x ty $ subst (j+1) (shift 0 1 s) t
+subst j s (TmApp t1 t2) = (TmApp `on` subst j s) t1 t2
+subst _ _ TmTrue = TmTrue
+subst _ _ TmFalse = TmFalse
+subst j s (TmIf t1 t2 t3) = (TmIf `on` subst j s) t1 t2 t3
+subst _ _ TmZero = TmZero
+subst j s (TmSucc t) = TmSucc $ subst j s t
+subst j s (TmPred t) = TmPred $ subst j s t
+subst j s (TmIsZero t) = TmIsZero $ subst j s t
+subst _ _ TmUnit = TmUnit
+subst j s (TmSeq t1 t2) = (TmSeq `on` subst j s) t1 t2
+subst j s (TmWildcard ty t) = TmWildcard ty $ subst j s t
+subst j s (TmAscribe t ty) = TmAscribe (subst j s t) ty
+subst j s (TmLet x t1 t2) = TmLet x (subst j s t1) (subst (j+1) (shift 0 1 s) t2) -- TODO check
+subst j s (TmPair t1 t2) = (TmPair `on` subst j s) t1 t2
+subst j s (TmPairFst t) = TmPairFst $ subst j s t
+subst j s (TmPairSnd t) = TmPairSnd $ subst j s t
+subst j s (TmTuple ts) = TmTuple $ map (subst j s) ts
+subst j s (TmTupleProj i t) = TmTupleProj i $ subst j s t
+subst j s (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, subst j s t)) rs
+
 eval :: Term -> Term
 eval (TmIf TmTrue t2 _t3) = t2 -- E-IFTRUE
 eval (TmIf TmFalse _t2 t3) = t3 -- E-IFFALSE

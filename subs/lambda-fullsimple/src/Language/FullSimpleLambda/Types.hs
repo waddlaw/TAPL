@@ -44,12 +44,13 @@ data Binding
   deriving (Eq, Show)
 
 data Ty
-  = TyArr Ty Ty   -- ^ 関数型
-  | TyBool        -- ^ ブール値型
-  | TyNat         -- ^ 自然数型
-  | TyUnit        -- ^ 11.2 Unit型
-  | TyProd Ty Ty  -- ^ 11.6 直積型
-  | TyTuple [Ty]  -- ^ 11.7 組の型
+  = TyArr Ty Ty                 -- ^ 関数型
+  | TyBool                      -- ^ ブール値型
+  | TyNat                       -- ^ 自然数型
+  | TyUnit                      -- ^ 11.2 Unit型
+  | TyProd Ty Ty                -- ^ 11.6 直積型
+  | TyTuple [Ty]                -- ^ 11.7 組の型
+  | TyRecord [(FieldLabel, Ty)] -- ^ 11.8 レコードの型
   deriving (Eq, Show)
 
 instance Pretty Ty where
@@ -62,6 +63,9 @@ instance Pretty Ty where
       ppr' t        = parens (pretty t)
   pretty (TyProd ty1 ty2) = pretty ty1 <+> pretty "×" <+> pretty ty2
   pretty (TyTuple ts) = encloseSep lbrace rbrace comma (map pretty ts)
+  pretty (TyRecord fields) = encloseSep lbrace rbrace comma (map pprField fields)
+    where
+      pprField (label, ty) = pretty label <> pretty ";" <> pretty ty
 
 type FieldLabel = Text
 
@@ -85,8 +89,9 @@ data Term
   | TmPairFst Term                -- ^ 11.6 第一要素の射影
   | TmPairSnd Term                -- ^ 11.6 第二要素の射影
   | TmTuple [Term]                -- ^ 11.7 組
-  | TmTupleProj Int Term          -- ^ 11.7 射影
+  | TmTupleProj Int Term          -- ^ 11.7 組の射影
   | TmRecord [(FieldLabel, Term)] -- ^ 11.8 レコード (フィールドの順序が異なれば、異なるレコードとして扱う)
+  | TmRecordProj FieldLabel Term  -- ^ 11.8 レコードの射影
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -127,4 +132,5 @@ pprFullSimple ctx (TmPairSnd t) = pprFullSimple ctx t <> pretty ".2"
 pprFullSimple ctx (TmTuple ts) = encloseSep lbrace rbrace comma (map (pprFullSimple ctx) ts)
 pprFullSimple ctx (TmTupleProj i t) = pprFullSimple ctx t <> pretty "." <> pretty i
 pprFullSimple ctx (TmRecord fields) = encloseSep lbrace rbrace comma $ map pprField fields
-  where pprField (label, t) =  pretty label <> pretty "=" <> pprFullSimple ctx t
+  where pprField (label, t) = pretty label <> pretty "=" <> pprFullSimple ctx t
+pprFullSimple ctx (TmRecordProj label t) = pprFullSimple ctx t <> dot <> pretty label

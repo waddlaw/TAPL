@@ -47,6 +47,7 @@ shift c d (TmPairSnd t) = TmPairSnd $ shift c d t
 shift c d (TmTuple ts) = TmTuple $ map (shift c d) ts
 shift c d (TmTupleProj i t) = TmTupleProj i $ shift c d t
 shift c d (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, shift c d t)) rs
+shift c d (TmRecordProj l t) = TmRecordProj l $ shift c d t
 
 -- | 定義 6.2.4 (P.60)
 --
@@ -77,6 +78,7 @@ subst j s (TmPairSnd t) = TmPairSnd $ subst j s t
 subst j s (TmTuple ts) = TmTuple $ map (subst j s) ts
 subst j s (TmTupleProj i t) = TmTupleProj i $ subst j s t
 subst j s (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, subst j s t)) rs
+subst j s (TmRecordProj l t) = TmRecordProj l $ subst j s t
 
 eval :: Term -> Term
 eval (TmIf TmTrue t2 _t3) = t2 -- E-IFTRUE

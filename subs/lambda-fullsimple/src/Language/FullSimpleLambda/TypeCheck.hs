@@ -69,6 +69,7 @@ typeof ctx (TmTupleProj j t) = -- T-PROJ
   case typeof ctx t of
     TyTuple tys -> tys L.Partial.!! j
     _           -> error "type mismatch (T-PROJ)"
+typeof _ctx (TmRecord _fields) = undefined -- T-RCD
 
 ----------------------
 -- helper functions --

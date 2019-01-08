@@ -49,6 +49,6 @@ test_sl = testGroup "FullSimpleLambda"
           t2   = TmApp tlam tp2
       eval t2 @?= TmApp tlam (TmPair n3 (TmPred n5))
       eval (eval t2) @?= TmApp tlam (TmPair n3 n4)
-      -- eval (eval (eval t2)) @?= TmPairSnd (TmPair n3 n4) -- subst が必要
-      -- eval (eval (eval (eval t2))) @?= n4 -- subst が必要
+      eval (eval (eval t2)) @?= TmPairSnd (TmPair n3 n4)
+      eval (eval (eval (eval t2))) @?= n4
   ]

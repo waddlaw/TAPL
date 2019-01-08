@@ -38,7 +38,7 @@ test_sl = testGroup "Basic Type"
 
 test_unit :: TestTree
 test_unit = testGroup "unit"
-  [ testGroup "typecheck" $
+  [ testGroup "typecheck"
     [ testCase "unit:Unit" $
         typeof mempty TmUnit @?= TyUnit
     ]
@@ -46,7 +46,7 @@ test_unit = testGroup "unit"
 
 test_pair :: TestTree
 test_pair = testGroup "pair"
-  [ testGroup "eval" $
+  [ testGroup "eval"
     [ testCase "{pred 4, if true then false else false}.1" $ do
         let n4 = mkNat 4
             tl = TmPred n4
@@ -73,7 +73,7 @@ test_pair = testGroup "pair"
 
 test_record :: TestTree
 test_record = testGroup "record"
-  [ testGroup "typecheck" $
+  [ testGroup "typecheck"
     [ testCase "{x=5}:Nat" $ do
         let t = TmRecord [("x", mkNat 5)]
         typeof mempty t @?= TyRecord [("x", TyNat)]

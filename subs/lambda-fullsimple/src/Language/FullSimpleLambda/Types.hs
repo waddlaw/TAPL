@@ -67,7 +67,7 @@ instance Pretty Ty where
     where
       pprField (label, ty) = pretty label <> pretty ";" <> pretty ty
 
-type FieldLabel = Text
+type FieldLabel = Text  -- ^ レコードのフィールドラベル
 
 data Term
   = TmVar Int

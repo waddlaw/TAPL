@@ -10,6 +10,7 @@ module Language.FullSimpleLambda.Types
   , FullSimpleTypedLambda
   , pprFullSimple
   , VarName
+  , FieldLabel
   ) where
 
 import           RIO

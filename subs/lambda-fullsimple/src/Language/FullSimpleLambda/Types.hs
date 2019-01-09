@@ -50,8 +50,8 @@ instance IsString ContextType where
   fromString = VarContext . Text.pack
 
 instance Pretty ContextType where
-  pretty (VarContext varName)     = pretty varName
-  pretty (PatternContext p) = pretty p
+  pretty (VarContext varName) = pretty varName
+  pretty (PatternContext p)   = pretty p
 
 data Binding
   = NameBind       -- ^ 自由変数

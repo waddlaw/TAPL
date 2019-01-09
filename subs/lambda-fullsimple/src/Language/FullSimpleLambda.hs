@@ -13,6 +13,7 @@ module Language.FullSimpleLambda
 import           RIO
 import qualified RIO.List.Partial                    as L.Partial
 
+import           Language.FullSimpleLambda.Internal
 import           Language.FullSimpleLambda.Parser
 import           Language.FullSimpleLambda.Pretty
 import           Language.FullSimpleLambda.TypeCheck
@@ -132,23 +133,6 @@ desugar term              = term
 ----------------------
 -- helper functions --
 ----------------------
-
--- | 与えられた項が値かどうか判定する述語
-isValue :: Term -> Bool
-isValue TmVar{}        = True
-isValue TmLam{}        = True
-isValue TmTrue         = True
-isValue TmFalse        = True
-isValue TmUnit         = True                     -- 11.2 Unit型
-isValue (TmPair t1 t2) = isValue t1 && isValue t2 -- 11.6 2つ組
-isValue (TmTuple ts)   = all isValue ts           -- 11.7 組
-isValue t              = isNumericValue t
-
--- | 与えられた項が数項かどうか判定
-isNumericValue :: Term -> Bool
-isNumericValue TmZero     = True
-isNumericValue (TmSucc t) = isNumericValue t
-isNumericValue _          = False
 
 -- | 少なくとも1つは項である
 splitTerm :: [Term] -> ([Value], Term, [Term])

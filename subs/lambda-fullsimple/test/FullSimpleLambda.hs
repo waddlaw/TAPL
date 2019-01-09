@@ -8,6 +8,7 @@ import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.FullSimpleLambda
+import           Language.FullSimpleLambda.Internal
 
 mkNat :: Int -> Term
 mkNat = foldr ($) TmZero . flip replicate TmSucc
@@ -34,6 +35,15 @@ test_sl = testGroup "Basic Type"
       runFullSimpleLambdaParser mempty "λx:Bool. λy:Bool. λz:Bool. x (y z)" @?= Right (TmLam "x" TyBool (TmLam "y" TyBool (TmLam "z" TyBool (TmApp (TmVar 2) (TmApp (TmVar 1) (TmVar 0))))))
   -- , testCase "parser (そのうち直す" $ do
   --     runFullSimpleLambdaParser "f" "λx:Bool. f (if f x then false else x)" @?= Left
+  ]
+
+test_function :: TestTree
+test_function = testGroup "Functions"
+  [ testCase "isValue" $ do
+      isValue (TmRecord []) @?= True
+      isValue (TmRecord [("a", TmUnit)]) @?= True
+      isValue (TmRecord [("a", TmUnit), ("b", TmUnit)]) @?= True
+      isValue (TmRecord [("a", TmUnit), ("b", TmIf TmTrue TmFalse TmFalse)]) @?= False
   ]
 
 test_unit :: TestTree

@@ -125,8 +125,8 @@ test_pattern = do
   testGroup "pattern"
     [ testGroup "pretty"
       [ testCase "let x=() in ()" $ do
-          let t = TmPattern (PtVar "x" 0) TmUnit TmUnit
-          prettyFullSimpleText "x" t @?= "let x=() in ()"
+          let t' = TmPattern (PtVar "x" 0) TmUnit TmUnit
+          prettyFullSimpleText "x" t' @?= "let x=() in ()"
       , testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
           prettyFullSimpleText ctx t @?= "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
       ]

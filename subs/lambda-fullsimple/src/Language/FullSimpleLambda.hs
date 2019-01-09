@@ -51,6 +51,7 @@ shift c d (TmTuple ts) = TmTuple $ map (shift c d) ts
 shift c d (TmTupleProj i t) = TmTupleProj i $ shift c d t
 shift c d (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, shift c d t)) rs
 shift c d (TmRecordProj l t) = TmRecordProj l $ shift c d t
+shift c d (TmPattern p t1 t2) = TmPattern p (shift c d t1) (shift (c+1) d t2) -- TODO (check, 間違ってるかも)
 
 -- | 定義 6.2.4 (P.60)
 --
@@ -82,6 +83,7 @@ subst j s (TmTuple ts) = TmTuple $ map (subst j s) ts
 subst j s (TmTupleProj i t) = TmTupleProj i $ subst j s t
 subst j s (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, subst j s t)) rs
 subst j s (TmRecordProj l t) = TmRecordProj l $ subst j s t
+subst j s (TmPattern p t1 t2) = TmPattern p (subst j s t1) (subst (j+1) (shift 0 1 s) t2) -- TODO check (間違っていそう)
 
 eval :: Term -> Term
 eval (TmIf TmTrue t2 _t3) = t2 -- E-IFTRUE
@@ -127,7 +129,7 @@ eval (TmRecordProj label t@(TmRecord fields)) -- E-PROJRCD
   | otherwise = TmRecordProj label (eval t)
 eval (TmRecordProj label t) = TmRecordProj label (eval t) -- E-PROJ
 eval t@(TmRecord []) = t -- E-RCD
-eval t@(TmRecord fs)
+eval t@(TmRecord _)
   | isValue t = t
   | otherwise = TmRecord (vfs ++ [t'] ++ tfs) -- E-RCD
   where
@@ -135,16 +137,15 @@ eval t@(TmRecord fs)
     t' = (label, eval tj)
 eval (TmPattern p v@(isValue -> True) t2) = match p v t2 -- E-LETV (Pattern)
 eval (TmPattern p t1 t2) = TmPattern p (eval t1) t2 -- E-LET (Pattern)
+eval _ = error "unexpected term"
 
 match :: Pattern -> Value -> (Term -> Term)
 match (PtVar _ n) v = subst n v
 match p@(PtRecord fs) v@(TmRecord fs')
-  | isValid = appEndo $ foldMap (Endo . uncurry match) $ zip (map snd fs) (map snd fs')
+  | isRecordValue v && sameFieldLength p v
+      = appEndo $ foldMap (Endo . uncurry match) $ zip (map snd fs) (map snd fs')
   | otherwise = error "match: pattern match failure"
-  where
-    isValid = isRecordValue v && sameFieldLength p v
-    go (label, pat) = match p
-match p@(PtRecord fs) v = error "match: v is not Rrcord"
+match PtRecord{} _ = error "match: v is not Rrcord"
 
 sameFieldLength :: Pattern -> Value -> Bool
 sameFieldLength (PtRecord fs1) (TmRecord fs2) = length fs1 == length fs2

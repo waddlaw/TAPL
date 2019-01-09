@@ -4,8 +4,6 @@ module Language.FullSimpleLambda.Internal
   , isRecordValue
   ) where
 
-import           RIO
-
 import           Language.FullSimpleLambda.Types
 
 -- | 与えられた項が値かどうか判定する述語
@@ -27,5 +25,6 @@ isNumericValue (TmSucc t) = isNumericValue t
 isNumericValue _          = False
 
 -- | 与えられた項がレコードかつ、値かどうか判定
-isRecordValue t@(TmRecord fs) = isValue t
-isRecordValue _               = False
+isRecordValue :: Term -> Bool
+isRecordValue t@TmRecord{} = isValue t
+isRecordValue _            = False

@@ -158,7 +158,7 @@ pprFullSimple ctx (TmPattern p tlet tbody)
     ctx' = getContext p
 
 getContext :: Pattern -> Context
-getContext (PtVar varName i) = addContext (VarContext varName, undefined) mempty
+getContext (PtVar varName _) = addContext (VarContext varName, NameBind) mempty
 getContext (PtRecord fs) = foldMap (getContext . snd) fs
 
 -- | ex 11.8.2 パターンマッチ
@@ -166,10 +166,6 @@ data Pattern
   = PtVar VarName Int                 -- ^ 変数パターン
   | PtRecord [(FieldLabel, Pattern)]  -- ^ レコードパターン
   deriving (Eq, Show)
-
-isRecordPattern :: Pattern -> Bool
-isRecordPattern PtRecord{} = True
-isRecordPattern _          = False
 
 instance Pretty Pattern where
   pretty = pprPattern mempty
@@ -180,6 +176,5 @@ pprPattern ctx (PtVar varName n)
   | otherwise = pretty varName
   where
     ctx' = unCtx ctx
-    fv = fst (ctx' L.Partial.!! n)
 pprPattern ctx (PtRecord fs) = encloseSep lbrace rbrace comma $ map pprField fs
   where pprField (label, p) = pretty label <> pretty "=" <> pprPattern ctx p

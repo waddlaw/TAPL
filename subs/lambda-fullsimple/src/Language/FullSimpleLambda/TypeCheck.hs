@@ -83,10 +83,10 @@ typeof ctx (TmPattern p t1 t2) = typeof ctx' t2 -- T-LET (Pattern)
     ctx' = ctx <> delta p ty1
 
 delta :: Pattern -> Ty -> Context
-delta (PtVar varName n) ty = addContext (VarContext varName, VarBind ty) mempty
+delta (PtVar varName _) ty = addContext (VarContext varName, VarBind ty) mempty
 delta (PtRecord pfs) ty =
   case ty of
-    TyRecord tfs -> foldMap (\(p, ty) -> addContext (PatternContext p, PatternBind ty) mempty) $ zip (map snd pfs) (map snd tfs)
+    TyRecord tfs -> foldMap (\(p, ty') -> addContext (PatternContext p, PatternBind ty') mempty) $ zip (map snd pfs) (map snd tfs)
     _ -> error "delta: expected Record term"
 
 ----------------------

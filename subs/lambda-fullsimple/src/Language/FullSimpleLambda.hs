@@ -19,6 +19,8 @@ import           Language.FullSimpleLambda.Pretty
 import           Language.FullSimpleLambda.TypeCheck
 import           Language.FullSimpleLambda.Types
 
+import           Data.Monoid
+
 -- | 定義6.2.1 (P.60)
 --
 -- c: 打ち切り値
@@ -131,6 +133,22 @@ eval t@(TmRecord fs)
   where
     (vfs, (label, tj), tfs) = splitRecord t
     t' = (label, eval tj)
+eval (TmPattern p v@(isValue -> True) t2) = match p v t2 -- E-LETV (Pattern)
+eval (TmPattern p t1 t2) = TmPattern p (eval t1) t2 -- E-LET (Pattern)
+
+match :: Pattern -> Value -> (Term -> Term)
+match (PtVar _ n) v = subst n v
+match p@(PtRecord fs) v@(TmRecord fs')
+  | isValid = appEndo $ foldMap (Endo . uncurry match) $ zip (map snd fs) (map snd fs')
+  | otherwise = error "match: pattern match failure"
+  where
+    isValid = isRecordValue v && sameFieldLength p v
+    go (label, pat) = match p
+match p@(PtRecord fs) v = error "match: v is not Rrcord"
+
+sameFieldLength :: Pattern -> Value -> Bool
+sameFieldLength (PtRecord fs1) (TmRecord fs2) = length fs1 == length fs2
+sameFieldLength _ _ = error "unexpected field"
 
 -- | 対象の構文
 --

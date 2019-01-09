@@ -114,3 +114,28 @@ test_record = testGroup "record"
         typeof mempty t @?= TyRecord [("partno", TyNat), ("cost", TyBool)]
     ]
   ]
+
+test_pattern :: TestTree
+test_pattern = do
+  let p  = PtRecord [("partno", PtVar "x" 0), ("cost", PtVar "y" 1)]
+      t1 = TmRecord [("partno", mkNat 1), ("cost", TmTrue)]
+      t2 = TmVar 0
+      t  = TmPattern p t1 t2
+      ctx = mconcat ["x","y"]
+  testGroup "pattern" $
+    [ testGroup "pretty"
+      [ testCase "let x=() in ()" $ do
+          let t = TmPattern (PtVar "x" 0) TmUnit TmUnit
+          prettyFullSimpleText "x" t @?= "let x=() in ()"
+      , testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+          prettyFullSimpleText ctx t @?= "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
+      ]
+    , testGroup "eval"
+      [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+          eval t @?= mkNat 1
+      ]
+    , testGroup "typecheck"
+      [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+          typeof mempty t @?= TyNat
+      ]
+    ]

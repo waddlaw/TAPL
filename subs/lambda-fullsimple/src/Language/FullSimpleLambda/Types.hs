@@ -11,6 +11,7 @@ module Language.FullSimpleLambda.Types
   , FullSimpleTypedLambda
   , pprFullSimple
   , VarName
+  , Pattern (..)
   , FieldLabel
   ) where
 
@@ -25,7 +26,7 @@ type FullSimpleTypedLambda = Term
 type Value = Term -- ^ Term の部分集合
 type VarName = Text
 
-newtype Context = Context { unCtx :: [(Text, Binding)] }
+newtype Context = Context { unCtx :: [(ContextType, Binding)] }
   deriving (Eq, Show)
 
 instance Semigroup Context where
@@ -53,8 +54,9 @@ instance Pretty ContextType where
   pretty (PatternContext pattern) = pretty pattern
 
 data Binding
-  = NameBind   -- ^ 自由変数
-  | VarBind Ty -- ^ 型付きの変数
+  = NameBind       -- ^ 自由変数
+  | VarBind Ty     -- ^ 型付きの変数
+  | PatternBind Ty -- ^ 型付きのパターン
   deriving (Eq, Show)
 
 data Ty
@@ -106,6 +108,7 @@ data Term
   | TmTupleProj Int Term          -- ^ 11.7 組の射影
   | TmRecord [(FieldLabel, Term)] -- ^ 11.8 レコード (フィールドの順序が異なれば、異なるレコードとして扱う)
   | TmRecordProj FieldLabel Term  -- ^ 11.8 レコードの射影
+  | TmPattern Pattern Term Term   -- ^ 11.8.2 パターンマッチ
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -148,3 +151,35 @@ pprFullSimple ctx (TmTupleProj i t) = pprFullSimple ctx t <> pretty "." <> prett
 pprFullSimple ctx (TmRecord fields) = encloseSep lbrace rbrace comma $ map pprField fields
   where pprField (label, t) = pretty label <> pretty "=" <> pprFullSimple ctx t
 pprFullSimple ctx (TmRecordProj label t) = pprFullSimple ctx t <> dot <> pretty label
+pprFullSimple ctx (TmPattern p tlet tbody)
+   =  pretty "let" <+> pprPattern ctx' p <> pretty "=" <> pprFullSimple ctx tlet
+  <+> pretty "in"  <+> pprFullSimple ctx' tbody
+  where
+    ctx' = getContext p
+
+getContext :: Pattern -> Context
+getContext (PtVar varName i) = addContext (VarContext varName, undefined) mempty
+getContext (PtRecord fs) = foldMap (getContext . snd) fs
+
+-- | ex 11.8.2 パターンマッチ
+data Pattern
+  = PtVar VarName Int                 -- ^ 変数パターン
+  | PtRecord [(FieldLabel, Pattern)]  -- ^ レコードパターン
+  deriving (Eq, Show)
+
+isRecordPattern :: Pattern -> Bool
+isRecordPattern PtRecord{} = True
+isRecordPattern _ = False
+
+instance Pretty Pattern where
+  pretty = pprPattern mempty
+
+pprPattern :: Context -> Pattern -> Doc ann
+pprPattern ctx (PtVar varName n)
+  | length ctx' <= n = pretty "FV" <> pretty n
+  | otherwise = pretty varName
+  where
+    ctx' = unCtx ctx
+    fv = fst (ctx' L.Partial.!! n)
+pprPattern ctx (PtRecord fs) = encloseSep lbrace rbrace comma $ map pprField fs
+  where pprField (label, p) = pretty label <> pretty "=" <> pprPattern ctx p

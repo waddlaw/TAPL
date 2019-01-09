@@ -77,6 +77,17 @@ typeof ctx (TmRecordProj label t) = -- T-RECORDPROJ
         Just ty -> ty
         Nothing -> error "field label not found (T-RECORDPROJ)"
     _ -> error "type mismatch (T-RECORDPROJ)"
+typeof ctx (TmPattern p t1 t2) = typeof ctx' t2 -- T-LET (Pattern)
+  where
+    ty1 = typeof ctx t1
+    ctx' = ctx <> delta p ty1
+
+delta :: Pattern -> Ty -> Context
+delta (PtVar varName n) ty = addContext (VarContext varName, (VarBind ty)) mempty
+delta (PtRecord pfs) ty =
+  case ty of
+    TyRecord tfs -> foldMap (\(p, ty) -> addContext (PatternContext p, PatternBind ty) mempty) $ zip (map snd pfs) (map snd tfs)
+    _ -> error "delta: expected Record term"
 
 ----------------------
 -- helper functions --
@@ -90,6 +101,7 @@ getTypeFromContext :: Context -> Int -> Ty
 getTypeFromContext ctx i =
   case getBinding ctx i of
     (VarBind tyT) -> tyT
+    (PatternBind tyT) -> tyT
     _             -> error "getTypeFromContext"
 
 getBinding :: Context -> Int -> Binding

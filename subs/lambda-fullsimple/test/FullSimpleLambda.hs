@@ -16,8 +16,8 @@ mkNat = foldr ($) TmZero . flip replicate TmSucc
 evalN :: Int -> Term -> Term
 evalN n term = foldr ($) term $ replicate n eval
 
-test_sl :: TestTree
-test_sl = testGroup "Basic Type"
+test_type :: TestTree
+test_type = testGroup "Types"
   [ testCase "pretty" $ do
       prettyFullSimpleText "x" (TmVar 0) @?= "x"
       prettyFullSimpleText mempty (TmLam "x" TyBool (TmVar 0)) @?= "λx:Bool. x"

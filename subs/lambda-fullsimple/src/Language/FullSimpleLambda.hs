@@ -11,7 +11,7 @@ module Language.FullSimpleLambda
   ) where
 
 import           RIO
-import qualified RIO.List.Partial                    as L.Partial
+import qualified RIO.List.Partial as L.Partial
 
 import           Language.FullSimpleLambda.Internal
 import           Language.FullSimpleLambda.Parser

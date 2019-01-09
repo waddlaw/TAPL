@@ -79,7 +79,7 @@ varP :: StateT Context Parser Term
 varP = do
     ctx <- get
     var <- lift $ toTerm <$> oneOf ['a'..'z'] <*> many alphaNum
-    pure $ TmVar $ fromMaybe (error $ Text.unpack var <> " is not found in Contexts") $ L.findIndex ((==var) . fst) $ unCtx ctx
+    pure $ TmVar $ fromMaybe (error $ Text.unpack var <> " is not found in Contexts") $ L.findIndex ((==var) . unWrapVarContext . fst) $ unCtx ctx
   where
     toTerm x xs =  Text.pack (x:xs)
     -- toTerm x xs = lifty 0
@@ -88,7 +88,7 @@ varP = do
 identP :: StateT Context Parser Text
 identP = do
   v <- lift $ ident defaultIdentStyle
-  modify (addContext (v,NameBind))
+  modify (addContext (VarContext v,NameBind))
   return v
 
 defaultIdentStyle :: IdentifierStyle Parser

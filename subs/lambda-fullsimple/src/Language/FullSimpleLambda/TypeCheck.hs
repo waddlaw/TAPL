@@ -82,8 +82,9 @@ typeof ctx (TmRecordProj label t) = -- T-RECORDPROJ
 -- helper functions --
 ----------------------
 
+-- VarContext only
 addBinding :: Context -> Text -> Binding -> Context
-addBinding ctx x bind = addContext (x, bind) ctx
+addBinding ctx x bind = addContext (VarContext x, bind) ctx
 
 getTypeFromContext :: Context -> Int -> Ty
 getTypeFromContext ctx i =

@@ -4,6 +4,7 @@ module Language.FullSimpleLambda.Types
   , Term (..)
   , Value
   , Context
+  , ContextType (..)
   , addContext
   , unCtx
   , Binding (..)
@@ -34,10 +35,22 @@ instance Monoid Context where
   mempty = Context []
 
 instance IsString Context where
-  fromString v = Context [(Text.pack v, NameBind)]
+  fromString v = Context [(VarContext (Text.pack v), NameBind)]
 
-addContext :: (Text, Binding) -> Context -> Context
+addContext :: (ContextType, Binding) -> Context -> Context
 addContext v = Context . (v:) . unCtx
+
+data ContextType
+  = VarContext { unWrapVarContext :: Text }
+  | PatternContext Pattern
+  deriving (Eq, Show)
+
+instance IsString ContextType where
+  fromString = VarContext . Text.pack
+
+instance Pretty ContextType where
+  pretty (VarContext varName) = pretty varName
+  pretty (PatternContext pattern) = pretty pattern
 
 data Binding
   = NameBind   -- ^ 自由変数
@@ -107,7 +120,7 @@ pprFullSimple ctx (TmVar n) =
     ctx' = unCtx ctx
     fv = fst (ctx' L.Partial.!! n)
 pprFullSimple ctx (TmLam x ty t) = pretty "λ" <> pretty x <> pretty ":" <> pretty ty <> pretty "." <+> pprFullSimple ctx' t
-  where ctx' = addContext (x, VarBind ty) ctx
+  where ctx' = addContext (VarContext x, VarBind ty) ctx
 pprFullSimple ctx (TmApp t1 t2)  = ppr t1 <+> ppr t2
   where
     ppr t@(TmVar _) = pprFullSimple ctx t
@@ -126,7 +139,7 @@ pprFullSimple ctx (TmSeq t1 t2) = pprFullSimple ctx t1 <> pretty ";" <> pprFullS
 pprFullSimple ctx (TmWildcard ty t) = pretty "λ_:" <> pretty ty <> pretty "." <+> pprFullSimple ctx t
 pprFullSimple ctx (TmAscribe t ty) = pprFullSimple ctx t <+> pretty "as" <+> pretty ty <+> pretty ":" <+> pretty ty
 pprFullSimple ctx (TmLet var tlet tbody) = pretty "let" <+> pretty var <> pretty "=" <> pprFullSimple ctx tlet <+> pretty "in" <+> pprFullSimple ctx' tbody
-  where ctx' = addContext (var, undefined) ctx
+  where ctx' = addContext (VarContext var, undefined) ctx
 pprFullSimple ctx (TmPair t1 t2) = pretty "{" <> pprFullSimple ctx t1 <> pretty "," <> pprFullSimple ctx t2 <> pretty "}"
 pprFullSimple ctx (TmPairFst t) = pprFullSimple ctx t <> pretty ".1"
 pprFullSimple ctx (TmPairSnd t) = pprFullSimple ctx t <> pretty ".2"

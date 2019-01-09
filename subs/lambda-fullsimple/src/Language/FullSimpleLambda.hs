@@ -117,7 +117,20 @@ eval (TmTupleProj j (TmTuple ts)) -- E-PROJTUPLE
 eval (TmTupleProj i t) = TmTupleProj i (eval t) -- E-PROJ
 eval (TmTuple ts) = TmTuple (vs ++ [eval t] ++ ts') -- E-TUPLE
   where (vs, t, ts') = splitTerm ts
-eval _ = error "unexpected: eval"
+eval (TmRecordProj label t@(TmRecord fields)) -- E-PROJRCD
+  | isValue t =
+      case lookup label fields of
+        Nothing -> error "field label not found (E-PROJRCD)"
+        Just v -> v
+  | otherwise = TmRecordProj label (eval t)
+eval (TmRecordProj label t) = TmRecordProj label (eval t) -- E-PROJ
+eval t@(TmRecord []) = t -- E-RCD
+eval t@(TmRecord fs)
+  | isValue t = t
+  | otherwise = TmRecord (vfs ++ [t'] ++ tfs) -- E-RCD
+  where
+    (vfs, (label, tj), tfs) = splitRecord t
+    t' = (label, eval tj)
 
 -- | 対象の構文
 --
@@ -139,3 +152,10 @@ splitTerm :: [Term] -> ([Value], Term, [Term])
 splitTerm [] = error "empty list is not expected"
 splitTerm ts = (vs, L.Partial.head ts', L.Partial.tail ts')
   where (vs, ts') = span isValue ts
+
+-- | レコードのみ想定
+splitRecord :: Term -> ([(FieldLabel, Value)], (FieldLabel, Term), [(FieldLabel, Term)])
+splitRecord (TmRecord fs) = (vfs, L.Partial.head tfs, L.Partial.tail tfs)
+  where
+    (vfs, tfs) = span (isValue . snd) fs
+splitRecord _ = error "only record"

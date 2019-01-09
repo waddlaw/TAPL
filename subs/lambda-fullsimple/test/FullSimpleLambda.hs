@@ -83,7 +83,29 @@ test_pair = testGroup "pair"
 
 test_record :: TestTree
 test_record = testGroup "record"
-  [ testGroup "typecheck"
+  [ testGroup "pretty"
+    [ testCase "{partno=0,cost=true}" $ do
+        let t = TmRecord [("partno", TmZero), ("cost", TmTrue)]
+        prettyFullSimpleText mempty t @?= "{partno=0,cost=true}"
+    ]
+  , testGroup "eval"
+    [ testCase "フィールドの全てが値" $ do
+        let t = TmRecord [("partno", TmUnit), ("cost", TmUnit)]
+        eval t @?= TmRecord [("partno", TmUnit),("cost", TmUnit)]
+    , testCase "フィールドの1つ目が簡約可能" $ do
+        let redex = TmIf TmTrue TmFalse TmFalse
+            t = TmRecord [("partno", redex), ("cost", TmUnit)]
+        eval t @?= TmRecord [("partno", TmFalse),("cost", TmUnit)]
+    , testCase "フィールドの1つ目と2つ目が簡約可能" $ do
+      let redex = TmIf TmTrue TmFalse TmFalse
+          t = TmRecord [("partno", redex), ("cost", redex)]
+      eval t @?= TmRecord [("partno", TmFalse),("cost", redex)]
+    , testCase "フィールドの2つ目が簡約可能" $ do
+      let redex = TmIf TmTrue TmFalse TmFalse
+          t = TmRecord [("partno", TmUnit), ("cost", redex)]
+      eval t @?= TmRecord [("partno", TmUnit),("cost", TmFalse)]
+    ]
+  , testGroup "typecheck"
     [ testCase "{x=5}:Nat" $ do
         let t = TmRecord [("x", mkNat 5)]
         typeof mempty t @?= TyRecord [("x", TyNat)]

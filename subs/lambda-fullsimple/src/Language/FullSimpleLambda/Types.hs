@@ -51,7 +51,7 @@ instance IsString ContextType where
 
 instance Pretty ContextType where
   pretty (VarContext varName)     = pretty varName
-  pretty (PatternContext pattern) = pretty pattern
+  pretty (PatternContext p) = pretty p
 
 data Binding
   = NameBind       -- ^ 自由変数

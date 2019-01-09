@@ -122,7 +122,7 @@ test_pattern = do
       t2 = TmVar 0
       t  = TmPattern p t1 t2
       ctx = mconcat ["x","y"]
-  testGroup "pattern" $
+  testGroup "pattern"
     [ testGroup "pretty"
       [ testCase "let x=() in ()" $ do
           let t = TmPattern (PtVar "x" 0) TmUnit TmUnit

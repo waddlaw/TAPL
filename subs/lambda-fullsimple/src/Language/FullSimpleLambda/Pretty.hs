@@ -11,4 +11,4 @@ import           Data.Text.Prettyprint.Doc
 import           Data.Text.Prettyprint.Doc.Render.Text
 
 prettyFullSimpleText :: Context -> FullSimpleTypedLambda -> Text
-prettyFullSimpleText ctx = renderStrict . layoutCompact . pprFullSimple ctx
+prettyFullSimpleText ctx = renderStrict . layoutPretty defaultLayoutOptions . pprFullSimple ctx

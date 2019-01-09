@@ -8,6 +8,7 @@ import           Test.Tasty
 import           Test.Tasty.HUnit
 
 import           Language.FullSimpleLambda
+import           Language.FullSimpleLambda.Internal
 
 mkNat :: Int -> Term
 mkNat = foldr ($) TmZero . flip replicate TmSucc
@@ -15,8 +16,8 @@ mkNat = foldr ($) TmZero . flip replicate TmSucc
 evalN :: Int -> Term -> Term
 evalN n term = foldr ($) term $ replicate n eval
 
-test_sl :: TestTree
-test_sl = testGroup "Basic Type"
+test_type :: TestTree
+test_type = testGroup "Types"
   [ testCase "pretty" $ do
       prettyFullSimpleText "x" (TmVar 0) @?= "x"
       prettyFullSimpleText mempty (TmLam "x" TyBool (TmVar 0)) @?= "λx:Bool. x"
@@ -34,6 +35,15 @@ test_sl = testGroup "Basic Type"
       runFullSimpleLambdaParser mempty "λx:Bool. λy:Bool. λz:Bool. x (y z)" @?= Right (TmLam "x" TyBool (TmLam "y" TyBool (TmLam "z" TyBool (TmApp (TmVar 2) (TmApp (TmVar 1) (TmVar 0))))))
   -- , testCase "parser (そのうち直す" $ do
   --     runFullSimpleLambdaParser "f" "λx:Bool. f (if f x then false else x)" @?= Left
+  ]
+
+test_function :: TestTree
+test_function = testGroup "Functions"
+  [ testCase "isValue" $ do
+      isValue (TmRecord []) @?= True
+      isValue (TmRecord [("a", TmUnit)]) @?= True
+      isValue (TmRecord [("a", TmUnit), ("b", TmUnit)]) @?= True
+      isValue (TmRecord [("a", TmUnit), ("b", TmIf TmTrue TmFalse TmFalse)]) @?= False
   ]
 
 test_unit :: TestTree
@@ -73,7 +83,29 @@ test_pair = testGroup "pair"
 
 test_record :: TestTree
 test_record = testGroup "record"
-  [ testGroup "typecheck"
+  [ testGroup "pretty"
+    [ testCase "{partno=0,cost=true}" $ do
+        let t = TmRecord [("partno", TmZero), ("cost", TmTrue)]
+        prettyFullSimpleText mempty t @?= "{partno=0,cost=true}"
+    ]
+  , testGroup "eval"
+    [ testCase "フィールドの全てが値" $ do
+        let t = TmRecord [("partno", TmUnit), ("cost", TmUnit)]
+        eval t @?= TmRecord [("partno", TmUnit),("cost", TmUnit)]
+    , testCase "フィールドの1つ目が簡約可能" $ do
+        let redex = TmIf TmTrue TmFalse TmFalse
+            t = TmRecord [("partno", redex), ("cost", TmUnit)]
+        eval t @?= TmRecord [("partno", TmFalse),("cost", TmUnit)]
+    , testCase "フィールドの1つ目と2つ目が簡約可能" $ do
+      let redex = TmIf TmTrue TmFalse TmFalse
+          t = TmRecord [("partno", redex), ("cost", redex)]
+      eval t @?= TmRecord [("partno", TmFalse),("cost", redex)]
+    , testCase "フィールドの2つ目が簡約可能" $ do
+      let redex = TmIf TmTrue TmFalse TmFalse
+          t = TmRecord [("partno", TmUnit), ("cost", redex)]
+      eval t @?= TmRecord [("partno", TmUnit),("cost", TmFalse)]
+    ]
+  , testGroup "typecheck"
     [ testCase "{x=5}:Nat" $ do
         let t = TmRecord [("x", mkNat 5)]
         typeof mempty t @?= TyRecord [("x", TyNat)]
@@ -82,3 +114,28 @@ test_record = testGroup "record"
         typeof mempty t @?= TyRecord [("partno", TyNat), ("cost", TyBool)]
     ]
   ]
+
+test_pattern :: TestTree
+test_pattern = do
+  let p  = PtRecord [("partno", PtVar "x" 0), ("cost", PtVar "y" 1)]
+      t1 = TmRecord [("partno", mkNat 1), ("cost", TmTrue)]
+      t2 = TmVar 0
+      t  = TmPattern p t1 t2
+      ctx = mconcat ["x","y"]
+  testGroup "pattern"
+    [ testGroup "pretty"
+      [ testCase "let x=() in ()" $ do
+          let t' = TmPattern (PtVar "x" 0) TmUnit TmUnit
+          prettyFullSimpleText "x" t' @?= "let x=() in ()"
+      , testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+          prettyFullSimpleText ctx t @?= "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
+      ]
+    , testGroup "eval"
+      [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+          eval t @?= mkNat 1
+      ]
+    , testGroup "typecheck"
+      [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+          typeof mempty t @?= TyNat
+      ]
+    ]

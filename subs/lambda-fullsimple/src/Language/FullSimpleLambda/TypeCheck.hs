@@ -100,9 +100,9 @@ addBinding ctx x bind = addContext (VarContext x, bind) ctx
 getTypeFromContext :: Context -> Int -> Ty
 getTypeFromContext ctx i =
   case getBinding ctx i of
-    (VarBind tyT) -> tyT
+    (VarBind tyT)     -> tyT
     (PatternBind tyT) -> tyT
-    _             -> error "getTypeFromContext"
+    _                 -> error "getTypeFromContext"
 
 getBinding :: Context -> Int -> Binding
 getBinding ctx i = snd $ ctx' L.Partial.!! i

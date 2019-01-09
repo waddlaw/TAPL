@@ -28,4 +28,4 @@ isNumericValue _          = False
 
 -- | 与えられた項がレコードかつ、値かどうか判定
 isRecordValue t@(TmRecord fs) = isValue t
-isRecordValue _ = False
+isRecordValue _               = False

@@ -11,7 +11,7 @@ module Language.FullSimpleLambda
   ) where
 
 import           RIO
-import qualified RIO.List.Partial as L.Partial
+import qualified RIO.List.Partial                    as L.Partial
 
 import           Language.FullSimpleLambda.Internal
 import           Language.FullSimpleLambda.Parser
@@ -123,7 +123,7 @@ eval (TmRecordProj label t@(TmRecord fields)) -- E-PROJRCD
   | isValue t =
       case lookup label fields of
         Nothing -> error "field label not found (E-PROJRCD)"
-        Just v -> v
+        Just v  -> v
   | otherwise = TmRecordProj label (eval t)
 eval (TmRecordProj label t) = TmRecordProj label (eval t) -- E-PROJ
 eval t@(TmRecord []) = t -- E-RCD
@@ -148,7 +148,7 @@ match p@(PtRecord fs) v = error "match: v is not Rrcord"
 
 sameFieldLength :: Pattern -> Value -> Bool
 sameFieldLength (PtRecord fs1) (TmRecord fs2) = length fs1 == length fs2
-sameFieldLength _ _ = error "unexpected field"
+sameFieldLength _ _                           = error "unexpected field"
 
 -- | 対象の構文
 --

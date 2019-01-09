@@ -50,7 +50,7 @@ instance IsString ContextType where
   fromString = VarContext . Text.pack
 
 instance Pretty ContextType where
-  pretty (VarContext varName) = pretty varName
+  pretty (VarContext varName)     = pretty varName
   pretty (PatternContext pattern) = pretty pattern
 
 data Binding
@@ -169,7 +169,7 @@ data Pattern
 
 isRecordPattern :: Pattern -> Bool
 isRecordPattern PtRecord{} = True
-isRecordPattern _ = False
+isRecordPattern _          = False
 
 instance Pretty Pattern where
   pretty = pprPattern mempty

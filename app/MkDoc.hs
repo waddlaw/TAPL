@@ -1,16 +1,16 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
-import           RIO
-import qualified RIO.Text as Text
-import qualified RIO.Text.Lazy as TL
 import           Lucid
+import           RIO
+import qualified RIO.Text                    as Text
+import qualified RIO.Text.Lazy               as TL
+import           Text.Megaparsec.Error
 import qualified Text.MMark                  as MMark
 import           Text.MMark.Extension        (Block (..), Extension)
 import qualified Text.MMark.Extension        as Ext
 import qualified Text.MMark.Extension.Common as Ext
-import           Text.Megaparsec.Error
 
 main :: IO ()
 main = runSimpleApp app

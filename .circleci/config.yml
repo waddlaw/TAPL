@@ -60,7 +60,7 @@ jobs:
           command: stack test --fast
       - run:
           name: Generate docs
-          command: stack exec mkdoc
+          command: stack run mkdoc
       - *save_build_results
       - persist_to_workspace:
           root: .

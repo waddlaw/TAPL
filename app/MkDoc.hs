@@ -16,7 +16,7 @@ main :: IO ()
 main = runSimpleApp app
 
 app :: RIO SimpleApp ()
-app = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07", "ch08"] $ \input -> do
+app = forM_ ["index", "ch02", "ch03", "ch04", "ch05", "ch06", "ch07", "ch08"] $ \input -> do
   txt <- readFileUtf8 $ mconcat ["note/", input, ".md"]
   case MMark.parse input txt of
     Left errs -> logError $ displayShow $ errorBundlePretty errs

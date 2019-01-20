@@ -3,9 +3,6 @@ version: 0.1.0
 author: Shinya Yamaguchi
 github: waddlaw/TAPL
 
-extra-source-files:
-- package.yaml
-
 ghc-options:
 - -Wall
 - -Wcompat
@@ -52,15 +49,13 @@ executables:
     main: app/FullSimpleLambda.hs
     dependencies:
       - tapl
-  # mkdoc:
-  #   main: app/MkDoc.hs
-  #   dependencies:
-  #     - lucid
-  #     - mmark
-  #     - mmark-ext
-  #   ghc-options:
-  #     - -threaded
-  #     - -rtsopts
+  mkdoc:
+    main: app/MkDoc.hs
+    dependencies:
+      - lucid
+      - mmark
+      - mmark-ext
+      - megaparsec
 
 benchmarks:
   gauge:

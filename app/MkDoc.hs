@@ -1,27 +1,29 @@
-#!/usr/bin/env stack
--- stack --resolver lts-12.8 script
 {-# LANGUAGE OverloadedStrings #-}
-
+{-# LANGUAGE NoImplicitPrelude #-}
 module Main (main) where
 
-import           Control.Monad
-import qualified Data.Text                   as T
-import qualified Data.Text.IO                as T
-import qualified Data.Text.Lazy.IO           as TL
+import           RIO
+import qualified RIO.Text as Text
+import qualified RIO.Text.Lazy as TL
 import           Lucid
 import qualified Text.MMark                  as MMark
 import           Text.MMark.Extension        (Block (..), Extension)
 import qualified Text.MMark.Extension        as Ext
 import qualified Text.MMark.Extension.Common as Ext
+import           Text.Megaparsec.Error
 
 main :: IO ()
-main = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07", "ch08"] $ \input -> do
-  txt <- T.readFile $ mconcat ["note/", input, ".md"]
+main = runSimpleApp app
+
+app :: RIO SimpleApp ()
+app = forM_ ["ch02", "ch03", "ch04", "ch05", "ch06", "ch07", "ch08"] $ \input -> do
+  txt <- readFileUtf8 $ mconcat ["note/", input, ".md"]
   case MMark.parse input txt of
-    Left errs -> putStrLn (MMark.parseErrorsPretty txt errs)
+    Left errs -> logError $ displayShow $ errorBundlePretty errs
     Right r ->
       let toc = MMark.runScanner r (Ext.tocScanner (> 1))
-      in  TL.writeFile (mkPath input)
+      in  writeFileUtf8 (mkPath input)
+          . TL.toStrict
           . renderText
           . wrapper
           . MMark.render
@@ -48,8 +50,8 @@ wrapper content = do
       link_  [rel_ "stylesheet", href_ "https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css"]
       link_  [rel_ "stylesheet", href_ "css/hilight.css"]
       link_  [rel_ "stylesheet", href_ "css/base.css"]
-      script_ [ defer_ T.empty , src_ "https://use.fontawesome.com/releases/v5.1.0/js/all.js" ] T.empty
-      script_ [ async_ T.empty, src_ "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML" ] T.empty
+      script_ [ defer_ Text.empty , src_ "https://use.fontawesome.com/releases/v5.1.0/js/all.js" ] TL.empty
+      script_ [ async_ Text.empty, src_ "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML" ] TL.empty
     body_ $
       section_ [class_ "section"] $
         div_ [class_ "container"] $
@@ -62,7 +64,7 @@ mathJaxBlock = Ext.blockRender $ \old block ->
     b@(CodeBlock mlabel txt) ->
       if mlabel == Just "mathjaxBlock"
         then do
-               p_ . forM_ (T.lines txt) $ \x -> toHtml x
+               p_ . forM_ (Text.lines txt) $ \x -> toHtml x
                "\n"
         else old b
     other -> old other

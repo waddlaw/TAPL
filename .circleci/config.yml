@@ -53,19 +53,19 @@ jobs:
       - *display_stack_version
       - run:
           name: Install dependencies
-          command: stack test --only-dependencies --no-terminal --no-run-tests
+          command: stack test -j1 --only-dependencies --no-terminal --no-run-tests
           no_output_timeout: 120m
       - run:
           name: Run stack test
           command: stack test --fast
-      # - run:
-      #     name: Generate docs
-      #     command: stack exec mkdoc
+      - run:
+          name: Generate docs
+          command: stack exec mkdoc
       - *save_build_results
-      # - persist_to_workspace:
-      #     root: .
-      #     paths:
-      #       - ./_site
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./_site
 
   # preview:
   #   working_directory: ~/TAPL

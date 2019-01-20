@@ -13,11 +13,11 @@ ghc-options:
 - -Wtabs
 
 dependencies:
-- rio
-- base
-- haskeline
-- prettyprinter
-- transformers
+- base >= 4.11.0.0 && < 4.13.0.0
+- haskeline >= 0.7.4.3 && < 0.7.6.0
+- prettyprinter ^>= 1.2.1
+- rio >= 0.1.7.0 && < 0.1.9.0
+- transformers ^>= 0.5.5.0
 - bool
 - arith
 - lambda-core
@@ -52,10 +52,10 @@ executables:
   mkdoc:
     main: app/MkDoc.hs
     dependencies:
-      - lucid
-      - mmark
-      - mmark-ext
-      - megaparsec
+      - lucid ^>= 2.9.11
+      - mmark ^>= 0.0.6.0
+      - mmark-ext ^>= 0.2.1.1
+      - megaparsec ^>= 7.0.4
 
 benchmarks:
   gauge:

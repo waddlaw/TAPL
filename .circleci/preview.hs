@@ -1,5 +1,5 @@
 #!/usr/bin/env stack
--- stack --resolver lts-11.9 script
+-- stack --resolver lts-13.1 script
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE OverloadedStrings #-}
 

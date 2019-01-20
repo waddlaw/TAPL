@@ -9,10 +9,6 @@ packages:
 - ./subs/lambda-untyped
 - ./subs/lambda-fullsimple
 
-# extra-deps:
-#   - git: https://github.com/mmark-md/mmark
-#     commit: 4febdb513633d6f18a5df2fd175ece937a775a72
-
 build:
   haddock: false
   haddock-arguments:

@@ -4,6 +4,7 @@ module Language.Types
   , ReplEnv (..)
   , ParseFunc
   , EvalFunc
+  , TraceFunc
   ) where
 
 import RIO
@@ -16,6 +17,7 @@ import System.Console.Haskeline hiding (display)
 type LambdaREPL = InputT (RIO ReplEnv) ()
 type ParseFunc term = Text -> Either String term
 type EvalFunc term = Strategy -> term -> term
+type TraceFunc term = Strategy -> term -> [term]
 
 data ReplEnv = ReplEnv
   { appLogFunc        :: !LogFunc

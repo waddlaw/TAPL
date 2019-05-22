@@ -8,7 +8,7 @@ module Language.Options
   , helpCmd
   ) where
 
-import RIO
+import RIO hiding (trace)
 import RIO.Process
 import qualified RIO.Text as Text
 
@@ -34,19 +34,17 @@ runApp m = liftIO $ do
           }
      in runRIO app m
 
-evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> Text -> RIO ReplEnv ()
-evalCmd parser evalate input = ask >>= \ReplEnv{..} -> do
-  isTrace <- liftIO $ readIORef appIsTrace
+evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> TraceFunc term -> Text -> RIO ReplEnv ()
+evalCmd parser evaluator tracer input = ask >>= \ReplEnv{..} -> do
+  strategy <- readIORef appStrategy
+  isTrace <- readIORef appIsTrace
+  
   case parser input of
     Left err -> logError $ display $ Text.pack err
     Right term ->
       if isTrace
-      then
-          -- _ <- liftIO $ trace appStrategy term
-          return ()
-      else do
-        strategy <- liftIO $ readIORef appStrategy
-        logInfo $ display $ Text.pack $ render $ evalate strategy term
+      then logInfo $ displayRender $ tracer strategy term
+      else logInfo $ displayRender $ evaluator strategy term
 
 tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> RIO ReplEnv ()
 tcCmd parser checker input =

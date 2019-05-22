@@ -3,6 +3,7 @@ module Language.Core
   , trim
   , render
   , renderPrelude
+  , displayRender
   , strategies
   ) where
 
@@ -21,6 +22,9 @@ trim = L.dropWhileEnd C.isSpace . L.dropWhile C.isSpace
 
 render :: Pretty a => a -> String
 render = renderString . layoutPretty defaultLayoutOptions . pretty
+
+displayRender :: Pretty a => a -> Utf8Builder
+displayRender = display . Text.pack . render
 
 renderPrelude :: Pretty a => Map Text a -> String
 renderPrelude = L.foldr glue "" . Map.toList

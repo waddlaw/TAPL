@@ -41,13 +41,16 @@ main' = do
          | ":env"           `Text.isPrefixOf` input -> printEnvCmd                >> main'
          | ":help"          `Text.isPrefixOf` input -> lift helpCmd               >> main'
          -- main process
-         | otherwise -> lift (evalCmd parser evaluator input) >> main'
+         | otherwise -> lift (evalCmd parser evaluator tracer input) >> main'
 
 parser :: Text -> Either String UntypedLambda
 parser = UntypedLambda.runUlParser . Text.unpack
 
 evaluator :: EvalFunc UntypedLambda
 evaluator = UntypedLambda.eval
+
+tracer :: TraceFunc UntypedLambda
+tracer = UntypedLambda.trace
 
 printEnvCmd :: LambdaREPL
 printEnvCmd = lift $ ask >>= \ReplEnv{..} -> do

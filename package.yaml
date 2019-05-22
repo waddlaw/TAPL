@@ -27,6 +27,7 @@ dependencies:
 
 default-extensions:
 - MultiWayIf
+- NoImplicitPrelude
 
 library:
   source-dirs: src

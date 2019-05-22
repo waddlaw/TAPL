@@ -1,15 +1,18 @@
 module Main (main) where
 
-import           Language.B
-import qualified Language.B.Example                      as B
-import           Language.Core
+import Prelude
 
-import           Control.Monad.Trans.Class
-import           Control.Monad.Trans.State.Strict
-import           Data.List
-import           Data.Text.Prettyprint.Doc
-import           Data.Text.Prettyprint.Doc.Render.String
-import           System.Console.Haskeline
+import Language.Core
+
+import Language.B
+import qualified Language.B.Example as B
+
+import Control.Monad.Trans.Class
+import Control.Monad.Trans.State.Strict
+import Data.List
+import Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc.Render.String
+import System.Console.Haskeline
 
 type Proof = InputT (StateT EvalRelation IO) ()
 

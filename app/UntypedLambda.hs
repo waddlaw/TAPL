@@ -90,7 +90,7 @@ listPreludeCmd = outputStrLn $ renderPrelude prelude
 
 evalCmd :: String -> UntypedLambdaREPL
 evalCmd input = do
-  isTrace<- envIsTrace <$> getEnv
+  isTrace <- envIsTrace <$> getEnv
   strategy <- envStrategy <$> getEnv
 
   case runUlParser input of

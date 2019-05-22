@@ -39,6 +39,8 @@ getNlTermVar _           = error "panic"
 instance IsString NamelessTerm where
   fromString = NlTmVar . fromMaybe 0 . readMaybe -- FIXME
 
+infixl @@
+
 (@@) :: UntypedLambda -> UntypedLambda -> UntypedLambda
 t1 @@ t2 = TmApp t1 t2
 

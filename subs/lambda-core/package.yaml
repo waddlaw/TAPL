@@ -14,12 +14,15 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- base-noprelude
 - prettyprinter
 - rio
 - trifecta
 
 library:
   source-dirs: src
+  other-modules:
+  - Prelude
 
 tests:
   lambda-core-test:

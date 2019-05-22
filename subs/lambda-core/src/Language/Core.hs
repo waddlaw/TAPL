@@ -1,18 +1,16 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.Core
   ( trim
   , render
   , renderPrelude
   ) where
 
-import           RIO
-import qualified RIO.Char                                as C
-import qualified RIO.List                                as L
-import qualified RIO.Map                                 as Map
-import qualified RIO.Text                                as Text
+import qualified RIO.Char as C
+import qualified RIO.List as L
+import qualified RIO.Map  as Map
+import qualified RIO.Text as Text
 
-import           Data.Text.Prettyprint.Doc
-import           Data.Text.Prettyprint.Doc.Render.String
+import Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc.Render.String
 
 trim :: String -> String
 trim = L.dropWhileEnd C.isSpace . L.dropWhile C.isSpace

@@ -1,11 +1,8 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.Core.Parser
   ( runParserString
   ) where
 
-import           RIO
-
-import           Text.Trifecta
+import Text.Trifecta
 
 runParserString :: Parser a -> String -> Either String a
 runParserString p input =

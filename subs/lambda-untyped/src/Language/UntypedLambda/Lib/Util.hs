@@ -5,4 +5,5 @@ module Language.UntypedLambda.Lib.Util
 import Prelude hiding ((.))
 
 infixr 5 .
+(.) :: (a -> b) -> a -> b
 (.) = ($)

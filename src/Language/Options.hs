@@ -2,30 +2,51 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
 module Language.Options
-  ( evalCmd
+  ( runApp
+  , evalCmd
   , tcCmd
   , helpCmd
   ) where
 
-import           RIO                       hiding (trace)
-import qualified RIO.Text                  as Text
+import RIO
+import RIO.Process
+import qualified RIO.Text as Text
 
-import           Language.Core
-import           Language.Types
+import Language.Core
+import Language.Types
 
-import           Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc
+import System.Environment
+
+runApp :: MonadIO m => RIO ReplEnv a -> m a
+runApp m = liftIO $ do
+  verbose <- isJust <$> lookupEnv "RIO_VERBOSE"
+  lo <- logOptionsHandle stderr verbose
+  pc <- mkDefaultProcessContext
+  strategy <- newIORef NormalOrder
+  isTrace <- newIORef False
+  withLogFunc lo $ \lf ->
+    let app = ReplEnv
+          { appLogFunc = lf
+          , appProcessContext = pc
+          , appStrategy = strategy
+          , appIsTrace = isTrace
+          }
+     in runRIO app m
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> Text -> RIO ReplEnv ()
-evalCmd parser evalate input = ask >>= \ReplEnv{..} ->
+evalCmd parser evalate input = ask >>= \ReplEnv{..} -> do
+  isTrace <- liftIO $ readIORef appIsTrace
   case parser input of
     Left err -> logError $ display $ Text.pack err
     Right term ->
-      if appIsTrace
+      if isTrace
       then
           -- _ <- liftIO $ trace appStrategy term
           return ()
-      else
-        logInfo $ display $ Text.pack $ render $ evalate appStrategy term
+      else do
+        strategy <- liftIO $ readIORef appStrategy
+        logInfo $ display $ Text.pack $ render $ evalate strategy term
 
 tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> RIO ReplEnv ()
 tcCmd parser checker input =

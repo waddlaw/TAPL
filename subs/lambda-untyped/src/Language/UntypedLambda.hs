@@ -25,7 +25,6 @@ module Language.UntypedLambda
   , reduceNameless
   ) where
 
-import Prelude (putStrLn)
 import RIO hiding (trace)
 import qualified RIO.ByteString   as B
 import qualified RIO.List         as L
@@ -35,6 +34,7 @@ import qualified RIO.Text         as Text
 import qualified RIO.Text.Partial as Text.Partial
 
 import Language.Core
+import Language.Core.Types
 import Language.UntypedLambda.Parser
 import Language.UntypedLambda.Prelude
 import Language.UntypedLambda.Types
@@ -48,8 +48,8 @@ eval s t
     result = evalOneStep s t
 
 -- | デバッグ用
-trace :: Strategy -> UntypedLambda -> IO ()
-trace s t = mapM_ (putStrLn . render) $ reverse $ evalWithTrace s [t] t
+trace :: Strategy -> UntypedLambda -> [UntypedLambda]
+trace s t = reverse $ evalWithTrace s [t] t
 
 -- | 簡約ステップ列を返す
 evalWithTrace :: Strategy -> [UntypedLambda] -> UntypedLambda -> [UntypedLambda]

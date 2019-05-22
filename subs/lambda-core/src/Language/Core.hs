@@ -1,5 +1,6 @@
 module Language.Core
-  ( trim
+  ( module Language.Core.Types
+  , trim
   , render
   , renderPrelude
   , strategies

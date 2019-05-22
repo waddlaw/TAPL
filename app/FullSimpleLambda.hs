@@ -2,37 +2,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
-import           RIO
-import           RIO.Process
-import qualified RIO.Text                     as Text
+import RIO
+import qualified RIO.Text as Text
 
-import           Language.Core
-import           Language.Options
-import           Language.Orphans             ()
-import           Language.Types
+import Language.Core
+import Language.Options
+import Language.Orphans ()
+import Language.Types
 
-import           Language.FullSimpleLambda
+import Language.FullSimpleLambda
 
-import qualified Language.UntypedLambda.Types as UntypedLambda
-
-import           System.Console.Haskeline     hiding (display)
-import           System.Environment
-
-type FullSimpleLambdaREPL = InputT (RIO ReplEnv) ()
-
-runApp :: MonadIO m => RIO ReplEnv a -> m a
-runApp m = liftIO $ do
-  verbose <- isJust <$> lookupEnv "RIO_VERBOSE"
-  lo <- logOptionsHandle stderr verbose
-  pc <- mkDefaultProcessContext
-  withLogFunc lo $ \lf ->
-    let app = ReplEnv
-          { appLogFunc = lf
-          , appProcessContext = pc
-          , appStrategy = UntypedLambda.NormalOrder
-          , appIsTrace = False
-          }
-     in runRIO app m
+import System.Console.Haskeline hiding (display)
 
 main :: IO ()
 main = runApp $ do
@@ -43,7 +23,7 @@ main = runApp $ do
 
   logInfo "Leaving full simple lambda repl"
 
-main' :: FullSimpleLambdaREPL
+main' :: LambdaREPL
 main' = do
   minput <- getInputLine "FullSimpleLambda> "
   case Text.pack . trim <$> minput of

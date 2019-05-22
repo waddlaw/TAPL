@@ -1,10 +1,8 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Prelude
   ( prelude
   ) where
 
-import RIO hiding (and, fst, id, not, or, snd, isLeft)
 import qualified RIO.Map as Map
 
 import Language.Core
@@ -16,7 +14,6 @@ import Language.UntypedLambda.Lib.Either
 import Language.UntypedLambda.Lib.List
 import Language.UntypedLambda.Lib.Pair
 import Language.UntypedLambda.Types
-
 
 prelude :: Prelude UntypedLambda
 prelude = Map.fromList

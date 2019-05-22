@@ -1,6 +1,5 @@
-{-# LANGUAGE FlexibleContexts     #-}
-{-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE NoImplicitPrelude    #-}
+{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Language.UntypedLambda.Types
   ( Term (..)
   , UntypedLambda
@@ -12,13 +11,11 @@ module Language.UntypedLambda.Types
   , getNlTermVar
   ) where
 
-import           RIO
-import qualified RIO.Text                  as Text
+import qualified RIO.Text as Text
 
-import           Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc
 
 type UntypedLambda = Term Text
-
 type VarName = Text
 
 -- | 教科書とは逆で ["x", "y", "z"] は [0, 1, 2] と左からインデックスを付ける

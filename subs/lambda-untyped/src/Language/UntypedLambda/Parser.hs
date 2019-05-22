@@ -1,20 +1,18 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.UntypedLambda.Parser
   ( runUlParser
   ) where
 
-import           RIO                               hiding (try)
-import qualified RIO.List.Partial                  as L.Partial
-import qualified RIO.Map                           as Map
-import qualified RIO.Text                          as Text
+import qualified RIO.List.Partial as L.Partial
+import qualified RIO.Map as Map
+import qualified RIO.Text as Text
 
-import           Language.Core.Parser
-import           Language.UntypedLambda.Lib.Church (c)
-import           Language.UntypedLambda.Prelude    (prelude)
-import           Language.UntypedLambda.Types
+import Language.Core.Parser
+import Language.UntypedLambda.Lib.Church
+import Language.UntypedLambda.Prelude
+import Language.UntypedLambda.Types
 
-import           Text.Parser.Token.Highlight
-import           Text.Trifecta
+import Text.Parser.Token.Highlight
+import Text.Trifecta
 
 runUlParser :: String -> Either String UntypedLambda
 runUlParser = runParserString exprP
@@ -36,7 +34,7 @@ lambdaP = TmLam <$  symbol "λ"
 
 -- FIXME
 numP :: Parser UntypedLambda
-numP = c . fromMaybe 0 . readMaybe <$  char 'c'
+numP = c . fromMaybe 0 . readMaybe <$ char 'c'
                 <*> some digit
 
 varP :: Parser UntypedLambda

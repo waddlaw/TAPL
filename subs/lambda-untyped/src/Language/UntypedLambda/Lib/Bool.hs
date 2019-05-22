@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Bool
   ( -- * value
@@ -16,33 +15,34 @@ module Language.UntypedLambda.Lib.Bool
   , mkNot
   ) where
 
-import           RIO                          hiding (and, not, or)
+import Prelude hiding ((.))
 
-import           Language.UntypedLambda.Types
+import Language.UntypedLambda.Lib.Util
+import Language.UntypedLambda.Types
 
 -- | λt. λf. t
 tru :: UntypedLambda
-tru = λ "t" $ λ "f" "t"
+tru = λ "t". λ "f". "t"
 
 -- | λt. λf. f
 fls :: UntypedLambda
-fls = λ "t" $ λ "f" "f"
+fls = λ "t". λ "f". "f"
 
 -- | λl. λm. λn. l m n
 test :: UntypedLambda
-test = λ "l" $ λ "m" $ λ "n" $ "l" @@ "m" @@ "n"
+test = λ "l". λ "m". λ "n". "l" @@ "m" @@ "n"
 
 -- | λb. λc. b c fls
 and :: UntypedLambda
-and = λ "b" $ λ "c" $ "b" @@ "c" @@ fls
+and = λ "b". λ "c". "b" @@ "c" @@ fls
 
 -- | λb. λc. b tru c
 or :: UntypedLambda
-or = λ "b" $ λ "c"$ "b" @@ tru @@ "c"
+or = λ "b". λ "c". "b" @@ tru @@ "c"
 
 -- | λb. b fls tru
 not :: UntypedLambda
-not = λ "b" $ "b" @@ fls @@ tru
+not = λ "b". "b" @@ fls @@ tru
 
 mkTest :: UntypedLambda -> UntypedLambda -> UntypedLambda -> UntypedLambda
 mkTest b t1 t2 = test @@ b @@ t1 @@ t2

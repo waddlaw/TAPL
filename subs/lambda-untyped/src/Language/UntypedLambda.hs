@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda
   ( module Language.UntypedLambda.Types
@@ -25,7 +24,6 @@ module Language.UntypedLambda
   , reduceNameless
   ) where
 
-import RIO hiding (trace)
 import qualified RIO.ByteString   as B
 import qualified RIO.List         as L
 import qualified RIO.List.Partial as List.Partial
@@ -34,7 +32,6 @@ import qualified RIO.Text         as Text
 import qualified RIO.Text.Partial as Text.Partial
 
 import Language.Core
-import Language.Core.Types
 import Language.UntypedLambda.Parser
 import Language.UntypedLambda.Prelude
 import Language.UntypedLambda.Types

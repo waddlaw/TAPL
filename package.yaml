@@ -25,6 +25,9 @@ dependencies:
 - lambda-simple
 - lambda-fullsimple
 
+default-extensions:
+- MultiWayIf
+
 library:
   source-dirs: src
 

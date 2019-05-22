@@ -1,4 +1,3 @@
-{-# LANGUAGE MultiWayIf        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where

@@ -1,4 +1,3 @@
-{-# LANGUAGE MultiWayIf #-}
 module Main (main) where
 
 import           Language.B

@@ -2,7 +2,10 @@ module Language.Core
   ( trim
   , render
   , renderPrelude
+  , strategies
   ) where
+
+import Language.Core.Types
 
 import qualified RIO.Char as C
 import qualified RIO.List as L
@@ -24,3 +27,6 @@ renderPrelude = L.foldr glue "" . Map.toList
     glue (key, func) acc  = mconcat [Text.unpack key, ": ", render func, addNewline acc]
     addNewline ""  = ""
     addNewline acc = "\n" ++ acc
+
+strategies :: [Strategy]
+strategies = [minBound .. maxBound]

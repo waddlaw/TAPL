@@ -1,10 +1,8 @@
 {-# LANGUAGE FlexibleContexts     #-}
 {-# LANGUAGE FlexibleInstances    #-}
 {-# LANGUAGE NoImplicitPrelude    #-}
-{-# LANGUAGE TypeSynonymInstances #-}
 module Language.UntypedLambda.Types
   ( Term (..)
-  , Strategy (..)
   , UntypedLambda
   , (@@)
   , λ
@@ -63,11 +61,3 @@ instance Pretty UntypedLambda where
 
 instance IsString UntypedLambda where
   fromString = TmVar . Text.pack
-
-data Strategy
-  = FullBetaReduction -- ^ 完全ベータ簡約
-  | NormalOrder       -- ^ 正規順序戦略
-  | CallByName        -- ^ 名前呼び戦略
-  | CallByValue       -- ^ 値呼び戦略
-  deriving (Show, Read, Enum, Bounded)
-

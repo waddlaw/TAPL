@@ -3,6 +3,7 @@
 module Language.UntypedLambda
   ( module Language.UntypedLambda.Types
   , module Language.UntypedLambda.Parser
+  , module Language.UntypedLambda.Prelude
   , isClosed
   , reduceNormalOrder
   , reduceCallByName
@@ -35,6 +36,7 @@ import qualified RIO.Text.Partial as Text.Partial
 
 import Language.Core
 import Language.UntypedLambda.Parser
+import Language.UntypedLambda.Prelude
 import Language.UntypedLambda.Types
 
 -- | 指定された評価戦略で項を正規系に評価する

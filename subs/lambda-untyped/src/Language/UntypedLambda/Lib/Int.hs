@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Language.UntypedLambda.Lib.Int
   ( int
@@ -9,13 +8,14 @@ module Language.UntypedLambda.Lib.Int
   , isAbsOneI
   ) where
 
-import           RIO                               hiding (and, fst, not, snd)
+import Prelude hiding ((.))
 
-import           Language.UntypedLambda.Lib.Base
-import           Language.UntypedLambda.Lib.Bool
-import           Language.UntypedLambda.Lib.Church
-import           Language.UntypedLambda.Lib.Pair
-import           Language.UntypedLambda.Types
+import Language.UntypedLambda.Lib.Base
+import Language.UntypedLambda.Lib.Bool
+import Language.UntypedLambda.Lib.Church
+import Language.UntypedLambda.Lib.Pair
+import Language.UntypedLambda.Lib.Util
+import Language.UntypedLambda.Types
 
 -- | int = λb. λs. λz. z
 --       | λb. λs. λz. pair b (s z)
@@ -24,12 +24,12 @@ import           Language.UntypedLambda.Types
 -- +1 = λs. λz. pair tru (s z)
 int :: Int -> UntypedLambda
 int n
-  | n == 0 = λ "b" $ c 0
+  | n == 0 = λ "b". c 0
   | n <  0 = mkPair fls (c $ abs n)
   | otherwise = mkPair tru (c n)
 
 plusI :: UntypedLambda
-plusI = λ "n" $ λ "m" $ mkTest isPP pp $ mkTest isNN nn' t3
+plusI = λ "n". λ "m". mkTest isPP pp (mkTest isNN nn' t3)
   where
     -- positive + positive
     isPP = and @@ (fst @@ "n") @@ (fst @@ "m")
@@ -72,15 +72,15 @@ succI = λ "i" $ mkTest c1 t1 $ mkTest c2 t2 $ mkTest c3 t3 t4
 
 -- | λi. iszro (snd i)
 isZeroI :: UntypedLambda
-isZeroI = λ "i" $ iszro @@ (snd @@ "i")
+isZeroI = λ "i". iszro @@ (snd @@ "i")
 
 -- | λi. isone (snd i)
 isAbsOneI :: UntypedLambda
-isAbsOneI = λ "i" $ and @@ c1 @@ c2
+isAbsOneI = λ "i". and @@ c1 @@ c2
   where
     c1 = not @@ (isZeroI @@ "i")
     c2 = isone @@ (snd @@ "i")
 
 -- | λi. fst i
 isPositiveI :: UntypedLambda
-isPositiveI = λ "i" $ fst @@ "i"
+isPositiveI = λ "i". fst @@ "i"

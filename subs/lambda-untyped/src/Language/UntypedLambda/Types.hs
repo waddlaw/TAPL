@@ -1,10 +1,7 @@
-{-# LANGUAGE FlexibleContexts     #-}
-{-# LANGUAGE FlexibleInstances    #-}
-{-# LANGUAGE NoImplicitPrelude    #-}
-{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE FlexibleInstances #-}
 module Language.UntypedLambda.Types
   ( Term (..)
-  , Strategy (..)
   , UntypedLambda
   , (@@)
   , λ
@@ -14,13 +11,11 @@ module Language.UntypedLambda.Types
   , getNlTermVar
   ) where
 
-import           RIO
-import qualified RIO.Text                  as Text
+import qualified RIO.Text as Text
 
-import           Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc
 
 type UntypedLambda = Term Text
-
 type VarName = Text
 
 -- | 教科書とは逆で ["x", "y", "z"] は [0, 1, 2] と左からインデックスを付ける
@@ -38,6 +33,8 @@ getNlTermVar _           = error "panic"
 
 instance IsString NamelessTerm where
   fromString = NlTmVar . fromMaybe 0 . readMaybe -- FIXME
+
+infixl @@
 
 (@@) :: UntypedLambda -> UntypedLambda -> UntypedLambda
 t1 @@ t2 = TmApp t1 t2
@@ -61,11 +58,3 @@ instance Pretty UntypedLambda where
 
 instance IsString UntypedLambda where
   fromString = TmVar . Text.pack
-
-data Strategy
-  = FullBetaReduction -- ^ 完全ベータ簡約
-  | NormalOrder       -- ^ 正規順序戦略
-  | CallByName        -- ^ 名前呼び戦略
-  | CallByValue       -- ^ 値呼び戦略
-  deriving (Show, Read, Enum, Bounded)
-

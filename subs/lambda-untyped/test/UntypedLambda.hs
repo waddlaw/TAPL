@@ -2,22 +2,22 @@
 {-# LANGUAGE TypeApplications  #-}
 module UntypedLambda where
 
-import           Prelude                           hiding (and, fst, head, id,
-                                                    not, or, snd, tail)
+import Prelude hiding (and, fst, head, id, not, or, snd, tail)
 
-import           Test.Tasty
-import           Test.Tasty.HUnit
+import Test.Tasty
+import Test.Tasty.HUnit
 
-import           Language.Core.Pretty
-import           Language.UntypedLambda
-import qualified Language.UntypedLambda.Examples   as UL
-import           Language.UntypedLambda.Lib.Base
-import           Language.UntypedLambda.Lib.Bool
-import           Language.UntypedLambda.Lib.Church
-import           Language.UntypedLambda.Lib.List
-import           Language.UntypedLambda.Lib.Pair
+import Language.Core.Pretty
+import Language.Core.Types
+import Language.UntypedLambda
+import qualified Language.UntypedLambda.Examples as UL
+import Language.UntypedLambda.Lib.Base
+import Language.UntypedLambda.Lib.Bool
+import Language.UntypedLambda.Lib.Church
+import Language.UntypedLambda.Lib.List
+import Language.UntypedLambda.Lib.Pair
 
-import           Data.Either
+import Data.Either
 
 test_ul :: TestTree
 test_ul = testGroup "UntypedLambda"

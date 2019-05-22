@@ -1,9 +1,11 @@
 module Main (main) where
 
-import           Language.Core
-import           Language.NB
+import Prelude
 
-import           System.Console.Haskeline
+import Language.Core
+import Language.NB
+
+import System.Console.Haskeline
 
 main :: IO ()
 main = do

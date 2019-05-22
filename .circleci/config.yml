@@ -112,11 +112,11 @@ jobs:
           command: |
             curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s -- --version
             curl -sL https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh | sh -s .
-      - run:
-          name: Run stylish-haskell
-          command: |
-            curl -sL https://raw.github.com/jaspervdj/stylish-haskell/master/scripts/latest.sh | sh -s -- -i $(find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*')
-            git --no-pager diff --exit-code
+      # - run:
+      #     name: Run stylish-haskell
+      #     command: |
+      #       curl -sL https://raw.github.com/jaspervdj/stylish-haskell/master/scripts/latest.sh | sh -s -- -i $(find . -type f -name "*hs" -not -path '.git' -not -path '*.stack-work*')
+      #       git --no-pager diff --exit-code
 
 workflows:
   version: 2

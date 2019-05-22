@@ -6,10 +6,9 @@ import RIO
 import qualified RIO.List as List
 import qualified RIO.Text as Text
 
+import LambdaRepl
+
 import Language.Core
-import Language.Options
-import Language.Orphans ()
-import Language.Types
 
 import Language.UntypedLambda (UntypedLambda)
 import qualified Language.UntypedLambda as UntypedLambda

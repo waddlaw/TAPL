@@ -4,10 +4,9 @@ module Main (main) where
 import RIO
 import qualified RIO.Text as Text
 
+import LambdaRepl
+
 import Language.Core
-import Language.Options
-import Language.Orphans ()
-import Language.Types
 
 import Language.FullSimpleLambda
 

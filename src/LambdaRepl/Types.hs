@@ -1,4 +1,4 @@
-module Language.Types
+module LambdaRepl.Types
   ( LambdaREPL
   , ReplEnv (..)
   , ParseFunc

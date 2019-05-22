@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards   #-}
-module Language.Options
+module LambdaRepl.Options
   ( runApp
   , evalCmd
   , tcCmd
@@ -11,8 +11,9 @@ import RIO hiding (trace)
 import RIO.Process
 import qualified RIO.Text as Text
 
+import LambdaRepl.Types
+
 import Language.Core
-import Language.Types
 
 import Data.Text.Prettyprint.Doc
 import System.Environment

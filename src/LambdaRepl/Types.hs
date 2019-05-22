@@ -14,7 +14,7 @@ import Language.Core.Types
 import System.Console.Haskeline hiding (display)
 
 type LambdaREPL = InputT (RIO ReplEnv) ()
-type ParseFunc term = Text -> Either String term
+type ParseFunc term = String -> Either String term
 type EvalFunc term = Strategy -> term -> term
 type TraceFunc term = Strategy -> term -> [term]
 

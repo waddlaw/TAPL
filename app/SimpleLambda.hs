@@ -30,8 +30,8 @@ main' = do
           | ":t" `Text.isPrefixOf` input -> tcCmd (parser mempty) typecheck input >> main'
           | otherwise -> evalCmd (parser mempty) evaluator tracer input >> main'
 
-parser :: Context -> Text -> Either String SimpleLambda.Term
-parser ctx = runSimpleLambdaParser ctx . Text.unpack
+parser :: Context -> ParseFunc SimpleLambda.Term
+parser = runSimpleLambdaParser
 
 typecheck :: SimpleLambda.Term -> SimpleLambda.Ty
 typecheck = SimpleLambda.typeof mempty

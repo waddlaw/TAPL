@@ -45,7 +45,7 @@ evalCmd parser evaluator tracer input = lift $ ask >>= \ReplEnv{..} -> do
   strategy <- readIORef appStrategy
   isTrace <- readIORef appIsTrace
   
-  case parser input of
+  case parser (Text.unpack input) of
     Left err -> logError $ display $ Text.pack err
     Right term ->
       if isTrace
@@ -59,7 +59,7 @@ tcCmd parser checker input = lift $
       logInfo "コマンドがの書式が間違っています。"
       return ()
     Just input' ->
-      case parser input' of
+      case parser (Text.unpack input') of
         Left err   -> logError $ display $ Text.pack err
         Right term -> logInfo $ display $ Text.pack $ render $ checker term
 

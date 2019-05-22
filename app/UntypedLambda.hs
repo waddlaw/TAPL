@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE DisambiguateRecordFields #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Main (main) where
 
@@ -37,8 +37,8 @@ main' = do
          -- main process
          | otherwise -> evalCmd parser evaluator tracer input >> main'
 
-parser :: Text -> Either String UntypedLambda
-parser = UntypedLambda.runUlParser . Text.unpack
+parser :: ParseFunc UntypedLambda
+parser = UntypedLambda.runUlParser
 
 evaluator :: EvalFunc UntypedLambda
 evaluator = UntypedLambda.eval

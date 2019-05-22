@@ -32,7 +32,7 @@ main' = do
       if  | ":help" `Text.isPrefixOf` input -> lift helpCmd >> main'
           | ":t" `Text.isPrefixOf` input -> lift (tcCmd (parser mempty) typecheck input) >> main'
           | otherwise -> do
-              lift (evalCmd (parser mempty) evalTerm input)
+              lift (evalCmd (parser mempty) evaluator tracer input)
               main'
 
 parser :: Context -> Text -> Either String Term
@@ -41,5 +41,8 @@ parser ctx = runFullSimpleLambdaParser ctx . Text.unpack
 typecheck :: Term -> Ty
 typecheck = typeof mempty
 
-evalTerm :: EvalFunc Term
-evalTerm _ = eval
+evaluator :: EvalFunc Term
+evaluator _ = eval
+
+tracer :: TraceFunc Term
+tracer = error ".......NO"

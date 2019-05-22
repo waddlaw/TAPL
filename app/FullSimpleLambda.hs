@@ -12,7 +12,7 @@ import System.Console.Haskeline hiding (display)
 
 main :: IO ()
 main = runApp $ do
-  logInfo "Start full simple lambnda repl"
+  logInfo "Start full simple lambda repl"
   logInfo ":help でコマンドの一覧が確認できます。"
 
   _ <- runInputT defaultSettings main'

@@ -1,13 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 module UntypedLambda.Lib.NB where
 
-import           Test.Tasty
-import           Test.Tasty.HUnit
+import Test.Tasty
+import Test.Tasty.HUnit
 
-import           Language.UntypedLambda
-import           Language.UntypedLambda.Lib.Bool
-import           Language.UntypedLambda.Lib.Church
-import           Language.UntypedLambda.Lib.NB
+import Language.Core.Types
+
+import Language.UntypedLambda
+import Language.UntypedLambda.Lib.Bool
+import Language.UntypedLambda.Lib.Church
+import Language.UntypedLambda.Lib.NB
 
 test_ul :: TestTree
 test_ul = testGroup "UntypedLambda.Lib.NB"

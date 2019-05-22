@@ -43,7 +43,7 @@ evalCmd parser evaluator tracer input = ask >>= \ReplEnv{..} -> do
     Left err -> logError $ display $ Text.pack err
     Right term ->
       if isTrace
-      then logInfo $ displayRender $ tracer strategy term
+      then mapM_ (logInfo . displayRender) $ tracer strategy term
       else logInfo $ displayRender $ evaluator strategy term
 
 tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> RIO ReplEnv ()

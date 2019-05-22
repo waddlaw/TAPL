@@ -2,9 +2,9 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Language.Orphans () where
 
-import           RIO
+import RIO
 
-import           System.Console.Haskeline hiding (display)
+import System.Console.Haskeline hiding (display)
 
 instance MonadException (RIO env) where
   controlIO f = RIO $ controlIO $ \(RunIO run) -> let

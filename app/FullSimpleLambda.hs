@@ -23,14 +23,12 @@ main' :: LambdaREPL
 main' = do
   minput <- getInputLine "FullSimpleLambda> "
   case Text.pack . trim <$> minput of
-    Nothing      -> return ()
-    Just ":q"    -> return ()
+    Nothing    -> return ()
+    Just ":q"  -> return ()
     Just input ->
-      if  | ":help" `Text.isPrefixOf` input -> lift helpCmd >> main'
-          | ":t" `Text.isPrefixOf` input -> lift (tcCmd (parser mempty) typecheck input) >> main'
-          | otherwise -> do
-              lift (evalCmd (parser mempty) evaluator tracer input)
-              main'
+      if  | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
+          | ":t" `Text.isPrefixOf` input -> tcCmd (parser mempty) typecheck input >> main'
+          | otherwise -> evalCmd (parser mempty) evaluator tracer input >> main'
 
 parser :: Context -> Text -> Either String FullSimpleLambda.Term
 parser ctx = runFullSimpleLambdaParser ctx . Text.unpack

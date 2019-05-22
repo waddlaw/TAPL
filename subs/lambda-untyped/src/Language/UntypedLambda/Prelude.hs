@@ -7,6 +7,8 @@ module Language.UntypedLambda.Prelude
 import RIO hiding (and, fst, id, not, or, snd, isLeft)
 import qualified RIO.Map as Map
 
+import Language.Core
+
 import Language.UntypedLambda.Lib.Base
 import Language.UntypedLambda.Lib.Bool
 import Language.UntypedLambda.Lib.Church
@@ -16,7 +18,7 @@ import Language.UntypedLambda.Lib.Pair
 import Language.UntypedLambda.Types
 
 
-prelude :: Map Text UntypedLambda
+prelude :: Prelude UntypedLambda
 prelude = Map.fromList
   [ ("id", id), ("tru", tru), ("fls", fls), ("test", test), ("and", and), ("or", or), ("not", not)
   , ("pair", pair), ("fst", fst), ("snd", snd)

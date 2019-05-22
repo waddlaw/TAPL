@@ -1,6 +1,9 @@
 module Language.Core.Types
   ( Strategy (..)
+  , Prelude
   ) where
+
+type Prelude lang = Map Text lang
 
 data Strategy
   = FullBetaReduction -- ^ 完全ベータ簡約

@@ -24,7 +24,6 @@ module Language.UntypedLambda
   , reduceNameless
   ) where
 
-import qualified RIO.ByteString   as B
 import qualified RIO.List         as L
 import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Set          as Set

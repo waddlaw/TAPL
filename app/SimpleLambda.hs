@@ -5,9 +5,7 @@ import RIO
 import qualified RIO.Text as Text
 
 import LambdaRepl
-
 import Language.Core
-
 import Language.SimpleLambda as SimpleLambda
 
 import System.Console.Haskeline hiding (display)

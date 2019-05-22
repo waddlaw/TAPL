@@ -7,11 +7,8 @@ import qualified RIO.List as List
 import qualified RIO.Text as Text
 
 import LambdaRepl
-
 import Language.Core
-
-import Language.UntypedLambda (UntypedLambda)
-import qualified Language.UntypedLambda as UntypedLambda
+import Language.UntypedLambda as UntypedLambda
 
 import System.Console.Haskeline hiding (display)
 

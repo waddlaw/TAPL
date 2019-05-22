@@ -5,10 +5,8 @@ import RIO
 import qualified RIO.Text as Text
 
 import LambdaRepl
-
 import Language.Core
-
-import Language.FullSimpleLambda
+import Language.FullSimpleLambda as FullSimpleLambda
 
 import System.Console.Haskeline hiding (display)
 
@@ -34,14 +32,14 @@ main' = do
               lift (evalCmd (parser mempty) evaluator tracer input)
               main'
 
-parser :: Context -> Text -> Either String Term
+parser :: Context -> Text -> Either String FullSimpleLambda.Term
 parser ctx = runFullSimpleLambdaParser ctx . Text.unpack
 
-typecheck :: Term -> Ty
+typecheck :: Term -> FullSimpleLambda.Ty
 typecheck = typeof mempty
 
-evaluator :: EvalFunc Term
+evaluator :: EvalFunc FullSimpleLambda.Term
 evaluator _ = eval
 
-tracer :: TraceFunc Term
+tracer :: TraceFunc FullSimpleLambda.Term
 tracer = error ".......NO"

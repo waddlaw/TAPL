@@ -24,17 +24,18 @@ module Language.UntypedLambda
   , reduceNameless
   ) where
 
-import           RIO                           hiding (trace)
-import qualified RIO.ByteString                as B
-import qualified RIO.List                      as L
-import qualified RIO.List.Partial              as List.Partial
-import qualified RIO.Set                       as Set
-import qualified RIO.Text                      as Text
-import qualified RIO.Text.Partial              as Text.Partial
+import Prelude (putStrLn)
+import RIO hiding (trace)
+import qualified RIO.ByteString   as B
+import qualified RIO.List         as L
+import qualified RIO.List.Partial as List.Partial
+import qualified RIO.Set          as Set
+import qualified RIO.Text         as Text
+import qualified RIO.Text.Partial as Text.Partial
 
-import           Language.Core
-import           Language.UntypedLambda.Parser
-import           Language.UntypedLambda.Types
+import Language.Core
+import Language.UntypedLambda.Parser
+import Language.UntypedLambda.Types
 
 -- | 指定された評価戦略で項を正規系に評価する
 eval :: Strategy -> UntypedLambda -> UntypedLambda
@@ -46,7 +47,7 @@ eval s t
 
 -- | デバッグ用
 trace :: Strategy -> UntypedLambda -> IO ()
-trace s t = mapM_ (B.hPutStr stdout . fromString . render) $ reverse $ evalWithTrace s [t] t
+trace s t = mapM_ (putStrLn . render) $ reverse $ evalWithTrace s [t] t
 
 -- | 簡約ステップ列を返す
 evalWithTrace :: Strategy -> [UntypedLambda] -> UntypedLambda -> [UntypedLambda]

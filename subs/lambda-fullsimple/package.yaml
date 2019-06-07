@@ -1,16 +1,15 @@
 name:                lambda-fullsimple
 version:             0.1.0.0
-github:              "githubuser/lambda-fullsimple"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
+github:              "waddlaw/TAPL"
+author:              "Shinya Yamaguchi"
+maintainer:          "ingronze@gmail.com"
+copyright:           "2018-2019 Shinya Yamaguchi"
 
 extra-source-files:
 - README.md
 - ChangeLog.md
 
-description:         Please see the README on GitHub at <https://github.com/githubuser/lambda-fullsimple#readme>
+description:         Please see the README on GitHub at <https://github.com/waddlaw/TAPL#readme>
 
 dependencies:
 - base >= 4.7 && < 5

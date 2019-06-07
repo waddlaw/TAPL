@@ -1,9 +1,8 @@
 name:                lambda-untyped
 version:             0.1.0.0
-github:              "waddlaw/tapl"
-license:             BSD3
+github:              "waddlaw/TAPL"
 author:              "Shinya Yamaguchi"
-maintainer:          "example@example.com"
+maintainer:          "ingronze@gmail.com"
 copyright:           "2018-2019 Shinya Yamaguchi"
 
 extra-source-files:

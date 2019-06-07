@@ -86,6 +86,9 @@ instance Pretty Ty where
 
 type FieldLabel = Text  -- ^ レコードのフィールドラベル
 
+type Alts = [Alt]
+type Alt = (Term, Term) -- (変数, body)
+
 data Term
   = TmVar Int
   | TmLam VarName Ty Term
@@ -112,7 +115,7 @@ data Term
   | TmPattern Pattern Term Term   -- ^ 11.8.2 パターンマッチ
   | TmInL Term                    -- ^ 11.9   和 タグ付け (左)
   | TmInR Term                    -- ^ 11.9   和 タグ付け (右)
-  | TmCase Term [(Term, Term)]    -- ^ 11.9   和 場合分け
+  | TmCase Term Alts              -- ^ 11.9   和 場合分け
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -186,8 +189,8 @@ pprPattern ctx (PtVar varName n)
 pprPattern ctx (PtRecord fs) = encloseSep lbrace rbrace comma $ map pprField fs
   where pprField (label, p) = pretty label <> pretty "=" <> pprPattern ctx p
 
-pprAlt :: Context -> (Term, Term) -> Doc ann
+pprAlt :: Context -> Alt -> Doc ann
 pprAlt ctx (t1, t2) = pprFullSimple ctx t1 <+> pretty "=>" <+> pprFullSimple ctx t2
 
-pprAlts :: Context -> [(Term, Term)] -> Doc ann
+pprAlts :: Context -> Alts -> Doc ann
 pprAlts ctx = sep . punctuate (mempty <+> pipe) . map (pprAlt ctx)

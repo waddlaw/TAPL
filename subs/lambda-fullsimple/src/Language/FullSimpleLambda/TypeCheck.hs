@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Language.FullSimpleLambda.TypeCheck
   ( typeof
   ) where
@@ -17,7 +18,7 @@ typeof ctx (TmApp t1 t2) =  -- T-APP
   case tyT1 of
     TyArr tyT11 tyT12 ->
       if tyT2 == tyT11
-                         then tyT12
+      then tyT12
       else error $ unlines [ "parameter type mismatch (T-APP): "
                          , "tyT2: " <> show tyT2
                          , "tyT11: " <> show tyT11
@@ -84,6 +85,21 @@ typeof ctx (TmPattern p t1 t2) = typeof ctx' t2 -- T-LET (Pattern)
   where
     ty1 = typeof ctx t1
     ctx' = ctx <> delta p ty1
+typeof ctx (TmInL t) = TySum (typeof ctx t) TyUnit -- T-INL (Sum)
+typeof ctx (TmInR t) = TySum TyUnit (typeof ctx t) -- T-INR (Sum)
+typeof ctx (TmCase t0 [(TmInL (TmVar x1),t1), (TmInR (TmVar x2),t2)]) = -- T-CASE
+    if tyT1 == tyT2
+    then tyT1
+    else error "type mismatch (T-CASE)"
+  where
+    (ty1, ty2) = case typeof ctx t0 of
+      (TySum ty1' ty2') -> (ty1', ty2')
+      _ -> error "type mismatch (T-CASE)"
+    ctx1 = addBinding ctx ("FV" <> tshow x1) (VarBind ty1)
+    ctx2 = addBinding ctx ("FV" <> tshow x2) (VarBind ty2)
+    tyT1 = typeof ctx1 t1
+    tyT2 = typeof ctx2 t2
+typeof _ (TmCase _ _) = error "inr, inl の両方を指定してください"
 
 delta :: Pattern -> Ty -> Context
 delta (PtVar varName _) ty = addContext (VarContext varName, VarBind ty) mempty

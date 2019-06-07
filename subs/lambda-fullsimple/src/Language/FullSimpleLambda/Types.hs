@@ -66,7 +66,7 @@ data Ty
   | TyProd Ty Ty                -- ^ 11.6 直積型
   | TyTuple [Ty]                -- ^ 11.7 組の型
   | TyRecord [(FieldLabel, Ty)] -- ^ 11.8 レコードの型
-  | TySum Ty Ty                 -- ^ 11.9 和
+  | TySum Ty Ty                 -- ^ 11.9 和型
   deriving (Eq, Show)
 
 instance Pretty Ty where

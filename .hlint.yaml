@@ -3,3 +3,4 @@
 
 - ignore: { name: Use fromMaybe }
 - arguments: [-XMultiWayIf, -XNoImplicitPrelude]
+- suggestion: { name: Reduce duplication }

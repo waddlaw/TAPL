@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.B
   ( module Language.B.Parser
   , module Language.B.Types

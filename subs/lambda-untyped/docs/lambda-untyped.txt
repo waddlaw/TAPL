@@ -2,7 +2,6 @@
 -- See Hoogle, http://www.haskell.org/hoogle/
 
 
--- | untyped lambda
 @package lambda-untyped
 @version 0.1.0.0
 

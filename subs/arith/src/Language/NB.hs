@@ -1,5 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE ViewPatterns      #-}
 module Language.NB
   ( module Language.NB.Parser
   , module Language.NB.Types

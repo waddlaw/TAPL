@@ -2,8 +2,6 @@
 -- See Hoogle, http://www.haskell.org/hoogle/
 
 
--- | Please see the README on GitHub at
---   <a>https://github.com/waddlaw/TAPL#readme</a>
 @package lambda-simple
 @version 0.1.0.0
 

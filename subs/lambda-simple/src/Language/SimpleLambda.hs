@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.SimpleLambda
   ( module Language.SimpleLambda.Types
   , module Language.SimpleLambda.Parser

@@ -4,6 +4,7 @@ module Language.FullSimpleLambda.Internal
   , isRecordValue
   ) where
 
+import RIO
 import           Language.FullSimpleLambda.Types
 
 -- | 与えられた項が値かどうか判定する述語

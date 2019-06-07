@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.NB.Types
   ( Term (..)
   , TmError (..)

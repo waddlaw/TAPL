@@ -1,9 +1,9 @@
-name:                term
-version:             0.1.0.0
-github:              "waddlaw/TAPL"
-author:              "Shinya Yamaguchi"
-maintainer:          "ingronze@gmail.com"
-copyright:           "2018-2019 Shinya Yamaguchi"
+name: term
+version: 0.1.0.0
+github: 'waddlaw/TAPL'
+author: 'Shinya Yamaguchi'
+maintainer: 'ingronze@gmail.com'
+copyright: '2018-2019 Shinya Yamaguchi'
 
 dependencies:
   - base >= 4.7 && < 5

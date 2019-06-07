@@ -3,4 +3,4 @@ auto: true
 restylers:
   - stylish-haskell:
       include:
-        - "**/*.hs"
+        - '**/*.hs'

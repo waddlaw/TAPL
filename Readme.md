@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/waddlaw/TAPL.svg?style=svg)](https://circleci.com/gh/waddlaw/TAPL)
+[![CircleCI](https://circleci.com/gh/waddlaw/TAPL.svg?style=svg&circle-token=8ce7ac6650bb2b4998a484e802ea77f812fd9401)](https://circleci.com/gh/waddlaw/TAPL)
 [![Build Status](https://travis-ci.org/waddlaw/TAPL.svg?branch=master)](https://travis-ci.org/waddlaw/TAPL)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8c7df8ad-e448-40fd-821e-9338ad72482b/deploy-status)](https://app.netlify.com/sites/tapl/deploys)
 

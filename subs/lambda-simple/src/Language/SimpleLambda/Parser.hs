@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.SimpleLambda.Parser
   ( runSimpleLambdaParser
   ) where

@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.FullSimpleLambda.TypeCheck
   ( typeof
   ) where

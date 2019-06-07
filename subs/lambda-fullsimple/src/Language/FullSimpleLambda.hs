@@ -1,6 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE ViewPatterns      #-}
 module Language.FullSimpleLambda
   ( module Language.FullSimpleLambda.Types
   , module Language.FullSimpleLambda.Parser

@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Term.Set
   ( module Term.Types
   , s
@@ -8,11 +7,11 @@ module Term.Set
   , minT
   ) where
 
-import           RIO
+import RIO
 import qualified RIO.List.Partial as List.Partial
-import qualified RIO.Set          as Set
+import qualified RIO.Set as Set
 
-import           Term.Types
+import Term.Types
 
 type T = Set Term
 

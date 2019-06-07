@@ -1,32 +1,31 @@
-name:                lambda-core
-version:             0.1.0.0
-github:              "githubuser/lambda-core"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
-
-extra-source-files:
-- README.md
-- ChangeLog.md
-
-description:         Please see the README on GitHub at <https://github.com/githubuser/lambda-core#readme>
+name: lambda-core
+version: 0.1.0.0
+github: 'waddlaw/TAPL'
+author: 'Shinya Yamaguchi'
+maintainer: 'ingronze@gmail.com'
+copyright: '2018-2019 Shinya Yamaguchi'
 
 dependencies:
-- base >= 4.7 && < 5
-- base-noprelude
-- prettyprinter
-- rio
-- trifecta
+  - base >= 4.7 && < 5
+  - base-noprelude
+  - prettyprinter
+  - rio
+  - trifecta
+
+default-extensions:
+  - MultiWayIf
+  - ViewPatterns
+
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Wincomplete-uni-patterns
+  - -Wincomplete-record-updates
+  - -Wnoncanonical-monad-instances
+  - -Wredundant-constraints
+  - -Wtabs
 
 library:
   source-dirs: src
   other-modules:
-  - Prelude
-
-tests:
-  lambda-core-test:
-    main: Spec.hs
-    source-dirs: test
-    dependencies:
-    - lambda-core
+    - Prelude

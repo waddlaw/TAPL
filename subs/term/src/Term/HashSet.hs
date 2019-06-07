@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Term.HashSet
   ( module Term.Types
   , s
@@ -8,11 +7,11 @@ module Term.HashSet
   , minT
   ) where
 
-import           RIO
-import qualified RIO.HashSet      as HS
+import RIO
+import qualified RIO.HashSet as HS
 import qualified RIO.List.Partial as List.Partial
 
-import           Term.Types
+import Term.Types
 
 type T = HashSet Term
 

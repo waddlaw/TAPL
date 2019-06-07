@@ -1,13 +1,13 @@
 resolver: lts-13.21
 packages:
-- .
-- ./subs/term
-- ./subs/bool
-- ./subs/arith
-- ./subs/lambda-core
-- ./subs/lambda-simple
-- ./subs/lambda-untyped
-- ./subs/lambda-fullsimple
+  - .
+  - ./subs/term
+  - ./subs/bool
+  - ./subs/arith
+  - ./subs/lambda-core
+  - ./subs/lambda-simple
+  - ./subs/lambda-untyped
+  - ./subs/lambda-fullsimple
 
 build:
   haddock: false

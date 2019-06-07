@@ -2,4 +2,4 @@
 ## IGNORES
 
 - ignore: { name: Use fromMaybe }
-- arguments: [ -XMultiWayIf, -XNoImplicitPrelude ]
+- arguments: [-XMultiWayIf, -XNoImplicitPrelude]

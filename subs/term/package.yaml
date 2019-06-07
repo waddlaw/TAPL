@@ -1,21 +1,27 @@
-name:                term
-version:             0.1.0.0
-github:              "githubuser/term"
-license:             BSD3
-author:              "Author name here"
-maintainer:          "example@example.com"
-copyright:           "2018 Author name here"
-
-extra-source-files:
-- README.md
-- ChangeLog.md
-
-description:         Please see the README on GitHub at <https://github.com/githubuser/term#readme>
+name: term
+version: 0.1.0.0
+github: 'waddlaw/TAPL'
+author: 'Shinya Yamaguchi'
+maintainer: 'ingronze@gmail.com'
+copyright: '2018-2019 Shinya Yamaguchi'
 
 dependencies:
-- base >= 4.7 && < 5
-- QuickCheck
-- rio
+  - base >= 4.7 && < 5
+  - QuickCheck
+  - rio
+
+default-extensions:
+  - MultiWayIf
+  - NoImplicitPrelude
+
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Wincomplete-uni-patterns
+  - -Wincomplete-record-updates
+  - -Wnoncanonical-monad-instances
+  - -Wredundant-constraints
+  - -Wtabs
 
 library:
   source-dirs: src
@@ -25,8 +31,8 @@ tests:
     main: Driver.hs
     source-dirs: test
     dependencies:
-    - term
-    - tasty
-    - tasty-discover
-    - tasty-hunit
-    - tasty-quickcheck
+      - term
+      - tasty
+      - tasty-discover
+      - tasty-hunit
+      - tasty-quickcheck

@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.SimpleLambda.Types
   ( Ty (..)
   , Term (..)

@@ -1,5 +1,7 @@
 module B where
 
+import RIO
+
 import           Test.Tasty
 import           Test.Tasty.HUnit
 

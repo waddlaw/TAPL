@@ -1,4 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Language.B.Types
   ( Term (..)
   , Rule (..)

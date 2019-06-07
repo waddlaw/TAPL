@@ -1,16 +1,15 @@
-{-# LANGUAGE NoImplicitPrelude #-}
 module Term where
 
-import           RIO
-import qualified RIO.HashSet           as HS
-import qualified RIO.Set               as Set
+import RIO
+import qualified RIO.HashSet as HS
+import qualified RIO.Set as Set
 
 import qualified Term.HashSet
 import qualified Term.Set
 
-import           Test.Tasty
-import           Test.Tasty.HUnit
-import           Test.Tasty.QuickCheck
+import Test.Tasty
+import Test.Tasty.HUnit
+import Test.Tasty.QuickCheck
 
 test_size :: TestTree
 test_size = testGroup "集合 s のサイズチェック"
@@ -26,7 +25,7 @@ test_size = testGroup "集合 s のサイズチェック"
       HS.size (Term.HashSet.s 3) @?= 59439
   ]
 
-prop_inv01:: Term.Set.Term -> Property
+prop_inv01 :: Term.Set.Term -> Property
 prop_inv01 t = preCondition ==> Set.member t (Term.Set.s i)
   where
     preCondition = i < 4 -- 5 以上にすると時間がかかりすぎるため

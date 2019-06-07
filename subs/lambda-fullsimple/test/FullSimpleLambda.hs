@@ -141,7 +141,7 @@ test_pattern = do
 
 test_sum :: TestTree
 test_sum = testGroup "sum"
-  [ testGroup "pretty"
+  [ testGroup "pretty (term)"
     [ testCase "inr x" $ do
         let t = TmInL (TmVar 0)
         prettyFullSimpleText mempty t @?= "inl FV0"
@@ -153,6 +153,11 @@ test_sum = testGroup "sum"
             t1 = (TmInL (TmVar 1), TmRecordProj "firstlast" (TmVar 1))
             t2 = (TmInR (TmVar 2), TmRecordProj "name" (TmVar 2))
         prettyFullSimpleText mempty t @?= "case FV0 of inl FV1 => FV1.firstlast | inr FV2 => FV2.name"
+    ]
+  , testGroup "pretty (type)"
+    [ testCase "Bool+Nat" $ do
+        let ty = TySum TyBool TyNat
+        prettyType ty @?= "Bool+Nat"
     ]
   , testGroup "eval"
     [ 

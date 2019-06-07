@@ -66,6 +66,7 @@ data Ty
   | TyProd Ty Ty                -- ^ 11.6 直積型
   | TyTuple [Ty]                -- ^ 11.7 組の型
   | TyRecord [(FieldLabel, Ty)] -- ^ 11.8 レコードの型
+  | TySum Ty Ty                 -- ^ 11.9 和
   deriving (Eq, Show)
 
 instance Pretty Ty where
@@ -81,6 +82,7 @@ instance Pretty Ty where
   pretty (TyRecord fields) = encloseSep lbrace rbrace comma (map pprField fields)
     where
       pprField (label, ty) = pretty label <> pretty ";" <> pretty ty
+  pretty (TySum ty1 ty2) = pretty ty1 <> pretty "+" <> pretty ty2 
 
 type FieldLabel = Text  -- ^ レコードのフィールドラベル
 

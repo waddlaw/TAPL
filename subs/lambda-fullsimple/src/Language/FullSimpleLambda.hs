@@ -8,16 +8,16 @@ module Language.FullSimpleLambda
   , eval
   ) where
 
-import           RIO
-import qualified RIO.List.Partial                    as L.Partial
+import RIO
+import qualified RIO.List.Partial as L.Partial
 
-import           Language.FullSimpleLambda.Internal
-import           Language.FullSimpleLambda.Parser
-import           Language.FullSimpleLambda.Pretty
-import           Language.FullSimpleLambda.TypeCheck
-import           Language.FullSimpleLambda.Types
+import Language.FullSimpleLambda.Internal
+import Language.FullSimpleLambda.Parser
+import Language.FullSimpleLambda.Pretty
+import Language.FullSimpleLambda.TypeCheck
+import Language.FullSimpleLambda.Types
 
-import           Data.Monoid
+import Data.Monoid
 
 -- | 定義6.2.1 (P.60)
 --
@@ -83,6 +83,7 @@ subst j s (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, subst j s t)) rs
 subst j s (TmRecordProj l t) = TmRecordProj l $ subst j s t
 subst j s (TmPattern p t1 t2) = TmPattern p (subst j s t1) (subst (j+1) (shift 0 1 s) t2) -- TODO check (間違っていそう)
 
+-- | 評価規則
 eval :: Term -> Term
 eval (TmIf TmTrue t2 _t3) = t2 -- E-IFTRUE
 eval (TmIf TmFalse _t2 t3) = t3 -- E-IFFALSE
@@ -135,6 +136,11 @@ eval t@(TmRecord _)
     t' = (label, eval tj)
 eval (TmPattern p v@(isValue -> True) t2) = match p v t2 -- E-LETV (Pattern)
 eval (TmPattern p t1 t2) = TmPattern p (eval t1) t2 -- E-LET (Pattern)
+eval (TmInL t) = TmInL (eval t) -- E-INL (Sum)
+eval (TmInR t) = TmInR (eval t) -- E-INR (Sum)
+eval (TmCase (TmInL v@(isValue -> True)) [(TmVar x1, t1), _altInR]) = subst x1 v t1 -- E-CASEINL (Sum)
+eval (TmCase (TmInR v@(isValue -> True)) [_altInL, (TmVar x2, t2)]) = subst x2 v t2 -- E-CASEINR (Sum)
+eval (TmCase t alts) = TmCase (eval t) alts -- E-CASE (Sum)
 eval _ = error "unexpected term"
 
 match :: Pattern -> Value -> (Term -> Term)

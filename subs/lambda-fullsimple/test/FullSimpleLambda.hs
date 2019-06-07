@@ -160,7 +160,23 @@ test_sum = testGroup "sum"
         prettyType ty @?= "Bool+Nat"
     ]
   , testGroup "eval"
-    [ 
+    [ testCase "getName" $ do
+        let physicalAddr = TmRecord [("firstlast", TmZero), ("addr", TmFalse)]
+            physicalAddrTy = TyRecord [("firstlast", TyNat), ("addr", TyBool)]
+            
+            virtualAddr  = TmRecord [("name", TmSucc TmZero), ("email", TmTrue)]
+            virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
+            addrTy = TySum physicalAddrTy virtualAddrTy
+
+            tCase  = TmCase (TmVar 0) [t1, t2]
+            t1 = (TmInL (TmVar 0), TmRecordProj "firstlast" (TmVar 0))
+            t2 = (TmInR (TmVar 0), TmRecordProj "name" (TmVar 0))
+
+            getName = TmLam "a" addrTy tCase
+            t = TmApp getName (TmInL physicalAddr)
+            t' = TmApp getName (TmInR virtualAddr)
+        evalN 3 t @?= TmZero
+        evalN 3 t' @?= TmSucc TmZero
     ]
   , testGroup "typecheck"
     [ 

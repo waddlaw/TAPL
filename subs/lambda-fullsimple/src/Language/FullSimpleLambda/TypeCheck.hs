@@ -2,10 +2,10 @@ module Language.FullSimpleLambda.TypeCheck
   ( typeof
   ) where
 
-import           RIO
-import qualified RIO.List.Partial                as L.Partial
+import RIO
+import qualified RIO.List.Partial as L.Partial
 
-import           Language.FullSimpleLambda.Types
+import Language.FullSimpleLambda.Types
 
 typeof :: Context -> Term -> Ty
 typeof ctx (TmVar i) = getTypeFromContext ctx i -- T-VAR

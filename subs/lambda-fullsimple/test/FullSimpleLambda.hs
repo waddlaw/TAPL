@@ -196,5 +196,16 @@ test_sum = testGroup "sum"
       --       t = TmApp getName (TmInL physicalAddr)
       --       t' = TmApp getName (TmInR virtualAddr)
       --   typeof mempty t @?= TyNat
+      testCase "getName" $ do
+        let physicalAddrTy = TyRecord [("firstlast", TyNat), ("addr", TyBool)]
+            virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
+            addrTy = TySum physicalAddrTy virtualAddrTy
+
+            tCase  = TmCase (TmVar 0) [t1, t2]
+            t1 = (TmInL (TmVar 0), TmRecordProj "firstlast" (TmVar 0))
+            t2 = (TmInR (TmVar 0), TmRecordProj "name" (TmVar 0))
+
+            getName = TmLam "a" addrTy tCase
+        typeof mempty getName @?= TyArr addrTy TyNat
     ]
   ]

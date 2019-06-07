@@ -15,9 +15,13 @@ typeof ctx (TmLam x tyT1 t2) = TyArr tyT1 tyT2  -- T-ABS
     ctx' = addBinding ctx x (VarBind tyT1)
 typeof ctx (TmApp t1 t2) =  -- T-APP
   case tyT1 of
-    TyArr tyT11 tyT12 -> if tyT2 == tyT11
+    TyArr tyT11 tyT12 ->
+      if tyT2 == tyT11
                          then tyT12
-                         else error "parameter type mismatch (T-APP)"
+      else error $ unlines [ "parameter type mismatch (T-APP): "
+                         , "tyT2: " <> show tyT2
+                         , "tyT11: " <> show tyT11
+                         ]
     _ -> error "arrow type expected (T-APP)"
   where
     tyT1 = typeof ctx t1

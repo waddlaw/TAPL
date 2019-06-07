@@ -3,15 +3,6 @@ version: 0.1.0
 author: Shinya Yamaguchi
 github: waddlaw/TAPL
 
-ghc-options:
-- -Wall
-- -Wcompat
-- -Wincomplete-uni-patterns
-- -Wincomplete-record-updates
-- -Wnoncanonical-monad-instances
-- -Wredundant-constraints
-- -Wtabs
-
 dependencies:
 - base >= 4.11.0.0 && < 4.13.0.0
 - haskeline >= 0.7.4.3 && < 0.7.6.0
@@ -28,6 +19,15 @@ dependencies:
 default-extensions:
 - MultiWayIf
 - NoImplicitPrelude
+
+ghc-options:
+- -Wall
+- -Wcompat
+- -Wincomplete-uni-patterns
+- -Wincomplete-record-updates
+- -Wnoncanonical-monad-instances
+- -Wredundant-constraints
+- -Wtabs
 
 library:
   source-dirs: src

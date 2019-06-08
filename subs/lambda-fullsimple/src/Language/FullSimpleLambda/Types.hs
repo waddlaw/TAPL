@@ -165,7 +165,13 @@ pprFullSimple ctx (TmPattern p tlet tbody)
     ctx' = getContext p
 pprFullSimple ctx (TmInL t ty) = pretty "inl" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
 pprFullSimple ctx (TmInR t ty) = pretty "inr" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
-pprFullSimple ctx (TmCase t alts) = pretty "case" <+> pprFullSimple ctx t <+> pretty "of" <+> pprAlts ctx alts
+pprFullSimple ctx (TmCase t [altL, altR]) =
+  pretty "case" <+> pprFullSimple ctx t
+  <+> pretty "of"
+  <+> pretty "inl" <+> pprAlt ctx altL
+  <+> pipe
+  <+> pretty "inr" <+> pprAlt ctx altR
+pprFullSimple _ (TmCase _ _) = error ""
 
 getContext :: Pattern -> Context
 getContext (PtVar varName _) = addContext (VarContext varName, NameBind) mempty
@@ -190,7 +196,10 @@ pprPattern ctx (PtRecord fs) = encloseSep lbrace rbrace comma $ map pprField fs
   where pprField (label, p) = pretty label <> pretty "=" <> pprPattern ctx p
 
 pprAlt :: Context -> Alt -> Doc ann
-pprAlt ctx (t1, t2) = pprFullSimple ctx t1 <+> pretty "=>" <+> pprFullSimple ctx t2
+pprAlt ctx (t1, t2) =
+  pprFullSimple ctx t1
+  <+> pretty "=>"
+  <+> pprFullSimple ctx t2
 
-pprAlts :: Context -> Alts -> Doc ann
-pprAlts ctx = sep . punctuate (mempty <+> pipe) . map (pprAlt ctx)
+-- pprAlts :: Context -> Alts -> Doc ann
+-- pprAlts ctx = sep . punctuate (mempty <+> pipe) . map (pprAlt ctx)

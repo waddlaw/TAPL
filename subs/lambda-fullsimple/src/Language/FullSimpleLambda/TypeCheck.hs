@@ -93,7 +93,7 @@ typeof ctx (TmInR t ty@(TySum _tyL tyR)) -- T-INR (Sum)
   | tyR == typeof ctx t = ty
   | otherwise = error "type mismatch (T-INR)"
 typeof _ (TmInR _ _) = error "type mismatch (T-INR)"
-typeof ctx (TmCase t0 [(TmInL (TmVar x1) _,t1), (TmInR (TmVar x2) _,t2)]) = -- T-CASE
+typeof ctx (TmCase t0 [(TmVar x1, t1), (TmVar x2, t2)]) = -- T-CASE
     if tyT1 == tyT2
     then tyT1
     else error "type mismatch (T-CASE)"

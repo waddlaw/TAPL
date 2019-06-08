@@ -66,6 +66,7 @@ data Ty
   | TyProd Ty Ty                -- ^ 11.6 直積型
   | TyTuple [Ty]                -- ^ 11.7 組の型
   | TyRecord [(FieldLabel, Ty)] -- ^ 11.8 レコードの型
+  | TySum Ty Ty                 -- ^ 11.9 和型
   deriving (Eq, Show)
 
 instance Pretty Ty where
@@ -81,8 +82,12 @@ instance Pretty Ty where
   pretty (TyRecord fields) = encloseSep lbrace rbrace comma (map pprField fields)
     where
       pprField (label, ty) = pretty label <> pretty ";" <> pretty ty
+  pretty (TySum ty1 ty2) = pretty ty1 <> pretty "+" <> pretty ty2 
 
 type FieldLabel = Text  -- ^ レコードのフィールドラベル
+
+type Alts = [Alt]
+type Alt = (Term, Term) -- (変数, body)
 
 data Term
   = TmVar Int
@@ -95,19 +100,22 @@ data Term
   | TmSucc Term
   | TmPred Term
   | TmIsZero Term
-  | TmUnit                        -- ^ 11.2 Unit 型
-  | TmSeq Term Term               -- ^ 11.3 逐次実行
-  | TmWildcard Ty Term            -- ^ 11.3 ワイルドカード
-  | TmAscribe Term Ty             -- ^ 11.4 型指定
-  | TmLet VarName Term Term       -- ^ 11.5 let
-  | TmPair Term Term              -- ^ 11.6 2つ組
-  | TmPairFst Term                -- ^ 11.6 第一要素の射影
-  | TmPairSnd Term                -- ^ 11.6 第二要素の射影
-  | TmTuple [Term]                -- ^ 11.7 組
-  | TmTupleProj Int Term          -- ^ 11.7 組の射影
-  | TmRecord [(FieldLabel, Term)] -- ^ 11.8 レコード (フィールドの順序が異なれば、異なるレコードとして扱う)
-  | TmRecordProj FieldLabel Term  -- ^ 11.8 レコードの射影
+  | TmUnit                        -- ^ 11.2   Unit 型
+  | TmSeq Term Term               -- ^ 11.3   逐次実行
+  | TmWildcard Ty Term            -- ^ 11.3   ワイルドカード
+  | TmAscribe Term Ty             -- ^ 11.4   型指定
+  | TmLet VarName Term Term       -- ^ 11.5   let
+  | TmPair Term Term              -- ^ 11.6   2つ組
+  | TmPairFst Term                -- ^ 11.6   第一要素の射影
+  | TmPairSnd Term                -- ^ 11.6   第二要素の射影
+  | TmTuple [Term]                -- ^ 11.7   組
+  | TmTupleProj Int Term          -- ^ 11.7   組の射影
+  | TmRecord [(FieldLabel, Term)] -- ^ 11.8   レコード (フィールドの順序が異なれば、異なるレコードとして扱う)
+  | TmRecordProj FieldLabel Term  -- ^ 11.8   レコードの射影
   | TmPattern Pattern Term Term   -- ^ 11.8.2 パターンマッチ
+  | TmInL Term                    -- ^ 11.9   和 タグ付け (左)
+  | TmInR Term                    -- ^ 11.9   和 タグ付け (右)
+  | TmCase Term Alts              -- ^ 11.9   和 場合分け
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -155,6 +163,9 @@ pprFullSimple ctx (TmPattern p tlet tbody)
   <+> pretty "in"  <+> pprFullSimple ctx' tbody
   where
     ctx' = getContext p
+pprFullSimple ctx (TmInL t) = pretty "inl" <+> pprFullSimple ctx t
+pprFullSimple ctx (TmInR t) = pretty "inr" <+> pprFullSimple ctx t
+pprFullSimple ctx (TmCase t alts) = pretty "case" <+> pprFullSimple ctx t <+> pretty "of" <+> pprAlts ctx alts
 
 getContext :: Pattern -> Context
 getContext (PtVar varName _) = addContext (VarContext varName, NameBind) mempty
@@ -177,3 +188,9 @@ pprPattern ctx (PtVar varName n)
     ctx' = unCtx ctx
 pprPattern ctx (PtRecord fs) = encloseSep lbrace rbrace comma $ map pprField fs
   where pprField (label, p) = pretty label <> pretty "=" <> pprPattern ctx p
+
+pprAlt :: Context -> Alt -> Doc ann
+pprAlt ctx (t1, t2) = pprFullSimple ctx t1 <+> pretty "=>" <+> pprFullSimple ctx t2
+
+pprAlts :: Context -> Alts -> Doc ann
+pprAlts ctx = sep . punctuate (mempty <+> pipe) . map (pprAlt ctx)

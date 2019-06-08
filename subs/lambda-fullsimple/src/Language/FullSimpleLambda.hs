@@ -8,16 +8,16 @@ module Language.FullSimpleLambda
   , eval
   ) where
 
-import           RIO
-import qualified RIO.List.Partial                    as L.Partial
+import RIO
+import qualified RIO.List.Partial as L.Partial
 
-import           Language.FullSimpleLambda.Internal
-import           Language.FullSimpleLambda.Parser
-import           Language.FullSimpleLambda.Pretty
-import           Language.FullSimpleLambda.TypeCheck
-import           Language.FullSimpleLambda.Types
+import Language.FullSimpleLambda.Internal
+import Language.FullSimpleLambda.Parser
+import Language.FullSimpleLambda.Pretty
+import Language.FullSimpleLambda.TypeCheck
+import Language.FullSimpleLambda.Types
 
-import           Data.Monoid
+import Data.Monoid
 
 -- | 定義6.2.1 (P.60)
 --
@@ -50,6 +50,10 @@ shift c d (TmTupleProj i t) = TmTupleProj i $ shift c d t
 shift c d (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, shift c d t)) rs
 shift c d (TmRecordProj l t) = TmRecordProj l $ shift c d t
 shift c d (TmPattern p t1 t2) = TmPattern p (shift c d t1) (shift (c+1) d t2) -- TODO (check, 間違ってるかも)
+shift c d (TmInL t) = TmInL (shift c d t)
+shift c d (TmInR t) = TmInR (shift c d t)
+shift c d (TmCase t [(x1, t1), (x2, t2)]) = TmCase (shift c d t) [(x1, shift (c+1) d t1), (x2, shift (c+1) d t2)]
+shift _ _ (TmCase _ _) = error "inr, inl の両方を指定してください"
 
 -- | 定義 6.2.4 (P.60)
 --
@@ -82,7 +86,12 @@ subst j s (TmTupleProj i t) = TmTupleProj i $ subst j s t
 subst j s (TmRecord rs) = TmRecord $ map (\(l,t) -> (l, subst j s t)) rs
 subst j s (TmRecordProj l t) = TmRecordProj l $ subst j s t
 subst j s (TmPattern p t1 t2) = TmPattern p (subst j s t1) (subst (j+1) (shift 0 1 s) t2) -- TODO check (間違っていそう)
+subst j s (TmInL t) = TmInL (subst j s t)
+subst j s (TmInR t) = TmInR (subst j s t)
+subst j s (TmCase t [(x1, t1), (x2, t2)]) = TmCase (subst j s t) [(x1, subst (j+1) s t1), (x2, subst (j+1) s t2)]
+subst _ _ (TmCase _ _) = error "inr, inl の両方を指定してください"
 
+-- | 評価規則
 eval :: Term -> Term
 eval (TmIf TmTrue t2 _t3) = t2 -- E-IFTRUE
 eval (TmIf TmFalse _t2 t3) = t3 -- E-IFFALSE
@@ -135,6 +144,11 @@ eval t@(TmRecord _)
     t' = (label, eval tj)
 eval (TmPattern p v@(isValue -> True) t2) = match p v t2 -- E-LETV (Pattern)
 eval (TmPattern p t1 t2) = TmPattern p (eval t1) t2 -- E-LET (Pattern)
+eval (TmInL t) = TmInL (eval t) -- E-INL (Sum)
+eval (TmInR t) = TmInR (eval t) -- E-INR (Sum)
+eval (TmCase (TmInL v@(isValue -> True)) [(TmInL (TmVar x1), t1), _altInR]) = subst x1 v t1 -- E-CASEINL (Sum)
+eval (TmCase (TmInR v@(isValue -> True)) [_altInL, (TmInR (TmVar x2), t2)]) = subst x2 v t2 -- E-CASEINR (Sum)
+eval (TmCase t alts) = TmCase (eval t) alts -- E-CASE (Sum)
 eval _ = error "unexpected term"
 
 match :: Pattern -> Value -> (Term -> Term)

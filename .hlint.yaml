@@ -2,4 +2,5 @@
 ## IGNORES
 
 - ignore: { name: Use fromMaybe }
+- ignore: { name: Reduce duplication }
 - arguments: [-XMultiWayIf, -XNoImplicitPrelude]

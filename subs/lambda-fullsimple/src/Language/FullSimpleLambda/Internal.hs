@@ -5,7 +5,7 @@ module Language.FullSimpleLambda.Internal
   ) where
 
 import RIO
-import           Language.FullSimpleLambda.Types
+import Language.FullSimpleLambda.Types
 
 -- | 与えられた項が値かどうか判定する述語
 isValue :: Term -> Bool
@@ -17,6 +17,8 @@ isValue TmUnit         = True                     -- 11.2 Unit型
 isValue (TmPair t1 t2) = isValue t1 && isValue t2 -- 11.6 2つ組
 isValue (TmTuple ts)   = all isValue ts           -- 11.7 組
 isValue (TmRecord fs)  = all (isValue . snd) fs   -- 11.8 レコード
+isValue (TmInR t)      = isValue t                -- 11.9 和
+isValue (TmInL t)      = isValue t                -- 11.9 和
 isValue t              = isNumericValue t
 
 -- | 与えられた項が数項かどうか判定

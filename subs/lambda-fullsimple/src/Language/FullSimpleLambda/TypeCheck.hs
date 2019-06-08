@@ -105,7 +105,7 @@ typeof ctx (TmCase t0 (TmVar x1, t1) (TmVar x2, t2)) = -- T-CASE
     ctx2 = addBinding ctx ("FV" <> tshow x2) (VarBind ty2)
     tyT1 = typeof ctx1 t1
     tyT2 = typeof ctx2 t2
-typeof _ (TmCase _ _ _) = error "Case の本体の左側には変数しか出現できません"
+typeof _ TmCase{} = error "Case の本体の左側には変数しか出現できません"
 
 delta :: Pattern -> Ty -> Context
 delta (PtVar varName _) ty = addContext (VarContext varName, VarBind ty) mempty

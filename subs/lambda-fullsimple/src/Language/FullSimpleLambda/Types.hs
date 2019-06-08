@@ -163,8 +163,8 @@ pprFullSimple ctx (TmPattern p tlet tbody)
   <+> pretty "in"  <+> pprFullSimple ctx' tbody
   where
     ctx' = getContext p
-pprFullSimple ctx (TmInL t) = pretty "inl" <+> pprFullSimple ctx t
-pprFullSimple ctx (TmInR t) = pretty "inr" <+> pprFullSimple ctx t
+pprFullSimple ctx (TmInL t ty) = pretty "inl" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
+pprFullSimple ctx (TmInR t ty) = pretty "inr" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
 pprFullSimple ctx (TmCase t alts) = pretty "case" <+> pprFullSimple ctx t <+> pretty "of" <+> pprAlts ctx alts
 
 getContext :: Pattern -> Context

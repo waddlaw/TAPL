@@ -93,7 +93,7 @@ typeof ctx (TmInR t ty@(TySum _tyL tyR)) -- T-INR (Sum)
   | tyR == typeof ctx t = ty
   | otherwise = error "type mismatch (T-INR)"
 typeof _ (TmInR _ _) = error "type mismatch (T-INR)"
-typeof ctx (TmCase t0 [(TmVar x1, t1), (TmVar x2, t2)]) = -- T-CASE
+typeof ctx (TmCase t0 (TmVar x1, t1) (TmVar x2, t2)) = -- T-CASE
     if tyT1 == tyT2
     then tyT1
     else error "type mismatch (T-CASE)"
@@ -105,7 +105,6 @@ typeof ctx (TmCase t0 [(TmVar x1, t1), (TmVar x2, t2)]) = -- T-CASE
     ctx2 = addBinding ctx ("FV" <> tshow x2) (VarBind ty2)
     tyT1 = typeof ctx1 t1
     tyT2 = typeof ctx2 t2
-typeof _ (TmCase _ _) = error "inr, inl の両方を指定してください"
 
 delta :: Pattern -> Ty -> Context
 delta (PtVar varName _) ty = addContext (VarContext varName, VarBind ty) mempty

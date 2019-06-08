@@ -149,7 +149,7 @@ test_sum = testGroup "sum"
         let t = TmInR (TmVar 0) (TySum TyBool TyNat)
         prettyFullSimpleText mempty t @?= "inr FV0 as Bool+Nat"
     ,  testCase "case a of inl x => x.firstlast | inr y => y.name" $ do
-        let t  = TmCase (TmVar 0) [t1, t2]
+        let t  = TmCase (TmVar 0) t1 t2
             t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
             t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
         prettyFullSimpleText mempty t @?= "case FV0 of inl FV0 => FV0.firstlast | inr FV0 => FV0.name"
@@ -168,7 +168,7 @@ test_sum = testGroup "sum"
             virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
             addrTy = TySum physicalAddrTy virtualAddrTy
 
-            tCase  = TmCase (TmVar 0) [t1, t2]
+            tCase  = TmCase (TmVar 0) t1 t2
             t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
             t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
 
@@ -184,7 +184,7 @@ test_sum = testGroup "sum"
             virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
             addrTy = TySum physicalAddrTy virtualAddrTy
 
-            tCase  = TmCase (TmVar 0) [t1, t2]
+            tCase  = TmCase (TmVar 0) t1 t2
             t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
             t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
 
@@ -198,7 +198,7 @@ test_sum = testGroup "sum"
             virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
             addrTy = TySum physicalAddrTy virtualAddrTy
 
-            tCase  = TmCase (TmVar 0) [t1, t2]
+            tCase  = TmCase (TmVar 0) t1 t2
             t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
             t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
 

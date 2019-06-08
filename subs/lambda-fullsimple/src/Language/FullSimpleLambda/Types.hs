@@ -86,7 +86,7 @@ instance Pretty Ty where
 
 type FieldLabel = Text  -- ^ レコードのフィールドラベル
 
-type Alts = [Alt]
+-- type Alts = [Alt]
 type Alt = (Term, Term) -- (変数, body)
 
 data Term
@@ -115,7 +115,7 @@ data Term
   | TmPattern Pattern Term Term   -- ^ 11.8.2 パターンマッチ
   | TmInL Term Ty                 -- ^ 11.9   和 タグ付け (左)
   | TmInR Term Ty                 -- ^ 11.9   和 タグ付け (右)
-  | TmCase Term Alts              -- ^ 11.9   和 場合分け
+  | TmCase Term Alt Alt           -- ^ 11.9   和 場合分け
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -165,13 +165,10 @@ pprFullSimple ctx (TmPattern p tlet tbody)
     ctx' = getContext p
 pprFullSimple ctx (TmInL t ty) = pretty "inl" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
 pprFullSimple ctx (TmInR t ty) = pretty "inr" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
-pprFullSimple ctx (TmCase t [altL, altR]) =
-  pretty "case" <+> pprFullSimple ctx t
-  <+> pretty "of"
+pprFullSimple ctx (TmCase t altL  altR) =
+  pretty "case" <+> pprFullSimple ctx t <+> pretty "of"
   <+> pretty "inl" <+> pprAlt ctx altL
-  <+> pipe
-  <+> pretty "inr" <+> pprAlt ctx altR
-pprFullSimple _ (TmCase _ _) = error ""
+  <+> pipe <+> pretty "inr" <+> pprAlt ctx altR
 
 getContext :: Pattern -> Context
 getContext (PtVar varName _) = addContext (VarContext varName, NameBind) mempty

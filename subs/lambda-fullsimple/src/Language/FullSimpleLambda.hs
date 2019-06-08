@@ -52,8 +52,10 @@ shift c d (TmRecordProj l t) = TmRecordProj l $ shift c d t
 shift c d (TmPattern p t1 t2) = TmPattern p (shift c d t1) (shift (c+1) d t2) -- TODO (check, 間違ってるかも)
 shift c d (TmInL t ty) = TmInL (shift c d t) ty
 shift c d (TmInR t ty) = TmInR (shift c d t) ty
-shift c d (TmCase t [(x1, t1), (x2, t2)]) = TmCase (shift c d t) [(x1, shift (c+1) d t1), (x2, shift (c+1) d t2)]
-shift _ _ (TmCase _ _) = error "inr, inl の両方を指定してください"
+shift c d (TmCase t (x1, t1) (x2, t2)) = TmCase (shift c d t) altL altR
+  where
+    altL = (x1, shift (c+1) d t1)
+    altR = (x2, shift (c+1) d t2)
 
 -- | 定義 6.2.4 (P.60)
 --
@@ -88,8 +90,10 @@ subst j s (TmRecordProj l t) = TmRecordProj l $ subst j s t
 subst j s (TmPattern p t1 t2) = TmPattern p (subst j s t1) (subst (j+1) (shift 0 1 s) t2) -- TODO check (間違っていそう)
 subst j s (TmInL t ty) = TmInL (subst j s t) ty
 subst j s (TmInR t ty) = TmInR (subst j s t) ty
-subst j s (TmCase t [(x1, t1), (x2, t2)]) = TmCase (subst j s t) [(x1, subst (j+1) s t1), (x2, subst (j+1) s t2)]
-subst _ _ (TmCase _ _) = error "inr, inl の両方を指定してください"
+subst j s (TmCase t (x1, t1) (x2, t2)) = TmCase (subst j s t) altL altR
+  where
+    altL = (x1, subst (j+1) s t1)
+    altR = (x2, subst (j+1) s t2)
 
 -- | 評価規則
 eval :: Term -> Term
@@ -146,11 +150,11 @@ eval (TmPattern p v@(isValue -> True) t2) = match p v t2 -- E-LETV (Pattern)
 eval (TmPattern p t1 t2) = TmPattern p (eval t1) t2 -- E-LET (Pattern)
 eval (TmInL t ty) = TmInL (eval t) ty -- E-INL (Sum)
 eval (TmInR t ty) = TmInR (eval t) ty -- E-INR (Sum)
-eval (TmCase (TmInL v@(isValue -> True) _ty) [(TmVar x1, t1), _altInR]) -- E-CASEINL (Sum)
+eval (TmCase (TmInL v@(isValue -> True) _ty) (TmVar x1, t1) _altInR) -- E-CASEINL (Sum)
   = subst x1 v t1
-eval (TmCase (TmInR v@(isValue -> True) _ty) [_altInL, (TmVar x2, t2)]) -- E-CASEINR (Sum)
+eval (TmCase (TmInR v@(isValue -> True) _ty) _altInL (TmVar x2, t2)) -- E-CASEINR (Sum)
   = subst x2 v t2
-eval (TmCase t alts) = TmCase (eval t) alts -- E-CASE (Sum)
+eval (TmCase t altL altR) = TmCase (eval t) altL altR -- E-CASE (Sum)
 eval _ = error "unexpected term"
 
 match :: Pattern -> Value -> (Term -> Term)

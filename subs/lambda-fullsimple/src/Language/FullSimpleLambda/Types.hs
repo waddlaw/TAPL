@@ -86,7 +86,7 @@ instance Pretty Ty where
 
 type FieldLabel = Text  -- ^ レコードのフィールドラベル
 
-type Alts = [Alt]
+-- type Alts = [Alt]
 type Alt = (Term, Term) -- (変数, body)
 
 data Term
@@ -113,9 +113,9 @@ data Term
   | TmRecord [(FieldLabel, Term)] -- ^ 11.8   レコード (フィールドの順序が異なれば、異なるレコードとして扱う)
   | TmRecordProj FieldLabel Term  -- ^ 11.8   レコードの射影
   | TmPattern Pattern Term Term   -- ^ 11.8.2 パターンマッチ
-  | TmInL Term                    -- ^ 11.9   和 タグ付け (左)
-  | TmInR Term                    -- ^ 11.9   和 タグ付け (右)
-  | TmCase Term Alts              -- ^ 11.9   和 場合分け
+  | TmInL Term Ty                 -- ^ 11.9   和 タグ付け (左)
+  | TmInR Term Ty                 -- ^ 11.9   和 タグ付け (右)
+  | TmCase Term Alt Alt           -- ^ 11.9   和 場合分け
   deriving (Eq, Show)
 
 instance Pretty Term where
@@ -163,9 +163,12 @@ pprFullSimple ctx (TmPattern p tlet tbody)
   <+> pretty "in"  <+> pprFullSimple ctx' tbody
   where
     ctx' = getContext p
-pprFullSimple ctx (TmInL t) = pretty "inl" <+> pprFullSimple ctx t
-pprFullSimple ctx (TmInR t) = pretty "inr" <+> pprFullSimple ctx t
-pprFullSimple ctx (TmCase t alts) = pretty "case" <+> pprFullSimple ctx t <+> pretty "of" <+> pprAlts ctx alts
+pprFullSimple ctx (TmInL t ty) = pretty "inl" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
+pprFullSimple ctx (TmInR t ty) = pretty "inr" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
+pprFullSimple ctx (TmCase t altL  altR) =
+  pretty "case" <+> pprFullSimple ctx t <+> pretty "of"
+  <+> pretty "inl" <+> pprAlt ctx altL
+  <+> pipe <+> pretty "inr" <+> pprAlt ctx altR
 
 getContext :: Pattern -> Context
 getContext (PtVar varName _) = addContext (VarContext varName, NameBind) mempty
@@ -190,7 +193,10 @@ pprPattern ctx (PtRecord fs) = encloseSep lbrace rbrace comma $ map pprField fs
   where pprField (label, p) = pretty label <> pretty "=" <> pprPattern ctx p
 
 pprAlt :: Context -> Alt -> Doc ann
-pprAlt ctx (t1, t2) = pprFullSimple ctx t1 <+> pretty "=>" <+> pprFullSimple ctx t2
+pprAlt ctx (t1, t2) =
+  pprFullSimple ctx t1
+  <+> pretty "=>"
+  <+> pprFullSimple ctx t2
 
-pprAlts :: Context -> Alts -> Doc ann
-pprAlts ctx = sep . punctuate (mempty <+> pipe) . map (pprAlt ctx)
+-- pprAlts :: Context -> Alts -> Doc ann
+-- pprAlts ctx = sep . punctuate (mempty <+> pipe) . map (pprAlt ctx)

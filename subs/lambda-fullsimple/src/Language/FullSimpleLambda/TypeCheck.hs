@@ -85,9 +85,15 @@ typeof ctx (TmPattern p t1 t2) = typeof ctx' t2 -- T-LET (Pattern)
   where
     ty1 = typeof ctx t1
     ctx' = ctx <> delta p ty1
-typeof ctx (TmInL t) = TySum (typeof ctx t) TyUnit -- T-INL (Sum)
-typeof ctx (TmInR t) = TySum TyUnit (typeof ctx t) -- T-INR (Sum)
-typeof ctx (TmCase t0 [(TmInL (TmVar x1),t1), (TmInR (TmVar x2),t2)]) = -- T-CASE
+typeof ctx (TmInL t ty@(TySum tyL _tyR)) -- T-INL (Sum)
+  | typeof ctx t == tyL = ty
+  | otherwise = error "type mismatch (T-INL)"
+typeof _ (TmInL _ _) = error "type mismatch (T-INL)"
+typeof ctx (TmInR t ty@(TySum _tyL tyR)) -- T-INR (Sum)
+  | tyR == typeof ctx t = ty
+  | otherwise = error "type mismatch (T-INR)"
+typeof _ (TmInR _ _) = error "type mismatch (T-INR)"
+typeof ctx (TmCase t0 (TmVar x1, t1) (TmVar x2, t2)) = -- T-CASE
     if tyT1 == tyT2
     then tyT1
     else error "type mismatch (T-CASE)"
@@ -99,7 +105,7 @@ typeof ctx (TmCase t0 [(TmInL (TmVar x1),t1), (TmInR (TmVar x2),t2)]) = -- T-CAS
     ctx2 = addBinding ctx ("FV" <> tshow x2) (VarBind ty2)
     tyT1 = typeof ctx1 t1
     tyT2 = typeof ctx2 t2
-typeof _ (TmCase _ _) = error "inr, inl の両方を指定してください"
+typeof _ TmCase{} = error "Case の本体の左側には変数しか出現できません"
 
 delta :: Pattern -> Ty -> Context
 delta (PtVar varName _) ty = addContext (VarContext varName, VarBind ty) mempty

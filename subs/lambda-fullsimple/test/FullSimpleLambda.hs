@@ -143,16 +143,16 @@ test_sum :: TestTree
 test_sum = testGroup "sum"
   [ testGroup "pretty (term)"
     [ testCase "inr x" $ do
-        let t = TmInL (TmVar 0)
-        prettyFullSimpleText mempty t @?= "inl FV0"
+        let t = TmInL (TmVar 0) (TySum TyNat TyBool)
+        prettyFullSimpleText mempty t @?= "inl FV0 as Nat+Bool"
     ,  testCase "inl x" $ do
-        let t = TmInR (TmVar 0)
-        prettyFullSimpleText mempty t @?= "inr FV0"
+        let t = TmInR (TmVar 0) (TySum TyBool TyNat)
+        prettyFullSimpleText mempty t @?= "inr FV0 as Bool+Nat"
     ,  testCase "case a of inl x => x.firstlast | inr y => y.name" $ do
-        let t  = TmCase (TmVar 0) [t1, t2]
-            t1 = (TmInL (TmVar 1), TmRecordProj "firstlast" (TmVar 1))
-            t2 = (TmInR (TmVar 2), TmRecordProj "name" (TmVar 2))
-        prettyFullSimpleText mempty t @?= "case FV0 of inl FV1 => FV1.firstlast | inr FV2 => FV2.name"
+        let t  = TmCase (TmVar 0) t1 t2
+            t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
+            t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
+        prettyFullSimpleText mempty t @?= "case FV0 of inl FV0 => FV0.firstlast | inr FV0 => FV0.name"
     ]
   , testGroup "pretty (type)"
     [ testCase "Bool+Nat" $ do
@@ -168,44 +168,44 @@ test_sum = testGroup "sum"
             virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
             addrTy = TySum physicalAddrTy virtualAddrTy
 
-            tCase  = TmCase (TmVar 0) [t1, t2]
-            t1 = (TmInL (TmVar 0), TmRecordProj "firstlast" (TmVar 0))
-            t2 = (TmInR (TmVar 0), TmRecordProj "name" (TmVar 0))
+            tCase  = TmCase (TmVar 0) t1 t2
+            t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
+            t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
 
             getName = TmLam "a" addrTy tCase
-            t = TmApp getName (TmInL physicalAddr)
-            t' = TmApp getName (TmInR virtualAddr)
+            t = TmApp getName (TmInL physicalAddr addrTy)
+            t' = TmApp getName (TmInR virtualAddr addrTy)
         evalN 3 t @?= TmZero
         evalN 3 t' @?= TmSucc TmZero
     ]
   , testGroup "typecheck"
-    [ -- 図11-10の拡張で通るようになる
-      -- testCase "getName" $ do
-      --   let physicalAddr = TmRecord [("firstlast", TmZero), ("addr", TmFalse)]
-      --       physicalAddrTy = TyRecord [("firstlast", TyNat), ("addr", TyBool)]
-            
-      --       virtualAddr  = TmRecord [("name", TmSucc TmZero), ("email", TmTrue)]
-      --       virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
-      --       addrTy = TySum physicalAddrTy virtualAddrTy
-
-      --       tCase  = TmCase (TmVar 0) [t1, t2]
-      --       t1 = (TmInL (TmVar 0), TmRecordProj "firstlast" (TmVar 0))
-      --       t2 = (TmInR (TmVar 0), TmRecordProj "name" (TmVar 0))
-
-      --       getName = TmLam "a" addrTy tCase
-      --       t = TmApp getName (TmInL physicalAddr)
-      --       t' = TmApp getName (TmInR virtualAddr)
-      --   typeof mempty t @?= TyNat
-      testCase "getName" $ do
+    [ testCase "getName" $ do
         let physicalAddrTy = TyRecord [("firstlast", TyNat), ("addr", TyBool)]
             virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
             addrTy = TySum physicalAddrTy virtualAddrTy
 
-            tCase  = TmCase (TmVar 0) [t1, t2]
-            t1 = (TmInL (TmVar 0), TmRecordProj "firstlast" (TmVar 0))
-            t2 = (TmInR (TmVar 0), TmRecordProj "name" (TmVar 0))
+            tCase  = TmCase (TmVar 0) t1 t2
+            t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
+            t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
 
             getName = TmLam "a" addrTy tCase
         typeof mempty getName @?= TyArr addrTy TyNat
+    , testCase "getName に値を適用" $ do
+        let physicalAddr = TmRecord [("firstlast", TmZero), ("addr", TmFalse)]
+            physicalAddrTy = TyRecord [("firstlast", TyNat), ("addr", TyBool)]
+            
+            virtualAddr  = TmRecord [("name", TmSucc TmZero), ("email", TmTrue)]
+            virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
+            addrTy = TySum physicalAddrTy virtualAddrTy
+
+            tCase  = TmCase (TmVar 0) t1 t2
+            t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
+            t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
+
+            getName = TmLam "a" addrTy tCase
+            t = TmApp getName (TmInL physicalAddr addrTy)
+            t' = TmApp getName (TmInR virtualAddr addrTy)
+        typeof mempty t @?= TyNat
+        typeof mempty t' @?= TyNat
     ]
   ]

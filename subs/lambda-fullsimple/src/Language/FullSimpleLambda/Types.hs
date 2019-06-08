@@ -113,8 +113,8 @@ data Term
   | TmRecord [(FieldLabel, Term)] -- ^ 11.8   レコード (フィールドの順序が異なれば、異なるレコードとして扱う)
   | TmRecordProj FieldLabel Term  -- ^ 11.8   レコードの射影
   | TmPattern Pattern Term Term   -- ^ 11.8.2 パターンマッチ
-  | TmInL Term                    -- ^ 11.9   和 タグ付け (左)
-  | TmInR Term                    -- ^ 11.9   和 タグ付け (右)
+  | TmInL Term Ty                 -- ^ 11.9   和 タグ付け (左)
+  | TmInR Term Ty                 -- ^ 11.9   和 タグ付け (右)
   | TmCase Term Alts              -- ^ 11.9   和 場合分け
   deriving (Eq, Show)
 

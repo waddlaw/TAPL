@@ -5,3 +5,4 @@ note/html
 _site
 dist-newstyle/
 .ghc.environment.*
+.DS_Store

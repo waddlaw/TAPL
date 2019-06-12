@@ -1,0 +1,4 @@
+ghc-opts:
+  - -XMultiWayIf
+unsafe: False
+debug: False

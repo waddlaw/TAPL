@@ -76,10 +76,7 @@ typeof ctx (TmTupleProj j t) = -- T-PROJ
 typeof ctx (TmRecord fields) = TyRecord $ map (\(l,t) -> (l,typeof ctx t)) fields -- T-RCD
 typeof ctx (TmRecordProj label t) = -- T-RECORDPROJ
   case typeof ctx t of
-    TyRecord fields ->
-      case lookup label fields of
-        Just ty -> ty
-        Nothing -> error "field label not found (T-RECORDPROJ)"
+    TyRecord fields -> fromMaybe (error "field label not found (T-RECORDPROJ)") $ lookup label fields
     _ -> error "type mismatch (T-RECORDPROJ)"
 typeof ctx (TmPattern p t1 t2) = typeof ctx' t2 -- T-LET (Pattern)
   where

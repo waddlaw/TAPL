@@ -133,10 +133,7 @@ eval (TmTuple ts) = TmTuple (vs ++ [eval t] ++ ts') -- E-TUPLE
   where
     (vs, t, ts') = splitTerm ts
 eval (TmRecordProj label t@(TmRecord fields)) -- E-PROJRCD
-  | isValue t =
-    case lookup label fields of
-      Nothing -> error "field label not found (E-PROJRCD)"
-      Just v -> v
+  | isValue t = fromMaybe (error "field label not found (E-PROJRCD)") $ lookup label fields
   | otherwise = TmRecordProj label (eval t)
 eval (TmRecordProj label t) = TmRecordProj label (eval t) -- E-PROJ
 eval t@(TmRecord []) = t -- E-RCD

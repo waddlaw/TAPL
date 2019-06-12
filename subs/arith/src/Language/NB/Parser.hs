@@ -1,37 +1,40 @@
 module Language.NB.Parser
   ( runNbParser
-  ) where
+  )
+where
 
-import           RIO
-
-import           Language.Core.Parser
-import           Language.NB.Types
-
-import           Text.Trifecta
+import Language.Core.Parser
+import Language.NB.Types
+import RIO
+import Text.Trifecta
 
 runNbParser :: String -> Either String Term
 runNbParser = runParserString termP
 
 termP :: Parser Term
-termP =  trueP
-     <|> falseP
-     <|> ifP
-     <|> zeroP
-     <|> succP
-     <|> predP
-     <|> iszeroP
+termP =
+  trueP <|>
+    falseP <|>
+    ifP <|>
+    zeroP <|>
+    succP <|>
+    predP <|>
+    iszeroP
 
 iszeroP :: Parser Term
-iszeroP = TmIsZero <$  symbol "iszero"
-                   <*> (parens termP <|> token termP)
+iszeroP =
+  TmIsZero <$ symbol "iszero" <*>
+    (parens termP <|> token termP)
 
 predP :: Parser Term
-predP = TmPred <$  symbol "pred"
-               <*> (parens termP <|> token termP)
+predP =
+  TmPred <$ symbol "pred" <*>
+    (parens termP <|> token termP)
 
 succP :: Parser Term
-succP = TmSucc <$  symbol "succ"
-               <*> (parens termP <|> token termP)
+succP =
+  TmSucc <$ symbol "succ" <*>
+    (parens termP <|> token termP)
 
 zeroP :: Parser Term
 zeroP = TmZero <$ symbol "0"
@@ -43,9 +46,10 @@ falseP :: Parser Term
 falseP = TmFalse <$ symbol "false"
 
 ifP :: Parser Term
-ifP = TmIf <$  symbol "if"
-           <*> (parens termP <|> token termP)
-           <*  symbol "then"
-           <*> (parens termP <|> token termP)
-           <*  symbol "else"
-           <*> (parens termP <|> token termP)
+ifP =
+  TmIf <$ symbol "if" <*>
+    (parens termP <|> token termP) <*
+    symbol "then" <*>
+    (parens termP <|> token termP) <*
+    symbol "else" <*>
+    (parens termP <|> token termP)

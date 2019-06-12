@@ -1,9 +1,11 @@
 module Language.UntypedLambda.Lib.Util
   ( (.)
-  ) where
+  )
+where
 
 import Prelude hiding ((.))
 
 infixr 5 .
+
 (.) :: (a -> b) -> a -> b
 (.) = ($)

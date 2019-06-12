@@ -4,11 +4,11 @@ module Language.B.Types
   , EvalRelation (..)
   , Premise
   , Conclusion
-  ) where
+  )
+where
 
-import           RIO
-
-import           Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc
+import RIO
 
 data Term
   = TmTrue
@@ -23,22 +23,26 @@ data Rule
   deriving (Enum, Bounded, Show)
 
 instance Pretty Rule where
-  pretty E_IFTRUE  = pretty "E-IFTRUE"
+  pretty E_IFTRUE = pretty "E-IFTRUE"
   pretty E_IFFALSE = pretty "E-IFFALSE"
-  pretty E_IF      = pretty "E-IF"
+  pretty E_IF = pretty "E-IF"
 
-newtype EvalRelation = EvalRelation { unwrap :: (Term, Term) }
+newtype EvalRelation = EvalRelation {unwrap :: (Term, Term)}
   deriving (Eq, Show)
 
-type Premise         = EvalRelation
-type Conclusion      = EvalRelation
+type Premise = EvalRelation
+
+type Conclusion = EvalRelation
 
 instance Pretty Term where
-  pretty TmTrue  = pretty "true"
+  pretty TmTrue = pretty "true"
   pretty TmFalse = pretty "false"
-  pretty (TmIf t1 t2 t3) =  pretty "if"   <+> pretty t1
-                       <+> pretty "then" <+> pretty t2
-                       <+> pretty "else" <+> pretty t3
+  pretty (TmIf t1 t2 t3) =
+    pretty "if" <+> pretty t1 <+>
+      pretty "then" <+>
+      pretty t2 <+>
+      pretty "else" <+>
+      pretty t3
 
 instance Pretty EvalRelation where
   pretty (EvalRelation (t, t')) = pretty t <+> pretty "->" <+> pretty t'

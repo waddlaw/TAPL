@@ -1,11 +1,11 @@
 {-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE GADTs             #-}
+{-# LANGUAGE GADTs #-}
 module Term.Types
-  ( Term(..)
-  ) where
+  ( Term (..)
+  )
+where
 
 import RIO
-
 import Test.QuickCheck
 
 {- | [定義 3.2.1 帰納的な項の定義]:
@@ -16,13 +16,13 @@ import Test.QuickCheck
 * 全てが Term の値であることを明示的にするため、GADT で書いたが、普通に ADT で書いても良い
 -}
 data Term where
-  TTrue   :: Term                         -- (1)
-  TFalse  :: Term                         -- (1)
-  Zero    :: Term                         -- (1)
-  Succ    :: Term -> Term                 -- (2)
-  Pred    :: Term -> Term                 -- (2)
-  IsZero  :: Term -> Term                 -- (2)
-  If      :: Term -> Term -> Term -> Term -- (3)
+  TTrue :: Term -- (1)
+  TFalse :: Term -- (1)
+  Zero :: Term -- (1)
+  Succ :: Term -> Term -- (2)
+  Pred :: Term -> Term -- (2)
+  IsZero :: Term -> Term -- (2)
+  If :: Term -> Term -> Term -> Term -- (3)
   deriving (Eq, Ord, Show, Generic)
 
 instance Hashable Term
@@ -32,7 +32,12 @@ instance Arbitrary Term where
     t1 <- arbitrary
     t2 <- arbitrary
     t3 <- arbitrary
-    elements [ TTrue, TFalse, Zero
-             , Succ t1, Pred t1, IsZero t1
-             , If t1 t2 t3
-             ]
+    elements
+      [ TTrue
+      , TFalse
+      , Zero
+      , Succ t1
+      , Pred t1
+      , IsZero t1
+      , If t1 t2 t3
+      ]

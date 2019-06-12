@@ -1,34 +1,34 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Main (main) where
-
-import RIO
-import qualified RIO.Text as Text
+module Main
+  ( main
+  )
+where
 
 import LambdaRepl
 import Language.Core
 import Language.FullSimpleLambda as FullSimpleLambda
-
+import RIO
+import qualified RIO.Text as Text
 import System.Console.Haskeline hiding (display)
 
 main :: IO ()
-main = runApp $ do
-  logInfo "Start full simple lambda repl"
-  logInfo ":help でコマンドの一覧が確認できます。"
-
-  _ <- runInputT defaultSettings main'
-
-  logInfo "Leaving full simple lambda repl"
+main =
+  runApp $ do
+    logInfo "Start full simple lambda repl"
+    logInfo ":help でコマンドの一覧が確認できます。"
+    _ <- runInputT defaultSettings main'
+    logInfo "Leaving full simple lambda repl"
 
 main' :: LambdaREPL
 main' = do
   minput <- getInputLine "FullSimpleLambda> "
   case Text.pack . trim <$> minput of
-    Nothing    -> return ()
-    Just ":q"  -> return ()
+    Nothing -> return ()
+    Just ":q" -> return ()
     Just input ->
-      if  | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
-          | ":t" `Text.isPrefixOf` input -> tcCmd (parser mempty) typecheck input >> main'
-          | otherwise -> evalCmd (parser mempty) evaluator tracer input >> main'
+      if | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
+         | ":t" `Text.isPrefixOf` input -> tcCmd (parser mempty) typecheck input >> main'
+         | otherwise -> evalCmd (parser mempty) evaluator tracer input >> main'
 
 parser :: Context -> ParseFunc FullSimpleLambda.Term
 parser = runFullSimpleLambdaParser

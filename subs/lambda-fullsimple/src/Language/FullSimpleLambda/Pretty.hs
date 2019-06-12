@@ -1,14 +1,13 @@
 module Language.FullSimpleLambda.Pretty
   ( prettyFullSimpleText
   , prettyType
-  ) where
+  )
+where
 
-import           RIO
-
-import           Language.FullSimpleLambda.Types
-
-import           Data.Text.Prettyprint.Doc
-import           Data.Text.Prettyprint.Doc.Render.Text
+import Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc.Render.Text
+import Language.FullSimpleLambda.Types
+import RIO
 
 prettyFullSimpleText :: Context -> FullSimpleTypedLambda -> Text
 prettyFullSimpleText ctx = renderStrict . layoutPretty defaultLayoutOptions . pprFullSimple ctx

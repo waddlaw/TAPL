@@ -1,13 +1,12 @@
 module Language.SimpleLambda.Pretty
   ( prettySimpleText
-  ) where
+  )
+where
 
-import           RIO
-
-import           Language.SimpleLambda.Types
-
-import           Data.Text.Prettyprint.Doc
-import           Data.Text.Prettyprint.Doc.Render.Text
+import Data.Text.Prettyprint.Doc
+import Data.Text.Prettyprint.Doc.Render.Text
+import Language.SimpleLambda.Types
+import RIO
 
 prettySimpleText :: Context -> SimpleTypedLambda -> Text
 prettySimpleText ctx = renderStrict . layoutCompact . pprSimple ctx

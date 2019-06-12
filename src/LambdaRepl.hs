@@ -1,7 +1,8 @@
 module LambdaRepl
   ( module LambdaRepl.Options
   , module LambdaRepl.Types
-  ) where
+  )
+where
 
 import LambdaRepl.Options
 import LambdaRepl.Orphans ()

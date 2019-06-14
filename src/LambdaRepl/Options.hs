@@ -31,13 +31,12 @@ runApp m =
     strategy <- newIORef NormalOrder
     isTrace <- newIORef False
     withLogFunc lo $ \lf ->
-      let app =
-            ReplEnv
-              { appLogFunc = lf
-              , appProcessContext = pc
-              , appStrategy = strategy
-              , appIsTrace = isTrace
-              }
+      let app = ReplEnv
+            { appLogFunc = lf
+            , appProcessContext = pc
+            , appStrategy = strategy
+            , appIsTrace = isTrace
+            }
       in runRIO app m
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> TraceFunc term -> Text -> LambdaREPL

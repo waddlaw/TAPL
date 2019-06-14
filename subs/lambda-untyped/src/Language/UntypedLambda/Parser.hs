@@ -48,12 +48,11 @@ identP :: Parser Text
 identP = ident defaultIdentStyle
 
 defaultIdentStyle :: IdentifierStyle Parser
-defaultIdentStyle =
-  IdentifierStyle
-    { _styleName = "UntypedLambda"
-    , _styleStart = oneOf ['a'.. 'z']
-    , _styleLetter = alphaNum
-    , _styleReserved = mempty
-    , _styleHighlight = Identifier
-    , _styleReservedHighlight = ReservedIdentifier
-    }
+defaultIdentStyle = IdentifierStyle
+  { _styleName = "UntypedLambda"
+  , _styleStart = oneOf ['a'.. 'z']
+  , _styleLetter = alphaNum
+  , _styleReserved = mempty
+  , _styleHighlight = Identifier
+  , _styleReservedHighlight = ReservedIdentifier
+  }

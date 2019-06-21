@@ -90,13 +90,7 @@ $ ormolu -c ormolu.yaml --mode inplace <file>
 フォーマッターのバグにより動作しないやつ
 
 ```shell
-λ ormolu -c ormolu.yaml --mode inplace subs/lambda-fullsimple/src/Language/FullSimpleLambda/Parser.hs
 λ ormolu -c ormolu.yaml --mode inplace subs/lambda-fullsimple/src/Language/FullSimpleLambda/TypeCheck.hs
-λ ormolu -c ormolu.yaml --mode inplace subs/lambda-fullsimple/src/Language/FullSimpleLambda/Types.hs
-λ ormolu -c ormolu.yaml --mode inplace subs/lambda-simple/src/Language/SimpleLambda.hs
-λ ormolu -c ormolu.yaml --mode inplace subs/lambda-simple/src/Language/SimpleLambda/Parser.hs
-λ ormolu -c ormolu.yaml --mode inplace subs/lambda-simple/src/Language/SimpleLambda/Types.hs
-λ ormolu -c ormolu.yaml --mode inplace subs/lambda-untyped/src/Language/UntypedLambda/Types.hs
 λ ormolu -c ormolu.yaml --mode inplace subs/term/src/Term/HashSet.hs
 λ ormolu -c ormolu.yaml --mode inplace subs/term/src/Term/Set.hs
 ```

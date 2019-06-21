@@ -1,4 +1,4 @@
-{-# LANGUAGE FlexibleContexts  #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
 module Language.UntypedLambda.Types
   ( Term (..)
@@ -9,13 +9,14 @@ module Language.UntypedLambda.Types
   , VarName
   , NamelessTerm (..)
   , getNlTermVar
-  ) where
-
-import qualified RIO.Text as Text
+  )
+where
 
 import Data.Text.Prettyprint.Doc
+import qualified RIO.Text as Text
 
 type UntypedLambda = Term Text
+
 type VarName = Text
 
 -- | 教科書とは逆で ["x", "y", "z"] は [0, 1, 2] と左からインデックスを付ける
@@ -29,12 +30,12 @@ data NamelessTerm
 
 getNlTermVar :: NamelessTerm -> Int
 getNlTermVar (NlTmVar k) = k
-getNlTermVar _           = error "panic"
+getNlTermVar _ = error "panic"
 
 instance IsString NamelessTerm where
   fromString = NlTmVar . fromMaybe 0 . readMaybe -- FIXME
 
-infixl @@
+infixl 9 @@
 
 (@@) :: UntypedLambda -> UntypedLambda -> UntypedLambda
 t1 @@ t2 = TmApp t1 t2
@@ -49,12 +50,12 @@ data Term a
   deriving (Eq, Show)
 
 instance Pretty UntypedLambda where
-  pretty (TmVar x)     = pretty x
-  pretty (TmLam x t)   = pretty "λ" <> pretty x <> pretty "." <+> pretty t
+  pretty (TmVar x) = pretty x
+  pretty (TmLam x t) = pretty "λ" <> pretty x <> pretty "." <+> pretty t
   pretty (TmApp t1 t2) = ppr t1 <+> ppr t2
     where
       ppr t@(TmVar _) = pretty t
-      ppr t           = parens (pretty t)
+      ppr t = parens (pretty t)
 
 instance IsString UntypedLambda where
   fromString = TmVar . Text.pack

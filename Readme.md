@@ -91,8 +91,6 @@ $ ormolu -c ormolu.yaml --mode inplace <file>
 
 ```shell
 λ ormolu -c ormolu.yaml --mode inplace subs/lambda-fullsimple/src/Language/FullSimpleLambda/TypeCheck.hs
-λ ormolu -c ormolu.yaml --mode inplace subs/term/src/Term/HashSet.hs
-λ ormolu -c ormolu.yaml --mode inplace subs/term/src/Term/Set.hs
 ```
 
 ### ドキュメントの生成

@@ -5,19 +5,19 @@ module Term.Set
   , size
   , depth
   , minT
-  ) where
+  )
+where
 
 import RIO
 import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Set as Set
-
 import Term.Types
 
 type T = Set Term
 
 {- |
 [定義 3.2.3 具体的な項の定義]:
-  各自然数 i について、集合 Si を以下のように定義する。
+各自然数 i について、集合 Si を以下のように定義する。
 
 >>> s 0
 fromList []
@@ -33,7 +33,7 @@ s i = Set.unions [s1, s2, s3]
     s1 = Set.fromList [TTrue, TFalse, Zero]
     s2 = Set.fromList $ concat [[Succ t1, Pred t1, IsZero t1] | t1 <- si]
     s3 = Set.fromList [If t1 t2 t3 | t1 <- si, t2 <- si, t3 <- si]
-    si = Set.toList $ s (i-1)
+    si = Set.toList $ s (i - 1)
 
 {- |
 [定義 3.3.1 項tに現れる定数の集合を Consts(t) と書き、次のように定義する]:
@@ -45,12 +45,12 @@ fromList [TTrue]
 fromList [Zero]
 -}
 consts :: Term -> T
-consts TTrue         = Set.singleton TTrue
-consts TFalse        = Set.singleton TFalse
-consts Zero          = Set.singleton Zero
-consts (Succ t)      = consts t
-consts (Pred t)      = consts t
-consts (IsZero t)    = consts t
+consts TTrue = Set.singleton TTrue
+consts TFalse = Set.singleton TFalse
+consts Zero = Set.singleton Zero
+consts (Succ t) = consts t
+consts (Pred t) = consts t
+consts (IsZero t) = consts t
 consts (If t1 t2 t3) = Set.unions $ map consts [t1, t2, t3]
 
 {- |
@@ -66,12 +66,12 @@ consts (If t1 t2 t3) = Set.unions $ map consts [t1, t2, t3]
 7
 -}
 size :: Term -> Int
-size TTrue         = 1
-size TFalse        = 1
-size Zero          = 1
-size (Succ t)      = size t + 1
-size (Pred t)      = size t + 1
-size (IsZero t)    = size t + 1
+size TTrue = 1
+size TFalse = 1
+size Zero = 1
+size (Succ t) = size t + 1
+size (Pred t) = size t + 1
+size (IsZero t) = size t + 1
 size (If t1 t2 t3) = size t1 + size t2 + size t3 + 1
 
 {- |
@@ -87,12 +87,12 @@ size (If t1 t2 t3) = size t1 + size t2 + size t3 + 1
 4
 -}
 depth :: Term -> Int
-depth TTrue         = 1
-depth TFalse        = 1
-depth Zero          = 1
-depth (Succ t)      = depth t + 1
-depth (Pred t)      = depth t + 1
-depth (IsZero t)    = depth t + 1
+depth TTrue = 1
+depth TFalse = 1
+depth Zero = 1
+depth (Succ t) = depth t + 1
+depth (Pred t) = depth t + 1
+depth (IsZero t) = depth t + 1
 depth (If t1 t2 t3) = List.Partial.maximum [depth t1, depth t2, depth t3] + 1
 
 -- | 与えられた Term が含まれる、最小の集合 T を作る

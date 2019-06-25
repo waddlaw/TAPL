@@ -29,6 +29,12 @@ $ cd TAPL
 $ stack run
 ```
 
+ghcid
+
+```shell
+λ ghcid --allow-eval "--command=ghci XXX.hs"
+```
+
 ## 開発
 
 - [haddock](https://waddlaw.github.io/TAPL/)

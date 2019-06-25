@@ -1,1 +1,4 @@
 :set prompt "λ> "
+:set -fwarn-unused-binds -fwarn-unused-imports
+:set -isrc
+:load Main

@@ -175,12 +175,11 @@ mkFreshVarName (v : _) = Text.pack $ mconcat ["a", show $ textToInt v + 1]
     textToInt :: Text -> Int
     textToInt = fromMaybe 0 . readMaybe . Text.unpack . Text.Partial.tail -- FIXME
 
-        -- | 定義6.2.1 (P.60)
-        --
-        -- c: 打ち切り値
-        --
-        -- d: シフト数
-
+-- | 定義6.2.1 (P.60)
+--
+-- c: 打ち切り値
+--
+-- d: シフト数
 shift :: Int -> Int -> NamelessTerm -> NamelessTerm
 shift c d (NlTmVar k)
   | k < c = NlTmVar k

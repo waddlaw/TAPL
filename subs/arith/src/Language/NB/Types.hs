@@ -18,6 +18,7 @@ data Term
   deriving (Eq, Show)
 
 instance Pretty Term where
+
   pretty TmTrue = pretty "true"
   pretty TmFalse = pretty "false"
   pretty (TmIf t1 t2 t3) =

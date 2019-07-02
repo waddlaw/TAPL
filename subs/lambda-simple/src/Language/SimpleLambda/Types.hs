@@ -21,12 +21,15 @@ newtype Context = Context {unCtx :: [(Text, Binding)]}
   deriving (Eq, Show)
 
 instance Semigroup Context where
+
   ctx1 <> ctx2 = Context (unCtx ctx1 <> unCtx ctx2)
 
 instance Monoid Context where
+
   mempty = Context []
 
 instance IsString Context where
+
   fromString v = Context [(Text.pack v, NameBind)]
 
 addContext :: (Text, Binding) -> Context -> Context
@@ -52,6 +55,7 @@ data Term
   deriving (Eq, Show)
 
 instance Pretty Term where
+
   pretty = pprSimple mempty
 
 pprSimple :: Context -> Term -> Doc ann
@@ -76,6 +80,7 @@ pprSimple _ TmFalse = pretty "false"
 pprSimple ctx (TmIf t1 t2 t3) = pretty "if" <+> pprSimple ctx t1 <+> pretty "then" <+> pprSimple ctx t2 <+> pretty "else" <+> pprSimple ctx t3
 
 instance Pretty Ty where
+
   pretty TyBool = pretty "Bool"
   pretty (TyArr ty1 ty2) = ppr' ty1 <+> pretty "->" <+> pretty ty2
     where

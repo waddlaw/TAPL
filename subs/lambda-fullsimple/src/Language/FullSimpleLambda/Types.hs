@@ -30,12 +30,15 @@ newtype Context = Context {unCtx :: [(ContextType, Binding)]}
   deriving (Eq, Show)
 
 instance Semigroup Context where
+
   ctx1 <> ctx2 = Context (unCtx ctx1 <> unCtx ctx2)
 
 instance Monoid Context where
+
   mempty = Context []
 
 instance IsString Context where
+
   fromString v = Context [(VarContext (Text.pack v), NameBind)]
 
 addContext :: (ContextType, Binding) -> Context -> Context
@@ -47,9 +50,11 @@ data ContextType
   deriving (Eq, Show)
 
 instance IsString ContextType where
+
   fromString = VarContext . Text.pack
 
 instance Pretty ContextType where
+
   pretty (VarContext varName) = pretty varName
   pretty (PatternContext p) = pretty p
 
@@ -71,6 +76,7 @@ data Ty
   deriving (Eq, Show)
 
 instance Pretty Ty where
+
   pretty TyBool = pretty "Bool"
   pretty TyNat = pretty "Nat"
   pretty TyUnit = pretty "Unit"
@@ -87,8 +93,7 @@ instance Pretty Ty where
 
 type FieldLabel = Text -- ^ レコードのフィールドラベル
 
-  -- type Alts = [Alt]
-
+-- type Alts = [Alt]
 type Alt = (Term, Term) -- (変数, body)
 
 data Term
@@ -121,6 +126,7 @@ data Term
   deriving (Eq, Show)
 
 instance Pretty Term where
+
   pretty = pprFullSimple mempty
 
 pprFullSimple :: Context -> Term -> Doc ann
@@ -190,6 +196,7 @@ data Pattern
   deriving (Eq, Show)
 
 instance Pretty Pattern where
+
   pretty = pprPattern mempty
 
 pprPattern :: Context -> Pattern -> Doc ann

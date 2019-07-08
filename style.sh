@@ -1,6 +1,6 @@
 #!/bin/bash
 
-style="ormolu -c ormolu.yaml --mode inplace"
+style="ormolu --mode inplace"
 
 # app
 for file in `\find app -type f -name "*.hs"`; do

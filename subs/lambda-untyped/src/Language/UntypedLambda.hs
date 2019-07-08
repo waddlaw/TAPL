@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.UntypedLambda
   ( module Language.UntypedLambda.Types
   , module Language.UntypedLambda.Parser
@@ -165,7 +166,7 @@ restorenames g nt
     restorenames' g' (NlTmVar k) = TmVar (g' List.Partial.!! k)
     restorenames' g' (NlTmLam t) =
       let x = mkFreshVarName g'
-      in TmLam x $ restorenames (x : g') t
+       in TmLam x $ restorenames (x : g') t
     restorenames' g' (NlTmApp t1 t2) = (TmApp `on` restorenames' g') t1 t2
 
 mkFreshVarName :: Context -> VarName

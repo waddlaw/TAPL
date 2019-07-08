@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
+
 module Language.UntypedLambda.Types
   ( Term (..)
   , UntypedLambda

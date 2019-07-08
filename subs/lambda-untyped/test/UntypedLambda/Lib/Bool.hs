@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module UntypedLambda.Lib.Bool where
 
 import Language.UntypedLambda.Lib.Bool

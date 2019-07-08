@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.UntypedLambda.Lib.Either
   ( left
   , right
@@ -29,7 +30,7 @@ right = λ "b" . λ "l" . λ "r" . "r" @@ "b"
 isLeft :: Either a b -> Bool
 isLeft = \e -> case e of
 Left  -> \a -> True
-Right -> \b -> False 
+Right -> \b -> False
 -}
 isLeft :: UntypedLambda
 isLeft = λ "e" . "e" @@ (λ "a" . tru) @@ (λ "b" . fls)

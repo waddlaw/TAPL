@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleInstances #-}
+
 module Language.B
   ( module Language.B.Parser
   , module Language.B.Types

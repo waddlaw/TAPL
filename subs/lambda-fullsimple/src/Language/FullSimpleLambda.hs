@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.FullSimpleLambda
   ( module Language.FullSimpleLambda.Types
   , module Language.FullSimpleLambda.Parser

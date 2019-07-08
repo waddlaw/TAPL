@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module UntypedLambda.Lib.Church where
 
 import Language.Core.Types

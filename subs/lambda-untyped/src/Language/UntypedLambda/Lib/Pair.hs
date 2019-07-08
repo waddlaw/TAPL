@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.UntypedLambda.Lib.Pair
   ( pair
   , fst

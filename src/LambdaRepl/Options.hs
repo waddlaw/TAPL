@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module LambdaRepl.Options
   ( runApp
   , evalCmd
@@ -37,7 +38,7 @@ runApp m =
             , appStrategy = strategy
             , appIsTrace = isTrace
             }
-      in runRIO app m
+       in runRIO app m
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> TraceFunc term -> Text -> LambdaREPL
 evalCmd parser evaluator tracer input =

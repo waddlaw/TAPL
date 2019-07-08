@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Main
   ( main
   )
@@ -25,20 +26,20 @@ app =
       Left errs -> logError $ displayShow $ errorBundlePretty errs
       Right r ->
         let toc = MMark.runScanner r (Ext.tocScanner (> 1))
-        in writeFileUtf8 (mkPath input) .
-             TL.toStrict .
-             renderText .
-             wrapper .
-             MMark.render .
-             MMark.useExtensions
-               [ Ext.toc "toc" toc
-               , Ext.punctuationPrettifier
-               , Ext.ghcSyntaxHighlighter
-               , Ext.skylighting
-               , Ext.mathJax (Just '$')
-               , mathJaxBlock
-               ] $
-             r
+         in writeFileUtf8 (mkPath input) .
+              TL.toStrict .
+              renderText .
+              wrapper .
+              MMark.render .
+              MMark.useExtensions
+                [ Ext.toc "toc" toc
+                , Ext.punctuationPrettifier
+                , Ext.ghcSyntaxHighlighter
+                , Ext.skylighting
+                , Ext.mathJax (Just '$')
+                , mathJaxBlock
+                ] $
+              r
   where
     mkPath path = mconcat ["_site/", path, ".html"]
 

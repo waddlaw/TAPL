@@ -95,9 +95,11 @@ $ ormolu -c ormolu.yaml --mode inplace <file>
 
 フォーマッターのバグにより動作しないやつ
 
-```shell
-λ ormolu -c ormolu.yaml --mode inplace subs/lambda-fullsimple/src/Language/FullSimpleLambda/TypeCheck.hs
-```
+- subs/lambda-untyped/src/Language/UntypedLambda/Lib/Int.hs:48:31-33
+- subs/lambda-untyped/src/Language/UntypedLambda/Lib/Base.hs:26:20-22
+- subs/lambda-untyped/src/Language/UntypedLambda/Lib/NB.hs:46:34-36
+- subs/lambda-untyped/src/Language/UntypedLambda/Lib/List.hs:55:32-34
+- subs/lambda-untyped/src/Language/UntypedLambda/Lib/Church.hs:120:34-36
 
 ### ドキュメントの生成
 

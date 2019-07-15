@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.UntypedLambda.Lib.Church
   ( c
   , scc

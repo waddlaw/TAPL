@@ -15,8 +15,12 @@ dependencies:
   - trifecta
 
 default-extensions:
+  - InstanceSigs
+  - LambdaCase
+  - MultiParamTypeClasses
   - MultiWayIf
   - NoImplicitPrelude
+  - TypeFamilies
   - ViewPatterns
 
 ghc-options:

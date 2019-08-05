@@ -1,6 +1,6 @@
 module Language.SimpleLambda.Pretty
   ( prettySimpleText
-  )
+    )
 where
 
 import Data.Text.Prettyprint.Doc

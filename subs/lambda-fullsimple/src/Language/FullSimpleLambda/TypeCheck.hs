@@ -2,7 +2,7 @@
 
 module Language.FullSimpleLambda.TypeCheck
   ( typeof
-  )
+    )
 where
 
 import Language.FullSimpleLambda.Types
@@ -24,10 +24,10 @@ typeof ctx (TmApp t1 t2) =
       else
         error $
           unlines
-            [ "parameter type mismatch (T-APP): "
-            , "tyT2: " <> show tyT2
-            , "tyT11: " <> show tyT11
-            ]
+            [ "parameter type mismatch (T-APP): ",
+              "tyT2: " <> show tyT2,
+              "tyT11: " <> show tyT11
+              ]
     _ -> error "arrow type expected (T-APP)"
   where
     tyT1 = typeof ctx t1

@@ -13,7 +13,7 @@ test_reduction =
         let t1 = TmIf TmFalse TmTrue TmFalse
             t = TmIf TmTrue t1 TmTrue
         reduction Nothing t @?= t1
-    ]
+      ]
 
 test_proof :: TestTree
 test_proof =
@@ -25,4 +25,4 @@ test_proof =
         step E_IFTRUE (step E_IF $ deduce E_IF z1) @?= Nothing
         deduce E_IFTRUE z2 @?= Nothing
         deduce E_IFFALSE z3 @?= Nothing
-    ]
+      ]

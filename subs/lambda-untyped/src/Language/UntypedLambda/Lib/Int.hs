@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Lib.Int
-  ( int
-  , succI
-  , succNI
-  , plusI
-  , isZeroI
-  , isAbsOneI
-  )
+  ( int,
+    succI,
+    succNI,
+    plusI,
+    isZeroI,
+    isAbsOneI
+    )
 where
 
 import Language.UntypedLambda.Lib.Base

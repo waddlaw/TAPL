@@ -1,18 +1,18 @@
 module Language.FullSimpleLambda.Types
-  ( Ty (..)
-  , Term (..)
-  , Value
-  , Context
-  , ContextType (..)
-  , addContext
-  , unCtx
-  , Binding (..)
-  , FullSimpleTypedLambda
-  , pprFullSimple
-  , VarName
-  , Pattern (..)
-  , FieldLabel
-  )
+  ( Ty (..),
+    Term (..),
+    Value,
+    Context,
+    ContextType (..),
+    addContext,
+    unCtx,
+    Binding (..),
+    FullSimpleTypedLambda,
+    pprFullSimple,
+    VarName,
+    Pattern (..),
+    FieldLabel
+    )
 where
 
 import Data.Text.Prettyprint.Doc

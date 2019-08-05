@@ -2,7 +2,7 @@
 
 module Main
   ( main
-  )
+    )
 where
 
 import Lucid
@@ -32,13 +32,13 @@ app =
               wrapper .
               MMark.render .
               MMark.useExtensions
-                [ Ext.toc "toc" toc
-                , Ext.punctuationPrettifier
-                , Ext.ghcSyntaxHighlighter
-                , Ext.skylighting
-                , Ext.mathJax (Just '$')
-                , mathJaxBlock
-                ] $
+                [ Ext.toc "toc" toc,
+                  Ext.punctuationPrettifier,
+                  Ext.ghcSyntaxHighlighter,
+                  Ext.skylighting,
+                  Ext.mathJax (Just '$'),
+                  mathJaxBlock
+                  ] $
               r
   where
     mkPath path = mconcat ["_site/", path, ".html"]

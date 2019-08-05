@@ -16,13 +16,13 @@ test_size =
         Set.size (Term.Set.s 0) @?= 0
         Set.size (Term.Set.s 1) @?= 3
         Set.size (Term.Set.s 2) @?= 39
-        Set.size (Term.Set.s 3) @?= 59439
-    , testCase "Hs.size (s n)" $ do
-      HS.size (Term.HashSet.s 0) @?= 0
-      HS.size (Term.HashSet.s 1) @?= 3
-      HS.size (Term.HashSet.s 2) @?= 39
-      HS.size (Term.HashSet.s 3) @?= 59439
-    ]
+        Set.size (Term.Set.s 3) @?= 59439,
+      testCase "Hs.size (s n)" $ do
+        HS.size (Term.HashSet.s 0) @?= 0
+        HS.size (Term.HashSet.s 1) @?= 3
+        HS.size (Term.HashSet.s 2) @?= 39
+        HS.size (Term.HashSet.s 3) @?= 59439
+      ]
 
 prop_inv01 :: Term.Set.Term -> Property
 prop_inv01 t = preCondition ==> Set.member t (Term.Set.s i)

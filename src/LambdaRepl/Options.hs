@@ -1,16 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module LambdaRepl.Options
-  ( runApp
-  , evalCmd
-  , tcCmd
-  , helpCmd
-  , printEnvCmd
-  , updateEnvTraceCmd
-  , updateEnvStrategyCmd
-  , listStrategyCmd
-  , listPreludeCmd
-  )
+  ( runApp,
+    evalCmd,
+    tcCmd,
+    helpCmd,
+    printEnvCmd,
+    updateEnvTraceCmd,
+    updateEnvStrategyCmd,
+    listStrategyCmd,
+    listPreludeCmd
+    )
 where
 
 import Data.Text.Prettyprint.Doc
@@ -33,11 +33,11 @@ runApp m =
     isTrace <- newIORef False
     withLogFunc lo $ \lf ->
       let app = ReplEnv
-            { appLogFunc = lf
-            , appProcessContext = pc
-            , appStrategy = strategy
-            , appIsTrace = isTrace
-            }
+            { appLogFunc = lf,
+              appProcessContext = pc,
+              appStrategy = strategy,
+              appIsTrace = isTrace
+              }
        in runRIO app m
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> TraceFunc term -> Text -> LambdaREPL
@@ -67,15 +67,15 @@ helpCmd = lift (mapM_ (logInfo . display) $ "available commands" : commands)
 
 commands :: [Text]
 commands =
-  [ "  :set trace               -- トレースの有効化 (簡約の途中経過も含めて表示)"
-  , "  :set strategy <Strategy> -- 評価戦略の設定"
-  , "  :unset trace             -- トレースの無効化"
-  , "  :list strategy           -- 評価戦略の一覧を表示"
-  , "  :list prelude            -- prelude 関数の一覧を表示"
-  , "  :env                     -- 現在の設定内容を表示"
-  , "  :help                    -- ヘルプ"
-  , "  :q                       -- 終了"
-  ]
+  [ "  :set trace               -- トレースの有効化 (簡約の途中経過も含めて表示)",
+    "  :set strategy <Strategy> -- 評価戦略の設定",
+    "  :unset trace             -- トレースの無効化",
+    "  :list strategy           -- 評価戦略の一覧を表示",
+    "  :list prelude            -- prelude 関数の一覧を表示",
+    "  :env                     -- 現在の設定内容を表示",
+    "  :help                    -- ヘルプ",
+    "  :q                       -- 終了"
+    ]
 
 printEnvCmd :: LambdaREPL
 printEnvCmd =
@@ -84,9 +84,9 @@ printEnvCmd =
     isTrace <- readIORef appIsTrace
     let msg =
           Text.unlines
-            [ "strategy: " <> tshow strategy
-            , "isTrace: " <> tshow isTrace
-            ]
+            [ "strategy: " <> tshow strategy,
+              "isTrace: " <> tshow isTrace
+              ]
     logInfo $ display msg
 
 updateEnvTraceCmd :: Bool -> LambdaREPL

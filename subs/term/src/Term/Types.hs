@@ -3,7 +3,7 @@
 
 module Term.Types
   ( Term (..)
-  )
+    )
 where
 
 import RIO
@@ -35,11 +35,11 @@ instance Arbitrary Term where
     t2 <- arbitrary
     t3 <- arbitrary
     elements
-      [ TTrue
-      , TFalse
-      , Zero
-      , Succ t1
-      , Pred t1
-      , IsZero t1
-      , If t1 t2 t3
-      ]
+      [ TTrue,
+        TFalse,
+        Zero,
+        Succ t1,
+        Pred t1,
+        IsZero t1,
+        If t1 t2 t3
+        ]

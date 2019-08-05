@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.FullSimpleLambda
-  ( module Language.FullSimpleLambda.Types
-  , module Language.FullSimpleLambda.Parser
-  , module Language.FullSimpleLambda.Pretty
-  , typeof
-  , desugar
-  , eval
-  )
+  ( module Language.FullSimpleLambda.Types,
+    module Language.FullSimpleLambda.Parser,
+    module Language.FullSimpleLambda.Pretty,
+    typeof,
+    desugar,
+    eval
+    )
 where
 
 import Data.Monoid

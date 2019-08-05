@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Lib.Either
-  ( left
-  , right
-  , isLeft
-  )
+  ( left,
+    right,
+    isLeft
+    )
 where
 
 import Language.UntypedLambda.Lib.Bool

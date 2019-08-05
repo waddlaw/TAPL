@@ -1,6 +1,6 @@
 module Language.Core.Pretty
   ( prettyText
-  )
+    )
 where
 
 import Data.Text.Prettyprint.Doc

@@ -1,34 +1,34 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Lib.Church
-  ( c
-  , scc
-  , plus
-  , times
-  , iszro
-  , prd
-  , -- ** 演習5.2.2
-    scc2
-  , -- ** 演習5.2.3
-    times2
-  , times3
-  , -- ** 演習5.2.4
-    power1
-  , power2
-  , -- ** 演習5.2.5
-    subtract1
-  , -- ** 演習5.2.7
-    equal
-  , -- ** 演習5.2.9
-    factorial
-  , -- * extra
-    isone
-  , -- * helper
-    mkPlus
-  , mkTimes
-  , mkSubtract
-  , mkEqual
-  )
+  ( c,
+    scc,
+    plus,
+    times,
+    iszro,
+    prd,
+    -- ** 演習5.2.2
+    scc2,
+    -- ** 演習5.2.3
+    times2,
+    times3,
+    -- ** 演習5.2.4
+    power1,
+    power2,
+    -- ** 演習5.2.5
+    subtract1,
+    -- ** 演習5.2.7
+    equal,
+    -- ** 演習5.2.9
+    factorial,
+    -- * extra
+    isone,
+    -- * helper
+    mkPlus,
+    mkTimes,
+    mkSubtract,
+    mkEqual
+    )
 where
 
 import Language.UntypedLambda.Lib.Base

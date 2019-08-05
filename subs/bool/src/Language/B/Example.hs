@@ -1,6 +1,6 @@
 module Language.B.Example
   ( example
-  )
+    )
 where
 
 import Language.B.Types

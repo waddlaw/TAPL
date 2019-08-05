@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Lib.Pair
-  ( pair
-  , fst
-  , snd
-  , -- * helper
+  ( pair,
+    fst,
+    snd,
+    -- * helper
     mkPair
-  )
+    )
 where
 
 import Language.UntypedLambda.Lib.Bool

@@ -1,12 +1,12 @@
 {-# LANGUAGE FlexibleInstances #-}
 
 module Language.B
-  ( module Language.B.Parser
-  , module Language.B.Types
-  , deduce
-  , step
-  , reduction
-  )
+  ( module Language.B.Parser,
+    module Language.B.Types,
+    deduce,
+    step,
+    reduction
+    )
 where
 
 import Language.B.Parser

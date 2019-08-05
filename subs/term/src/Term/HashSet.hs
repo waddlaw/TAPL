@@ -1,11 +1,11 @@
 module Term.HashSet
-  ( module Term.Types
-  , s
-  , consts
-  , size
-  , depth
-  , minT
-  )
+  ( module Term.Types,
+    s,
+    consts,
+    size,
+    depth,
+    minT
+    )
 where
 
 import RIO

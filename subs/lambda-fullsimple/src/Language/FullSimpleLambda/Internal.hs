@@ -1,8 +1,8 @@
 module Language.FullSimpleLambda.Internal
-  ( isValue
-  , isNumericValue
-  , isRecordValue
-  )
+  ( isValue,
+    isNumericValue,
+    isRecordValue
+    )
 where
 
 import Language.FullSimpleLambda.Types

@@ -1,7 +1,7 @@
 module Language.NB.Types
-  ( Term (..)
-  , TmError (..)
-  )
+  ( Term (..),
+    TmError (..)
+    )
 where
 
 import Data.Text.Prettyprint.Doc

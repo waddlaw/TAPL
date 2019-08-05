@@ -1,7 +1,7 @@
 module Language.B.Parser
-  ( bparser
-  , stepCmdParser
-  )
+  ( bparser,
+    stepCmdParser
+    )
 where
 
 import Language.B.Types

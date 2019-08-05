@@ -1,13 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Lib.NB
-  ( realbool
-  , churchbool
-  , realeq
-  , realnat
-  , -- * 演習5.2.10
+  ( realbool,
+    churchbool,
+    realeq,
+    realnat,
+    -- * 演習5.2.10
     churchnat
-  )
+    )
 where
 
 import Language.UntypedLambda.Lib.Base

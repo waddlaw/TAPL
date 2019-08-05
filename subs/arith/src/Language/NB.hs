@@ -1,10 +1,10 @@
 module Language.NB
-  ( module Language.NB.Parser
-  , module Language.NB.Types
-  , isNumericalVal
-  , isVal
-  , eval
-  )
+  ( module Language.NB.Parser,
+    module Language.NB.Types,
+    isNumericalVal,
+    isVal,
+    eval
+    )
 where
 
 import Language.NB.Parser

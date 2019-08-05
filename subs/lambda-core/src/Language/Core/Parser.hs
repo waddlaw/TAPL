@@ -1,6 +1,6 @@
 module Language.Core.Parser
   ( runParserString
-  )
+    )
 where
 
 import Text.Trifecta

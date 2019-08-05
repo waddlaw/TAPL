@@ -1,6 +1,6 @@
 module Language.NB.Parser
   ( runNbParser
-  )
+    )
 where
 
 import Language.Core.Parser

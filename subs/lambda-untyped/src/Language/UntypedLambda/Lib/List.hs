@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Lib.List
-  ( nil
-  , cons
-  , isnil
-  , head
-  , tail
-  , -- ** 演習5.2.11
-    sumlist
-  , sumlist'
-  )
+  ( nil,
+    cons,
+    isnil,
+    head,
+    tail,
+    -- ** 演習5.2.11
+    sumlist,
+    sumlist'
+    )
 where
 
 import Language.UntypedLambda.Lib.Base

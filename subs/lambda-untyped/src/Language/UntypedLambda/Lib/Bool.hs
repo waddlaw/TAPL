@@ -2,19 +2,19 @@
 
 module Language.UntypedLambda.Lib.Bool
   ( -- * value
-    tru
-  , fls
-  , test
-  , and
-  , -- * 演習 5.2.1
-    or
-  , not
-  , -- * helper
-    mkTest
-  , mkAnd
-  , mkOr
-  , mkNot
-  )
+    tru,
+    fls,
+    test,
+    and,
+    -- * 演習 5.2.1
+    or,
+    not,
+    -- * helper
+    mkTest,
+    mkAnd,
+    mkOr,
+    mkNot
+    )
 where
 
 import Language.UntypedLambda.Lib.Util

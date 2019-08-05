@@ -2,15 +2,15 @@
 {-# LANGUAGE FlexibleInstances #-}
 
 module Language.UntypedLambda.Types
-  ( Term (..)
-  , UntypedLambda
-  , (@@)
-  , λ
-  , Context
-  , VarName
-  , NamelessTerm (..)
-  , getNlTermVar
-  )
+  ( Term (..),
+    UntypedLambda,
+    (@@),
+    λ,
+    Context,
+    VarName,
+    NamelessTerm (..),
+    getNlTermVar
+    )
 where
 
 import Data.Text.Prettyprint.Doc

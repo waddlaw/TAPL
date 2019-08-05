@@ -1,10 +1,10 @@
 module LambdaRepl.Types
-  ( LambdaREPL
-  , ReplEnv (..)
-  , ParseFunc
-  , EvalFunc
-  , TraceFunc
-  )
+  ( LambdaREPL,
+    ReplEnv (..),
+    ParseFunc,
+    EvalFunc,
+    TraceFunc
+    )
 where
 
 import Language.Core.Types
@@ -22,11 +22,11 @@ type TraceFunc term = Strategy -> term -> [term]
 
 data ReplEnv
   = ReplEnv
-      { appLogFunc :: !LogFunc
-      , appProcessContext :: !ProcessContext
-      , appStrategy :: IORef Strategy
-      , appIsTrace :: IORef Bool
-      }
+      { appLogFunc :: !LogFunc,
+        appProcessContext :: !ProcessContext,
+        appStrategy :: IORef Strategy,
+        appIsTrace :: IORef Bool
+        }
 
 instance HasLogFunc ReplEnv where
 

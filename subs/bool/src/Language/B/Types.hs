@@ -1,10 +1,10 @@
 module Language.B.Types
-  ( Term (..)
-  , Rule (..)
-  , EvalRelation (..)
-  , Premise
-  , Conclusion
-  )
+  ( Term (..),
+    Rule (..),
+    EvalRelation (..),
+    Premise,
+    Conclusion
+    )
 where
 
 import Data.Text.Prettyprint.Doc

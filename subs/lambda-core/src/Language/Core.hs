@@ -1,11 +1,11 @@
 module Language.Core
-  ( module Language.Core.Types
-  , trim
-  , render
-  , renderPrelude
-  , displayRender
-  , strategies
-  )
+  ( module Language.Core.Types,
+    trim,
+    render,
+    renderPrelude,
+    displayRender,
+    strategies
+    )
 where
 
 import Data.Text.Prettyprint.Doc
@@ -33,4 +33,4 @@ renderPrelude = L.foldr glue "" . Map.toList
     addNewline acc = "\n" ++ acc
 
 strategies :: [Strategy]
-strategies = [minBound.. maxBound]
+strategies = [minBound .. maxBound]

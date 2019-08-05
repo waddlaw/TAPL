@@ -1,6 +1,6 @@
 module Language.SimpleLambda.Parser
   ( runSimpleLambdaParser
-  )
+    )
 where
 
 -- λs:Bool.λz:Bool.s (s z)
@@ -83,7 +83,7 @@ ifP =
 varP :: StateT Context Parser Term
 varP = do
   ctx <- get
-  var <- lift $ toTerm <$> oneOf ['a'.. 'z'] <*> many alphaNum
+  var <- lift $ toTerm <$> oneOf ['a' .. 'z'] <*> many alphaNum
   pure $ TmVar $ fromMaybe (error $ Text.unpack var <> " is not found in Contexts") $ L.findIndex ((== var) . fst) $ unCtx ctx
   where
     toTerm x xs = Text.pack (x : xs)
@@ -98,10 +98,10 @@ identP = do
 
 defaultIdentStyle :: IdentifierStyle Parser
 defaultIdentStyle = IdentifierStyle
-  { _styleName = "SimpleLambda"
-  , _styleStart = oneOf ['a'.. 'z']
-  , _styleLetter = alphaNum
-  , _styleReserved = mempty
-  , _styleHighlight = Identifier
-  , _styleReservedHighlight = ReservedIdentifier
-  }
+  { _styleName = "SimpleLambda",
+    _styleStart = oneOf ['a' .. 'z'],
+    _styleLetter = alphaNum,
+    _styleReserved = mempty,
+    _styleHighlight = Identifier,
+    _styleReservedHighlight = ReservedIdentifier
+    }

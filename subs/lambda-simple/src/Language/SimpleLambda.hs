@@ -1,9 +1,9 @@
 module Language.SimpleLambda
-  ( module Language.SimpleLambda.Types
-  , module Language.SimpleLambda.Parser
-  , module Language.SimpleLambda.Pretty
-  , typeof
-  )
+  ( module Language.SimpleLambda.Types,
+    module Language.SimpleLambda.Parser,
+    module Language.SimpleLambda.Pretty,
+    typeof
+    )
 where
 
 import Language.SimpleLambda.Parser

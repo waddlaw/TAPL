@@ -1,11 +1,11 @@
 module Term.Set
-  ( module Term.Types
-  , s
-  , consts
-  , size
-  , depth
-  , minT
-  )
+  ( module Term.Types,
+    s,
+    consts,
+    size,
+    depth,
+    minT
+    )
 where
 
 import RIO

@@ -1,11 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Lib.Base
-  ( id
-  , fix
-  , -- * helper
+  ( id,
+    fix,
+    -- * helper
     mkFix
-  )
+    )
 where
 
 import Language.UntypedLambda.Lib.Bool

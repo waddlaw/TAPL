@@ -1,29 +1,29 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda
-  ( module Language.UntypedLambda.Types
-  , module Language.UntypedLambda.Parser
-  , module Language.UntypedLambda.Prelude
-  , isClosed
-  , reduceNormalOrder
-  , reduceCallByName
-  , reduceCallByValue
-  , eval
-  , evalWithTrace
-  , evalOneStep
-  , trace
-  , steps
-  , subst
-  , size
-  , -- * 演習 6.1.5
-    removenames
-  , restorenames
-  , -- * 定義 6.2.1
-    shift
-  , -- * 定義 6.2.4
-    namelessSubst
-  , reduceNameless
-  )
+  ( module Language.UntypedLambda.Types,
+    module Language.UntypedLambda.Parser,
+    module Language.UntypedLambda.Prelude,
+    isClosed,
+    reduceNormalOrder,
+    reduceCallByName,
+    reduceCallByValue,
+    eval,
+    evalWithTrace,
+    evalOneStep,
+    trace,
+    steps,
+    subst,
+    size,
+    -- * 演習 6.1.5
+    removenames,
+    restorenames,
+    -- * 定義 6.2.1
+    shift,
+    -- * 定義 6.2.4
+    namelessSubst,
+    reduceNameless
+    )
 where
 
 import Language.Core

@@ -1,7 +1,7 @@
 module Language.FullSimpleLambda.Pretty
-  ( prettyFullSimpleText
-  , prettyType
-  )
+  ( prettyFullSimpleText,
+    prettyType
+    )
 where
 
 import Data.Text.Prettyprint.Doc

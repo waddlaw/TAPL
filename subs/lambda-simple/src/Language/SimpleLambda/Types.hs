@@ -1,13 +1,13 @@
 module Language.SimpleLambda.Types
-  ( Ty (..)
-  , Term (..)
-  , Context
-  , addContext
-  , unCtx
-  , Binding (..)
-  , SimpleTypedLambda
-  , pprSimple
-  )
+  ( Ty (..),
+    Term (..),
+    Context,
+    addContext,
+    unCtx,
+    Binding (..),
+    SimpleTypedLambda,
+    pprSimple
+    )
 where
 
 import Data.Text.Prettyprint.Doc

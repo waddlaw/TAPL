@@ -1,6 +1,6 @@
 module Utils
   ( evalAllStrategy
-  )
+    )
 where
 
 import Language.Core.Types

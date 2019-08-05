@@ -1,7 +1,7 @@
 module Language.Core.Types
-  ( Strategy (..)
-  , Prelude
-  )
+  ( Strategy (..),
+    Prelude
+    )
 where
 
 type Prelude lang = Map Text lang

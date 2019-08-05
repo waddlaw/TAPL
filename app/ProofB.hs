@@ -37,12 +37,12 @@ helpCmd = mapM_ outputStrLn $ "available commands" : commands
 
 commands :: [String]
 commands =
-  [ "  :set"
-  , "  :show"
-  , "  :step"
-  , "  :rules"
-  , "  :q"
-  ]
+  [ "  :set",
+    "  :show",
+    "  :step",
+    "  :rules",
+    "  :q"
+    ]
 
 setTargetCmd :: Proof
 setTargetCmd = do
@@ -85,7 +85,7 @@ rulesCmd :: Proof
 rulesCmd = mapM_ (outputStrLn . renderRule) allRules
 
 allRules :: [Rule]
-allRules = [minBound.. maxBound]
+allRules = [minBound .. maxBound]
 
 -------
 renderRule :: Rule -> String

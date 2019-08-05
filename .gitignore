@@ -6,3 +6,5 @@ _site
 dist-newstyle/
 .ghc.environment.*
 .DS_Store
+.haskell-code-explorer/
+**/docs

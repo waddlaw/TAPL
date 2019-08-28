@@ -202,15 +202,6 @@ script:
   - ${CABAL} v2-build $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
   # Testing...
   - ${CABAL} v2-test $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
-  # cabal check...
-  - (cd ${PKGDIR_tapl} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_term} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_bool} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_arith} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_lambda_core} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_lambda_simple} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_lambda_untyped} && ${CABAL} -vnormal check)
-  - (cd ${PKGDIR_lambda_fullsimple} && ${CABAL} -vnormal check)
   # haddock...
   - ${CABAL} v2-haddock $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
 

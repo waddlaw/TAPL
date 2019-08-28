@@ -5,3 +5,4 @@ unconstrained: False
 local-ghc-options: -Werror
 installed: +all -haskeline
 travis-patches: haskell-ci.tasty-discover.patch
+cabal-check: False

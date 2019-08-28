@@ -98,7 +98,30 @@ install:
     echo "packages: ./subs/lambda-untyped" >> cabal.project
     echo "packages: ./subs/lambda-fullsimple" >> cabal.project
   - |
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(arith|bool|lambda-core|lambda-fullsimple|lambda-simple|lambda-untyped|tapl|term)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+    echo "package tapl"              >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package term"              >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package bool"              >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package arith"             >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package lambda-core"       >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package lambda-simple"     >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package lambda-untyped"    >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package lambda-fullsimple" >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(arith|bool|haskeline|lambda-core|lambda-fullsimple|lambda-simple|lambda-untyped|tapl|term)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   - if [ -f "./configure.ac" ]; then (cd "." && autoreconf -i); fi
@@ -144,7 +167,30 @@ script:
     echo "packages: ${PKGDIR_lambda_untyped}" >> cabal.project
     echo "packages: ${PKGDIR_lambda_fullsimple}" >> cabal.project
   - |
-  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(arith|bool|lambda-core|lambda-fullsimple|lambda-simple|lambda-untyped|tapl|term)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
+    echo "package tapl"              >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package term"              >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package bool"              >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package arith"             >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package lambda-core"       >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package lambda-simple"     >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package lambda-untyped"    >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+    echo ""                          >> cabal.project
+    echo "package lambda-fullsimple" >> cabal.project
+    echo "  ghc-options: -Werror"    >> cabal.project
+  - "for pkg in $($HCPKG list --simple-output); do echo $pkg | sed 's/-[^-]*$//' | (grep -vE -- '^(arith|bool|haskeline|lambda-core|lambda-fullsimple|lambda-simple|lambda-untyped|tapl|term)$' || true) | sed 's/^/constraints: /' | sed 's/$/ installed/' >> cabal.project.local; done"
   - cat cabal.project || true
   - cat cabal.project.local || true
   # Building...
@@ -166,9 +212,6 @@ script:
   - (cd ${PKGDIR_lambda_fullsimple} && ${CABAL} -vnormal check)
   # haddock...
   - ${CABAL} v2-haddock $WITHCOMPILER ${TEST} ${BENCH} all | color_cabal_output
-  # Building without installed constraints for packages in global-db...
-  - rm -f cabal.project.local
-  - ${CABAL} v2-build $WITHCOMPILER --disable-tests --disable-benchmarks all | color_cabal_output
 
 # REGENDATA ["--config","cabal.haskell-ci","cabal.project"]
 # EOF

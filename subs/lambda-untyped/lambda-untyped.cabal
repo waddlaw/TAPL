@@ -1,0 +1,72 @@
+cabal-version: 2.4
+name:          lambda-untyped
+version:       0.1.0.0
+
+common deps
+  default-extensions:
+    MultiWayIf
+    ViewPatterns
+
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -Wnoncanonical-monad-instances
+    -Wredundant-constraints -Wtabs
+
+  build-depends:
+    , base         ^>=4.12
+    , lambda-core
+
+library
+  import:           deps
+
+  -- cabal-fmt: expand src -Prelude
+  exposed-modules:
+    Language.UntypedLambda
+    Language.UntypedLambda.Examples
+    Language.UntypedLambda.Lib.Base
+    Language.UntypedLambda.Lib.Bool
+    Language.UntypedLambda.Lib.Church
+    Language.UntypedLambda.Lib.Either
+    Language.UntypedLambda.Lib.Int
+    Language.UntypedLambda.Lib.List
+    Language.UntypedLambda.Lib.NB
+    Language.UntypedLambda.Lib.Pair
+    Language.UntypedLambda.Lib.Util
+    Language.UntypedLambda.Parser
+    Language.UntypedLambda.Prelude
+    Language.UntypedLambda.Types
+
+  other-modules:    Prelude
+  hs-source-dirs:   src
+  build-depends:
+    , parsers        ^>=0.12.10
+    , prettyprinter  ^>=1.3
+    , rio            ^>=0.1.12
+    , transformers   ^>=0.5.6
+    , trifecta       ^>=2
+
+  default-language: Haskell2010
+
+test-suite lambda-untyped-test
+  import:           deps
+  type:             exitcode-stdio-1.0
+  main-is:          Driver.hs
+
+  -- cabal-fmt: expand test -Driver
+  other-modules:
+    UntypedLambda
+    UntypedLambda.Lib.Bool
+    UntypedLambda.Lib.Church
+    UntypedLambda.Lib.Int
+    UntypedLambda.Lib.List
+    UntypedLambda.Lib.NB
+    UntypedLambda.Lib.Pair
+    Utils
+
+  hs-source-dirs:   test
+  build-depends:
+    , lambda-untyped
+    , tasty           ^>=1.2.3
+    , tasty-hunit     ^>=0.10.0
+
+  default-language: Haskell2010

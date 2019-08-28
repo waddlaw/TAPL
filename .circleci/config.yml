@@ -3,8 +3,8 @@ version: 2
 aliases:
   - &default_env
     environment:
-      CACHE_KEY: 1
-      STACK_VERSION: 1.9.3
+      CACHE_KEY: 2
+      STACK_VERSION: 2.1.3
   - &create_cache_key_file
     run:
       name: Create cache control key file
@@ -12,12 +12,12 @@ aliases:
   - &restore_build_results
     restore_cache:
       keys:
-        - stack-{{ checksum "cache_key" }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+        - stack-{{ checksum "cache_key" }}-{{ checksum "stack.yaml" }}-{{ checksum "tapl.cabal" }}
         - stack-{{ checksum "cache_key" }}-{{ checksum "stack.yaml" }}
         - stack-{{ checksum "cache_key" }}
   - &save_build_results
       save_cache:
-        key: stack-{{ checksum "cache_key" }}-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
+        key: stack-{{ checksum "cache_key" }}-{{ checksum "stack.yaml" }}-{{ checksum "tapl.cabal" }}
         paths:
           - ~/.stack
           - ~/.local/bin

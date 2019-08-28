@@ -64,9 +64,6 @@ $ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ### cabal
 
 ```shell
-# package.yaml から cabal ファイルを生成するため
-$ stack build --dry-run
-
 # ビルド
 $ cabal new-build
 

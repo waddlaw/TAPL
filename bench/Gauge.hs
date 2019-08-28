@@ -1,3 +1,4 @@
+import Prelude
 import Gauge
 import qualified Term.HashSet
 import qualified Term.Set

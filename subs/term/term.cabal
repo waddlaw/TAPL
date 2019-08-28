@@ -1,0 +1,46 @@
+cabal-version: 2.4
+name:          term
+version:       0.1.0.0
+
+common deps
+  default-extensions:
+    NoImplicitPrelude
+    MultiWayIf
+
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -Wnoncanonical-monad-instances
+    -Wredundant-constraints -Wtabs
+
+  build-depends:
+    , base  ^>=4.12
+    , rio   ^>=0.1.12
+
+library
+  import:           deps
+
+  -- cabal-fmt: expand src
+  exposed-modules:
+    Term.HashSet
+    Term.Set
+    Term.Types
+
+  hs-source-dirs:   src
+  build-depends:    QuickCheck ^>=2.13
+  default-language: Haskell2010
+
+test-suite term-test
+  import:           deps
+  type:             exitcode-stdio-1.0
+  main-is:          Driver.hs
+
+  -- cabal-fmt: expand test -Driver
+  other-modules:    Term
+  hs-source-dirs:   test
+  build-depends:
+    , tasty             ^>=1.2.3
+    , tasty-hunit       ^>=0.10.0
+    , tasty-quickcheck  ^>=0.10
+    , term
+
+  default-language: Haskell2010

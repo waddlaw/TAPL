@@ -1,6 +1,6 @@
 #####################################################################
 ## IGNORES
 
-- ignore: { name: Use fromMaybe }
+- ignore: { name: Replace case with fromMaybe }
 - ignore: { name: Reduce duplication }
 - arguments: [-XMultiWayIf, -XNoImplicitPrelude]

@@ -7,3 +7,4 @@ dist-newstyle/
 .DS_Store
 .haskell-code-explorer/
 **/docs
+cabal.project.local

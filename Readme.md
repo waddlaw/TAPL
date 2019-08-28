@@ -1,7 +1,7 @@
+# 型システム入門 プログラミング言語と型の理論
+
 [![CircleCI](https://circleci.com/gh/waddlaw/TAPL.svg?style=svg&circle-token=8ce7ac6650bb2b4998a484e802ea77f812fd9401)](https://circleci.com/gh/waddlaw/TAPL)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8c7df8ad-e448-40fd-821e-9338ad72482b/deploy-status)](https://app.netlify.com/sites/tapl/deploys)
-
-# 型システム入門 プログラミング言語と型の理論
 
 - [オーム社の公式ページ](https://www.ohmsha.co.jp/book/9784274069116/)
 - [日本語版サポートページ](http://tapl.proofcafe.org/)
@@ -21,7 +21,12 @@
 
 ## Quick Start Guide
 
-stack のバージョンは 2.1.1 以上を利用しましょう。
+app | versionn
+------|-------
+stack | 2.1.3
+cabal-install | 3.0.0.0
+cabal-fmt | 0.1.1
+ormolu | HEAD
 
 ```shell
 $ git clone https://github.com/waddlaw/TAPL.git
@@ -65,10 +70,10 @@ $ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 
 ```shell
 # ビルド
-$ cabal new-build
+$ cabal build
 
 # テスト
-$ cabal new-test all
+$ cabal test all
 ```
 
 ### チェック

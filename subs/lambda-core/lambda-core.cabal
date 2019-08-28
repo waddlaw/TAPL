@@ -1,6 +1,7 @@
 cabal-version: 2.4
 name:          lambda-core
 version:       0.1.0.0
+tested-with:   GHC ==8.6.5
 
 library
   -- cabal-fmt: expand src -Prelude

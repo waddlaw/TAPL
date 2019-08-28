@@ -23,10 +23,11 @@
 
 app | versionn
 ------|-------
-stack | 2.1.3
 cabal-install | 3.0.0.0
 cabal-fmt | 0.1.1
+haskell-ci | 0.3.20190815
 ormolu | HEAD
+stack | 2.1.3
 
 ```shell
 $ git clone https://github.com/waddlaw/TAPL.git

@@ -1,5 +1,5 @@
 cabal-install-version: 3.0
-hlint: True
+hlint: False
 hlint-version: ==2.2.*
 unconstrained: False
 local-ghc-options: -Werror

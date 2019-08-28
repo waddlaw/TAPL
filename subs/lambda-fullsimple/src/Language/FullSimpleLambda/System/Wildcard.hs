@@ -40,11 +40,11 @@ instance System Wildcard where
   eval :: Term Wildcard -> Term Wildcard
   eval = \case
     TmApp t1@(TmLam _ _ t12) t2
-      -- | E-APP1
+      -- E-APP1
       | not (isValue t1) -> TmApp (eval t1) t2
-      -- | E-APP2
+      -- E-APP2
       | isValue t1 && not (isValue t2) -> TmApp t1 (eval t2)
-      -- | E-APPABS
+      -- E-APPABS
       | isValue t1 && isValue t2 -> shift 0 (-1) $ subst 0 (shift 0 1 t2) t12
     -- E-WILDCARD
     TmApp (TmWildcard _ t12) t2
@@ -53,16 +53,16 @@ instance System Wildcard where
 
   typeof :: Context Wildcard -> Term Wildcard -> Ty Wildcard
   typeof ctx = \case
-    -- | T-VAR
+    -- T-VAR
     TmVar i -> case getTypeFromContext i ctx of
       Nothing -> error "Not found type variable in Context"
       Just ty -> ty
-    -- | T-ABS
+    -- T-ABS
     TmLam x tyT1 t2 -> TyArr tyT1 tyT2
       where
         tyT2 = typeof ctx' t2
         ctx' = CtxVar ctx x tyT1
-    -- | T-APP
+    -- T-APP
     TmApp t1 t2 ->
       case tyT1 of
         TyArr tyT11 tyT12 ->
@@ -86,7 +86,7 @@ instance System Wildcard where
 
 isValue :: Term Wildcard -> Bool
 isValue = \case
-  TmLam {} -> True -- ^ ラムダ抽象値
+  TmLam {} -> True -- ラムダ抽象値
   _ -> False
 
 subst :: Int -> Value -> Term Wildcard -> Term Wildcard

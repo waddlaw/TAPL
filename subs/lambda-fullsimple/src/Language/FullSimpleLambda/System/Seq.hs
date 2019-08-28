@@ -42,31 +42,31 @@ instance System Seq where
   eval :: Term Seq -> Term Seq
   eval = \case
     TmApp t1@(TmLam _ _ t12) t2
-      -- | E-APP1
+      -- E-APP1
       | not (isValue t1) -> TmApp (eval t1) t2
-      -- | E-APP2
+      -- E-APP2
       | isValue t1 && not (isValue t2) -> TmApp t1 (eval t2)
-      -- | E-APPABS
+      -- E-APPABS
       | isValue t1 && isValue t2 -> shift 0 (-1) $ subst 0 (shift 0 1 t2) t12
     TmSeq t1 t2
-      -- | E-SEQ
+      -- E-SEQ
       | not (isValue t1) -> TmSeq (eval t1) t2
-      -- | E-SEQNEXT
+      -- E-SEQNEXT
       | isValue t1 -> t2
     _ -> error "unexpected term"
 
   typeof :: Context Seq -> Term Seq -> Ty Seq
   typeof ctx = \case
-    -- | T-VAR
+    -- T-VAR
     TmVar i -> case getTypeFromContext i ctx of
       Nothing -> error "Not found type variable in Context"
       Just ty -> ty
-    -- | T-ABS
+    -- T-ABS
     TmLam x tyT1 t2 -> TyArr tyT1 tyT2
       where
         tyT2 = typeof ctx' t2
         ctx' = CtxVar ctx x tyT1
-    -- | T-APP
+    -- T-APP
     TmApp t1 t2 ->
       case tyT1 of
         TyArr tyT11 tyT12 ->
@@ -82,9 +82,9 @@ instance System Seq where
       where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2
-    -- | T-UNIT
+    -- T-UNIT
     TmUnit -> TyUnit
-    -- | T-SEQ
+    -- T-SEQ
     TmSeq t1 t2
       | typeof ctx t1 == TyUnit -> typeof ctx t2
       | otherwise -> error "type mismatch (T-SEQ)"
@@ -95,8 +95,8 @@ instance System Seq where
 
 isValue :: Term Seq -> Bool
 isValue = \case
-  TmLam {} -> True -- ^ ラムダ抽象値
-  TmUnit -> True -- ^ 定数 unit
+  TmLam {} -> True -- ラムダ抽象値
+  TmUnit -> True -- 定数 unit
   _ -> False
 
 subst :: Int -> Value -> Term Seq -> Term Seq

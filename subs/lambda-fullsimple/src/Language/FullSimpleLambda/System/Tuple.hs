@@ -41,22 +41,22 @@ instance System Tuple where
   eval :: Term Tuple -> Term Tuple
   eval = \case
     TmApp t1@(TmLam _ _ t12) t2
-      -- | E-APP1
+      -- E-APP1
       | not (isValue t1) -> TmApp (eval t1) t2
-      -- | E-APP2
+      -- E-APP2
       | isValue t1 && not (isValue t2) -> TmApp t1 (eval t2)
-      -- | E-APPABS
+      -- E-APPABS
       | isValue t1 && isValue t2 -> shift 0 (-1) $ subst 0 (shift 0 1 t2) t12
-    -- | E-PROJTUPLE
+    -- E-PROJTUPLE
     TmTupleProj j (TmTuple ts)
       | all isValue ts ->
         if j < length ts
           then ts L.Partial.!! j
           else error "タプルのサイズより大きな値が指定されています"
       | otherwise -> error "eval: 値ではない項が存在します。"
-    -- | E-PROJ
+    -- E-PROJ
     TmTupleProj i t -> TmTupleProj i (eval t)
-    -- | E-TUPLE
+    -- E-TUPLE
     TmTuple ts -> TmTuple (vs ++ [eval t] ++ ts')
       where
         (vs, t, ts') = splitTerm ts
@@ -64,16 +64,16 @@ instance System Tuple where
 
   typeof :: Context Tuple -> Term Tuple -> Ty Tuple
   typeof ctx = \case
-    -- | T-VAR
+    -- T-VAR
     TmVar i -> case getTypeFromContext i ctx of
       Nothing -> error "Not found type variable in Context"
       Just ty -> ty
-    -- | T-ABS
+    -- T-ABS
     TmLam x tyT1 t2 -> TyArr tyT1 tyT2
       where
         tyT2 = typeof ctx' t2
         ctx' = CtxVar ctx x tyT1
-    -- | T-APP
+    -- T-APP
     TmApp t1 t2 ->
       case tyT1 of
         TyArr tyT11 tyT12 ->
@@ -89,9 +89,9 @@ instance System Tuple where
       where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2
-    -- | T-TUPLE
+    -- T-TUPLE
     TmTuple ts -> TyTuple $ map (typeof ctx) ts
-    -- | T-PROJ
+    -- T-PROJ
     TmTupleProj j t -> case typeof ctx t of
       TyTuple tys -> tys L.Partial.!! j
       _ -> error "type mismatch (T-PROJ)"
@@ -101,8 +101,8 @@ instance System Tuple where
 
 isValue :: Term Tuple -> Bool
 isValue = \case
-  TmLam {} -> True -- ^ ラムダ抽象値
-  TmTuple ts -> all isValue ts -- ^ 組の値
+  TmLam {} -> True -- ラムダ抽象値
+  TmTuple ts -> all isValue ts -- 組の値
   _ -> False
 
 subst :: Int -> Value -> Term Tuple -> Term Tuple

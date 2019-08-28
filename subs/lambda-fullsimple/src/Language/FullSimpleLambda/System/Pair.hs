@@ -41,41 +41,41 @@ instance System Pair where
   eval :: Term Pair -> Term Pair
   eval = \case
     TmApp t1@(TmLam _ _ t12) t2
-      -- | E-APP1
+      -- E-APP1
       | not (isValue t1) -> TmApp (eval t1) t2
-      -- | E-APP2
+      -- E-APP2
       | isValue t1 && not (isValue t2) -> TmApp t1 (eval t2)
-      -- | E-APPABS
+      -- E-APPABS
       | isValue t1 && isValue t2 -> shift 0 (-1) $ subst 0 (shift 0 1 t2) t12
     TmPairFst t@(TmPair t1 t2)
-      -- | E-PAIRBETA1
+      -- E-PAIRBETA1
       | isValue t1 && isValue t2 -> t1
-      -- | E-PROJ1
+      -- E-PROJ1
       | otherwise -> TmPairFst (eval t)
     TmPairSnd t@(TmPair t1 t2)
-      -- | E-PAIRBETA2
+      -- E-PAIRBETA2
       | isValue t1 && isValue t2 -> t2
-      -- | E-PROJ2
+      -- E-PROJ2
       | otherwise -> TmPairSnd (eval t)
     TmPair t1 t2
-      -- | E-PAIR1
+      -- E-PAIR1
       | not (isValue t1) -> TmPair (eval t1) t2
-      -- | E-PAIR2
+      -- E-PAIR2
       | isValue t1 -> TmPair t1 (eval t2)
     _ -> error "unexpected term"
 
   typeof :: Context Pair -> Term Pair -> Ty Pair
   typeof ctx = \case
-    -- | T-VAR
+    -- T-VAR
     TmVar i -> case getTypeFromContext i ctx of
       Nothing -> error "Not found type variable in Context"
       Just ty -> ty
-    -- | T-ABS
+    -- T-ABS
     TmLam x tyT1 t2 -> TyArr tyT1 tyT2
       where
         tyT2 = typeof ctx' t2
         ctx' = CtxVar ctx x tyT1
-    -- | T-APP
+    -- T-APP
     TmApp t1 t2 ->
       case tyT1 of
         TyArr tyT11 tyT12 ->
@@ -91,13 +91,13 @@ instance System Pair where
       where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2
-    -- | T-PAIR
+    -- T-PAIR
     TmPair t1 t2 -> TyProd (typeof ctx t1) (typeof ctx t2)
-    -- | T-PORJ1
+    -- T-PORJ1
     TmPairFst t -> case typeof ctx t of
       TyProd ty _ -> ty
       _ -> error "type mismatch (T-PORJ1)"
-    -- | T-PROJ2
+    -- T-PROJ2
     TmPairSnd t -> case typeof ctx t of
       TyProd _ ty -> ty
       _ -> error "type mismatch (T-PROJ2)"
@@ -107,8 +107,8 @@ instance System Pair where
 
 isValue :: Term Pair -> Bool
 isValue = \case
-  TmLam {} -> True -- ^ ラムダ抽象値
-  TmPair t1 t2 -> isValue t1 && isValue t2 -- ^ 二つ組値
+  TmLam {} -> True -- ラムダ抽象値
+  TmPair t1 t2 -> isValue t1 && isValue t2 -- 二つ組値
   _ -> False
 
 subst :: Int -> Value -> Term Pair -> Term Pair

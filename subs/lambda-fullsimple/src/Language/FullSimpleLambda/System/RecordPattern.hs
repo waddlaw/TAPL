@@ -49,42 +49,42 @@ instance System RecordPattern where
   eval :: Term RecordPattern -> Term RecordPattern
   eval = \case
     TmApp t1@(TmLam _ _ t12) t2
-      -- | E-APP1
+      -- E-APP1
       | not (isValue t1) -> TmApp (eval t1) t2
-      -- | E-APP2
+      -- E-APP2
       | isValue t1 && not (isValue t2) -> TmApp t1 (eval t2)
-      -- | E-APPABS
+      -- E-APPABS
       | isValue t1 && isValue t2 -> shift 0 (-1) $ subst 0 (shift 0 1 t2) t12
     TmRecordProj label t@(TmRecord fields)
-      -- | E-PROJRCD
+      -- E-PROJRCD
       | isValue t -> fromMaybe (error "field label not found (E-PROJRCD)") $ lookup label fields
-      -- | E-PROJ
+      -- E-PROJ
       | otherwise -> TmRecordProj label (eval t)
-    -- | E-RCD
+    -- E-RCD
     t@(TmRecord _)
       | isValue t -> t
       | otherwise -> TmRecord (vfs ++ [(label, eval tj)] ++ tfs)
       where
         (vfs, (label, tj), tfs) = splitRecord t
     TmPattern p t1 t2
-      -- | E-LETV
+      -- E-LETV
       | isValue t1 -> match p t1 t2
-      -- | E-LET
+      -- E-LET
       | not (isValue t1) -> TmPattern p (eval t1) t2
     _ -> error "unexpected term"
 
   typeof :: Context RecordPattern -> Term RecordPattern -> Ty RecordPattern
   typeof ctx = \case
-    -- | T-VAR
+    -- T-VAR
     TmVar i -> case getTypeFromContext i ctx of
       Nothing -> error "Not found type variable in Context"
       Just ty -> ty
-    -- | T-ABS
+    -- T-ABS
     TmLam x tyT1 t2 -> TyArr tyT1 tyT2
       where
         tyT2 = typeof ctx' t2
         ctx' = CtxVar ctx x tyT1
-    -- | T-APP
+    -- T-APP
     TmApp t1 t2 ->
       case tyT1 of
         TyArr tyT11 tyT12 ->
@@ -100,13 +100,13 @@ instance System RecordPattern where
       where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2
-    -- | T-RCD
+    -- T-RCD
     TmRecord fields -> TyRecord $ map (\(l, t) -> (l, typeof ctx t)) fields
-    -- | T-PROJ
+    -- T-PROJ
     TmRecordProj label t -> case typeof ctx t of
       TyRecord fields -> fromMaybe (error "field label not found (T-PROJ)") $ lookup label fields
       _ -> error "type mismatch (T-PROJ)"
-    -- | T-LET
+    -- T-LET
     TmPattern p t1 t2 -> typeof ctx' t2
       where
         ty1 = typeof ctx t1
@@ -125,8 +125,8 @@ instance System RecordPattern where
 
 isValue :: Term RecordPattern -> Bool
 isValue = \case
-  TmLam {} -> True -- ^ ラムダ抽象値
-  TmRecord fs -> all (isValue . snd) fs -- ^ レコードの値
+  TmLam {} -> True -- ラムダ抽象値
+  TmRecord fs -> all (isValue . snd) fs -- レコードの値
   _ -> False
 
 subst :: Int -> Value -> Term RecordPattern -> Term RecordPattern

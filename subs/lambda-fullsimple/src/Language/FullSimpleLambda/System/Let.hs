@@ -38,31 +38,31 @@ instance System Let where
   eval :: Term Let -> Term Let
   eval = \case
     TmApp t1@(TmLam _ _ t12) t2
-      -- | E-APP1
+      -- E-APP1
       | not (isValue t1) -> TmApp (eval t1) t2
-      -- | E-APP2
+      -- E-APP2
       | isValue t1 && not (isValue t2) -> TmApp t1 (eval t2)
-      -- | E-APPABS
+      -- E-APPABS
       | isValue t1 && isValue t2 -> shift 0 (-1) $ subst 0 (shift 0 1 t2) t12
     TmLet x t1 t2
-      -- | E-LETV
+      -- E-LETV
       | isValue t1 -> shift 0 (-1) $ subst 0 (shift 0 1 t1) t2
-      -- | E-LET
+      -- E-LET
       | not (isValue t1) -> TmLet x (eval t1) t2
     _ -> error "unexpected term"
 
   typeof :: Context Let -> Term Let -> Ty Let
   typeof ctx = \case
-    -- | T-VAR
+    -- T-VAR
     TmVar i -> case getTypeFromContext i ctx of
       Nothing -> error "Not found type variable in Context"
       Just ty -> ty
-    -- | T-ABS
+    -- T-ABS
     TmLam x tyT1 t2 -> TyArr tyT1 tyT2
       where
         tyT2 = typeof ctx' t2
         ctx' = CtxVar ctx x tyT1
-    -- | T-APP
+    -- T-APP
     TmApp t1 t2 ->
       case tyT1 of
         TyArr tyT11 tyT12 ->
@@ -77,7 +77,7 @@ instance System Let where
       where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2
-    -- | T-LET
+    -- T-LET
     TmLet x t1 t2 -> typeof ctx' t2
       where
         tyT1 = typeof ctx t1
@@ -88,7 +88,7 @@ instance System Let where
 
 isValue :: Term Let -> Bool
 isValue = \case
-  TmLam {} -> True -- ^ ラムダ抽象値
+  TmLam {} -> True -- ラムダ抽象値
   _ -> False
 
 subst :: Int -> Value -> Term Let -> Term Let

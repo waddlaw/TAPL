@@ -76,17 +76,21 @@ $ cabal build
 $ cabal test all
 ```
 
-### チェック
+### コマンド
 
 ```shell
+# pedantic
 $ stack clean && stack test --fast --pedantic --file-watch
-$ hlint .
-```
 
-### フォーマッター
+# hlint
+$ hlint .
 
 ```shell
+# フォーマッター
 $ ./style.sh
+
+# travis-ci の設定ファイル生成
+λ haskell-ci --config cabal.haskell-ci cabal.project
 ```
 
 ### ドキュメントの生成

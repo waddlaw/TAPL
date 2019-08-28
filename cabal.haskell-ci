@@ -1,0 +1,3 @@
+cabal-install-version: 3.0
+hlint: False
+hlint-version: ==2.1.*

@@ -201,11 +201,17 @@ workflows:
   version: 2
   test-check:
     jobs:
-      - build
       - check
-      - pedantic:
+      - pedantic
+      - cabal:
           requires:
-            - build
+            - check
+            - pedantic
+      - build:
+          requires:
+            - check
+            - pedantic
       - preview:
           requires:
             - build
+            - cabal

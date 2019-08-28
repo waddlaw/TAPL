@@ -20,14 +20,14 @@ typeof ctx (TmApp t1 t2) =
   case tyT1 of
     TyArr tyT11 tyT12 ->
       if tyT2 == tyT11
-      then tyT12
-      else
-        error $
-          unlines
-            [ "parameter type mismatch (T-APP): ",
-              "tyT2: " <> show tyT2,
-              "tyT11: " <> show tyT11
-              ]
+        then tyT12
+        else
+          error
+            $ unlines
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                  ]
     _ -> error "arrow type expected (T-APP)"
   where
     tyT1 = typeof ctx t1
@@ -37,11 +37,11 @@ typeof _ TmFalse = TyBool -- T-FALSE
 typeof ctx (TmIf t1 t2 t3) =
   -- T-IF
   if typeof ctx t1 == TyBool
-  then
-    if tyT2 == typeof ctx t3
-    then tyT2
-    else error "arms of conditional have different types (T-IF)"
-  else error "guard of conditional not a boolean (T-IF)"
+    then
+      if tyT2 == typeof ctx t3
+        then tyT2
+        else error "arms of conditional have different types (T-IF)"
+    else error "guard of conditional not a boolean (T-IF)"
   where
     tyT2 = typeof ctx t2
 typeof _ TmZero = TyNat -- T-ZERO
@@ -104,8 +104,8 @@ typeof _ (TmInR _ _) = error "type mismatch (T-INR)"
 typeof ctx (TmCase t0 (TmVar x1, t1) (TmVar x2, t2)) =
   -- T-CASE
   if tyT1 == tyT2
-  then tyT1
-  else error "type mismatch (T-CASE)"
+    then tyT1
+    else error "type mismatch (T-CASE)"
   where
     (ty1, ty2) = case typeof ctx t0 of
       (TySum ty1' ty2') -> (ty1', ty2')

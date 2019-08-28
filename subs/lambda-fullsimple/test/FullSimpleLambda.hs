@@ -50,9 +50,9 @@ test_unit :: TestTree
 test_unit =
   testGroup "unit"
     [ testGroup "typecheck"
-        [ testCase "unit:Unit" $
-            typeof mempty TmUnit @?=
-            TyUnit
+        [ testCase "unit:Unit"
+            $ typeof mempty TmUnit
+            @?= TyUnit
           ]
       ]
 
@@ -131,19 +131,19 @@ test_pattern = do
         [ testCase "let x=() in ()" $ do
             let t' = TmPattern (PtVar "x" 0) TmUnit TmUnit
             prettyFullSimpleText "x" t' @?= "let x=() in ()",
-          testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
-            prettyFullSimpleText ctx t @?=
-            "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
+          testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
+            $ prettyFullSimpleText ctx t
+            @?= "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
           ],
       testGroup "eval"
-        [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
-            eval t @?=
-            mkNat 1
+        [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
+            $ eval t
+            @?= mkNat 1
           ],
       testGroup "typecheck"
-        [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
-            typeof mempty t @?=
-            TyNat
+        [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
+            $ typeof mempty t
+            @?= TyNat
           ]
       ]
 

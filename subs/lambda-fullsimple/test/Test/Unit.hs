@@ -10,8 +10,8 @@ test_unit =
   testGroup "unit"
     [ testGroup "eval" [],
       testGroup "typeof"
-        [ testCase "unit:Unit" $
-            typeof CtxEmpty TmUnit @?=
-            TyUnit
+        [ testCase "unit:Unit"
+            $ typeof CtxEmpty TmUnit
+            @?= TyUnit
           ]
       ]

@@ -26,20 +26,20 @@ app =
       Left errs -> logError $ displayShow $ errorBundlePretty errs
       Right r ->
         let toc = MMark.runScanner r (Ext.tocScanner (> 1))
-         in writeFileUtf8 (mkPath input) .
-              TL.toStrict .
-              renderText .
-              wrapper .
-              MMark.render .
-              MMark.useExtensions
-                [ Ext.toc "toc" toc,
-                  Ext.punctuationPrettifier,
-                  Ext.ghcSyntaxHighlighter,
-                  Ext.skylighting,
-                  Ext.mathJax (Just '$'),
-                  mathJaxBlock
-                  ] $
-              r
+         in writeFileUtf8 (mkPath input)
+              . TL.toStrict
+              . renderText
+              . wrapper
+              . MMark.render
+              . MMark.useExtensions
+                  [ Ext.toc "toc" toc,
+                    Ext.punctuationPrettifier,
+                    Ext.ghcSyntaxHighlighter,
+                    Ext.skylighting,
+                    Ext.mathJax (Just '$'),
+                    mathJaxBlock
+                    ]
+              $ r
   where
     mkPath path = mconcat ["_site/", path, ".html"]
 
@@ -56,20 +56,19 @@ wrapper content = do
       link_ [rel_ "stylesheet", href_ "css/base.css"]
       script_ [defer_ Text.empty, src_ "https://use.fontawesome.com/releases/v5.1.0/js/all.js"] TL.empty
       script_ [async_ Text.empty, src_ "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML"] TL.empty
-    body_ $
-      section_ [class_ "section"] $
-      div_ [class_ "container"] $
-      div_ [class_ "content"]
-        content
+    body_
+      $ section_ [class_ "section"]
+      $ div_ [class_ "container"]
+      $ div_ [class_ "content"]
+          content
 
 mathJaxBlock :: Extension
 mathJaxBlock =
   Ext.blockRender $ \old block -> case block of
     b@(CodeBlock mlabel txt) ->
       if mlabel == Just "mathjaxBlock"
-      then
-        do
+        then do
           p_ . forM_ (Text.lines txt) $ \x -> toHtml x
           "\n"
-      else old b
+        else old b
     other -> old other

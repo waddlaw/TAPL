@@ -30,15 +30,12 @@ newtype Context = Context {unCtx :: [(ContextType, Binding)]}
   deriving (Eq, Show)
 
 instance Semigroup Context where
-
   ctx1 <> ctx2 = Context (unCtx ctx1 <> unCtx ctx2)
 
 instance Monoid Context where
-
   mempty = Context []
 
 instance IsString Context where
-
   fromString v = Context [(VarContext (Text.pack v), NameBind)]
 
 addContext :: (ContextType, Binding) -> Context -> Context
@@ -50,11 +47,9 @@ data ContextType
   deriving (Eq, Show)
 
 instance IsString ContextType where
-
   fromString = VarContext . Text.pack
 
 instance Pretty ContextType where
-
   pretty (VarContext varName) = pretty varName
   pretty (PatternContext p) = pretty p
 
@@ -76,7 +71,6 @@ data Ty
   deriving (Eq, Show)
 
 instance Pretty Ty where
-
   pretty TyBool = pretty "Bool"
   pretty TyNat = pretty "Nat"
   pretty TyUnit = pretty "Unit"
@@ -126,14 +120,13 @@ data Term
   deriving (Eq, Show)
 
 instance Pretty Term where
-
   pretty = pprFullSimple mempty
 
 pprFullSimple :: Context -> Term -> Doc ann
 pprFullSimple ctx (TmVar n) =
   if length ctx' <= n
-  then pretty "FV" <> pretty n
-  else pretty fv
+    then pretty "FV" <> pretty n
+    else pretty fv
   where
     ctx' = unCtx ctx
     fv = fst (ctx' L.Partial.!! n)
@@ -170,20 +163,20 @@ pprFullSimple ctx (TmRecord fields) = encloseSep lbrace rbrace comma $ map pprFi
     pprField (label, t) = pretty label <> pretty "=" <> pprFullSimple ctx t
 pprFullSimple ctx (TmRecordProj label t) = pprFullSimple ctx t <> dot <> pretty label
 pprFullSimple ctx (TmPattern p tlet tbody) =
-  pretty "let" <+> pprPattern ctx' p <> pretty "=" <> pprFullSimple ctx tlet <+>
-    pretty "in" <+>
-    pprFullSimple ctx' tbody
+  pretty "let" <+> pprPattern ctx' p <> pretty "=" <> pprFullSimple ctx tlet
+    <+> pretty "in"
+    <+> pprFullSimple ctx' tbody
   where
     ctx' = getContext p
 pprFullSimple ctx (TmInL t ty) = pretty "inl" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
 pprFullSimple ctx (TmInR t ty) = pretty "inr" <+> pprFullSimple ctx t <+> pretty "as" <+> pretty ty
 pprFullSimple ctx (TmCase t altL altR) =
-  pretty "case" <+> pprFullSimple ctx t <+> pretty "of" <+>
-    pretty "inl" <+>
-    pprAlt ctx altL <+>
-    pipe <+>
-    pretty "inr" <+>
-    pprAlt ctx altR
+  pretty "case" <+> pprFullSimple ctx t <+> pretty "of"
+    <+> pretty "inl"
+    <+> pprAlt ctx altL
+    <+> pipe
+    <+> pretty "inr"
+    <+> pprAlt ctx altR
 
 getContext :: Pattern -> Context
 getContext (PtVar varName _) = addContext (VarContext varName, NameBind) mempty
@@ -196,7 +189,6 @@ data Pattern
   deriving (Eq, Show)
 
 instance Pretty Pattern where
-
   pretty = pprPattern mempty
 
 pprPattern :: Context -> Pattern -> Doc ann
@@ -211,9 +203,9 @@ pprPattern ctx (PtRecord fs) = encloseSep lbrace rbrace comma $ map pprField fs
 
 pprAlt :: Context -> Alt -> Doc ann
 pprAlt ctx (t1, t2) =
-  pprFullSimple ctx t1 <+>
-    pretty "=>" <+>
-    pprFullSimple ctx t2
+  pprFullSimple ctx t1
+    <+> pretty "=>"
+    <+> pprFullSimple ctx t2
 
 -- pprAlts :: Context -> Alts -> Doc ann
 -- pprAlts ctx = sep . punctuate (mempty <+> pipe) . map (pprAlt ctx)

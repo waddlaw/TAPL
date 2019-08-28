@@ -34,20 +34,20 @@ exprP = do
 factorP :: StateT Context Parser Term
 -- factorP = (char '(' *> (exprP <* char ')')) <|> try numP <|> varP <|> lambdaP
 factorP =
-  (char '(' *> (exprP <* char ')')) <|>
-    ifP <|>
-    lambdaP <|>
-    token constP <|>
-    varP
+  (char '(' *> (exprP <* char ')'))
+    <|> ifP
+    <|> lambdaP
+    <|> token constP
+    <|> varP
 
 lambdaP :: StateT Context Parser Term
 lambdaP =
-  TmLam <$ lift (symbol "λ") <*>
-    identP <*
-    lift (symbol ":") <*>
-    typeP <*
-    dot <*>
-    token exprP
+  TmLam <$ lift (symbol "λ")
+    <*> identP
+    <* lift (symbol ":")
+    <*> typeP
+    <* dot
+    <*> token exprP
 
 typeP :: StateT Context Parser Ty
 typeP = lefty <$> typeFactorP <*> termsP
@@ -67,18 +67,18 @@ typeBoolP = TyBool <$ string "Bool"
 --                 <*> some digit
 constP :: StateT Context Parser Term
 constP =
-  TmTrue <$ string "true" <|>
-    TmFalse <$
-    string "false"
+  TmTrue <$ string "true"
+    <|> TmFalse
+    <$ string "false"
 
 ifP :: StateT Context Parser Term
 ifP =
-  TmIf <$ symbol "if" <*>
-    (parens exprP <|> token exprP) <*
-    symbol "then" <*>
-    (parens exprP <|> token exprP) <*
-    symbol "else" <*>
-    (parens exprP <|> token exprP)
+  TmIf <$ symbol "if"
+    <*> (parens exprP <|> token exprP)
+    <* symbol "then"
+    <*> (parens exprP <|> token exprP)
+    <* symbol "else"
+    <*> (parens exprP <|> token exprP)
 
 varP :: StateT Context Parser Term
 varP = do

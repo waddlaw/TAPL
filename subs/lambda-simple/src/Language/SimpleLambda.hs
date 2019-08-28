@@ -21,8 +21,8 @@ typeof ctx (TmLam x tyT1 t2) = TyArr tyT1 tyT2
 typeof ctx (TmApp t1 t2) = case tyT1 of
   TyArr tyT11 tyT12 ->
     if tyT2 == tyT11
-    then tyT12
-    else error "parameter type mismatch"
+      then tyT12
+      else error "parameter type mismatch"
   _ -> error "arrow type expected"
   where
     tyT1 = typeof ctx t1
@@ -31,11 +31,11 @@ typeof _ TmTrue = TyBool
 typeof _ TmFalse = TyBool
 typeof ctx (TmIf t1 t2 t3) =
   if typeof ctx t1 == TyBool
-  then
-    if tyT2 == typeof ctx t3
-    then tyT2
-    else error "arms of conditional have different types"
-  else error "guard of conditional not a boolean"
+    then
+      if tyT2 == typeof ctx t3
+        then tyT2
+        else error "arms of conditional have different types"
+    else error "guard of conditional not a boolean"
   where
     tyT2 = typeof ctx t2
 

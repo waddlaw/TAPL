@@ -78,16 +78,10 @@ $ stack clean && stack test --fast --pedantic --file-watch
 $ hlint .
 ```
 
-stylish-haskell の適用
-
-```shell
-$ scripts/stylish.sh
-```
-
 ### フォーマッター
 
 ```shell
-$ ormolu --mode inplace <file>
+$ ./style.sh
 ```
 
 ### ドキュメントの生成

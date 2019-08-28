@@ -78,13 +78,13 @@ instance System Record where
       case tyT1 of
         TyArr tyT11 tyT12 ->
           if tyT2 == tyT11
-          then tyT12
-          else
-            error . unlines $
-              [ "parameter type mismatch (T-APP): ",
-                "tyT2: " <> show tyT2,
-                "tyT11: " <> show tyT11
-                ]
+            then tyT12
+            else
+              error . unlines
+                $ [ "parameter type mismatch (T-APP): ",
+                    "tyT2: " <> show tyT2,
+                    "tyT11: " <> show tyT11
+                    ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1

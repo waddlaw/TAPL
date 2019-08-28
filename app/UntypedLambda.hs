@@ -28,15 +28,16 @@ main' = do
     Nothing -> return ()
     Just ":q" -> return ()
     Just input ->
-      if | ":set trace" `Text.isPrefixOf` input -> updateEnvTraceCmd True >> main'
-         | ":set strategy" `Text.isPrefixOf` input -> updateEnvStrategyCmd input >> main'
-         | ":unset trace" `Text.isPrefixOf` input -> updateEnvTraceCmd False >> main'
-         | ":list strategy" `Text.isPrefixOf` input -> listStrategyCmd >> main'
-         | ":list prelude" `Text.isPrefixOf` input -> listPreludeCmd prelude' >> main'
-         | ":env" `Text.isPrefixOf` input -> printEnvCmd >> main'
-         | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
-         -- main process
-         | otherwise -> evalCmd parser evaluator tracer input >> main'
+      if
+        | ":set trace" `Text.isPrefixOf` input -> updateEnvTraceCmd True >> main'
+        | ":set strategy" `Text.isPrefixOf` input -> updateEnvStrategyCmd input >> main'
+        | ":unset trace" `Text.isPrefixOf` input -> updateEnvTraceCmd False >> main'
+        | ":list strategy" `Text.isPrefixOf` input -> listStrategyCmd >> main'
+        | ":list prelude" `Text.isPrefixOf` input -> listPreludeCmd prelude' >> main'
+        | ":env" `Text.isPrefixOf` input -> printEnvCmd >> main'
+        | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
+        -- main process
+        | otherwise -> evalCmd parser evaluator tracer input >> main'
 
 parser :: ParseFunc UntypedLambda
 parser = UntypedLambda.runUlParser

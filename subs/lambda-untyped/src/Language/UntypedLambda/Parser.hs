@@ -27,16 +27,16 @@ factorP = (char '(' *> (exprP <* char ')')) <|> try numP <|> varP <|> lambdaP
 
 lambdaP :: Parser UntypedLambda
 lambdaP =
-  TmLam <$ symbol "λ" <*>
-    identP <*
-    dot <*>
-    token exprP
+  TmLam <$ symbol "λ"
+    <*> identP
+    <* dot
+    <*> token exprP
 
 -- FIXME
 numP :: Parser UntypedLambda
 numP =
-  c . fromMaybe 0 . readMaybe <$ char 'c' <*>
-    some digit
+  c . fromMaybe 0 . readMaybe <$ char 'c'
+    <*> some digit
 
 varP :: Parser UntypedLambda
 varP = toTerm <$> oneOf ['a' .. 'z'] <*> many alphaNum

@@ -23,9 +23,9 @@ test_ul =
         eval NormalOrder (succI @@ int (-1)) @?= eval NormalOrder (int 0), -- TODO: 振る舞い等価
               -- TODO: 振る舞い等価?
               -- eval NormalOrder (succI @@ (int 1)) @?= eval NormalOrder (int 2)
-      testCase "succNI" $
-        eval CallByValue (succNI @@ mkPair (c 1) (int 0)) @?=
-        eval CallByValue (int 1),
+      testCase "succNI"
+        $ eval CallByValue (succNI @@ mkPair (c 1) (int 0))
+        @?= eval CallByValue (int 1),
       -- TODO: 振る舞い等価?
       -- eval NormalOrder (plusI @@ int 1 @@ int 1) @?= eval NormalOrder (int 2)
       testCase "isZeroI" $ do

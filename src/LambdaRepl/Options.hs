@@ -49,8 +49,8 @@ evalCmd parser evaluator tracer input =
       Left err -> logError $ display $ Text.pack err
       Right term ->
         if isTrace
-        then mapM_ (logInfo . displayRender) $ tracer strategy term
-        else logInfo $ displayRender $ evaluator strategy term
+          then mapM_ (logInfo . displayRender) $ tracer strategy term
+          else logInfo $ displayRender $ evaluator strategy term
 
 tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> LambdaREPL
 tcCmd parser checker input =

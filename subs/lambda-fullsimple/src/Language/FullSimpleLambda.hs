@@ -126,8 +126,8 @@ eval (TmPair t1 t2) = TmPair (eval t1) t2 -- E-PAIR1
 eval (TmTupleProj j (TmTuple ts)) -- E-PROJTUPLE
   | all isValue ts =
     if j < length ts
-    then ts L.Partial.!! j
-    else error "タプルのサイズより大きな値が指定されています"
+      then ts L.Partial.!! j
+      else error "タプルのサイズより大きな値が指定されています"
   | otherwise = error "eval: 値ではない項が存在します。"
 eval (TmTupleProj i t) = TmTupleProj i (eval t) -- E-PROJ
 eval (TmTuple ts) = TmTuple (vs ++ [eval t] ++ ts') -- E-TUPLE

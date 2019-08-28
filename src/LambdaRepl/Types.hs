@@ -29,9 +29,7 @@ data ReplEnv
         }
 
 instance HasLogFunc ReplEnv where
-
   logFuncL = lens appLogFunc (\x y -> x {appLogFunc = y})
 
 instance HasProcessContext ReplEnv where
-
   processContextL = lens appProcessContext (\x y -> x {appProcessContext = y})

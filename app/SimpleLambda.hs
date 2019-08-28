@@ -27,9 +27,10 @@ main' = do
     Nothing -> return ()
     Just ":q" -> return ()
     Just input ->
-      if | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
-         | ":t" `Text.isPrefixOf` input -> tcCmd (parser mempty) typecheck input >> main'
-         | otherwise -> evalCmd (parser mempty) evaluator tracer input >> main'
+      if
+        | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
+        | ":t" `Text.isPrefixOf` input -> tcCmd (parser mempty) typecheck input >> main'
+        | otherwise -> evalCmd (parser mempty) evaluator tracer input >> main'
 
 parser :: Context -> ParseFunc SimpleLambda.Term
 parser = runSimpleLambdaParser

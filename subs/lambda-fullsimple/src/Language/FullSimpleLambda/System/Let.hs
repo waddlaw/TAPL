@@ -67,13 +67,13 @@ instance System Let where
       case tyT1 of
         TyArr tyT11 tyT12 ->
           if tyT2 == tyT11
-          then tyT12
-          else
-            error . unlines $
-              [ "parameter type mismatch (T-APP): ",
-                "tyT2: " <> show tyT2,
-                "tyT11: " <> show tyT11
-                ]
+            then tyT12
+            else
+              error . unlines
+                $ [ "parameter type mismatch (T-APP): ",
+                    "tyT2: " <> show tyT2,
+                    "tyT11: " <> show tyT11
+                    ]
       where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2

@@ -51,8 +51,8 @@ instance System Tuple where
     TmTupleProj j (TmTuple ts)
       | all isValue ts ->
         if j < length ts
-        then ts L.Partial.!! j
-        else error "タプルのサイズより大きな値が指定されています"
+          then ts L.Partial.!! j
+          else error "タプルのサイズより大きな値が指定されています"
       | otherwise -> error "eval: 値ではない項が存在します。"
     -- | E-PROJ
     TmTupleProj i t -> TmTupleProj i (eval t)
@@ -78,13 +78,13 @@ instance System Tuple where
       case tyT1 of
         TyArr tyT11 tyT12 ->
           if tyT2 == tyT11
-          then tyT12
-          else
-            error . unlines $
-              [ "parameter type mismatch (T-APP): ",
-                "tyT2: " <> show tyT2,
-                "tyT11: " <> show tyT11
-                ]
+            then tyT12
+            else
+              error . unlines
+                $ [ "parameter type mismatch (T-APP): ",
+                    "tyT2: " <> show tyT2,
+                    "tyT11: " <> show tyT11
+                    ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1

@@ -29,7 +29,6 @@ data Term where
 instance Hashable Term
 
 instance Arbitrary Term where
-
   arbitrary = do
     t1 <- arbitrary
     t2 <- arbitrary

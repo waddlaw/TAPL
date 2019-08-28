@@ -13,28 +13,28 @@ runNbParser = runParserString termP
 
 termP :: Parser Term
 termP =
-  trueP <|>
-    falseP <|>
-    ifP <|>
-    zeroP <|>
-    succP <|>
-    predP <|>
-    iszeroP
+  trueP
+    <|> falseP
+    <|> ifP
+    <|> zeroP
+    <|> succP
+    <|> predP
+    <|> iszeroP
 
 iszeroP :: Parser Term
 iszeroP =
-  TmIsZero <$ symbol "iszero" <*>
-    (parens termP <|> token termP)
+  TmIsZero <$ symbol "iszero"
+    <*> (parens termP <|> token termP)
 
 predP :: Parser Term
 predP =
-  TmPred <$ symbol "pred" <*>
-    (parens termP <|> token termP)
+  TmPred <$ symbol "pred"
+    <*> (parens termP <|> token termP)
 
 succP :: Parser Term
 succP =
-  TmSucc <$ symbol "succ" <*>
-    (parens termP <|> token termP)
+  TmSucc <$ symbol "succ"
+    <*> (parens termP <|> token termP)
 
 zeroP :: Parser Term
 zeroP = TmZero <$ symbol "0"
@@ -47,9 +47,9 @@ falseP = TmFalse <$ symbol "false"
 
 ifP :: Parser Term
 ifP =
-  TmIf <$ symbol "if" <*>
-    (parens termP <|> token termP) <*
-    symbol "then" <*>
-    (parens termP <|> token termP) <*
-    symbol "else" <*>
-    (parens termP <|> token termP)
+  TmIf <$ symbol "if"
+    <*> (parens termP <|> token termP)
+    <* symbol "then"
+    <*> (parens termP <|> token termP)
+    <* symbol "else"
+    <*> (parens termP <|> token termP)

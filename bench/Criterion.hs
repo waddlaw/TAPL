@@ -1,7 +1,7 @@
-import Prelude
 import Criterion.Main
 import qualified Term.HashSet
 import qualified Term.Set
+import Prelude
 
 main :: IO ()
 main =

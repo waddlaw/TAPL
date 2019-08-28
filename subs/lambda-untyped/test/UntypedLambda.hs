@@ -141,7 +141,7 @@ test_ul =
             s4 = removenames g "a"
             nt4 = removenames g t4
         namelessSubst k4 s4 nt4 @?= NlTmLam (NlTmApp "2" "0"),
-      testCase "reduceNameless" $
-        reduceNameless (NlTmApp (NlTmLam $ NlTmApp (NlTmApp "1" "0") "2") (NlTmLam "0")) @?=
-        NlTmApp (NlTmApp "0" (NlTmLam "0")) "1"
+      testCase "reduceNameless"
+        $ reduceNameless (NlTmApp (NlTmLam $ NlTmApp (NlTmApp "1" "0") "2") (NlTmLam "0"))
+        @?= NlTmApp (NlTmApp "0" (NlTmLam "0")) "1"
       ]

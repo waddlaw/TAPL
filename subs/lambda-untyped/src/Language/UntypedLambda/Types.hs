@@ -34,7 +34,6 @@ getNlTermVar (NlTmVar k) = k
 getNlTermVar _ = error "panic"
 
 instance IsString NamelessTerm where
-
   fromString = NlTmVar . fromMaybe 0 . readMaybe -- FIXME
 
 infixl 9 @@
@@ -52,7 +51,6 @@ data Term a
   deriving (Eq, Show)
 
 instance Pretty UntypedLambda where
-
   pretty (TmVar x) = pretty x
   pretty (TmLam x t) = pretty "λ" <> pretty x <> pretty "." <+> pretty t
   pretty (TmApp t1 t2) = ppr t1 <+> ppr t2
@@ -61,5 +59,4 @@ instance Pretty UntypedLambda where
       ppr t = parens (pretty t)
 
 instance IsString UntypedLambda where
-
   fromString = TmVar . Text.pack

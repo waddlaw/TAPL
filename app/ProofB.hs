@@ -29,8 +29,9 @@ main' = do
     Just ":set" -> setTargetCmd >> main'
     Just ":show" -> showTargetCmd >> main'
     Just input ->
-      if | ":step" `isPrefixOf` input -> stepCmd input >> main'
-         | otherwise -> helpCmd >> main'
+      if
+        | ":step" `isPrefixOf` input -> stepCmd input >> main'
+        | otherwise -> helpCmd >> main'
 
 helpCmd :: Proof
 helpCmd = mapM_ outputStrLn $ "available commands" : commands
@@ -65,12 +66,10 @@ stepCmd input = case stepCmdParser input of
   Left err -> outputStrLn err
   Right n ->
     if n `notElem` map fromEnum allRules
-    then
-      do
+      then do
         outputStrLn $ "invalid input range: " ++ show n
         rulesCmd
-    else
-      do
+      else do
         let rule = toEnum n
         er <- lift get
         case deduce rule er of

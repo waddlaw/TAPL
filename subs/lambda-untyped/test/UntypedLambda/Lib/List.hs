@@ -14,9 +14,9 @@ import Prelude hiding (head, tail)
 test_ul :: TestTree
 test_ul =
   testGroup "UntypedLambda.Lib.List"
-    [ testCase "cons" $
-        eval NormalOrder (cons @@ "x" @@ nil) @?=
-        λ "c" (λ "n" $ "c" @@ "x" @@ "n"), -- TODO: 振る舞い等価
+    [ testCase "cons"
+        $ eval NormalOrder (cons @@ "x" @@ nil)
+        @?= λ "c" (λ "n" $ "c" @@ "x" @@ "n"), -- TODO: 振る舞い等価
       testCase "isnil" $ do
         eval CallByValue (isnil @@ nil) @?= tru
         eval CallByValue (isnil @@ λ "c" (λ "n" ("c" @@ "x" @@ "n"))) @?= fls

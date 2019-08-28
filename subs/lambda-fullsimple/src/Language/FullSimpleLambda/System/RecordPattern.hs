@@ -89,13 +89,13 @@ instance System RecordPattern where
       case tyT1 of
         TyArr tyT11 tyT12 ->
           if tyT2 == tyT11
-          then tyT12
-          else
-            error . unlines $
-              [ "parameter type mismatch (T-APP): ",
-                "tyT2: " <> show tyT2,
-                "tyT11: " <> show tyT11
-                ]
+            then tyT12
+            else
+              error . unlines
+                $ [ "parameter type mismatch (T-APP): ",
+                    "tyT2: " <> show tyT2,
+                    "tyT11: " <> show tyT11
+                    ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1
@@ -179,6 +179,6 @@ delta :: Pattern RecordPattern -> Ty RecordPattern -> Context RecordPattern
 delta (PtVar varName _) = CtxVar CtxEmpty varName
 delta (PtRecord pfs) = \case
   TyRecord tfs ->
-    foldr (\(p, ty') acc -> CtxVar acc) CtxEmpty $
-      zip (map snd pfs) (map snd tfs)
+    foldr (\(p, ty') acc -> CtxVar acc) CtxEmpty
+      $ zip (map snd pfs) (map snd tfs)
   _ -> error "delta: expected Record term"

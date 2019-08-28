@@ -36,13 +36,6 @@ aliases:
           - ~/.stack
           - ~/.local/bin
           - .stack-work
-  - &install_tasty_discover
-    run:
-      name: Install tasty-discover
-      command: |
-        export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
-        cabal update
-        cabal install tasty-discover --overwrite-policy=always
   - &display_stack_version
     run:
       name: Display stack version
@@ -83,7 +76,9 @@ jobs:
       - run:
           name: Downloading GHC
           command: stack setup
-      - *install_tasty_discover
+      - run:
+          name: Install tasty-discover
+          command: stack install tasty-discover --no-terminal
       - run:
           name: Install Cabal
           command: stack install Cabal -j1 --no-terminal -v
@@ -136,7 +131,12 @@ jobs:
             export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
             ghcup install-cabal $CABAL_VERSION
       - *display_cabal_version
-      - *install_tasty_discover
+      - run:
+          name: Install tasty-discover
+          command: |
+            export PATH="$HOME/.cabal/bin:$HOME/.ghcup/bin:$PATH"
+            cabal update
+            cabal install tasty-discover --overwrite-policy=always
       - run:
           name: Run cabal test all
           command: |

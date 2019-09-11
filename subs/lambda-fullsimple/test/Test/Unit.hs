@@ -12,6 +12,6 @@ test_unit =
       testGroup "typeof"
         [ testCase "unit:Unit"
             $ typeof CtxEmpty TmUnit
-            @?= TyUnit
+              @?= TyUnit
           ]
       ]

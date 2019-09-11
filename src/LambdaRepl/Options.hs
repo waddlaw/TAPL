@@ -42,15 +42,16 @@ runApp m =
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> TraceFunc term -> Text -> LambdaREPL
 evalCmd parser evaluator tracer input =
-  lift $ ask >>= \ReplEnv {..} -> do
-    strategy <- readIORef appStrategy
-    isTrace <- readIORef appIsTrace
-    case parser (Text.unpack input) of
-      Left err -> logError $ display $ Text.pack err
-      Right term ->
-        if isTrace
-          then mapM_ (logInfo . displayRender) $ tracer strategy term
-          else logInfo $ displayRender $ evaluator strategy term
+  lift
+    $ ask >>= \ReplEnv {..} -> do
+      strategy <- readIORef appStrategy
+      isTrace <- readIORef appIsTrace
+      case parser (Text.unpack input) of
+        Left err -> logError $ display $ Text.pack err
+        Right term ->
+          if isTrace
+            then mapM_ (logInfo . displayRender) $ tracer strategy term
+            else logInfo $ displayRender $ evaluator strategy term
 
 tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> LambdaREPL
 tcCmd parser checker input =
@@ -79,15 +80,16 @@ commands =
 
 printEnvCmd :: LambdaREPL
 printEnvCmd =
-  lift $ ask >>= \ReplEnv {..} -> do
-    strategy <- readIORef appStrategy
-    isTrace <- readIORef appIsTrace
-    let msg =
-          Text.unlines
-            [ "strategy: " <> tshow strategy,
-              "isTrace: " <> tshow isTrace
-              ]
-    logInfo $ display msg
+  lift
+    $ ask >>= \ReplEnv {..} -> do
+      strategy <- readIORef appStrategy
+      isTrace <- readIORef appIsTrace
+      let msg =
+            Text.unlines
+              [ "strategy: " <> tshow strategy,
+                "isTrace: " <> tshow isTrace
+                ]
+      logInfo $ display msg
 
 updateEnvTraceCmd :: Bool -> LambdaREPL
 updateEnvTraceCmd newIsTrace = do

@@ -51,7 +51,6 @@ getBinding :: Context -> Int -> Binding
 getBinding ctx i = snd $ ctx' L.Partial.!! i
   where
     ctx' = unCtx ctx
-
 -- FIXME
 -- erase :: TypedLambda -> UntypedLambda
 -- erase (TmVar x) = Untyped.TmVar x

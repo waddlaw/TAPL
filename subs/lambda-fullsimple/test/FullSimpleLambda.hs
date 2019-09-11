@@ -52,7 +52,7 @@ test_unit =
     [ testGroup "typecheck"
         [ testCase "unit:Unit"
             $ typeof mempty TmUnit
-            @?= TyUnit
+              @?= TyUnit
           ]
       ]
 
@@ -133,17 +133,17 @@ test_pattern = do
             prettyFullSimpleText "x" t' @?= "let x=() in ()",
           testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
             $ prettyFullSimpleText ctx t
-            @?= "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
+              @?= "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
           ],
       testGroup "eval"
         [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
             $ eval t
-            @?= mkNat 1
+              @?= mkNat 1
           ],
       testGroup "typecheck"
         [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
             $ typeof mempty t
-            @?= TyNat
+              @?= TyNat
           ]
       ]
 

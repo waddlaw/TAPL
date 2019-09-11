@@ -206,6 +206,5 @@ pprAlt ctx (t1, t2) =
   pprFullSimple ctx t1
     <+> pretty "=>"
     <+> pprFullSimple ctx t2
-
 -- pprAlts :: Context -> Alts -> Doc ann
 -- pprAlts ctx = sep . punctuate (mempty <+> pipe) . map (pprAlt ctx)

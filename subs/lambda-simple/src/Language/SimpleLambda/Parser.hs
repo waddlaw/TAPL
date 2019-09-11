@@ -69,7 +69,7 @@ constP :: StateT Context Parser Term
 constP =
   TmTrue <$ string "true"
     <|> TmFalse
-    <$ string "false"
+      <$ string "false"
 
 ifP :: StateT Context Parser Term
 ifP =

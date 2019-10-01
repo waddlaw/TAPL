@@ -11,8 +11,8 @@ packages:
   - ./subs/featherweight-java
 
 extra-deps:
-- prettyprinter-1.3.0
-- rio-0.1.12.0
+  - prettyprinter-1.3.0
+  - rio-0.1.12.0
 
 build:
   haddock: false

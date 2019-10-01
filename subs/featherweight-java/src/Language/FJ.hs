@@ -104,6 +104,10 @@ override ct m d (cs, c0) = cs == ds && c0 == d0
 -- = 図 19-3. 評価
 -- ============================
 
+{- |
+>>> uncurry eval example 
+TmNew (CN "Pair") [TmNew (CN "B") [],TmFieldRef (TmNew (CN "Pair") [TmNew (CN "A") [],TmNew (CN "B") []]) (FN "snd")]
+-}
 eval :: CT -> Term -> Term
 eval ct t
   | isValue t = t

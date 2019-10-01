@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Language.FJ () where
 
-import Data.Maybe
+import           Data.Maybe
 
 -- | FJ のプログラム
 type Program = (CT, Term)

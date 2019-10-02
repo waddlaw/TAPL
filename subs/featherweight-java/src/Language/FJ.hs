@@ -186,11 +186,11 @@ example2 = (exCT, mainMethod)
   where
     mainMethod = TmFieldRef cast (FN "snd")
     cast = TmCast (CN "Pair") m
-    m = TmFieldRef p1 (FN "fst")
-    p1 = TmNew (CN "Pair") [p2, a]
-    p2 = TmNew (CN "Pair") [a, b]
-    a = TmNew (CN "A") []
-    b = TmNew (CN "B") [] 
+    m    = TmFieldRef p1 (FN "fst")
+    p1   = TmNew (CN "Pair") [p2, a]
+    p2   = TmNew (CN "Pair") [a, b]
+    a    = TmNew (CN "A") []
+    b    = TmNew (CN "B") [] 
 
 {- クラステーブルは以下の条件を全て満たす必要がある
 (1) すべてのクラス C ∈ dom(CT) に対して CT(C) = class C...

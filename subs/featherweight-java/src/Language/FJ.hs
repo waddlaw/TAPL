@@ -1,7 +1,9 @@
 {-# LANGUAGE LambdaCase #-}
 module Language.FJ () where
 
+import Data.List
 import Data.Maybe
+import Debug.Trace
 
 -- | FJ のプログラム
 type Program = (CT, Term)
@@ -116,14 +118,26 @@ TmNew (CN "Pair") [TmNew (CN "B") [],TmFieldRef (TmNew (CN "Pair") [TmNew (CN "A
 eval :: CT -> Term -> Term
 eval ct t
   | isValue t = t
-  | otherwise = eval' ct t
+  | otherwise = eval ct $ eval' ct t
+
+evalTrace :: CT -> Term -> IO ()
+evalTrace ct t = do
+  putStrLn $ pretty t
+  if isValue t then
+    return ()
+  else
+    evalTrace ct (eval' ct t)
 
 eval' :: CT -> Term -> Term
 eval' ct = \case
+  TmNew c ts ->
+    -- ti:rest は絶対に成功する
+    let (vs, ti:rest) = span isValue ts
+    in  TmNew c (vs ++ (eval ct ti:rest))  -- E-NEW-ARG
   TmFieldRef t fi ->
     if isValue t
     then let TmNew c vs = t
-          in fst . head . dropWhile ((/=fi) . snd . snd) $ zip vs $ fields ct c -- E-PROJNEW
+         in  fst . head . dropWhile ((/=fi) . snd . snd) $ zip vs $ fields ct c -- E-PROJNEW
     else TmFieldRef (eval ct t) fi  -- E-FIELD
   TmMethodInv t m ts ->
     if isValue t
@@ -131,16 +145,15 @@ eval' ct = \case
           then let this@(TmNew c vs) = t
                    (xs, t0) = fromMaybe (error $ "E-INVKNEW: " <> show m <> ", " <> show c) $ mbody ct m c
                in subst ((VN "this", this):zip xs ts) t0 -- E-INVKNEW
-          else let (vs, ti:ts) = span isValue ts
-               in TmMethodInv t m (vs ++ (eval ct ti:ts))  -- E-INVK-ARG
+          else 
+            -- ti:rest は絶対に成功する
+            let (vs, ti:rest) = span isValue ts
+            in  TmMethodInv t m (vs ++ (eval ct ti:rest))  -- E-INVK-ARG
     else TmMethodInv (eval ct t) m ts  -- E-INVK-RECV
-  TmNew c ts ->
-    let (vs, ti:ts) = span isValue ts
-    in TmNew c (vs ++ (eval ct ti:ts))  -- E-NEW-ARG
   TmCast d@c t ->
     if isValue t
-    then let TmNew c vs = t  -- E-CASTNEW (TODO)
-         in if checkCast ct c d then t else error "E-CASTNEW"
+    then let TmNew c vs = t
+         in if checkCast ct c d then t else error "E-CASTNEW" -- E-CASTNEW
     else TmCast c (eval ct t) -- E-CAST
 
 subst :: [(Var, Term)] -> Term -> Term
@@ -179,6 +192,12 @@ example2 = (exCT, mainMethod)
     a = TmNew (CN "A") []
     b = TmNew (CN "B") [] 
 
+{- クラステーブルは以下の条件を全て満たす必要がある
+(1) すべてのクラス C ∈ dom(CT) に対して CT(C) = class C...
+(2) Object ∉ dom(CT)
+(3) CT のどこかに現れるすべてのクラス名 C (ただし Object 以外) に対して、C ∈ dom(CT) であること
+(4) CT によって作られる部分関数型関係の中に循環がないこと、つまり、<: 関係が反対称的であること。
+-}
 exCT :: CT
 exCT (CN name) = case name of
   "A"    -> CL (CN "A") (CN "Object") [] (K (CN "A") []) []
@@ -193,66 +212,28 @@ exCT (CN name) = case name of
     pairMethod = M (CN "Pair") (MN "setfst") [(CN "Object", VN "newfst")] body
     body       = TmNew (CN "Pair") [TmVar (VN "newfst"), TmFieldRef (TmVar (VN "this")) (FN "snd")]
 
--- 計算規則
+pretty :: Term -> String
+pretty = \case
+  TmVar (VN x) -> x
+  TmFieldRef t (FN f) -> pretty t <> "." <> f
+  TmMethodInv t (MN m) args -> pretty t <> "." <> m <> "(" <> concat (intersperse ", " (map pretty args)) <> ")"
+  TmNew (CN c) args -> "new " <> c <> "(" <> concat (intersperse ", " (map pretty args)) <> ")"
+  TmCast (CN c) t -> "(" <> c <> ")" <> pretty t
+
+run :: Program -> String
+run = pretty . uncurry eval
+
+runAll :: Program -> IO ()
+runAll = uncurry evalTrace
+
 {-
-- フィールド参照
-- メソッド呼び出し
-- キャスト
+*Language.FJ Data.Maybe Data.List> runAll example
+new Pair(new A(), new B()).setfst(new B())
+new Pair(new B(), new Pair(new A(), new B()).snd)
+new Pair(new B(), new B())
 
-オブジェクトはまず new 項に簡約されることを仮定 (ラムダ計算ではラムダ抽象に簡約される)
-
-E-PROJNEW の動作例
-   new Pair(new A(), new B()).snd
--> new B()
-
-E-INVKNEW の動作例
-   new Pair(new A(), new B()).setfst(new B())
--> [ newfst |-> new B()
-   , this   |-> new Pair(new A(), new B())
-   ]
-   new Pair(newfst, this.snd)
--> new Pair(new B(), new Pair(new A(), new B()).snd)
-
-E-CASTNEW の動作例
-   (Pair)new Pair(new A(), new B())
--> new Pair(new A(), new B())
-
-行き詰まり状態になる可能性がある計算
-  (1) クラスに宣言されていないフィールドを参照する
-  (2) クラスに宣言されていないメソッドを呼び出す
-  (3) オブジェクトの実行時のクラスのスーパークラス以外の何かにキャストする
-
-(1), (2) については、正しく型付けされたプログラムでは絶対に起き得ないことが保証される。
-ダウンキャストが起きなければ (3) も保証できる。
-
-   ((Pair)new Pair(new Pair(new A(), new B()),new A()).fst).snd
--> ((Pair)new Pair(new A(), new B())).snd
--> new Pair(new A(), new B()).snd
--> new B()
--}
-
--- MEMO
-{-
-明示的に書くもの
-  ・スーパークラス
-  ・コンストラクタ
-  ・フィールド参照やメソッド呼び出しのレシーバ
-
-   new Pair(new A(), new B()).setfst(new B())
--> new Pair(new B(), new B())
-
-メタ変数の取り扱い
-
-- A, B, C, D, E: クラス名
-- f, g: フィールド名
-- m: メソッド名
-- x：仮引数名
-- s, t: 項
-- u, v: 値
-- CL: クラス定義
-- K: コンストラクタ宣言
-- M: メソッド宣言
-- this: 特殊変数。変数の集合に含まれるが、メソッドの引数の名前として用いられることはないもの。すべてのメソッド宣言で暗に束縛されているもの
-
-
+*Language.FJ Data.Maybe Data.List> runAll example2
+(Pair)new Pair(new Pair(new A(), new B()), new A()).fst.snd
+new Pair(new A(), new B()).snd
+new B()
 -}

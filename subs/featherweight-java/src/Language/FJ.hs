@@ -70,35 +70,40 @@ fields ct = \case
 >>> mtype exCT (MN "setfst") (CN "Pair")
 ([CN "Object"],CN "Pair")
 -}
-mtype :: CT -> Method -> Class -> ([Class], Class)
-mtype = mhelper (\(M rt _ args _) -> (map fst args, rt))
+mtype :: CT -> Method -> Class -> Maybe ([Class], Class)
+mtype ct m = fmap f . mhelper ct m
+  where
+    f (M rt _ args _) = (map fst args, rt)
 
 {- |
 >>> mbody exCT (MN "setfst") (CN "Pair")
 ([VN "newfst"],TmNew (CN "Pair") [TmVar (VN "newfst"),TmFieldRef (TmVar (VN "this")) (FN "snd")])
 -}
-mbody :: CT -> Method -> Class -> ([Var], Term)
-mbody = mhelper (\(M _ _ args term) -> (map snd args, term))
-
-mhelper :: (MethodDef -> r) -> CT -> Method -> Class -> r
-mhelper f ct m c = case findMethodDef m ms of
-    Nothing -> mhelper f ct m d
-    Just md -> f md
+mbody :: CT -> Method -> Class -> Maybe ([Var], Term)
+mbody ct m = fmap f . mhelper ct m
   where
-    CL _ d cfs _ ms = ct c
+    f (M _ _ args term) = (map snd args, term)
+
+mhelper :: CT -> Method -> Class -> Maybe MethodDef
+mhelper ct m = \case
+  CN "Object" -> Nothing
+  c -> let CL _ d cfs _ ms = ct c
+       in  maybe (mhelper ct m d) pure $ findMethodDef m ms
 
 eqMethodDef :: Method -> MethodDef -> Bool
 eqMethodDef m1 (M _ m2 _ _) = m1 == m2
 
 findMethodDef :: Method -> [MethodDef] -> Maybe MethodDef
-findMethodDef m ms = if null md then Nothing else Just (head md)
+findMethodDef m ms
+    | null md   = Nothing
+    | otherwise = Just (head md)
   where
     md = filter (eqMethodDef m) ms
 
 override :: CT -> Method -> Class -> ([Class], Class) -> Bool
-override ct m d (cs, c0) = cs == ds && c0 == d0
-  where
-    (ds, d0) = mtype ct m d
+override ct m d (cs, c0) = case mtype ct m d of
+  Nothing -> True
+  Just (ds, d0) -> cs == ds && c0 == d0
 
 -- ============================
 -- = 図 19-3. 評価
@@ -118,14 +123,13 @@ eval' ct = \case
   TmFieldRef t fi ->
     if isValue t
     then let TmNew c vs = t
-             i = length $ span (/=fi) $ map snd $ fields ct c
-          in vs !! i -- E-PROJNEW
+          in fst . head . dropWhile ((/=fi) . snd . snd) $ zip vs $ fields ct c -- E-PROJNEW
     else TmFieldRef (eval ct t) fi  -- E-FIELD
   TmMethodInv t m ts ->
     if isValue t
     then if all isValue ts
           then let this@(TmNew c vs) = t
-                   (xs, t0) = mbody ct m c
+                   (xs, t0) = fromMaybe (error $ "E-INVKNEW: " <> show m <> ", " <> show c) $ mbody ct m c
                in subst ((VN "this", this):zip xs ts) t0 -- E-INVKNEW
           else let (vs, ti:ts) = span isValue ts
                in TmMethodInv t m (vs ++ (eval ct ti:ts))  -- E-INVK-ARG
@@ -133,18 +137,24 @@ eval' ct = \case
   TmNew c ts ->
     let (vs, ti:ts) = span isValue ts
     in TmNew c (vs ++ (eval ct ti:ts))  -- E-NEW-ARG
-  TmCast c t ->
+  TmCast d@c t ->
     if isValue t
-    then t  -- E-CASTNEW (TODO)
+    then let TmNew c vs = t  -- E-CASTNEW (TODO)
+         in if checkCast ct c d then t else error "E-CASTNEW"
     else TmCast c (eval ct t) -- E-CAST
 
 subst :: [(Var, Term)] -> Term -> Term
 subst fs = \case
-  TmVar x -> fromMaybe (error "subst") $ lookup x fs
+  TmVar x            -> fromMaybe (error "subst") $ lookup x fs
   TmFieldRef t field -> TmFieldRef (subst fs t) field
   TmMethodInv t m ts -> TmMethodInv (subst fs t) m (map (subst fs) ts)
-  TmNew c ts -> TmNew c (map (subst fs) ts)
-  TmCast c t -> TmCast c (subst fs t)
+  TmNew c ts         -> TmNew c (map (subst fs) ts)
+  TmCast c t         -> TmCast c (subst fs t)
+
+checkCast :: CT -> Class -> Class -> Bool
+checkCast ct from to = from == to || checkCast ct d to
+  where
+    CL _ d _ _ _ = ct from
 
 -- ============================
 -- = サンプルプログラム
@@ -157,6 +167,17 @@ example = (exCT, mainMethod)
     p = TmNew (CN "Pair") [a, b]
     a = TmNew (CN "A") []
     b = TmNew (CN "B") []
+
+example2 :: Program
+example2 = (exCT, mainMethod)
+  where
+    mainMethod = TmFieldRef cast (FN "snd")
+    cast = TmCast (CN "Pair") m
+    m = TmFieldRef p1 (FN "fst")
+    p1 = TmNew (CN "Pair") [p2, a]
+    p2 = TmNew (CN "Pair") [a, b]
+    a = TmNew (CN "A") []
+    b = TmNew (CN "B") [] 
 
 exCT :: CT
 exCT (CN name) = case name of

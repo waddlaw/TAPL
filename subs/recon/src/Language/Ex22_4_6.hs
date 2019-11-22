@@ -110,3 +110,16 @@ ex22_4_3_6 = []
 
 ex :: Constr
 ex = [ (TyNat, TyNat) ]
+
+{-
+λ> unify ex22_5_2 
+[ (TyId "X"    , TyArr (TyId "Z")    (TyId "?X_1"))
+, (TyId "Y"    , TyArr (TyId "Z")    (TyId "?X_2"))
+, (TyId "?X_1" , TyArr (TyId "?X_2") (TyId "?X_3"))
+]
+-}
+ex22_5_2 :: Constr
+ex22_5_2 = [ (TyId "X"    , TyArr (TyId "Z")    (TyId "?X_1"))
+           , (TyId "Y"    , TyArr (TyId "Z")    (TyId "?X_2"))
+           , (TyId "?X_1" , TyArr (TyId "?X_2") (TyId "?X_3"))
+           ]

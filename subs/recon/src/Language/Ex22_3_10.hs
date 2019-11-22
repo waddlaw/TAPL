@@ -85,7 +85,10 @@ ex22_3_3 = TmLam "x" (TyId "X") . TmLam "y" (TyId "Y") . TmLam "z" (TyId "Z") $ 
 
 {-
 λ> runRecon ex22_3_3 
-( TyArr (TyId "X") (TyArr (TyId "Y") (TyArr (TyId "Z") (TyId "?X_3"))),[(TyId "X",TyArr (TyId "Z") (TyId "?X_1"))
-, (TyId "Y",TyArr (TyId "Z") (TyId "?X_2")),(TyId "?X_1",TyArr (TyId "?X_2") (TyId "?X_3"))]
+( TyArr (TyId "X") (TyArr (TyId "Y") (TyArr (TyId "Z") (TyId "?X_3")))
+, [ (TyId "X"    , TyArr (TyId "Z")    (TyId "?X_1"))
+  , (TyId "Y"    , TyArr (TyId "Z")    (TyId "?X_2"))
+  , (TyId "?X_1" , TyArr (TyId "?X_2") (TyId "?X_3"))
+  ]
 )
 -}

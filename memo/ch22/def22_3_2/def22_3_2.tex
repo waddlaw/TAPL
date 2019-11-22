@@ -1,0 +1,53 @@
+%!TEX encoding = UTF-8
+\documentclass[12pt]{ujarticle}
+\usepackage{bussproofs}
+\usepackage{amssymb}
+\usepackage[top=30truemm,bottom=30truemm,left=25truemm,right=25truemm]{geometry}
+
+\let\emptyset\varnothing
+\def\fCenter{\ \vdash\ }
+\def\lamdot{.\ }
+\def\cl{\ \colon}
+
+\begin{document}
+
+\title{定義22.3.2}
+\author{shinya yamaguchi}
+\date{2019/11/12}
+\maketitle
+
+\begin{prooftree}
+  \AxiomC{$ x \cl T_{1} \in x \cl X \rightarrow Y$}
+  \RightLabel{CT-VAR}
+  \UnaryInfC{$x \cl X \rightarrow Y \fCenter x \cl T_{1} \ \mid_{\chi_{1}} C_{1}$}
+
+  \AxiomC{}
+  \RightLabel{CT-ZERO}
+  \UnaryInfC{$x \cl X \rightarrow Y \fCenter 0 \cl T_{2} \ \mid_{\chi_{2}} C_{2}$}
+  
+  \RightLabel{CT-APP}
+  \BinaryInfC{$x \cl X \rightarrow Y \fCenter x\ 0 \cl S \ \mid_{\chi} C$}
+  
+  \RightLabel{CT-ABS}
+  \UnaryInfC{$ \fCenter \lambda x \cl X \rightarrow Y \lamdot x\ 0 \cl S \ \mid_{\chi} C$}
+\end{prooftree}
+
+\hrulefill
+
+\begin{prooftree}
+  \AxiomC{$ x \cl X \rightarrow Y \in x \cl X \rightarrow Y$}
+  \RightLabel{CT-VAR}
+  \UnaryInfC{$x \cl X \rightarrow Y \fCenter x \cl X \rightarrow Y \ \mid_{\emptyset} \{\}$}
+
+  \AxiomC{}
+  \RightLabel{CT-ZERO}
+  \UnaryInfC{$x \cl X \rightarrow Y \fCenter 0 \cl Nat \ \mid_{\emptyset} \{\}$}
+  
+  \RightLabel{CT-APP}
+  \BinaryInfC{$x \cl X \rightarrow Y \fCenter x\ 0 \cl S \ \mid_{\{S\}} \{X \rightarrow Y = Nat \rightarrow S \}$}
+  
+  \RightLabel{CT-ABS}
+  \UnaryInfC{$ \fCenter \lambda x \cl X \rightarrow Y \lamdot x\ 0 \cl (X \rightarrow Y) \rightarrow S \ \mid_{\{S\}} \{X \rightarrow Y = Nat \rightarrow S \}$}
+\end{prooftree}
+
+\end{document}

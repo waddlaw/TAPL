@@ -115,7 +115,7 @@ ex22_3_3 = TmLam "x" (tyv "X") . TmLam "y" (tyv "Y") . TmLam "z" (tyv "Z") $ bod
     t1 = TmApp (TmVar "x") (TmVar "z")
     t2 = TmApp (TmVar "y") (TmVar "z")
 
-typingC :: Context -> ConstraintSet -> Term -> State Int (ReturnType, Set TyVar , ConstraintSet)
+typingC :: Context -> ConstraintSet -> Term -> State Int (ReturnType, Set TyVar, ConstraintSet)
 typingC ctx cs = \case
   TmVar x -> do
     let ty = snd . fromMaybe (error "Variable is not found in context.") $ List.find ((==x) . fst) ctx
@@ -155,37 +155,59 @@ typingC ctx cs = \case
     return (TyBool, tvs, c <> [(rt, TyNat)])
 
 {-
-λ> runTypingC ex22_3_3 
-(TyArr (TyAtom (TyVar "X")) (TyArr (TyAtom (TyVar "Y")) (TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR3"))))
-,fromList [TyVar "TYVAR1",TyVar "TYVAR2",TyVar "TYVAR3"],
-[(TyAtom (TyVar "X"),TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR1"))),(TyAtom (TyVar "Y"),TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR2"))),(TyAtom (TyVar "TYVAR1"),TyArr (TyAtom (TyVar "TYVAR2")) (TyAtom (TyVar "TYVAR3")))])
+λ> runTypingC ex22_3_3
+( TyArr (TyAtom (TyVar "X")) (TyArr (TyAtom (TyVar "Y")) (TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR3"))))
+, fromList [TyVar "TYVAR1",TyVar "TYVAR2",TyVar "TYVAR3"]
+, [(TyAtom (TyVar "X"),TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR1"))),(TyAtom (TyVar "Y"),TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR2"))),(TyAtom (TyVar "TYVAR1"),TyArr (TyAtom (TyVar "TYVAR2")) (TyAtom (TyVar "TYVAR3")))]
+)
 
-----
-return type
-(TyArr
-  (TyAtom (TyVar "X"))
-  (TyArr
-    (TyAtom (TyVar "Y"))
-    (TyArr
-      (TyAtom (TyVar "Z"))
-      (TyAtom (TyVar "TYVAR3")
-    )
-  )
-),
-X -> Y -> Z -> TYVAR3
-----
-型変数の集合
-,fromList [TyVar "TYVAR1",TyVar "TYVAR2",TyVar "TYVAR3"],
-----
-制約集合
-[ (TyAtom (TyVar "X"), TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR1")))
-, (TyAtom (TyVar "Y"), TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR2")))
-, (TyAtom (TyVar "TYVAR1"), TyArr (TyAtom (TyVar "TYVAR2")) (TyAtom (TyVar "TYVAR3")))
-]
-
-{ X = Z -> TYVAR1
-, Y = Z -> TYVAR2
-, TYVAR1 = TYVAR2 -> TYVAR3
+結果の型: X -> Y -> Z -> TYVAR3
+型変数の集合: {TYVAR1, TYVAR2, TYVAR3}
+制約集合: { X = Z -> TYVAR1
+         , Y = Z -> TYVAR2
+         , TYVAR1 = TYVAR2 -> TYVAR3
+         }
 }
+-}
 
+{-
+λ> runTypingC (TmApp TmZero TmTrue)
+( TyAtom (TyVar "TYVAR1")
+, fromList [TyVar "TYVAR1"]
+, [(TyNat,TyArr TyBool (TyAtom (TyVar "TYVAR1")))]
+)
+
+結果の型: TYVAR1
+型変数の集合: { TYVAR1 }
+制約集合: { Nat = Bool -> TYVAR1 }
+-}
+
+{-
+λ> runTypingC (TmApp (TmLam "x" TyBool (TmVar "x")) TmZero)
+( TyAtom (TyVar "TYVAR1")
+, fromList [TyVar "TYVAR1"]
+, [(TyArr TyBool TyBool,TyArr TyNat (TyAtom (TyVar "TYVAR1")))]
+)
+
+結果の型: TYVAR1
+型変数の集合: { TYVAR1 }
+制約集合: { Bool -> Bool = Nat -> TYVAR1 }
+-}
+
+example4 :: Term
+example4 = TmLam "x" (TyArr (tyv "X") (tyv "Y")) $ body
+  where
+    tyv = TyAtom . TyVar
+    body = TmApp (TmVar "x") TmZero
+
+{-
+λ> runTypingC example4
+( TyArr (TyArr (TyAtom (TyVar "X")) (TyAtom (TyVar "Y"))) (TyAtom (TyVar "TYVAR1"))
+, fromList [TyVar "TYVAR1"]
+, [(TyArr (TyAtom (TyVar "X")) (TyAtom (TyVar "Y")),TyArr TyNat (TyAtom (TyVar "TYVAR1")))]
+)
+
+結果の型: (X -> Y) -> TYVAR1
+型変数の集合: { TYVAR1 }
+制約集合: { X -> Y = Nat -> TYVAR1 }
 -}

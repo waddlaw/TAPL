@@ -8,3 +8,9 @@ dist-newstyle/
 .haskell-code-explorer/
 **/docs
 cabal.project.local
+*.aux
+*.dvi
+*.fdb_latexmk
+*.fls
+*.log
+*.gz

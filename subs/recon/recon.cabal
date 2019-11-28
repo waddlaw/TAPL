@@ -19,7 +19,7 @@ common deps
 
   build-depends:
     , base  ^>=4.12
-    , rio   ^>=0.1.12
+    , containers
 
 library
   import:           deps

@@ -69,13 +69,15 @@ recon ctx constr f = \case
   TmIsZero t ->
     let (rt, f', c) = recon ctx constr f t
     in (TyBool, f', c <> [(rt, TyNat)])
-  TmLet x t1 t2 -> recon ctx constr f (subst (x, t1) t2)
+  TmLet x t1 t2 ->
+    let (rt1, f1, c1) = recon ctx constr f  t1
+        (rt2, f2, c2) = recon ctx constr f1 (subst (x, t1) t2)
+    in (rt2, f2, c1 <> c2)
   TmLamInf x t ->
-    let
-        tyX = TyId $ head f
+    let tyX = TyId $ head f
         f'  = tail f
         (rt, f'', c) = recon ((x, tyX):ctx) constr f' t
-    in  (TyArr tyX rt, f'', c)
+    in (TyArr tyX rt, f'', c)
 
 subst :: (String, Term) -> Term -> Term
 subst a@(x, s) = \case 
@@ -209,6 +211,8 @@ in let a = double (\x:Nat  -> succ (succ x)) 2
 TyNat
 λ> calcPrincipalType $ ex3 $ TmVar "b"
 TyBool
+λ> calcPrincipalType $ ex3 $ TmVar "double"
+TyArr (TyArr (TyId "?X_4") (TyId "?X_4")) (TyArr (TyId "?X_4") (TyId "?X_4"))
 -}
 ex3 :: Term -> Term
 ex3 body = TmLet "double" decl body1
@@ -216,3 +220,15 @@ ex3 body = TmLet "double" decl body1
     decl = TmLamInf "f" $ TmLamInf "a" $ TmApp (TmVar "f") (TmApp (TmVar "f") (TmVar "a"))
     body1 = TmLet "a" (TmApp (TmApp (TmVar "double") (TmLam "x" TyNat (TmSucc $ TmSucc $ TmVar "x"))) (TmSucc $ TmSucc TmZero)) body2
     body2 = TmLet "b" (TmApp (TmApp (TmVar "double") (TmLam "x" TyBool (TmVar "x"))) TmFalse) body
+
+{-
+λ> runRecon ex4
+(TyNat,[(TyBool,TyArr TyNat (TyId "?X_1"))])
+
+λ> calcPrincipalType ex4
+*** Exception: fail
+CallStack (from HasCallStack):
+  error, called at src/Language/Ex22_7_1.hs:142:17 in main:Ex22_7_1
+-}
+ex4 :: Term
+ex4 = TmLet "x" (TmApp TmTrue TmZero) TmZero

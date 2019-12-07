@@ -5,12 +5,11 @@ tested-with:   GHC ==8.6.5
 
 common deps
   default-extensions:
-    NoImplicitPrelude
-    MultiWayIf
-    ViewPatterns
-    OverloadedStrings
-    LambdaCase
     InstanceSigs
+    LambdaCase
+    MultiWayIf
+    OverloadedStrings
+    ViewPatterns
 
   ghc-options:
     -Wall -Wcompat -Wincomplete-uni-patterns
@@ -18,16 +17,21 @@ common deps
     -Wredundant-constraints -Wtabs
 
   build-depends:
-    , base  ^>=4.12
+    , base        ^>=4.12
     , containers
+    , rio
 
 library
   import:           deps
 
   -- cabal-fmt: expand src
   exposed-modules:
+    Language.Ex22_3_10
+    Language.Ex22_4_6
+    Language.Ex22_5_5
+    Language.Ex22_5_7
+    Language.Ex22_7_1
     Language.Recon
 
   hs-source-dirs:   src
-
   default-language: Haskell2010

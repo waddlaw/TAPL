@@ -1,5 +1,5 @@
 {-# LANGUAGE LambdaCase #-}
-module Ex22_7_1 where
+module Language.Ex22_7_1 where
 
 import Data.Maybe
 import Data.List

@@ -26,8 +26,8 @@ app | versionn
 ------|-------
 cabal-install | 3.0.0.0
 cabal-fmt | 0.1.1
-haskell-ci | 0.3.20190815
-ormolu | HEAD
+haskell-ci | 0.8
+ormolu | 0.0.2.0
 stack | 2.1.3
 
 ```shell
@@ -49,6 +49,10 @@ ghcid
 ### stack
 
 ```shell
+# 開発
+$ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -qg -RTS" 
+
+# テスト
 $ stack test --fast --file-watch
 
 ## hoogle 生成

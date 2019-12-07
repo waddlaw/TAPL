@@ -1,11 +1,15 @@
 module Language.SystemF
-  ( module Language.SystemF.Types,
+  ( module Language.SystemF.Eval,
+    module Language.SystemF.Types,
     module Language.SystemF.Parser,
     module Language.SystemF.Pretty,
+    module Language.SystemF.Example,
     typeof
     )
 where
 
+import Language.SystemF.Example
+import Language.SystemF.Eval
 import Language.SystemF.Parser
 import Language.SystemF.Pretty
 import Language.SystemF.Types

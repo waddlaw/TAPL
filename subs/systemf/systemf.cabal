@@ -26,6 +26,8 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     Language.SystemF
+    Language.SystemF.Eval
+    Language.SystemF.Example
     Language.SystemF.Internal
     Language.SystemF.Parser
     Language.SystemF.Pretty

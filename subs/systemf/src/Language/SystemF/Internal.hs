@@ -1,6 +1,7 @@
 module Language.SystemF.Internal
   ( isValue,
-    isNumericValue
+    isNumericValue,
+    mkN
     )
 where
 
@@ -20,3 +21,7 @@ isNumericValue :: Term -> Bool
 isNumericValue TmZero = True -- 3-2. ゼロ
 isNumericValue (TmSucc t) = isNumericValue t -- 3-2. 後者値
 isNumericValue _ = False
+
+mkN :: Int -> Term
+mkN 0 = TmZero
+mkN n = TmSucc $ mkN (n-1)

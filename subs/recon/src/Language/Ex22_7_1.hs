@@ -1,11 +1,11 @@
 {-# LANGUAGE LambdaCase #-}
 module Language.Ex22_7_1 where
 
-import Data.Maybe
-import Data.List
-import qualified Data.Set as Set
+import           Data.List
+import           Data.Maybe
+import qualified Data.Set    as Set
 
-import Debug.Trace
+import           Debug.Trace
 
 data Ty
   = TyBool
@@ -80,7 +80,7 @@ recon ctx constr f = \case
     in (TyArr tyX rt, f'', c)
 
 subst :: (String, Term) -> Term -> Term
-subst a@(x, s) = \case 
+subst a@(x, s) = \case
   t@(TmVar y)
     | x == y -> s
     | otherwise -> t
@@ -144,20 +144,20 @@ unify ((s, t):c')
 -- utils
 isVar :: Ty -> Bool
 isVar (TyId _) = True
-isVar _ = False
+isVar _        = False
 
 isArr :: Ty -> Bool
 isArr (TyArr _ _) = True
-isArr _ = False
+isArr _           = False
 
 notInFv :: Ty -> Ty -> Bool
 notInFv (TyId x) t = x `notElem` (fv t)
-notInFv _ _ = False
+notInFv _ _        = False
 
 fv :: Ty -> [String]
-fv (TyId x) = [x]
+fv (TyId x)        = [x]
 fv (TyArr ty1 ty2) = fv ty1 ++ fv ty2
-fv _ = []
+fv _               = []
 
 getVar :: Ty -> String
 getVar (TyId x) = x
@@ -205,7 +205,7 @@ ex2 = TmLet "double" var body
 let double = \f -> \a:Bool -> f (f a)
 in let a = double (\x:Nat  -> succ (succ x)) 2
   in let b = double (\x:Bool -> x) false
-    in 
+    in
 
 λ> calcPrincipalType $ ex3 $ TmVar "a"
 TyNat

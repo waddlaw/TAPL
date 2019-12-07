@@ -1,8 +1,8 @@
 {-# LANGUAGE LambdaCase #-}
 module Language.Ex22_3_10 where
 
-import Data.Maybe
-import Data.List
+import           Data.List
+import           Data.Maybe
 
 data Ty
   = TyBool
@@ -84,7 +84,7 @@ ex22_3_3 = TmLam "x" (TyId "X") . TmLam "y" (TyId "Y") . TmLam "z" (TyId "Z") $ 
     t2 = TmApp (TmVar "y") (TmVar "z")
 
 {-
-λ> runRecon ex22_3_3 
+λ> runRecon ex22_3_3
 ( TyArr (TyId "X") (TyArr (TyId "Y") (TyArr (TyId "Z") (TyId "?X_3")))
 , [ (TyId "X"    , TyArr (TyId "Z")    (TyId "?X_1"))
   , (TyId "Y"    , TyArr (TyId "Z")    (TyId "?X_2"))

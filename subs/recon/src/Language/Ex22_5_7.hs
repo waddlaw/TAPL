@@ -1,8 +1,8 @@
 {-# LANGUAGE LambdaCase #-}
 module Language.Ex22_5_7 where
 
-import Data.Maybe
-import Data.List
+import           Data.List
+import           Data.Maybe
 
 data Ty
   = TyBool
@@ -93,20 +93,20 @@ unify ((s, t):c')
 -- utils
 isVar :: Ty -> Bool
 isVar (TyId _) = True
-isVar _ = False
+isVar _        = False
 
 isArr :: Ty -> Bool
 isArr (TyArr _ _) = True
-isArr _ = False
+isArr _           = False
 
 notInFv :: Ty -> Ty -> Bool
 notInFv (TyId x) t = x `notElem` (fv t)
-notInFv _ _ = False
+notInFv _ _        = False
 
 fv :: Ty -> [String]
-fv (TyId x) = [x]
+fv (TyId x)        = [x]
 fv (TyArr ty1 ty2) = fv ty1 ++ fv ty2
-fv _ = []
+fv _               = []
 
 getVar :: Ty -> String
 getVar (TyId x) = x

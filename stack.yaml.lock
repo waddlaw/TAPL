@@ -11,16 +11,9 @@ packages:
       sha256: 4377e72f4341cd9810a9f70137c21075e2b444a317784bb6f3d3f5ba2f463a6d
   original:
     hackage: prettyprinter-1.3.0
-- completed:
-    hackage: rio-0.1.12.0@sha256:a0b42682a455ffde6a4d894b135117e379aea7ed1810c2cfed471b8f5879968c,3633
-    pantry-tree:
-      size: 4745
-      sha256: 340566441c9d1087f661fb51f95a080ffdf2da8fce6b4b8f86f158f4195894f5
-  original:
-    hackage: rio-0.1.12.0
 snapshots:
 - completed:
-    size: 523878
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/3.yaml
-    sha256: 470c46c27746a48c7c50f829efc0cf00112787a7804ee4ac7a27754658f6d92c
-  original: lts-14.3
+    size: 524804
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/16.yaml
+    sha256: 4d1519a4372d051d47a5eae2241cf3fb54e113d7475f89707ddb6ec06add2888
+  original: lts-14.16

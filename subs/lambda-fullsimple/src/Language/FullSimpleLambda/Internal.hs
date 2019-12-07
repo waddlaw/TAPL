@@ -10,7 +10,6 @@ import RIO
 
 -- | 与えられた項が値かどうか判定する述語
 isValue :: Term -> Bool
-isValue TmVar {} = True
 isValue TmLam {} = True
 isValue TmTrue = True
 isValue TmFalse = True

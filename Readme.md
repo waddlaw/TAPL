@@ -50,7 +50,7 @@ ghcid
 
 ```shell
 # 開発
-$ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -qg -RTS" 
+$ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -qg -RTS"
 
 # テスト
 $ stack test --fast --file-watch

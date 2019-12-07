@@ -8,3 +8,4 @@ packages:
   ./subs/lambda-untyped
   ./subs/lambda-fullsimple
   ./subs/recon
+  ./subs/systemf

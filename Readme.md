@@ -16,19 +16,19 @@
 
 ![型無し算術式](screenshots/untyped-arith.gif)
 
-型無しλ計算
+型無し λ 計算
 
 ![型無しλ計算](screenshots/untyped-lambda.gif)
 
 ## Quick Start Guide
 
-app | versionn
-------|-------
-cabal-install | 3.0.0.0
-cabal-fmt | 0.1.1
-haskell-ci | 0.8
-ormolu | 0.0.2.0
-stack | 2.1.3
+| app           | versionn |
+| ------------- | -------- |
+| cabal-install | 3.0.0.0  |
+| cabal-fmt     | 0.1.1    |
+| haskell-ci    | 0.8      |
+| ormolu        | 0.0.2.0  |
+| stack         | 2.1.3    |
 
 ```shell
 $ git clone https://github.com/waddlaw/TAPL.git
@@ -50,7 +50,7 @@ ghcid
 
 ```shell
 # 開発
-$ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -qg -RTS" 
+$ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -qg -RTS"
 
 # テスト
 $ stack test --fast --file-watch
@@ -84,7 +84,7 @@ $ cabal test all
 
 ### コマンド
 
-```shell
+````shell
 # pedantic
 $ stack clean && stack test --fast --pedantic --file-watch
 
@@ -97,7 +97,7 @@ $ ./style.sh
 
 # travis-ci の設定ファイル生成
 λ haskell-ci --config cabal.haskell-ci cabal.project
-```
+````
 
 ## 実行方法
 

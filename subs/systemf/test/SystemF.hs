@@ -43,7 +43,7 @@ test_pretty =
 
       testCase "book examples (p.271)" $ do
         -- id = λX. λx:X. x
-        let exp1 = TmTypeLam "X" . TmLam "x" (TyVar "X") $ TmVar "x" 0
+        let exp1 = TmTypeLam "X" . TmLam "x" (TyVar "X" 1) $ TmVar "x" 0
         prettySystemFText mempty exp1 @?= "λX. λx:X. x"
 
         -- id [Nat]
@@ -55,7 +55,7 @@ test_pretty =
         prettySystemFText mempty exp3 @?= "((λX. λx:X. x) [Nat]) 0"
 
         -- double = λX. λf:X->X. λa:X. f (f a)
-        let exp4 = TmTypeLam "X" . TmLam "f" (TyArr (TyVar "X") (TyVar "X")) . TmLam "a" (TyVar "X") $ TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0))
+        let exp4 = TmTypeLam "X" . TmLam "f" (TyArr (TyVar "X" 1) (TyVar "X" 1)) . TmLam "a" (TyVar "X" 2) $ TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0))
         prettySystemFText mempty exp4 @?= "λX. λf:X->X. λa:X. f (f a)"
 
         -- doubleNat = double [Nat]
@@ -72,10 +72,10 @@ test_pretty =
         prettySystemFText mempty exp7 @?= "(((λX. λf:X->X. λa:X. f (f a)) [Nat]) (λx:Nat. succ (succ (succ (x))))) (succ (succ (succ (0))))"
 
         -- selfApp = λx:∀X.X->X. x [∀X.X->X] x
-        let exp8 = TmLam "x" (TyForAll "X" (TyArr (TyVar "X") (TyVar "X"))) $ TmApp (TmTypeApp (TmVar "x" 0) (TyForAll "X" (TyArr (TyVar "X") (TyVar "X")))) (TmVar "x" 0)
+        let exp8 = TmLam "x" (TyForAll "X" (TyArr (TyVar "X" 0) (TyVar "X" 0))) $ TmApp (TmTypeApp (TmVar "x" 0) (TyForAll "X" (TyArr (TyVar "X" 0) (TyVar "X" 0)))) (TmVar "x" 0)
         prettySystemFText mempty exp8 @?= "λx:∀X.X->X. (x [∀X.X->X]) x"
 
         -- quadruple = λX. double [X->X] (double [X])
-        let exp9 = TmTypeLam "X" $ TmApp (TmTypeApp exp4 (TyArr (TyVar "X") (TyVar "X"))) (TmTypeApp exp4 (TyVar "X"))
+        let exp9 = TmTypeLam "X" $ TmApp (TmTypeApp exp4 (TyArr (TyVar "X" 0) (TyVar "X" 0))) (TmTypeApp exp4 (TyVar "X" 0))
         prettySystemFText mempty exp9 @?= "λX. ((λX. λf:X->X. λa:X. f (f a)) [X->X]) ((λX. λf:X->X. λa:X. f (f a)) [X])"
     ]

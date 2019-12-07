@@ -8,5 +8,5 @@ import Data.Text.Prettyprint.Doc.Render.Text
 import Language.SystemF.Types
 import RIO
 
-prettySystemFText :: Context -> SystemF -> Text
-prettySystemFText ctx = renderStrict . layoutCompact . pprSystemF ctx
+prettySystemFText :: Context -> Term -> Text
+prettySystemFText ctx = renderStrict . layoutCompact . pprTerm ctx

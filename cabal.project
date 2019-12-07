@@ -7,3 +7,4 @@ packages:
   ./subs/lambda-simple
   ./subs/lambda-untyped
   ./subs/lambda-fullsimple
+  ./subs/recon

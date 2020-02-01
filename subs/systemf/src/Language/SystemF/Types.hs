@@ -42,6 +42,7 @@ data Ty
   | TyArr Ty Ty -- ^ 9-1. 関数型
   | TyVar TyVarName Int       -- ^ 23-1 型変数
   | TyForAll TyVarName Ty -- ^ 23-1. 全称型
+  | TyList Ty -- ^ 11.13 リスト
   deriving stock (Eq, Show)
 
 instance Pretty Ty where
@@ -59,6 +60,7 @@ pprType ctx = \case
   TyForAll tyVarName ty ->
     let ctx' = addContext (TypeVarBind tyVarName) ctx
     in pretty "∀" <> pretty tyVarName <> pretty "." <> pprType ctx' ty
+  TyList ty -> brackets (pprType ctx ty)
   where
     wrapPpr a
       | isAtom a = pprType ctx a
@@ -130,6 +132,7 @@ instance IsAtom Ty where
     TyArr {} -> False
     TyVar {} -> True
     TyForAll {} -> False
+    TyList {} -> False
 
 instance IsAtom Term where
   isAtom = \case

@@ -1,4 +1,4 @@
-module Ex22_4_6 where
+module Language.Ex22_4_6 where
 
 data Ty
   = TyBool

@@ -1,0 +1,51 @@
+%!TEX encoding = UTF-8
+\documentclass[12pt,landscape]{ujarticle}
+\usepackage{bussproofs}
+\usepackage{amssymb}
+\usepackage{lscape}
+\usepackage[a3paper,top=30truemm,bottom=30truemm,left=25truemm,right=25truemm]{geometry}
+
+\let\emptyset\varnothing
+\def\fCenter{\ \vdash\ }
+\def\lamdot{.\ }
+\def\cl{\ \colon}
+
+\begin{document}
+
+\title{Exercise 23.4.2(*)}
+\author{shinya yamaguchi}
+\date{2019/12/09}
+\maketitle
+
+\begin{prooftree}
+    \AxiomC{A}
+    \UnaryInfC{$ X, Y \fCenter \lambda f \cl X \rightarrow Y \lamdot (fix\ (\lambda m \cl List \ X \rightarrow List \ Y \lamdot \lambda l \cl List \ X \lamdot if\ isnil\ [X]\ l\  then\ nil\ [Y]\ else\ cons\ [Y]\ (f\ (head\ [X]\ l))\ (m\ (tail\ [X]\ l)))) \cl T_{2}$}
+    \RightLabel{T-TABS}
+    \UnaryInfC{$ X \fCenter \lambda Y \lamdot \lambda f \cl X \rightarrow Y \lamdot (fix\ (\lambda m \cl List \ X \rightarrow List \ Y \lamdot \lambda l \cl List \ X \lamdot if\ isnil\ [X]\ l\  then\ nil\ [Y]\ else\ cons\ [Y]\ (f\ (head\ [X]\ l))\ (m\ (tail\ [X]\ l)))) \cl \forall Y \lamdot T_{2}$}
+    \RightLabel{T-TABS}
+    \UnaryInfC{$ \fCenter \lambda X \lamdot \lambda Y \lamdot \lambda f \cl X \rightarrow Y \lamdot (fix\ (\lambda m \cl List \ X \rightarrow List \ Y \lamdot \lambda l \cl List \ X \lamdot if\ isnil\ [X]\ l\  then\ nil\ [Y]\ else\ cons\ [Y]\ (f\ (head\ [X]\ l))\ (m\ (tail\ [X]\ l)))) \cl \forall X \lamdot T_{1}$}
+\end{prooftree}
+
+\hrulefill
+
+\begin{prooftree}
+  \AxiomC{$X_{1} \fCenter double \cl \forall X_{2} \lamdot (X_{2} \rightarrow X_{2}) \rightarrow X_{2} \rightarrow X_{2}$}
+  \RightLabel{T-TAPP}
+  \UnaryInfC{$X_{1} \fCenter double \ [X_{1} \rightarrow X_{1}] \cl [X_{2} \mapsto X_{1} \rightarrow X_{1}] ((X_{2} \rightarrow X_{2}) \rightarrow X_{2} \rightarrow X_{2})$}
+  \RightLabel{substitution}
+  \UnaryInfC{$X_{1} \fCenter double \ [X_{1} \rightarrow X_{1}] \cl ((X_{1} \rightarrow X_{1}) \rightarrow X_{1} \rightarrow X_{1}) \rightarrow ((X_{1} \rightarrow X_{1}) \rightarrow X_{1} \rightarrow X_{1})$}
+
+  \AxiomC{$X_{1} \fCenter double \cl \forall X_{3} \lamdot (X_{3} \rightarrow X_{3}) \rightarrow X_{3} \rightarrow X_{3}$}
+  \RightLabel{T-TAPP}
+  \UnaryInfC{$X_{1} \fCenter double \ [X_{1}] \cl [X_{3} \rightarrow X_{1}] ((X_{3} \rightarrow X_{3}) \rightarrow X_{3} \rightarrow X_{3})$}
+  \RightLabel{substitution}
+  \UnaryInfC{$X_{1} \fCenter double \ [X_{1}] \cl (X_{1} \rightarrow X_{1}) \rightarrow X_{1} \rightarrow X_{1}$}
+  
+  \RightLabel{T-APP}
+  \BinaryInfC{$X_{1} \fCenter double \ [X_{1} \rightarrow X_{1}] \ (double \ [X_{1}]) \cl (X_{1} \rightarrow X_{1}) \rightarrow X_{1} \rightarrow X_{1}$}
+  
+  \RightLabel{T-TABS}
+  \UnaryInfC{$ \fCenter \lambda X_{1} \lamdot double \ [X_{1} \rightarrow X_{1}] \ (double \ [X_{1}]) \cl \forall X_{1} \lamdot (X_{1} \rightarrow X_{1}) \rightarrow X_{1} \rightarrow X_{1}$}
+\end{prooftree}
+
+\end{document}

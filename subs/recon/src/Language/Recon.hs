@@ -1,3 +1,8 @@
+{-# LANGUAGE TypeSynonymInstances #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE InstanceSigs #-}
 module Language.Recon where
 
 import RIO
@@ -10,11 +15,10 @@ data Ty
   = TyArr Ty Ty
   | TyBool
   | TyNat
-  | TyAtom TyVar
+  | TyVar TyVar
   deriving (Eq, Show, Ord)
 
-newtype TyVar = TyVar Text
-  deriving (Eq, Show, Ord)
+type TyVar = Text
 
 data Term
   = TmVar Text
@@ -29,88 +33,101 @@ data Term
   | TmIsZero Term
   deriving (Eq, Show)
 
+type Context = [(Var, Ty)]
+type Var = Text
+
 -- 型代入
-newtype TypeSubst = TypeSubst { unTS :: Map TyVar Ty }
-  deriving (Eq, Show)
+type Sigma = Map TyVar Ty
 
-sigmaEx :: TypeSubst
-sigmaEx = TypeSubst $
-  Map.fromList [ (TyVar "X", TyBool)
-               , (TyVar "Y", TyArr (TyAtom $ TyVar "X") (TyAtom $ TyVar "X"))
-               , (TyVar "Z", TyBool)
-               ]
+sigmaEx :: Sigma
+sigmaEx = Map.fromList
+  [ ("X", TyBool)
+  , ("Y", TyArr (TyVar "X") (TyVar "X"))
+  , ("Z", TyBool)
+  ]
 
--- dom sigmaEx == fromList [TyVar "X",TyVar "Y",TyVar "Z"]
-dom :: TypeSubst -> Set TyVar
-dom = Map.keysSet . unTS
+-- dom sigmaEx == fromList ["X","Y","Z"]
+dom :: Sigma -> Set TyVar
+dom = Map.keysSet
 
--- range sigmaEx == fromList [TyArr (TyAtom (TyVar "X")) (TyAtom (TyVar "X")),TyBool]
-range :: TypeSubst -> Set Ty
-range = Set.fromList . Map.elems . unTS
+-- range sigmaEx == fromList [TyArr (TyVar "X") (TyVar "X"),TyBool]
+range :: Sigma -> Set Ty
+range = Set.fromList . Map.elems
 
-class Apply a where
-  apply :: TypeSubst -> a -> a
+class TySubst a where
+  tySubst :: Sigma -> a -> a
 
-instance Apply Ty where
-  apply :: TypeSubst -> Ty -> Ty
-  apply ts@(TypeSubst s) = \case
-    ty@(TyAtom tv) -> fromMaybe ty (Map.lookup tv s)
+instance TySubst Ty where
+  tySubst :: Sigma -> Ty -> Ty
+  tySubst sigma = \case
+    ty@(TyVar x) -> fromMaybe ty (Map.lookup x sigma)
     TyNat -> TyNat
     TyBool -> TyBool
-    TyArr ty1 ty2 -> TyArr (apply ts ty1) (apply ts ty2)
+    TyArr ty1 ty2 -> TyArr (tySubst sigma ty1) (tySubst sigma ty2)
 
-instance Apply Term where
-  apply :: TypeSubst -> Term -> Term
-  apply ts = \case
+instance TySubst Term where
+  tySubst :: Sigma -> Term -> Term
+  tySubst sigma = \case
     TmVar i -> TmVar i
-    TmLam x ty term -> TmLam x (apply ts ty) (apply ts term)
-    TmApp t1 t2 -> TmApp (apply ts t1) (apply ts t2)
+    TmLam x ty t -> TmLam x (tySubst sigma ty) (tySubst sigma t)
+    TmApp t1 t2 -> TmApp (tySubst sigma t1) (tySubst sigma t2)
     TmTrue -> TmTrue
     TmFalse -> TmFalse
-    TmIf t1 t2 t3 -> TmIf (apply ts t1) (apply ts t2) (apply ts t3)
+    TmIf t1 t2 t3 -> TmIf (tySubst sigma t1) (tySubst sigma t2) (tySubst sigma t3)
     TmZero -> TmZero
-    TmSucc t -> TmSucc (apply ts t)
-    TmPred t -> TmPred (apply ts t)
-    TmIsZero t -> TmIsZero (apply ts t)
+    TmSucc t -> TmSucc (tySubst sigma t)
+    TmPred t -> TmPred (tySubst sigma t)
+    TmIsZero t -> TmIsZero (tySubst sigma t)
+
+instance TySubst Context where
+  tySubst :: Sigma -> Context -> Context
+  tySubst sigma = map (second (tySubst sigma))
+
+-- example0 == [("x",TyBool),("y",TyBool),("x",TyVar "Y")]
+example0 :: Context
+example0 = tySubst sigma ctx
+  where
+    -- σ = [X |-> Bool]
+    sigma = Map.singleton "X" TyBool
+    -- X->X
+    ctx = [("x", TyVar "X"), ("y", TyVar "X"), ("x", TyVar "Y")]
 
 -- example1 == TyArr TyBool TyBool
 example1 :: Ty
-example1 = apply sigma ty
+example1 = tySubst sigma ty
   where
     -- σ = [X |-> Bool]
-    sigma = TypeSubst (Map.singleton (TyVar "X") TyBool)
+    sigma = Map.singleton "X" TyBool
     -- X->X
-    ty = TyArr (TyAtom $ TyVar "X") (TyAtom $ TyVar "X")
+    ty = TyArr (TyVar "X") (TyVar "X")
 
--- example2 == TyArr TyBool (TyArr (TyAtom (TyVar "X")) (TyAtom (TyVar "X")))
+-- example2 == TyArr TyBool (TyArr (TyVar "X") (TyVar "X"))
 example2 :: Ty
-example2 = apply sigma ty
+example2 = tySubst sigma ty
   where
     -- σ = [X |-> Bool, Y |-> X->X]
-    sigma = TypeSubst (Map.fromList [ (TyVar "X", TyBool), (TyVar "Y", TyArr (TyAtom $ TyVar "X") (TyAtom $ TyVar "X"))])
+    sigma = Map.fromList [ ("X", TyBool), ("Y", TyArr (TyVar "X") (TyVar "X"))]
     -- X->Y
-    ty = TyArr (TyAtom $ TyVar "X") (TyAtom $ TyVar "Y")
+    ty = TyArr (TyVar "X") (TyVar "Y")
 
--- exmaple3 == TmLam "x" TyBool (TmVar 0)
+-- example3 == TmLam "x" TyBool (TmVar "x")
 example3 :: Term
-example3 = apply sigma term
+example3 = tySubst sigma term
   where
     -- σ = [X |-> Bool, Y |-> X->X]
-    sigma = TypeSubst (Map.fromList [(TyVar "X", TyBool)])
+    sigma = Map.fromList [("X", TyBool)]
     -- λx:X. x
-    term = TmLam "x" (TyAtom (TyVar "X")) (TmVar "x")
+    term = TmLam "x" (TyVar "X") (TmVar "x")
 
 type ConstraintSet = [(Ty, Ty)]
-type Context = [(Text, Ty)]
 type ReturnType = Ty
 
 runTypingC :: Term -> (ReturnType, Set TyVar , ConstraintSet)
 runTypingC = flip evalState 1 . typingC [] []
 
 ex22_3_3 :: Term
-ex22_3_3 = TmLam "x" (tyv "X") . TmLam "y" (tyv "Y") . TmLam "z" (tyv "Z") $ body
+ex22_3_3 = TmLam "x" (TyVar "X") . TmLam "y" (TyVar "Y") . TmLam "z" (TyVar "Z") $ body
   where
-    tyv = TyAtom . TyVar
     body = TmApp t1 t2
     t1 = TmApp (TmVar "x") (TmVar "z")
     t2 = TmApp (TmVar "y") (TmVar "z")
@@ -129,8 +146,8 @@ typingC ctx cs = \case
     uniqueId <- get
     modify (+1)
     let
-      tyvar = TyVar ("TYVAR" <> tshow uniqueId)
-      rt = TyAtom tyvar
+      tyvar = "TYVAR" <> tshow uniqueId
+      rt = TyVar tyvar
       tvs = tvs1 `Set.union` tvs2 `Set.union` Set.singleton tyvar
       c = c1 <> c2 <> [(rt1, TyArr rt2 rt)]
     return (rt, tvs, c)
@@ -156,9 +173,9 @@ typingC ctx cs = \case
 
 {-
 λ> runTypingC ex22_3_3
-( TyArr (TyAtom (TyVar "X")) (TyArr (TyAtom (TyVar "Y")) (TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR3"))))
-, fromList [TyVar "TYVAR1",TyVar "TYVAR2",TyVar "TYVAR3"]
-, [(TyAtom (TyVar "X"),TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR1"))),(TyAtom (TyVar "Y"),TyArr (TyAtom (TyVar "Z")) (TyAtom (TyVar "TYVAR2"))),(TyAtom (TyVar "TYVAR1"),TyArr (TyAtom (TyVar "TYVAR2")) (TyAtom (TyVar "TYVAR3")))]
+( TyArr (TyVar "X") (TyArr (TyVar "Y") (TyArr (TyVar "Z") (TyVar "TYVAR3")))
+, fromList ["TYVAR1","TYVAR2","TYVAR3"]
+, [(TyVar "X",TyArr (TyVar "Z") (TyVar "TYVAR1")),(TyVar "Y",TyArr (TyVar "Z") (TyVar "TYVAR2")),(TyVar "TYVAR1",TyArr (TyVar "TYVAR2") (TyVar "TYVAR3"))]
 )
 
 結果の型: X -> Y -> Z -> TYVAR3
@@ -172,9 +189,9 @@ typingC ctx cs = \case
 
 {-
 λ> runTypingC (TmApp TmZero TmTrue)
-( TyAtom (TyVar "TYVAR1")
-, fromList [TyVar "TYVAR1"]
-, [(TyNat,TyArr TyBool (TyAtom (TyVar "TYVAR1")))]
+( TyVar "TYVAR1"
+, fromList ["TYVAR1"]
+, [(TyNat,TyArr TyBool (TyVar "TYVAR1"))]
 )
 
 結果の型: TYVAR1
@@ -184,9 +201,9 @@ typingC ctx cs = \case
 
 {-
 λ> runTypingC (TmApp (TmLam "x" TyBool (TmVar "x")) TmZero)
-( TyAtom (TyVar "TYVAR1")
-, fromList [TyVar "TYVAR1"]
-, [(TyArr TyBool TyBool,TyArr TyNat (TyAtom (TyVar "TYVAR1")))]
+( TyVar "TYVAR1"
+, fromList ["TYVAR1"]
+, [(TyArr TyBool TyBool,TyArr TyNat (TyVar "TYVAR1"))]
 )
 
 結果の型: TYVAR1
@@ -195,16 +212,15 @@ typingC ctx cs = \case
 -}
 
 example4 :: Term
-example4 = TmLam "x" (TyArr (tyv "X") (tyv "Y")) $ body
+example4 = TmLam "x" (TyArr (TyVar "X") (TyVar "Y")) $ body
   where
-    tyv = TyAtom . TyVar
     body = TmApp (TmVar "x") TmZero
 
 {-
 λ> runTypingC example4
-( TyArr (TyArr (TyAtom (TyVar "X")) (TyAtom (TyVar "Y"))) (TyAtom (TyVar "TYVAR1"))
-, fromList [TyVar "TYVAR1"]
-, [(TyArr (TyAtom (TyVar "X")) (TyAtom (TyVar "Y")),TyArr TyNat (TyAtom (TyVar "TYVAR1")))]
+( TyArr (TyArr (TyVar "X") (TyVar "Y")) (TyVar "TYVAR1")
+, fromList ["TYVAR1"]
+, [(TyArr (TyVar "X") (TyVar "Y"), TyArr TyNat (TyVar "TYVAR1"))]
 )
 
 結果の型: (X -> Y) -> TYVAR1

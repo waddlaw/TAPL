@@ -4,13 +4,6 @@ version:       0.1.0.0
 tested-with:   GHC ==8.6.5
 
 common deps
-  default-extensions:
-    InstanceSigs
-    LambdaCase
-    MultiWayIf
-    OverloadedStrings
-    ViewPatterns
-
   ghc-options:
     -Wall -Wcompat -Wincomplete-uni-patterns
     -Wincomplete-record-updates -Wnoncanonical-monad-instances

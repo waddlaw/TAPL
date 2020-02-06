@@ -1,13 +1,13 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE InstanceSigs      #-}
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE InstanceSigs #-}
 module Language.Recon where
 
 import RIO
-import qualified RIO.Map as Map
-import qualified RIO.Set as Set
 import qualified RIO.List as List
+import qualified RIO.Map  as Map
+import qualified RIO.Set  as Set
 import RIO.State
 
 data Ty

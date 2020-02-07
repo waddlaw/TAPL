@@ -14,14 +14,12 @@ data Ty
   = TyArr Ty Ty
   | TyBool
   | TyNat
-  | TyVar TyVar
+  | TyVar Text
   deriving (Eq, Show, Ord)
-
-type TyVar = Text
 
 data Term
   = TmVar Text
-  | TmLam Text Ty Term
+  | TmLam Var Ty Term
   | TmApp Term Term
   | TmTrue
   | TmFalse
@@ -34,6 +32,7 @@ data Term
 
 type Context = [(Var, Ty)]
 type Var = Text
+type TyVar = Text
 
 -- 型代入
 type Sigma = Map TyVar Ty
@@ -118,11 +117,11 @@ example3 = tySubst sigma term
     -- λx:X. x
     term = TmLam "x" (TyVar "X") (TmVar "x")
 
-type ConstraintSet = [(Ty, Ty)]
+type ConstraintSet = Set (Ty, Ty)
 type ReturnType = Ty
 
-runTypingC :: Term -> (ReturnType, Set TyVar , ConstraintSet)
-runTypingC = flip evalState 1 . typingC [] []
+runTypingC :: Term -> (ReturnType, Set TyVar, ConstraintSet)
+runTypingC = flip evalState 1 . typingC []
 
 ex22_3_3 :: Term
 ex22_3_3 = TmLam "x" (TyVar "X") . TmLam "y" (TyVar "Y") . TmLam "z" (TyVar "Z") $ body
@@ -131,50 +130,74 @@ ex22_3_3 = TmLam "x" (TyVar "X") . TmLam "y" (TyVar "Y") . TmLam "z" (TyVar "Z")
     t1 = TmApp (TmVar "x") (TmVar "z")
     t2 = TmApp (TmVar "y") (TmVar "z")
 
-typingC :: Context -> ConstraintSet -> Term -> State Int (ReturnType, Set TyVar, ConstraintSet)
-typingC ctx cs = \case
+typingC ::
+  Context ->
+  Term ->
+  State Int (ReturnType, Set TyVar, ConstraintSet)
+typingC ctx = \case
   TmVar x -> do
-    let ty = snd . fromMaybe (error "Variable is not found in context.") $ List.find ((==x) . fst) ctx
-    return (ty, Set.empty, [])
+    let ty = fromMaybe (error "Variable is not found in context.") $ List.lookup x ctx
+    return (ty, Set.empty, Set.empty)
   TmLam x ty t -> do
-    (rt, tvs, c) <- typingC ((x,ty):ctx) cs t
+    (rt, tvs, c) <- typingC ((x,ty):ctx) t
     return (TyArr ty rt, tvs, c)
   TmApp t1 t2 -> do
-    (rt1, tvs1, c1) <- typingC ctx cs t1
-    (rt2, tvs2, c2) <- typingC ctx cs t2
+    (rt1, tvs1, c1) <- typingC ctx t1
+    (rt2, tvs2, c2) <- typingC ctx t2
     uniqueId <- get
     modify (+1)
     let
       tyvar = "TYVAR" <> tshow uniqueId
       rt = TyVar tyvar
-      tvs = tvs1 `Set.union` tvs2 `Set.union` Set.singleton tyvar
-      c = c1 <> c2 <> [(rt1, TyArr rt2 rt)]
+      tvs = tvs1 <> tvs2 <> Set.singleton tyvar
+      c = c1 <> c2 <> Set.singleton (rt1, TyArr rt2 rt)
     return (rt, tvs, c)
-  TmTrue -> return (TyBool, Set.empty, [])
-  TmFalse -> return (TyBool, Set.empty, [])
+  TmTrue -> return (TyBool, Set.empty, Set.empty)
+  TmFalse -> return (TyBool, Set.empty, Set.empty)
   TmIf t1 t2 t3 -> do
-    (rt1, tvs1, c1) <- typingC ctx cs t1
-    (rt2, tvs2, c2) <- typingC ctx cs t2
-    (rt3, tvs3, c3) <- typingC ctx cs t3
-    let tvs = tvs1 `Set.union` tvs2 `Set.union` tvs3
-        c = c1 <> c2 <> c3 <> [(rt1, TyBool), (rt2, rt3)]
+    (rt1, tvs1, c1) <- typingC ctx t1
+    (rt2, tvs2, c2) <- typingC ctx t2
+    (rt3, tvs3, c3) <- typingC ctx t3
+    let tvs = tvs1 <> tvs2 <> tvs3
+        c = c1 <> c2 <> c3 <> Set.fromList [(rt1, TyBool), (rt2, rt3)]
     return (rt2, tvs, c)
-  TmZero -> return (TyNat, Set.empty, [])
+  TmZero -> return (TyNat, Set.empty, Set.empty)
   TmSucc t -> do
-    (rt, tvs, c) <- typingC ctx cs t
-    return (TyNat, tvs, c <> [(rt, TyNat)])
+    (rt, tvs, c) <- typingC ctx t
+    return (TyNat, tvs, c <> Set.singleton (rt, TyNat))
   TmPred t -> do
-    (rt, tvs, c) <- typingC ctx cs t
-    return (TyNat, tvs, c <> [(rt, TyNat)])
+    (rt, tvs, c) <- typingC ctx t
+    return (TyNat, tvs, c <> Set.singleton (rt, TyNat))
   TmIsZero t -> do
-    (rt, tvs, c) <- typingC ctx cs t
-    return (TyBool, tvs, c <> [(rt, TyNat)])
+    (rt, tvs, c) <- typingC ctx t
+    return (TyBool, tvs, c <> Set.singleton (rt, TyNat))
 
 {-
 λ> runTypingC ex22_3_3
-( TyArr (TyVar "X") (TyArr (TyVar "Y") (TyArr (TyVar "Z") (TyVar "TYVAR3")))
-, fromList ["TYVAR1","TYVAR2","TYVAR3"]
-, [(TyVar "X",TyArr (TyVar "Z") (TyVar "TYVAR1")),(TyVar "Y",TyArr (TyVar "Z") (TyVar "TYVAR2")),(TyVar "TYVAR1",TyArr (TyVar "TYVAR2") (TyVar "TYVAR3"))]
+( TyArr ( TyVar "X" ) 
+    ( TyArr ( TyVar "Y" ) 
+        ( TyArr ( TyVar "Z" ) ( TyVar "TYVAR3" ) )
+    )
+, fromList 
+    [ "TYVAR1" 
+    , "TYVAR2" 
+    , "TYVAR3" 
+    ] 
+, fromList 
+    [ 
+        ( TyVar "TYVAR1" 
+        , TyArr ( TyVar "TYVAR2" ) ( TyVar "TYVAR3" )
+        ) 
+    , 
+        ( TyVar "X" 
+        , TyArr ( TyVar "Z" ) ( TyVar "TYVAR1" )
+        ) 
+    , 
+        ( TyVar "Y" 
+        , TyArr ( TyVar "Z" ) ( TyVar "TYVAR2" )
+        ) 
+    ] 
+) 
 )
 
 結果の型: X -> Y -> Z -> TYVAR3
@@ -188,9 +211,14 @@ typingC ctx cs = \case
 
 {-
 λ> runTypingC (TmApp TmZero TmTrue)
-( TyVar "TYVAR1"
-, fromList ["TYVAR1"]
-, [(TyNat,TyArr TyBool (TyVar "TYVAR1"))]
+( TyVar "TYVAR1" 
+, fromList [ "TYVAR1" ]
+, fromList 
+    [ 
+        ( TyNat
+        , TyArr TyBool ( TyVar "TYVAR1" )
+        ) 
+    ]
 )
 
 結果の型: TYVAR1
@@ -200,9 +228,15 @@ typingC ctx cs = \case
 
 {-
 λ> runTypingC (TmApp (TmLam "x" TyBool (TmVar "x")) TmZero)
-( TyVar "TYVAR1"
-, fromList ["TYVAR1"]
-, [(TyArr TyBool TyBool,TyArr TyNat (TyVar "TYVAR1"))]
+( TyVar "TYVAR1" 
+, fromList [ "TYVAR1" ]
+, fromList 
+    [ 
+        ( TyArr TyBool TyBool
+        , TyArr TyNat ( TyVar "TYVAR1" )
+        ) 
+    ]
+)
 )
 
 結果の型: TYVAR1
@@ -217,9 +251,15 @@ example4 = TmLam "x" (TyArr (TyVar "X") (TyVar "Y")) $ body
 
 {-
 λ> runTypingC example4
-( TyArr (TyArr (TyVar "X") (TyVar "Y")) (TyVar "TYVAR1")
-, fromList ["TYVAR1"]
-, [(TyArr (TyVar "X") (TyVar "Y"), TyArr TyNat (TyVar "TYVAR1"))]
+( TyArr 
+    ( TyArr ( TyVar "X" ) ( TyVar "Y" ) ) ( TyVar "TYVAR1" )
+, fromList [ "TYVAR1" ]
+, fromList 
+    [ 
+        ( TyArr ( TyVar "X" ) ( TyVar "Y" )
+        , TyArr TyNat ( TyVar "TYVAR1" )
+        ) 
+    ]
 )
 
 結果の型: (X -> Y) -> TYVAR1

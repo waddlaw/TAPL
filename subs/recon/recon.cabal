@@ -20,10 +20,11 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     Language.Ex22_3_10
-    Language.Ex22_4_6
-    Language.Ex22_5_5
-    Language.Ex22_5_7
-    Language.Ex22_7_1
+    Language.Ex22_3_11
+    -- Language.Ex22_4_6
+    -- Language.Ex22_5_5
+    -- Language.Ex22_5_7
+    -- Language.Ex22_7_1
     Language.Recon
 
   hs-source-dirs:   src

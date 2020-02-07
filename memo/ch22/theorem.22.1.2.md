@@ -11,8 +11,6 @@ $\sigma$ が任意の型代入で、かつ $\Gamma \vdash t:T$ ならば $\sigma
 - $t = x$
 - $x:T \in \Gamma$
 
-帰納法の仮定より
-
 $$
 \sigma \Gamma \vdash \sigma x : \sigma T
 $$

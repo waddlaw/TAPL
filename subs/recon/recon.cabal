@@ -10,8 +10,7 @@ common deps
     -Wredundant-constraints -Wtabs
 
   build-depends:
-    , base        ^>=4.12
-    , containers
+    , base ^>=4.12
     , rio
 
 library

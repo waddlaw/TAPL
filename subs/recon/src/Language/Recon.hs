@@ -1,6 +1,13 @@
 {-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE OverloadedStrings #-}
-module Language.Recon where
+module Language.Recon
+  ( runTypingC
+  , ex22_3_3
+  , example1
+  , example2
+  , example3
+  )
+where
 
 import RIO
 import qualified RIO.List as List

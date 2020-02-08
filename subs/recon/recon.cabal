@@ -19,13 +19,16 @@ library
 
   -- cabal-fmt: expand src
   exposed-modules:
-    Language.Ex22_3_10
-    Language.Ex22_3_11
-    -- Language.Ex22_4_6
-    -- Language.Ex22_5_5
-    -- Language.Ex22_5_7
-    -- Language.Ex22_7_1
     Language.Recon
+    Language.Recon.Sigma
+    Language.Recon.Type
+    Language.Recon.TySubst
+    Language.Recon.Exercise.Ex22_3_10
+    Language.Recon.Exercise.Ex22_3_11
+    Language.Recon.Exercise.Ex22_4_6
+    Language.Recon.Exercise.Ex22_5_5
+    Language.Recon.Exercise.Ex22_5_7
+    Language.Recon.Exercise.Ex22_7_1
 
   hs-source-dirs:   src
   default-language: Haskell2010

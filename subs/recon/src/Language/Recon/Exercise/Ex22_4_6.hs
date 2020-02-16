@@ -1,8 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE LambdaCase #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 module Language.Recon.Exercise.Ex22_4_6 where
 
 import RIO
+import qualified RIO.Set as Set
+import qualified RIO.List as List
 
 data Ty
   = TyBool
@@ -11,23 +14,30 @@ data Ty
   | TyVar VarName
   deriving (Eq, Show, Ord)
 
-type ConstraintSet = [(Ty, Ty)]
+type Constraint = (Ty, Ty)
 type VarName = Text
 
-unify :: ConstraintSet -> Maybe ConstraintSet
-unify [] = Just []
-unify ((s, t):c')
-  | s == t = unify c'
-  | isVar s && s `notInFv` t =
-      let sigma = (s, t)
-       in (sigma :) <$> unify (map (applyC sigma) c')
-  | isVar t && t `notInFv` s =
-      let sigma = (t, s)
-       in (sigma :) <$> unify (map (applyC sigma) c')
+unify :: Set Constraint -> Maybe (Set Constraint)
+unify = fmap (Set.fromList . go . reverse) . unify1
+  where
+    go [] = []
+    go (c@(s,t):cs) = (s, composeC0 cs t) : go (map (composeC1 c) cs)
+
+unify1 :: Set Constraint -> Maybe [Constraint]
+unify1 c
+  | Set.null c = Just []
+  | Set.size c == 1 = unify2 . head . Set.toList $ c
+  | otherwise = Just . concat . catMaybes . map unify1 . Set.splitRoot $ c
+
+unify2 :: Constraint -> Maybe [Constraint]
+unify2 (s, t)
+  | s == t = Just []
+  | isVar s && s `notInFv` t = Just [(s, t)]
+  | isVar t && t `notInFv` s = Just [(t, s)]
   | isArr s && isArr t =
       let TyArr s1 s2 = s
           TyArr t1 t2 = t
-       in unify ([(s1, t1), (s2, t2)] ++ c')
+      in unify1 (Set.fromList [(s1, t1), (s2, t2)])
   | otherwise = Nothing
 
 -- utils
@@ -48,8 +58,14 @@ fv (TyVar x) = [x]
 fv (TyArr ty1 ty2) = fv ty1 ++ fv ty2
 fv _ = []
 
-applyC :: (Ty, Ty) -> (Ty, Ty) -> (Ty, Ty)
-applyC sigma = fork (apply sigma)
+composeC0 :: [Constraint] -> Ty -> Ty
+composeC0 cs = \case
+  t@(TyVar{}) -> fromMaybe t $ List.lookup t cs
+  TyArr ty1 ty2 -> (TyArr `on` composeC0 cs) ty1 ty2
+  ty -> ty
+
+composeC1 :: (Ty, Ty) -> (Ty, Ty) -> (Ty, Ty)
+composeC1 sigma = fork (apply sigma)
   where
     fork f (a, b) = (f a, f b)
 
@@ -65,49 +81,49 @@ apply (s, t) u
 
 -- >>> unify ex22_4_3_1
 -- [(TyVar "X",TyNat),(TyVar "Y",TyArr TyNat TyNat)]
-ex22_4_3_1 :: ConstraintSet
-ex22_4_3_1 = [(x, TyNat), (TyVar "Y", TyArr x x)]
+ex22_4_3_1 :: Set Constraint
+ex22_4_3_1 = Set.fromList [(x, TyNat), (TyVar "Y", TyArr x x)]
   where
     x = TyVar "X"
 
 -- >>> unify ex22_4_3_2
 -- [(TyVar "X",TyNat),(TyVar "Y",TyNat)]
-ex22_4_3_2 :: ConstraintSet
-ex22_4_3_2 = [ (TyArr TyNat TyNat, TyArr (TyVar "X") (TyVar "Y")) ]
+ex22_4_3_2 :: Set Constraint
+ex22_4_3_2 = Set.singleton (TyArr TyNat TyNat, TyArr (TyVar "X") (TyVar "Y"))
 
 -- >>> unify ex22_4_3_3
 -- [ (TyVar "X",TyArr (TyVar "U") (TyVar "W"))
 -- , (TyVar "Y",TyArr (TyVar "U") (TyVar "W"))
 -- , (TyVar "Z",TyArr (TyVar "U") (TyVar "W"))
 -- ]
-ex22_4_3_3 :: ConstraintSet
-ex22_4_3_3 =
+ex22_4_3_3 :: Set Constraint
+ex22_4_3_3 = Set.fromList
   [ (TyArr (TyVar "X") (TyVar "Y"), TyArr (TyVar "Y") (TyVar "Z"))
   , (TyVar "Z", TyArr (TyVar "U") (TyVar "W"))
   ]
 
 -- >>> unify ex22_4_3_4
 -- *** Exception: fail
-ex22_4_3_4 :: ConstraintSet
-ex22_4_3_4 = [ (TyNat, TyArr TyNat (TyVar "Y")) ]
+ex22_4_3_4 :: Set Constraint
+ex22_4_3_4 = Set.singleton (TyNat, TyArr TyNat (TyVar "Y"))
 
 -- >>> unify ex22_4_3_5
 -- *** Exception: fail
-ex22_4_3_5 :: ConstraintSet
-ex22_4_3_5 = [ (TyVar "Y", TyArr TyNat (TyVar "Y")) ]
+ex22_4_3_5 :: Set Constraint
+ex22_4_3_5 = Set.singleton (TyVar "Y", TyArr TyNat (TyVar "Y"))
 
 -- >>> unify ex22_4_3_6
 -- []
-ex22_4_3_6 :: ConstraintSet
-ex22_4_3_6 = []
+ex22_4_3_6 :: Set Constraint
+ex22_4_3_6 = Set.empty
 
 -- >>> unify ex22_5_2 
 -- [ (TyVar "X"    , TyArr (TyVar "Z")    (TyVar "?X_1"))
 -- , (TyVar "Y"    , TyArr (TyVar "Z")    (TyVar "?X_2"))
 -- , (TyVar "?X_1" , TyArr (TyVar "?X_2") (TyVar "?X_3"))
 -- ]
-ex22_5_2 :: ConstraintSet
-ex22_5_2 =
+ex22_5_2 :: Set Constraint
+ex22_5_2 = Set.fromList
   [ (TyVar "X"   , TyArr (TyVar "Z")    (TyVar "?X_1"))
   , (TyVar "Y"   , TyArr (TyVar "Z")    (TyVar "?X_2"))
   , (TyVar "?X_1", TyArr (TyVar "?X_2") (TyVar "?X_3"))

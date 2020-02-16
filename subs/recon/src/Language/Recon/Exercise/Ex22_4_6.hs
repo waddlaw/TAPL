@@ -1,16 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-module Language.Recon.Exercise.Ex22_4_6
-  ( unify
-  , ex22_4_3_1
-  , ex22_4_3_2
-  , ex22_4_3_3
-  , ex22_4_3_4
-  , ex22_4_3_5
-  , ex22_4_3_6
-  , ex22_5_2
-  )
-where
+module Language.Recon.Exercise.Ex22_4_6 where
 
 import RIO
 
@@ -24,21 +14,21 @@ data Ty
 type ConstraintSet = [(Ty, Ty)]
 type VarName = Text
 
-unify :: ConstraintSet -> ConstraintSet
-unify [] = []
+unify :: ConstraintSet -> Maybe ConstraintSet
+unify [] = Just []
 unify ((s, t):c')
   | s == t = unify c'
   | isVar s && s `notInFv` t =
       let sigma = (s, t)
-       in sigma : unify (map (applyC sigma) c')
+       in (sigma :) <$> unify (map (applyC sigma) c')
   | isVar t && t `notInFv` s =
       let sigma = (t, s)
-       in sigma : unify (map (applyC sigma) c')
+       in (sigma :) <$> unify (map (applyC sigma) c')
   | isArr s && isArr t =
       let TyArr s1 s2 = s
           TyArr t1 t2 = t
        in unify ([(s1, t1), (s2, t2)] ++ c')
-  | otherwise = error "fail"
+  | otherwise = Nothing
 
 -- utils
 isVar :: Ty -> Bool
@@ -86,9 +76,9 @@ ex22_4_3_2 :: ConstraintSet
 ex22_4_3_2 = [ (TyArr TyNat TyNat, TyArr (TyVar "X") (TyVar "Y")) ]
 
 -- >>> unify ex22_4_3_3
--- [ (TyVar "Z",TyArr (TyVar "U") (TyVar "W"))
--- , (TyVar "X",TyVar "Y")
+-- [ (TyVar "X",TyArr (TyVar "U") (TyVar "W"))
 -- , (TyVar "Y",TyArr (TyVar "U") (TyVar "W"))
+-- , (TyVar "Z",TyArr (TyVar "U") (TyVar "W"))
 -- ]
 ex22_4_3_3 :: ConstraintSet
 ex22_4_3_3 =

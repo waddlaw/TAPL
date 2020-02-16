@@ -1,7 +1,7 @@
 cabal-version: 2.4
 name:          recon
 version:       0.1.0.0
-tested-with:   GHC ==8.6.5
+tested-with:   GHC ==8.6.5 || ==8.8.2
 
 common deps
   ghc-options:
@@ -10,24 +10,42 @@ common deps
     -Wredundant-constraints -Wtabs
 
   build-depends:
-    , base ^>=4.12
-    , rio
+    , base  >=4.12 && <4.14
+    , rio   ^>=0.1
+
+  default-language: Haskell2010
 
 library
-  import:           deps
+  import:          deps
+  hs-source-dirs:  src
 
   -- cabal-fmt: expand src
   exposed-modules:
     Language.Recon
-    Language.Recon.Sigma
-    Language.Recon.Type
-    Language.Recon.TySubst
     Language.Recon.Exercise.Ex22_3_10
     Language.Recon.Exercise.Ex22_3_11
     Language.Recon.Exercise.Ex22_4_6
     Language.Recon.Exercise.Ex22_5_5
     Language.Recon.Exercise.Ex22_5_7
     Language.Recon.Exercise.Ex22_7_1
+    Language.Recon.Sigma
+    Language.Recon.Type
+    Language.Recon.TySubst
 
-  hs-source-dirs:   src
-  default-language: Haskell2010
+test-suite unit-test
+  import:             deps
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     test
+  main-is:            Driver.hs
+  build-depends:
+    , recon
+    , tasty        ^>=1.2
+    , tasty-hunit  ^>=0.10
+
+  -- cabal-fmt: expand test -Driver
+  other-modules:
+    Test.Language.Recon.Exercise.Ex22_3_10
+    Test.Language.Recon.Exercise.Ex22_4_6
+    Test.Language.Recon.Recon
+
+  build-tool-depends: tasty-discover:tasty-discover ^>=4.2

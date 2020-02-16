@@ -53,7 +53,7 @@ example0 = tySubst sigma ctx
   where
     -- σ = [X |-> Bool]
     sigma = Map.singleton "X" TyBool
-    -- X->X
+    -- [x:X, y:X, x:Y]
     ctx = [("x", TyVar "X"), ("y", TyVar "X"), ("x", TyVar "Y")]
 
 -- >>> example1

@@ -2,11 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeApplications  #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
-module Language.Recon.Exercise.Ex22_3_10
-  ( runTypingC
-  , ex22_3_3
-  )
-where
+module Language.Recon.Exercise.Ex22_3_10 where
 
 import RIO
 import qualified RIO.List as List

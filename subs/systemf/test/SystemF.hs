@@ -11,30 +11,53 @@ import Test.Tasty.HUnit
 test_eval :: TestTree
 test_eval =
   testGroup "eval"
-    [ testCase "book examples (p.271)" $ do
-        -- id [Nat]
-        let exp1 = TmTypeApp identity TyNat
-            res1 = TmLam "x" TyNat $ TmVar "x" 0
-        evaluate exp1 @?= res1
+    [ testCase "p.271: id [Nat]" $ do
+        let expr = TmTypeApp identity TyNat
+            expected = TmLam "x" TyNat $ TmVar "x" 0
+        evaluate expr @?= expected
 
-        -- id [Nat] 0
-        let exp2 = TmApp exp1 TmZero
-            res2 = TmZero
-        evaluate exp2 @?= res2
+    , testCase "p.271: id [Nat] 0" $ do
+        let expr = TmApp (TmTypeApp identity TyNat) TmZero
+            expected = TmZero
+        evaluate expr @?= expected
 
-        evaluate doubleNat @?= (TmLam "f" (TyArr TyNat TyNat) . TmLam "a" TyNat $ TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0)))
+    , testCase "p.271: doubleNat = double [Nat]" $ do
+        let expected = TmLam "f" (TyArr TyNat TyNat) . 
+                        TmLam "a" TyNat $
+                          TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0))
+        evaluate doubleNat @?= expected
 
-        evaluate doubleNatArrowNat @?= (TmLam "f" (TyArr (TyArr TyNat TyNat) (TyArr TyNat TyNat)) . TmLam "a" (TyArr TyNat TyNat) $ TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0)))
+    , testCase "p.271: doubleNat = double [Nat -> Nat]" $ do
+        let expected = TmLam "f" (TyArr (TyArr TyNat TyNat) (TyArr TyNat TyNat)) .
+                        TmLam "a" (TyArr TyNat TyNat) $
+                          TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0))
+        evaluate doubleNatArrowNat @?= expected
 
-        -- double [Nat] (λx:Nat . succ(succ(succ(x)))) 3
-        let exp5_1 = TmApp doubleNat (TmLam "x" TyNat $ TmSucc $ TmSucc (TmVar "x" 0))
-            exp5 = TmApp exp5_1 $ mkN 3
-        evaluate exp5 @?= mkN 7
+    , testCase "p.271: double [Nat] (λx:Nat . succ(succ(x))) 3" $ do
+        let expr1 = TmApp doubleNat (TmLam "x" TyNat $ TmSucc $ TmSucc (TmVar "x" 0))
+            expr2 = TmApp expr1 $ mkN 3
+        evaluate expr2 @?= mkN 7
 
-        let sub = (TmLam "x" TyNat $ TmSucc $ TmSucc (TmVar "x" 0))
-            exp8 = TmApp (TmApp (TmTypeApp quadruple TyNat) sub) $ mkN 2
-        evaluate exp8 @?= mkN 10
+    , testCase "p.271: quadruple [Nat] (λx:Nat . succ(succ(x))) 2" $ do
+        let sub = TmLam "x" TyNat $ TmSucc $ TmSucc (TmVar "x" 0)
+            expr = TmApp (TmApp (TmTypeApp quadruple TyNat) sub) $ mkN 2
+        evaluate expr @?= mkN 10
 
+    , testCase "[E-HEADCONS] head [Nat] (cons [Nat] 0 nil)" $ do
+        let sub  = TmApp (TmApp (TmTypeApp TmCons TyNat) TmZero) TmNil
+            expr = TmApp (TmTypeApp TmHead TyNat) sub
+        evaluate expr @?= TmZero
+    ]
+
+test_typeof :: TestTree
+test_typeof =
+  testGroup "typeof"
+    [ testCase "p.272: l = cons [Nat] 4 (cons [Nat] 3 (cons [Nat] 2 (nil [Nat])))" $ do
+        let sub1 = TmTypeApp TmNil TyNat
+            sub2 = TmApp (TmApp (TmTypeApp TmCons TyNat) (mkN 2)) sub1
+            sub3 = TmApp (TmApp (TmTypeApp TmCons TyNat) (mkN 3)) sub2
+            expr = TmApp (TmApp (TmTypeApp TmCons TyNat) (mkN 4)) sub3
+        typeof mempty expr @?= TyList TyNat
     ]
 
 test_pretty :: TestTree

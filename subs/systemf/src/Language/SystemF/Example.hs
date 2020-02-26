@@ -27,7 +27,3 @@ quadruple = TmTypeLam "X" $ TmApp (TmTypeApp double (TyArr (TyVar "X" 0) (TyVar 
 -- λx:∀X.X->X. x [∀X.X->X] x
 selfApp :: Term
 selfApp = TmLam "x" (TyForAll "X" (TyArr (TyVar "X" 0) (TyVar "X" 0))) $ TmApp (TmTypeApp (TmVar "x" 0) (TyForAll "X" (TyArr (TyVar "X" 0) (TyVar "X" 0)))) (TmVar "x" 0)
-
--- nil = λX. 
-nil :: Term
-nil = 

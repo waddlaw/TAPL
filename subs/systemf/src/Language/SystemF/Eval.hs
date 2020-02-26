@@ -1,6 +1,7 @@
 module Language.SystemF.Eval
-  (eval,
-  evaluate
+  ( eval,
+    evaluate,
+    substT
   ) where
 
 import Data.Either
@@ -38,6 +39,40 @@ eval = \case
   -- 3-2. E-ISZERO
   TmIsZero t -> TmIsZero (eval t)
 
+  -- 11-13. E-CONS2
+  TmApp (TmApp (TmTypeApp TmCons tyT) v1@(isValue -> True)) t2 ->
+    let t2' = eval t2
+     in TmApp (TmApp (TmTypeApp TmCons tyT) v1) t2'
+  -- 11-13. E-CONS1
+  TmApp (TmApp (TmTypeApp TmCons tyT) t1) t2 ->
+    let t1' = eval t1
+     in TmApp (TmApp (TmTypeApp TmCons tyT) t1') t2
+  -- 11-13. E-ISNILNIL
+  TmApp (TmTypeApp TmIsNil _tyS) (TmTypeApp TmNil _tyT) -> TmTrue
+  -- 11-13. E-ISNILCONS
+  TmApp (TmTypeApp TmIsNil _tyS) (TmApp (TmApp (TmTypeApp TmCons _tyT) _v1@(isValue -> True)) _v2@(isValue -> True)) -> TmFalse
+  -- 11-13. E-ISNIL
+  TmApp (TmTypeApp TmIsNil tyT) t1 ->
+    let t1' = eval t1
+     in TmApp (TmTypeApp TmIsNil tyT) t1'
+  -- 11-13. E-HEADCONS
+  TmApp (TmTypeApp TmHead _tyS) (TmApp (TmApp (TmTypeApp TmCons _tyT) v1@(isValue -> True)) _v2@(isValue -> True)) -> v1
+  -- 11-13. E-HEAD
+  TmApp (TmTypeApp TmHead tyT) t1 ->
+    let t1' = eval t1
+     in TmApp (TmTypeApp TmHead tyT) t1'
+  -- 11-13. E-TAILCONS
+  TmApp (TmTypeApp TmTail _tyS) (TmApp (TmApp (TmTypeApp TmCons _tyT) _v1@(isValue -> True)) v2@(isValue -> True)) -> v2
+  -- 11-13. E-TAIL
+  TmApp (TmTypeApp TmTail tyT) t1 ->
+    let t1' = eval t1
+     in TmApp (TmTypeApp TmTail tyT) t1'
+
+  -- 23-1. E-TAPPABS
+  TmTypeApp (TmTypeLam _ t12) ty2 -> shift 0 (-1) $ subst 0 (Left $ shift 0 1 ty2) t12
+  -- 23-1. E-TAPP
+  TmTypeApp t1 ty2 -> TmTypeApp (eval t1) ty2
+
   -- 9-1. E-APPABS
   TmApp (TmLam _ _ t12) v2@(isValue -> True) -> shift 0 (-1) $ subst 0 (Right $ shift 0 1 v2) t12
   -- 9-1. E-APP2
@@ -45,12 +80,7 @@ eval = \case
   -- 9-1. E-APP1
   TmApp t1 t2 -> TmApp (eval t1) t2
 
-  -- 23-1. E-TAPPABS
-  TmTypeApp (TmTypeLam _ t12) ty2 -> shift 0 (-1) $ subst 0 (Left $ shift 0 1 ty2) t12
-  -- 23-1. E-TAPP
-  TmTypeApp t1 ty2 -> TmTypeApp (eval t1) ty2
-
-  _ -> undefined
+  x -> error $ show x
 
 subst :: Int -> Either Ty Term -> Term -> Term
 subst j s = \case
@@ -74,12 +104,18 @@ subst j s = \case
   TmSucc t -> TmSucc $ subst j s t
   TmPred t -> TmPred $ subst j s t
   TmIsZero t -> TmIsZero $ subst j s t
+  TmNil   -> TmNil
+  TmCons  -> TmCons
+  TmIsNil -> TmIsNil
+  TmHead  -> TmHead
+  TmTail  -> TmTail
 
 substT :: Int -> Either Ty Term -> Ty -> Ty
 substT j s = \case
   TyBool -> TyBool
   TyNat -> TyNat
   TyArr ty1 ty2 -> (TyArr `on` substT j s) ty1 ty2
+  TyList ty -> TyList (substT j s ty)
   ty@(TyVar _ k)
     | k == j -> fromLeft undefined s
     | otherwise -> ty
@@ -103,6 +139,7 @@ instance DeBruijn Term where
       let ty' = shift (c + 1) d ty
           t' = shift (c + 1) d t
       in TmLam x ty' t'
+
     TmApp t1 t2 -> (TmApp `on` shift c d) t1 t2
     TmTrue -> TmTrue
     TmFalse -> TmFalse
@@ -111,6 +148,14 @@ instance DeBruijn Term where
     TmSucc t -> TmSucc $ shift c d t
     TmPred t -> TmPred $ shift c d t
     TmIsZero t -> TmIsZero $ shift c d t
+
+    -- 11-13. List
+    TmNil   -> TmNil
+    TmCons  -> TmCons
+    TmIsNil -> TmIsNil
+    TmHead  -> TmHead
+    TmTail  -> TmTail
+
     TmTypeLam tyVarName t -> TmTypeLam tyVarName $ shift (c + 1) d t
     TmTypeApp t ty ->
       let ty' = shift c d ty
@@ -122,6 +167,7 @@ instance DeBruijn Ty where
     TyBool -> TyBool
     TyNat -> TyNat
     TyArr ty1 ty2 -> (TyArr `on` shift c d) ty1 ty2
+    TyList ty -> TyList (shift c d ty)
     TyVar tyVarName k
       | k < c -> TyVar tyVarName k
       | otherwise -> TyVar tyVarName (k + d)

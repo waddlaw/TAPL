@@ -12,40 +12,40 @@ test_unify :: TestTree
 test_unify = testGroup "ex22.3.10" $
   [ testGroup "unify" $
       [ testCase "ex22.4.3-1" do
-          let cs = Set.fromList [(TyVar "X", TyNat), (TyVar "Y", TyArr (TyVar "X") (TyVar "X"))]
-              expected = Just $ Set.fromList [(TyVar "X",TyNat),(TyVar "Y",TyArr TyNat TyNat)]
-          unify cs @?= expected
+          let expected = Just $ Set.fromList [(TyVar "X",TyNat),(TyVar "Y",TyArr TyNat TyNat)]
+          unify ex22_4_3_1 @?= expected
 
       , testCase "ex22.4.3-2" do
-          let cs = Set.fromList [ (TyArr TyNat TyNat, TyArr (TyVar "X") (TyVar "Y")) ]
-              expected = Just $ Set.fromList [(TyVar "X",TyNat),(TyVar "Y",TyNat)]
-          unify cs @?= expected
+          let expected = Just $ Set.fromList [(TyVar "X",TyNat),(TyVar "Y",TyNat)]
+          unify ex22_4_3_2 @?= expected
 
       , testCase "ex22.4.3-3" do
-          let cs = Set.fromList
-                [ (TyArr (TyVar "X") (TyVar "Y"), TyArr (TyVar "Y") (TyVar "Z"))
-                , (TyVar "Z", TyArr (TyVar "U") (TyVar "W"))
-                ]
-              expected = Just $ Set.fromList
+          let expected = Just $ Set.fromList
                 [ (TyVar "Z",TyArr (TyVar "U") (TyVar "W"))
                 , (TyVar "Y",TyArr (TyVar "U") (TyVar "W"))
                 , (TyVar "X",TyArr (TyVar "U") (TyVar "W"))
                 ]
-          unify cs @?= expected
+          unify ex22_4_3_3 @?= expected
 
       , testCase "ex22.4.3-4" do
-          let cs = Set.fromList [ (TyNat, TyArr TyNat (TyVar "Y")) ]
-              expected = Nothing
-          unify cs @?= expected
+          let expected = Nothing
+          unify ex22_4_3_4 @?= expected
 
       , testCase "ex22.4.3-5" do
-          let cs = Set.fromList [ (TyVar "Y", TyArr TyNat (TyVar "Y")) ]
-              expected = Nothing
-          unify cs @?= expected
+          let expected = Nothing
+          unify ex22_4_3_5 @?= expected
 
       , testCase "ex22.4.3-6" do
-          let cs = Set.fromList []
-              expected = Just $ Set.fromList []
-          unify cs @?= expected
+          let expected = Just $ Set.fromList []
+          unify ex22_4_3_6 @?= expected
+
+      -- FIXME
+      -- , testCase "ex22.5.2" do
+      --     let expected = Just $ Set.fromList
+      --           [ (TyVar "X"    , TyArr (TyVar "Z")    (TyVar "?X_1"))
+      --           , (TyVar "Y"    , TyArr (TyVar "Z")    (TyVar "?X_2"))
+      --           , (TyVar "?X_1" , TyArr (TyVar "?X_2") (TyVar "?X_3"))
+      --           ]
+      --     unify ex22_5_2 @?= expected
       ]
   ]

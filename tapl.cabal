@@ -48,15 +48,6 @@ executable fullsimple-lambda
     , lambda-fullsimple
     , tapl
 
-executable mkdoc
-  import:        deps
-  main-is:       app/MkDoc.hs
-  build-depends:
-    , lucid       ^>=2.9
-    , megaparsec  ^>=7.0
-    , mmark       ^>=0.0.7
-    , mmark-ext   ^>=0.2
-
 executable nb
   import:        deps
   main-is:       app/NB.hs

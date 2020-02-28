@@ -96,7 +96,7 @@ benchmark criterion
   type:          exitcode-stdio-1.0
   main-is:       bench/Criterion.hs
   build-depends:
-    , criterion  ^>=1.5.5
+    , criterion  ^>=1.5
     , term
 
 benchmark gauge
@@ -104,5 +104,5 @@ benchmark gauge
   type:          exitcode-stdio-1.0
   main-is:       bench/Gauge.hs
   build-depends:
-    , gauge  ^>=0.2.4
+    , gauge  ^>=0.2
     , term

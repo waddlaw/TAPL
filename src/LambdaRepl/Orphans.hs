@@ -1,8 +1,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 module LambdaRepl.Orphans
-  (
-  )
+  ( )
 where
 
 import RIO

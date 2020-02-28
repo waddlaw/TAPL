@@ -1,13 +1,14 @@
 module Language.UntypedLambda.Parser
   ( runUlParser
-    )
+  )
 where
 
+import RIO hiding (try)
 import Language.Core.Parser
 import Language.UntypedLambda.Lib.Church
 import Language.UntypedLambda.Prelude
 import Language.UntypedLambda.Types
-import qualified RIO.List.Partial as L.Partial
+import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Map as Map
 import qualified RIO.Text as Text
 import Text.Parser.Token.Highlight
@@ -19,7 +20,7 @@ runUlParser = runParserString exprP
 exprP :: Parser UntypedLambda
 exprP = lefty <$> factorP <*> termsP
   where
-    lefty x xs = L.Partial.foldl1 TmApp (x : xs)
+    lefty x xs = List.Partial.foldl1 TmApp (x : xs)
     termsP = many (space *> factorP)
 
 factorP :: Parser UntypedLambda
@@ -49,10 +50,10 @@ identP = ident defaultIdentStyle
 
 defaultIdentStyle :: IdentifierStyle Parser
 defaultIdentStyle = IdentifierStyle
-  { _styleName = "UntypedLambda",
-    _styleStart = oneOf ['a' .. 'z'],
-    _styleLetter = alphaNum,
-    _styleReserved = mempty,
-    _styleHighlight = Identifier,
-    _styleReservedHighlight = ReservedIdentifier
-    }
+  { _styleName = "UntypedLambda"
+  , _styleStart = oneOf ['a' .. 'z']
+  , _styleLetter = alphaNum
+  , _styleReserved = mempty
+  , _styleHighlight = Identifier
+  , _styleReservedHighlight = ReservedIdentifier
+  }

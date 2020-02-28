@@ -2,17 +2,18 @@
 {-# LANGUAGE FlexibleInstances #-}
 
 module Language.UntypedLambda.Types
-  ( Term (..),
-    UntypedLambda,
-    (@@),
-    λ,
-    Context,
-    VarName,
-    NamelessTerm (..),
-    getNlTermVar
-    )
+  ( Term (..)
+  , UntypedLambda
+  , (@@)
+  , λ
+  , Context
+  , VarName
+  , NamelessTerm (..)
+  , getNlTermVar
+  )
 where
 
+import RIO
 import Data.Text.Prettyprint.Doc
 import qualified RIO.Text as Text
 
@@ -20,14 +21,14 @@ type UntypedLambda = Term Text
 
 type VarName = Text
 
--- | 教科書とは逆で ["x", "y", "z"] は [0, 1, 2] と左からインデックスを付ける
+-- | Contrary to books, ["x" , "y" , "z"] is indexed from left to right as [0, 1, 2]
 type Context = [VarName]
 
 data NamelessTerm
   = NlTmVar Int
   | NlTmLam NamelessTerm
   | NlTmApp NamelessTerm NamelessTerm
-  deriving (Eq, Show)
+  deriving stock (Eq, Show)
 
 getNlTermVar :: NamelessTerm -> Int
 getNlTermVar (NlTmVar k) = k
@@ -48,7 +49,7 @@ data Term a
   = TmVar a
   | TmLam VarName (Term a)
   | TmApp (Term a) (Term a)
-  deriving (Eq, Show)
+  deriving stock (Eq, Show)
 
 instance Pretty UntypedLambda where
   pretty (TmVar x) = pretty x

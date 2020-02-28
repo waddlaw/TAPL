@@ -1,0 +1,41 @@
+name: stack
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '*'
+  schedule:
+    - cron: "00 15 * * *"
+
+jobs:
+  build:
+    name: ${{ matrix.os }} (${{ matrix.resolver }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macos-10.15]
+        resolver: ["lts-14", "lts-15", "nightly"]
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mstksg/setup-stack@v2
+
+    - name: Display stack version
+      run: stack --version
+
+    - name: Cache ~/.stack
+      uses: actions/cache@v1.1.2
+      with:
+        path: ~/.stack
+        key: ${{ runner.os }}-${{ matrix.resolver }}-v1-stack
+
+    - name: Install dependencies
+      run: stack test --only-dependencies --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml
+
+    - name: Build
+      run: |
+        stack test    --fast --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml
+        stack install --fast --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml

@@ -1,0 +1,26 @@
+name: lint
+
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+  schedule:
+    - cron: "00 15 * * *"
+
+jobs:
+  lint:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Run hlint
+      env:
+        HLINT_BIN_URL: "https://raw.github.com/ndmitchell/hlint/master/misc/travis.sh"
+      run: |
+        curl -sL $HLINT_BIN_URL | sh -s -- --version
+        curl -sL $HLINT_BIN_URL | sh -s app bench src subs

@@ -10,24 +10,23 @@
 - [原著サポートページ](http://www.cis.upenn.edu/~bcpierce/)
   - [Errata](http://www.cis.upenn.edu/~bcpierce/tapl/index.html)
 
-## スクリーンショット
+## Screenshot
 
-型無し算術式
+Arithmetic expressions
 
-![型無し算術式](screenshots/untyped-arith.gif)
+![Arithmetic expressions](screenshots/untyped-arith.gif)
 
-型無しλ計算
+Untyped lambda-calculus
 
-![型無しλ計算](screenshots/untyped-lambda.gif)
+![Untyped lambda-calculus](screenshots/untyped-lambda.gif)
 
 ## Quick Start Guide
 
 app | versionn
 ------|-------
 cabal-install | 3.0.0.0
-cabal-fmt | 0.1.1
+cabal-fmt | 0.1.2
 haskell-ci | 0.8
-ormolu | 0.0.2.0
 stack | 2.1.3
 
 ```shell
@@ -42,26 +41,26 @@ ghcid
 λ ghcid --allow-eval "--command=ghci XXX.hs"
 ```
 
-## 開発
+## Development
 
 - [haddock](https://waddlaw.github.io/TAPL/)
 
 ### stack
 
 ```shell
-# 開発
+# build
 $ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -qg -RTS"
 
-# テスト
+# test
 $ stack test --fast --file-watch
 
-## hoogle 生成
+## generate hoogle database
 $ stack hoogle --keep-going
 
-## haddock 生成
+## generate haddock document
 $ stack clean && stack haddock
 
-## ベンチマーク
+## benchmark
 # all
 $ stack bench --benchmark-arguments "--small"
 
@@ -75,14 +74,14 @@ $ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ### cabal
 
 ```shell
-# ビルド
+# build
 $ cabal build
 
-# テスト
+# test
 $ cabal test all
 ```
 
-### コマンド
+### other commands
 
 ```shell
 # pedantic
@@ -91,15 +90,11 @@ $ stack clean && stack test --fast --pedantic --file-watch
 # hlint
 $ hlint .
 
-```shell
-# フォーマッター
-$ ./style.sh
-
-# travis-ci の設定ファイル生成
+# generate travis-ci config
 λ haskell-ci --config cabal.haskell-ci cabal.project
 ```
 
-## 実行方法
+## running
 
 ```shell
 $ stack run proofb

@@ -1,0 +1,19 @@
+resolver: lts-15.1
+packages:
+  - .
+  - ./subs/term
+  - ./subs/bool
+  - ./subs/arith
+  - ./subs/lambda-core
+  - ./subs/lambda-simple
+  - ./subs/lambda-untyped
+  - ./subs/lambda-fullsimple
+  - ./subs/featherweight-java
+  - ./subs/recon
+  - ./subs/systemf
+
+build:
+  haddock: false
+  haddock-arguments:
+    haddock-args:
+      - --odir=docs

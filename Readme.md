@@ -10,6 +10,13 @@
 - [原著サポートページ](http://www.cis.upenn.edu/~bcpierce/)
   - [Errata](http://www.cis.upenn.edu/~bcpierce/tapl/index.html)
 
+## Available Systems
+
+name (package name) | parse | eval | typecheck | prettypring | note
+-----------|----|-----|---|----|----------------------------------
+B (bool)   | ✅ | ✅ | _ | ✅ | Figure 3-1: Booleans
+NB (arith) | ✅ | ✅ | - | ✅ | FIgure 3-2: Arithmetic expressions
+
 ## Screenshot
 
 Arithmetic expressions

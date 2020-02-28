@@ -2,6 +2,7 @@ module B where
 
 import Language.B
 import qualified Language.B.Example as B
+
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit

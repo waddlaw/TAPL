@@ -24,14 +24,14 @@ reduction _ _ = error "Nothing reduction rule"
 
 deduce :: Rule -> Conclusion -> Maybe Premise
 deduce E_IFTRUE (EvalRelation (TmIf TmTrue t2 _t3, t'))
-  | t2 == t'  -> Nothing
-  | otherwise -> error "can not deduce"
+  | t2 == t'  = Nothing
+  | otherwise = error "can not deduce"
 deduce E_IFFALSE (EvalRelation (TmIf TmFalse _t2 t3, t'))
-  | t3 == t'  -> Nothing
-  | otherwise -> error "can not deduce"
+  | t3 == t'  = Nothing
+  | otherwise = error "can not deduce"
 deduce E_IF (EvalRelation (TmIf t1 t2 t3, TmIf t1' t2' t3'))
-  | t2 == t2' && t3 == t3' -> Just (EvalRelation (t1, t1'))
-  | otherwise              -> error "can not deduce"
+  | t2 == t2' && t3 == t3' = Just (EvalRelation (t1, t1'))
+  | otherwise              = error "can not deduce"
 deduce _ _ = error "can not deduce"
 
 step :: Rule -> Maybe Premise -> Maybe Premise

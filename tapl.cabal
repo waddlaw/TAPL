@@ -21,9 +21,10 @@ common deps
     -Wredundant-constraints -Wtabs
 
   build-depends:
-    , base       >=4.12 && <4.14
-    , haskeline  ^>=0.7
-    , rio        ^>=0.1
+    , base         >=4.12 && <4.14
+    , haskeline    ^>=0.7
+    , lambda-core
+    , rio          ^>=0.1
 
   default-language:   Haskell2010
 
@@ -38,15 +39,12 @@ library
     LambdaRepl.Types
 
   hs-source-dirs:  src
-  build-depends:
-    , lambda-core
-    , prettyprinter  ^>=1.3
+  build-depends:   prettyprinter ^>=1.3
 
 executable fullsimple-lambda
   import:        deps
   main-is:       app/FullSimpleLambda.hs
   build-depends:
-    , lambda-core
     , lambda-fullsimple
     , tapl
 
@@ -62,16 +60,13 @@ executable mkdoc
 executable nb
   import:        deps
   main-is:       app/NB.hs
-  build-depends:
-    , arith
-    , lambda-core
+  build-depends: arith
 
 executable proofb
   import:        deps
   main-is:       app/ProofB.hs
   build-depends:
     , bool
-    , lambda-core
     , prettyprinter  ^>=1.3
     , transformers   ^>=0.5
 
@@ -79,7 +74,6 @@ executable simple-lambda
   import:        deps
   main-is:       app/SimpleLambda.hs
   build-depends:
-    , lambda-core
     , lambda-simple
     , tapl
 
@@ -87,7 +81,6 @@ executable untyped-lambda
   import:        deps
   main-is:       app/UntypedLambda.hs
   build-depends:
-    , lambda-core
     , lambda-untyped
     , tapl
 

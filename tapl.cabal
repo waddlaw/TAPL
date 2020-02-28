@@ -91,14 +91,6 @@ executable untyped-lambda
     , lambda-untyped
     , tapl
 
-benchmark criterion
-  import:        deps
-  type:          exitcode-stdio-1.0
-  main-is:       bench/Criterion.hs
-  build-depends:
-    , criterion  ^>=1.5
-    , term
-
 benchmark gauge
   import:        deps
   type:          exitcode-stdio-1.0

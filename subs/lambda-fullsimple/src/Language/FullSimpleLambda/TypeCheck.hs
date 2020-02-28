@@ -83,7 +83,7 @@ typeof ctx (TmTupleProj j t) =
   case typeof ctx t of
     TyTuple tys -> tys L.Partial.!! j
     _ -> error "type mismatch (T-PROJ)"
-typeof ctx (TmRecord fields) = TyRecord $ map (\(l, t) -> (l, typeof ctx t)) fields -- T-RCD
+typeof ctx (TmRecord fields) = TyRecord $ map (second (typeof ctx)) fields -- T-RCD
 typeof ctx (TmRecordProj label t) =
   -- T-RECORDPROJ
   case typeof ctx t of

@@ -216,8 +216,8 @@ pretty :: Term -> String
 pretty = \case
   TmVar (VN x) -> x
   TmFieldRef t (FN f) -> pretty t <> "." <> f
-  TmMethodInv t (MN m) args -> pretty t <> "." <> m <> "(" <> concat (intersperse ", " (map pretty args)) <> ")"
-  TmNew (CN c) args -> "new " <> c <> "(" <> concat (intersperse ", " (map pretty args)) <> ")"
+  TmMethodInv t (MN m) args -> pretty t <> "." <> m <> "(" <> tercalate ", " (map pretty args) <> ")"
+  TmNew (CN c) args -> "new " <> c <> "(" <> tercalate ", " (map pretty args) <> ")"
   TmCast (CN c) t -> "(" <> c <> ")" <> pretty t
 
 run :: Program -> String

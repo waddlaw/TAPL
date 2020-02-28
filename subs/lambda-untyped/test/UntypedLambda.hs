@@ -116,7 +116,7 @@ test_ul =
         restorenames [] (NlTmLam (NlTmApp t t)) @?= TmLam "a0" (TmApp t' t')
         restorenames [] (NlTmApp (NlTmLam $ NlTmLam "0") (NlTmLam "0")) @?= TmApp (TmLam "a0" $ TmLam "a1" "a1") (TmLam "a0" "a0"),
       testCase "shift" $ do
-        shift 0 2 (NlTmLam $ NlTmLam $ NlTmApp "1" (NlTmApp "0" "2")) @?= (NlTmLam $ NlTmLam $ NlTmApp "1" (NlTmApp "0" "4"))
+        shift 0 2 (NlTmLam $ NlTmLam $ NlTmApp "1" (NlTmApp "0" "2")) @?= NlTmLam (NlTmLam $ NlTmApp "1" (NlTmApp "0" "4"))
         shift 0 2 (NlTmLam $ NlTmApp (NlTmApp "0" "1") (NlTmLam $ NlTmApp (NlTmApp "0" "1") "2")) @?= NlTmLam (NlTmApp (NlTmApp "0" "3") (NlTmLam $ NlTmApp (NlTmApp "0" "1") "4")),
       testCase "namelessSubst" $ do
         -- 演習6.2.5

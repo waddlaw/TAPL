@@ -16,7 +16,7 @@ data Ty
 
 r = [(TyVar "?X_1",TyArr (TyVar "?X_2") (TyVar "?X_3")),(TyVar "X",TyArr (TyVar "Z") (TyArr (TyVar "?X_2") (TyVar "?X_3"))),(TyVar "Y",TyArr (TyVar "Z") (TyVar "?X_2"))]
 
-p = map (\(a,b) -> (pretty a, pretty b))
+p = map (bimap pretty pretty)
 
 pretty :: Ty -> Text
 pretty = \case
@@ -38,7 +38,7 @@ unify1 :: Set Constraint -> Maybe [Constraint]
 unify1 c
   | Set.null c = Just []
   | Set.size c == 1 = unify2 . head . Set.toList $ c
-  | otherwise = Just . concat . catMaybes . map unify1 . Set.splitRoot $ c
+  | otherwise = Just . concat . mapMaybe unify1 . Set.splitRoot $ c
 
 unify2 :: Constraint -> Maybe [Constraint]
 unify2 (s, t)
@@ -71,7 +71,7 @@ fv _ = []
 
 composeC0 :: [Constraint] -> Ty -> Ty
 composeC0 cs = \case
-  t@(TyVar{}) -> fromMaybe t $ List.lookup t cs
+  t@TyVar{} -> fromMaybe t $ List.lookup t cs
   TyArr ty1 ty2 -> (TyArr `on` composeC0 cs) ty1 ty2
   ty -> ty
 

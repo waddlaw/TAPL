@@ -154,6 +154,6 @@ example2 = TmApp (TmLam "x" TyBool (TmVar "x")) TmZero
 ) 
 -}
 example3 :: Term
-example3 = TmLam "x" (TyArr (TyVar "X") (TyVar "Y")) $ body
+example3 = TmLam "x" (TyArr (TyVar "X") (TyVar "Y")) body
   where
     body = TmApp (TmVar "x") TmZero

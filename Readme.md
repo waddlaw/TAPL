@@ -12,10 +12,11 @@
 
 ## Available Systems
 
-name (package name) | parse | eval | typecheck | prettypring | note
------------|----|-----|---|----|----------------------------------
-B (bool)   | ✅ | ✅ | _ | ✅ | Figure 3-1: Booleans
-NB (arith) | ✅ | ✅ | - | ✅ | FIgure 3-2: Arithmetic expressions
+chapter | package name | parse | eval | typecheck | prettypring | note
+--------|-----------|----|-----|---|----|----------------------------------
+ch03 | bool   | ✅ | ✅ | N/A | ✅ | Figure 3-1: Booleans
+ch03 | arith | ✅ | ✅ | N/A | ✅ | Figure 3-2: Arithmetic expressions
+ch19 | featherweight-java | 🚧 | ✅ | 🚧 | ✅ | Figure 19-1: Featherweight Java
 
 ## Screenshot
 

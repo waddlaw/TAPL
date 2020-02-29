@@ -1,22 +1,34 @@
 cabal-version: 2.4
 name:          featherweight-java
 version:       0.1.0.0
-tested-with:   GHC ==8.6.5
+tested-with:   GHC ==8.6.5 || ==8.8.3
+
+common deps
+  default-extensions:
+    NoImplicitPrelude
+    DerivingVia
+    InstanceSigs
+    LambdaCase
+    MultiParamTypeClasses
+    MultiWayIf
+    StrictData
+    TypeFamilies
+    ViewPatterns
+
+  ghc-options:
+    -Wall -Wcompat -Wincomplete-uni-patterns
+    -Wincomplete-record-updates -Wnoncanonical-monad-instances
+    -Wredundant-constraints -Wtabs
+
+  build-depends:
+    , base  >=4.12 && <4.14
+    , rio   ^>=0.1
+
+  default-language:   Haskell2010
 
 library
+  import:          deps
+
   -- cabal-fmt: expand src
-  exposed-modules:  Language.FJ
-  hs-source-dirs:   src
-  build-depends:    base >=4.7 && <5
-  default-language: Haskell2010
-
-test-suite featherweight-java-test
-  type:             exitcode-stdio-1.0
-  main-is:          Spec.hs
-  hs-source-dirs:   test
-  ghc-options:      -threaded -rtsopts -with-rtsopts=-N
-  build-depends:
-    , base                >=4.7 && <5
-    , featherweight-java
-
-  default-language: Haskell2010
+  exposed-modules: Language.FJ
+  hs-source-dirs:  src

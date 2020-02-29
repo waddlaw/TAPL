@@ -6,24 +6,24 @@ module Language.Recon.Exercise.Ex22_4_6 where
 import RIO
 import qualified RIO.Set as Set
 import qualified RIO.List as List
+import qualified RIO.List.Partial as List.Partial
 
 data Ty
   = TyBool
   | TyNat
   | TyArr Ty Ty
   | TyVar VarName
-  deriving (Eq, Show, Ord)
+  deriving stock (Eq, Show, Ord)
 
+r :: [(Ty, Ty)]
 r = [(TyVar "?X_1",TyArr (TyVar "?X_2") (TyVar "?X_3")),(TyVar "X",TyArr (TyVar "Z") (TyArr (TyVar "?X_2") (TyVar "?X_3"))),(TyVar "Y",TyArr (TyVar "Z") (TyVar "?X_2"))]
-
-p = map (\(a,b) -> (pretty a, pretty b))
 
 pretty :: Ty -> Text
 pretty = \case
-  TyBool -> "Bool"
-  TyNat -> "Nat"
+  TyBool        -> "Bool"
+  TyNat         -> "Nat"
   TyArr ty1 ty2 -> pretty ty1 <> " -> " <> pretty ty2
-  TyVar x -> x
+  TyVar x       -> x
 
 type Constraint = (Ty, Ty)
 type VarName = Text
@@ -37,8 +37,8 @@ unify = fmap (Set.fromList . go . reverse) . unify1
 unify1 :: Set Constraint -> Maybe [Constraint]
 unify1 c
   | Set.null c = Just []
-  | Set.size c == 1 = unify2 . head . Set.toList $ c
-  | otherwise = Just . concat . catMaybes . map unify1 . Set.splitRoot $ c
+  | Set.size c == 1 = unify2 . List.Partial.head . Set.toList $ c
+  | otherwise = Just . concat . mapMaybe unify1 . Set.splitRoot $ c
 
 unify2 :: Constraint -> Maybe [Constraint]
 unify2 (s, t)
@@ -71,7 +71,7 @@ fv _ = []
 
 composeC0 :: [Constraint] -> Ty -> Ty
 composeC0 cs = \case
-  t@(TyVar{}) -> fromMaybe t $ List.lookup t cs
+  t@TyVar{} -> fromMaybe t $ List.lookup t cs
   TyArr ty1 ty2 -> (TyArr `on` composeC0 cs) ty1 ty2
   ty -> ty
 

@@ -2,7 +2,7 @@
 .stack-work
 note/html
 _site
-dist-newstyle/
+dist-*
 .ghc.environment.*
 .DS_Store
 .haskell-code-explorer/

@@ -1,16 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module LambdaRepl.Options
-  ( runApp,
-    evalCmd,
-    tcCmd,
-    helpCmd,
-    printEnvCmd,
-    updateEnvTraceCmd,
-    updateEnvStrategyCmd,
-    listStrategyCmd,
-    listPreludeCmd
-    )
+  ( runApp
+  , evalCmd
+  , tcCmd
+  , helpCmd
+  , printEnvCmd
+  , updateEnvTraceCmd
+  , updateEnvStrategyCmd
+  , listStrategyCmd
+  , listPreludeCmd
+  )
 where
 
 import Data.Text.Prettyprint.Doc
@@ -57,7 +58,7 @@ tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> LambdaREPL
 tcCmd parser checker input =
   lift $ case Text.stripPrefix ":t " input of
     Nothing -> do
-      logInfo "コマンドがの書式が間違っています。"
+      logInfo "Bad command format."
       return ()
     Just input' -> case parser (Text.unpack input') of
       Left err -> logError $ display $ Text.pack err
@@ -68,14 +69,14 @@ helpCmd = lift (mapM_ (logInfo . display) $ "available commands" : commands)
 
 commands :: [Text]
 commands =
-  [ "  :set trace               -- トレースの有効化 (簡約の途中経過も含めて表示)",
-    "  :set strategy <Strategy> -- 評価戦略の設定",
-    "  :unset trace             -- トレースの無効化",
-    "  :list strategy           -- 評価戦略の一覧を表示",
-    "  :list prelude            -- prelude 関数の一覧を表示",
-    "  :env                     -- 現在の設定内容を表示",
-    "  :help                    -- ヘルプ",
-    "  :q                       -- 終了"
+  [ "  :set trace               -- Enabling Tracing (including the progress of the reduction)",
+    "  :set strategy <Strategy> -- Setting Up an Evaluation Strategy",
+    "  :unset trace             -- Disabling tracing",
+    "  :list strategy           -- View a list of evaluation strategies",
+    "  :list prelude            -- List Prelude Functions",
+    "  :env                     -- Show current settings",
+    "  :help                    -- Help",
+    "  :q                       -- Quit"
     ]
 
 printEnvCmd :: LambdaREPL

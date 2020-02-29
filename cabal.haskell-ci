@@ -1,8 +1,0 @@
-cabal-install-version: 3.0
-hlint: False
-hlint-version: ==2.2.*
-unconstrained: False
-local-ghc-options: -Werror
-installed: +all -haskeline
-travis-patches: haskell-ci.tasty-discover.patch
-cabal-check: False

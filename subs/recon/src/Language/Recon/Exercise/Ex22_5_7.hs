@@ -61,7 +61,7 @@ typingC ctx varIds = \case
      in (subst (TyArr ty rt) c, restVarIds, c)
   TmApp t1 t2 ->
     let (rt1, restVarIds1, c1) = typingC ctx varIds t1
-        (rt2, (x:restVarIds2), c2) = typingC ctx restVarIds1 t2
+        (rt2, x:restVarIds2, c2) = typingC ctx restVarIds1 t2
         rt = TyVar x
         c = unify (c1 <> c2 <> [(rt1, TyArr rt2 rt)])
      in (subst rt c, restVarIds2, c)
@@ -135,7 +135,7 @@ apply (s, t) u
   | otherwise = u
 
 subst :: Ty -> ConstraintSet -> Ty
-subst = foldl (flip apply)
+subst = List.foldl (flip apply)
 
 -- >>> runTypingC example1
 -- TyArr ( TyVar "X" ) ( TyVar "X" )

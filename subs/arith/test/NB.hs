@@ -1,6 +1,7 @@
 module NB where
 
 import Language.NB
+
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit

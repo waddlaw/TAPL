@@ -6,6 +6,8 @@ import Language.Core.Types
 import Language.UntypedLambda
 import Language.UntypedLambda.Lib.Bool
 import Language.UntypedLambda.Lib.Church
+
+import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
 

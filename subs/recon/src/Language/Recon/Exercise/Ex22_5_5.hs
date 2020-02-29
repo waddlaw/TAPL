@@ -19,7 +19,7 @@ data Ty
   | TyNat
   | TyArr Ty Ty
   | TyVar VarName
-  deriving (Eq, Show, Ord)
+  deriving stock (Eq, Show, Ord)
 
 data Term
   = TmVar VarName
@@ -61,7 +61,7 @@ typingC ctx varIds = \case
      in (TyArr ty rt, restVarIds, c)
   TmApp t1 t2 ->
     let (rt1, restVarIds1, c1) = typingC ctx varIds t1
-        (rt2, (x:restVarIds2), c2) = typingC ctx restVarIds1 t2
+        (rt2, x:restVarIds2, c2) = typingC ctx restVarIds1 t2
         rt = TyVar x
         c = c1 <> c2 <> [(rt1, TyArr rt2 rt)]
      in (rt, restVarIds2, c)
@@ -134,7 +134,7 @@ apply (s, t) u
 runUnify :: (Ty, ConstraintSet) -> Ty
 runUnify (ty, constr) = subst ty (unify constr)
   where
-    subst = foldl (flip apply)
+    subst = List.foldl (flip apply)
 
 calcPrincipalType :: Term -> Ty
 calcPrincipalType = runUnify . runTypingC

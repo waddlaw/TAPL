@@ -1,48 +1,48 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Language.B.Types
-  ( Term (..),
-    Rule (..),
-    EvalRelation (..),
-    Premise,
-    Conclusion
-    )
+  ( Term (..)
+  , Rule (..)
+  , EvalRelation (..)
+  , Premise
+  , Conclusion
+  )
 where
 
-import Data.Text.Prettyprint.Doc
 import RIO
+import Data.Text.Prettyprint.Doc
 
 data Term
   = TmTrue
   | TmFalse
   | TmIf Term Term Term
-  deriving (Eq, Show)
+  deriving stock (Eq, Show)
 
 data Rule
   = E_IFTRUE
   | E_IFFALSE
   | E_IF
-  deriving (Enum, Bounded, Show)
+  deriving stock (Enum, Bounded, Show)
 
 instance Pretty Rule where
-  pretty E_IFTRUE = pretty "E-IFTRUE"
-  pretty E_IFFALSE = pretty "E-IFFALSE"
-  pretty E_IF = pretty "E-IF"
+  pretty = \case
+    E_IFTRUE  -> "E-IFTRUE"
+    E_IFFALSE -> "E-IFFALSE"
+    E_IF      -> "E-IF"
 
-newtype EvalRelation = EvalRelation {unwrap :: (Term, Term)}
-  deriving (Eq, Show)
+newtype EvalRelation = EvalRelation { unwrap :: (Term, Term) }
+  deriving stock (Eq, Show)
 
-type Premise = EvalRelation
-
+type Premise    = EvalRelation
 type Conclusion = EvalRelation
 
 instance Pretty Term where
-  pretty TmTrue = pretty "true"
-  pretty TmFalse = pretty "false"
-  pretty (TmIf t1 t2 t3) =
-    pretty "if" <+> pretty t1
-      <+> pretty "then"
-      <+> pretty t2
-      <+> pretty "else"
-      <+> pretty t3
+  pretty = \case
+    TmTrue        -> "true"
+    TmFalse       -> "false"
+    TmIf t1 t2 t3 ->
+      "if"   <+> pretty t1 <+>
+      "then" <+> pretty t2 <+>
+      "else" <+> pretty t3
 
 instance Pretty EvalRelation where
-  pretty (EvalRelation (t, t')) = pretty t <+> pretty "->" <+> pretty t'
+  pretty (EvalRelation (t, t')) = pretty t <+> "->" <+> pretty t'

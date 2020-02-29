@@ -6,28 +6,32 @@ module Language.FullSimpleLambda.Internal
 where
 
 import Language.FullSimpleLambda.Types
+
 import RIO
 
--- | 与えられた項が値かどうか判定する述語
+-- | predicate that determines whether a given term is a value
 isValue :: Term -> Bool
-isValue TmLam {} = True
-isValue TmTrue = True
-isValue TmFalse = True
-isValue TmUnit = True -- 11.2 Unit型
-isValue (TmPair t1 t2) = isValue t1 && isValue t2 -- 11.6 2つ組
-isValue (TmTuple ts) = all isValue ts -- 11.7 組
-isValue (TmRecord fs) = all (isValue . snd) fs -- 11.8 レコード
-isValue (TmInR t _) = isValue t -- 11.9 和 タグ付けの値 (左)
-isValue (TmInL t _) = isValue t -- 11.9 和 タグ付けの値 (右)
-isValue t = isNumericValue t
+isValue = \case
+  TmLam{}      -> True
+  TmTrue       -> True
+  TmFalse      -> True
+  TmUnit       -> True                     -- 11.2 constant unit
+  TmPair t1 t2 -> isValue t1 && isValue t2 -- 11.5 pair value
+  TmTuple ts   -> all isValue ts           -- 11.6 tuple value
+  TmRecord fs  -> all (isValue . snd) fs   -- 11.7 record value
+  TmInR t _    -> isValue t                -- 11.9 tagged value (left)
+  TmInL t _    -> isValue t                -- 11.9 tagged value (right)
+  t            -> isNumericValue t
 
--- | 与えられた項が数項かどうか判定
+-- | Determining whether a given term is a number term
 isNumericValue :: Term -> Bool
-isNumericValue TmZero = True
-isNumericValue (TmSucc t) = isNumericValue t
-isNumericValue _ = False
+isNumericValue = \case
+  TmZero   -> True
+  TmSucc t -> isNumericValue t
+  _        -> False
 
--- | 与えられた項がレコードかつ、値かどうか判定
+-- | Determine if a given term is both a record and a value
 isRecordValue :: Term -> Bool
-isRecordValue t@TmRecord {} = isValue t
-isRecordValue _ = False
+isRecordValue = \case
+  t@TmRecord {} -> isValue t
+  _             -> False

@@ -1,7 +1,7 @@
 module Language.SystemF.Eval
   ( eval,
     evaluate,
-    substT
+    substT,
   ) where
 
 import Data.Either
@@ -38,6 +38,13 @@ eval = \case
   TmIsZero (TmSucc (isNumericValue -> True)) -> TmFalse
   -- 3-2. E-ISZERO
   TmIsZero t -> TmIsZero (eval t)
+
+  -- 11-12. E-FIXBETA
+  t@(TmFix (TmLam _x _tyT1 t2)) -> subst 0 (Right t) t2
+  -- 11-12. E-FIX
+  TmFix t1 ->
+    let t1' = eval t1
+     in TmFix t1'
 
   -- 11-13. E-CONS2
   TmApp (TmApp (TmTypeApp TmCons tyT) v1@(isValue -> True)) t2 ->
@@ -80,6 +87,7 @@ eval = \case
   -- 9-1. E-APP1
   TmApp t1 t2 -> TmApp (eval t1) t2
 
+  -- debug log
   x -> error $ show x
 
 subst :: Int -> Either Ty Term -> Term -> Term
@@ -104,6 +112,10 @@ subst j s = \case
   TmSucc t -> TmSucc $ subst j s t
   TmPred t -> TmPred $ subst j s t
   TmIsZero t -> TmIsZero $ subst j s t
+
+  -- 11-12. General recursion
+  TmFix t -> TmFix $ subst j s t
+  
   TmNil   -> TmNil
   TmCons  -> TmCons
   TmIsNil -> TmIsNil
@@ -117,7 +129,7 @@ substT j s = \case
   TyArr ty1 ty2 -> (TyArr `on` substT j s) ty1 ty2
   TyList ty -> TyList (substT j s ty)
   ty@(TyVar _ k)
-    | k == j -> fromLeft undefined s
+    | k == j -> typeShift j $ fromLeft undefined s
     | otherwise -> ty
   TyForAll tyVarName ty ->
     let ty' = substT (j + 1) (shift 0 1 s) ty
@@ -127,27 +139,35 @@ class DeBruijn a where
   shift :: Int -> Int -> a -> a
 
 instance (DeBruijn a, DeBruijn b) => DeBruijn (Either a b) where
-  shift c d (Left a) = Left (shift c d a)
+  shift c d (Left  a) = Left  (shift c d a)
   shift c d (Right b) = Right (shift c d b)
 
 instance DeBruijn Term where
   shift c d = \case
     TmVar varName k
-      | k < c -> TmVar varName k
+      | k < c     -> TmVar varName k
       | otherwise -> TmVar varName (k + d)
+
     TmLam x ty t ->
       let ty' = shift (c + 1) d ty
-          t' = shift (c + 1) d t
+          t'  = shift (c + 1) d t
       in TmLam x ty' t'
 
     TmApp t1 t2 -> (TmApp `on` shift c d) t1 t2
+
+    -- 8-1.
     TmTrue -> TmTrue
     TmFalse -> TmFalse
     TmIf t1 t2 t3 -> (TmIf `on` shift c d) t1 t2 t3
-    TmZero -> TmZero
-    TmSucc t -> TmSucc $ shift c d t
-    TmPred t -> TmPred $ shift c d t
+
+    -- 8-2. 
+    TmZero     -> TmZero
+    TmSucc t   -> TmSucc $ shift c d t
+    TmPred t   -> TmPred $ shift c d t
     TmIsZero t -> TmIsZero $ shift c d t
+
+    -- 11-12. General recursion
+    TmFix t -> TmFix $ shift c d t
 
     -- 11-13. List
     TmNil   -> TmNil
@@ -159,16 +179,19 @@ instance DeBruijn Term where
     TmTypeLam tyVarName t -> TmTypeLam tyVarName $ shift (c + 1) d t
     TmTypeApp t ty ->
       let ty' = shift c d ty
-          t' = shift c d t
-      in TmTypeApp t' ty'
+          t'  = shift c d t
+       in TmTypeApp t' ty'
 
 instance DeBruijn Ty where
   shift c d = \case
-    TyBool -> TyBool
-    TyNat -> TyNat
-    TyArr ty1 ty2 -> (TyArr `on` shift c d) ty1 ty2
-    TyList ty -> TyList (shift c d ty)
+    TyBool                -> TyBool
+    TyNat                 -> TyNat
+    TyArr ty1 ty2         -> (TyArr `on` shift c d) ty1 ty2
+    TyList ty             -> TyList (shift c d ty)
     TyVar tyVarName k
-      | k < c -> TyVar tyVarName k
-      | otherwise -> TyVar tyVarName (k + d)
+      | k < c             -> TyVar tyVarName k
+      | otherwise         -> TyVar tyVarName (k + d)
     TyForAll tyVarName ty -> TyForAll tyVarName $ shift (c + 1) d ty
+
+typeShift :: DeBruijn a => Int -> a -> a
+typeShift = shift 0

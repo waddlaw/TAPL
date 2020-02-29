@@ -2,12 +2,13 @@
 
 module Language.FullSimpleLambda.TypeCheck
   ( typeof
-    )
+  )
 where
 
 import Language.FullSimpleLambda.Types
+
 import RIO
-import qualified RIO.List.Partial as L.Partial
+import qualified RIO.List.Partial as List.Partial
 
 typeof :: Context -> Term -> Ty
 typeof ctx (TmVar i) = getTypeFromContext ctx i -- T-VAR
@@ -81,9 +82,9 @@ typeof ctx (TmTuple ts) = TyTuple $ map (typeof ctx) ts -- T-TUPLE
 typeof ctx (TmTupleProj j t) =
   -- T-PROJ
   case typeof ctx t of
-    TyTuple tys -> tys L.Partial.!! j
+    TyTuple tys -> tys List.Partial.!! j
     _ -> error "type mismatch (T-PROJ)"
-typeof ctx (TmRecord fields) = TyRecord $ map (\(l, t) -> (l, typeof ctx t)) fields -- T-RCD
+typeof ctx (TmRecord fields) = TyRecord $ map (second (typeof ctx)) fields -- T-RCD
 typeof ctx (TmRecordProj label t) =
   -- T-RECORDPROJ
   case typeof ctx t of
@@ -114,7 +115,7 @@ typeof ctx (TmCase t0 (TmVar x1, t1) (TmVar x2, t2)) =
     ctx2 = addBinding ctx ("FV" <> tshow x2) (VarBind ty2)
     tyT1 = typeof ctx1 t1
     tyT2 = typeof ctx2 t2
-typeof _ TmCase {} = error "Case の本体の左側には変数しか出現できません"
+typeof _ TmCase {} = error "Only variables can appear on the left side of the body of the Case"
 
 delta :: Pattern -> Ty -> Context
 delta (PtVar varName _) ty = addContext (VarContext varName, VarBind ty) mempty
@@ -134,11 +135,11 @@ addBinding ctx x bind = addContext (VarContext x, bind) ctx
 getTypeFromContext :: Context -> Int -> Ty
 getTypeFromContext ctx i =
   case getBinding ctx i of
-    (VarBind tyT) -> tyT
-    (PatternBind tyT) -> tyT
-    _ -> error "getTypeFromContext"
+    VarBind tyT     -> tyT
+    PatternBind tyT -> tyT
+    _               -> error "getTypeFromContext"
 
 getBinding :: Context -> Int -> Binding
-getBinding ctx i = snd $ ctx' L.Partial.!! i
+getBinding ctx i = snd $ ctx' List.Partial.!! i
   where
     ctx' = unCtx ctx

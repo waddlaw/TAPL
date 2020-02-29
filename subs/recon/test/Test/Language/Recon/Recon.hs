@@ -4,9 +4,11 @@ module Test.Language.Recon.Recon where
 
 import Language.Recon.Sigma
 import Language.Recon.Type
+import Language.Recon.TySubst
+
+import RIO
 import qualified RIO.Set  as Set
 import qualified RIO.Map  as Map
-import Language.Recon.TySubst
 
 import Test.Tasty
 import Test.Tasty.HUnit

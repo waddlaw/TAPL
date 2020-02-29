@@ -36,6 +36,7 @@ import Language.UntypedLambda.Lib.Bool
 import Language.UntypedLambda.Lib.Pair
 import Language.UntypedLambda.Lib.Util
 import Language.UntypedLambda.Types
+
 import Prelude hiding ((.))
 
 -- |

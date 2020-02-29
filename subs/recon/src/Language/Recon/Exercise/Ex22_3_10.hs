@@ -67,7 +67,7 @@ typingC ctx varIds = \case
      in (TyArr ty rt, restVarIds, c)
   TmApp t1 t2 ->
     let (rt1, restVarIds1, c1) = typingC ctx varIds t1
-        (rt2, (x:restVarIds2), c2) = typingC ctx restVarIds1 t2
+        (rt2, x:restVarIds2, c2) = typingC ctx restVarIds1 t2
         rt = TyVar x
         c = c1 <> c2 <> Set.singleton (rt1, TyArr rt2 rt)
      in (rt, restVarIds2, c)

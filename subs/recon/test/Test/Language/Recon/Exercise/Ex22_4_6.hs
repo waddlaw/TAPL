@@ -2,15 +2,16 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.Recon.Exercise.Ex22_4_6 where
 
-import Test.Tasty
-import Test.Tasty.HUnit
-import qualified RIO.Set as Set
-
 import Language.Recon.Exercise.Ex22_4_6
 
+import RIO
+import qualified RIO.Set as Set
+import Test.Tasty
+import Test.Tasty.HUnit
+
 test_unify :: TestTree
-test_unify = testGroup "ex22.3.10" $
-  [ testGroup "unify" $
+test_unify = testGroup "ex22.3.10"
+  [ testGroup "unify"
       [ testCase "ex22.4.3-1" do
           let expected = Just $ Set.fromList [(TyVar "X",TyNat),(TyVar "Y",TyArr TyNat TyNat)]
           unify ex22_4_3_1 @?= expected

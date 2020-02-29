@@ -4,6 +4,7 @@ module FullSimpleLambda where
 
 import Language.FullSimpleLambda
 import Language.FullSimpleLambda.Internal
+
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -50,11 +51,9 @@ test_unit :: TestTree
 test_unit =
   testGroup "unit"
     [ testGroup "typecheck"
-        [ testCase "unit:Unit"
-            $ typeof mempty TmUnit
-              @?= TyUnit
-          ]
-      ]
+        [ testCase "unit:Unit" $ typeof mempty TmUnit @?= TyUnit
+        ]
+    ]
 
 test_pair :: TestTree
 test_pair =
@@ -81,8 +80,8 @@ test_pair =
             evalN 2 t @?= TmApp tlam (TmPair n3 n4)
             evalN 3 t @?= TmPairSnd (TmPair n3 n4)
             evalN 4 t @?= n4
-          ]
-      ]
+        ]
+    ]
 
 test_record :: TestTree
 test_record =
@@ -116,8 +115,8 @@ test_record =
           testCase "{partno=5524,cost=true}" $ do
             let t = TmRecord [("partno", mkNat 5524), ("cost", TmTrue)]
             typeof mempty t @?= TyRecord [("partno", TyNat), ("cost", TyBool)]
-          ]
-      ]
+        ]
+    ]
 
 test_pattern :: TestTree
 test_pattern = do
@@ -134,18 +133,16 @@ test_pattern = do
           testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
             $ prettyFullSimpleText ctx t
               @?= "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
-          ],
-      testGroup "eval"
-        [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
-            $ eval t
-              @?= mkNat 1
-          ],
-      testGroup "typecheck"
-        [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
-            $ typeof mempty t
-              @?= TyNat
-          ]
-      ]
+        ]
+    , testGroup "eval"
+        [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+            eval t @?= mkNat 1
+        ]
+    , testGroup "typecheck"
+        [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+            typeof mempty t @?= TyNat
+        ]
+    ]
 
 test_sum :: TestTree
 test_sum =
@@ -167,7 +164,7 @@ test_sum =
         [ testCase "Bool+Nat" $ do
             let ty = TySum TyBool TyNat
             prettyType ty @?= "Bool+Nat"
-          ],
+        ],
       testGroup "eval"
         [ testCase "getName" $ do
             let physicalAddr = TmRecord [("firstlast", TmZero), ("addr", TmFalse)]

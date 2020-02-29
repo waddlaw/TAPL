@@ -101,7 +101,7 @@ instance System RecordPattern where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2
     -- T-RCD
-    TmRecord fields -> TyRecord $ map (\(l, t) -> (l, typeof ctx t)) fields
+    TmRecord fields -> TyRecord $ map (second (typeof ctx)) fields
     -- T-PROJ
     TmRecordProj label t -> case typeof ctx t of
       TyRecord fields -> fromMaybe (error "field label not found (T-PROJ)") $ lookup label fields
@@ -136,7 +136,7 @@ subst j s = \case
     | otherwise -> t
   TmLam x ty t -> TmLam x ty $ subst (j + 1) (shift 0 1 s) t
   TmApp t1 t2 -> (TmApp `on` subst j s) t1 t2
-  TmRecord rs -> TmRecord $ map (\(l, t) -> (l, subst j s t)) rs
+  TmRecord rs -> TmRecord $ map (second (subst j s)) rs
   TmRecordProj l t -> TmRecordProj l $ subst j s t
   TmPattern p t1 t2 -> TmPattern p (subst j s t1) (subst (j + 1) (shift 0 1 s) t2) -- TODO check (間違っていそう)
 
@@ -147,7 +147,7 @@ shift c d = \case
     | otherwise -> TmVar (k + d)
   TmLam x ty t -> TmLam x ty $ shift (c + 1) d t
   TmApp t1 t2 -> (TmApp `on` shift c d) t1 t2
-  TmRecord rs -> TmRecord $ map (\(l, t) -> (l, shift c d t)) rs
+  TmRecord rs -> TmRecord $ map (second (shift c d)) rs
   TmRecordProj l t -> TmRecordProj l $ shift c d t
   TmPattern p t1 t2 -> TmPattern p (shift c d t1) (shift (c + 1) d t2) -- TODO (check, 間違ってるかも)
 

@@ -15,12 +15,12 @@ module Language.UntypedLambda
     steps,
     subst,
     size,
-    -- * 演習 6.1.5
+    -- * Exercise 6.1.5
     removenames,
     restorenames,
-    -- * 定義 6.2.1
+    -- * Definition 6.2.1
     shift,
-    -- * 定義 6.2.4
+    -- * Definition 6.2.4
     namelessSubst,
     reduceNameless
     )
@@ -30,13 +30,15 @@ import Language.Core
 import Language.UntypedLambda.Parser
 import Language.UntypedLambda.Prelude
 import Language.UntypedLambda.Types
-import qualified RIO.List as L
+
+import RIO hiding (trace)
+import qualified RIO.List as List
 import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 import qualified RIO.Text.Partial as Text.Partial
 
--- | 指定された評価戦略で項を正規系に評価する
+-- | Evaluate the term in canonical form with the specified evaluation strategy
 eval :: Strategy -> UntypedLambda -> UntypedLambda
 eval s t
   | result == t = t
@@ -44,11 +46,11 @@ eval s t
   where
     result = evalOneStep s t
 
--- | デバッグ用
+-- | debugging only
 trace :: Strategy -> UntypedLambda -> [UntypedLambda]
 trace s t = reverse $ evalWithTrace s [t] t
 
--- | 簡約ステップ列を返す
+-- | Return the reduction steps
 evalWithTrace :: Strategy -> [UntypedLambda] -> UntypedLambda -> [UntypedLambda]
 evalWithTrace s acc t
   | result == t = acc
@@ -57,18 +59,18 @@ evalWithTrace s acc t
     result = evalOneStep s t
     acc' = result : acc
 
--- | 簡約ステップ数を返す
+-- | Return the number of steps
 steps :: UntypedLambda -> Int
 steps = length . evalWithTrace NormalOrder []
 
--- | 1ステップのみ、指定された評価戦略で評価する
+-- | Evaluate only one step with the specified evaluation strategy
 evalOneStep :: Strategy -> UntypedLambda -> UntypedLambda
 evalOneStep FullBetaReduction _ = undefined -- TODO
 evalOneStep NormalOrder t = reduceNormalOrder t
 evalOneStep CallByName t = reduceCallByName t
 evalOneStep CallByValue t = reduceCallByValue t
 
--- | 正規順序戦略
+-- | NormalOrder
 reduceNormalOrder :: UntypedLambda -> UntypedLambda
 reduceNormalOrder (TmApp (TmLam x old) new) = subst x new old
 reduceNormalOrder (TmApp t1@(TmApp _ _) t2@(TmApp _ _)) = TmApp (reduceNormalOrder t1) (reduceNormalOrder t2)
@@ -77,7 +79,7 @@ reduceNormalOrder (TmApp t1 t2@(TmApp _ _)) = TmApp t1 (reduceNormalOrder t2)
 reduceNormalOrder (TmLam v t) = TmLam v (reduceNormalOrder t)
 reduceNormalOrder t = t
 
--- | 名前呼び戦略
+-- | CallByName
 reduceCallByName :: UntypedLambda -> UntypedLambda
 reduceCallByName (TmApp (TmLam x old) new) = subst x new old
 reduceCallByName (TmApp t1@(TmApp _ _) t2@(TmApp _ _)) = TmApp (reduceCallByName t1) (reduceCallByName t2)
@@ -85,7 +87,7 @@ reduceCallByName (TmApp t1@(TmApp _ _) t2) = TmApp (reduceCallByName t1) t2
 reduceCallByName (TmApp t1 t2@(TmApp _ _)) = TmApp t1 (reduceCallByName t2)
 reduceCallByName t = t
 
--- | 値呼び戦略
+-- | CallByValue
 reduceCallByValue :: UntypedLambda -> UntypedLambda
 reduceCallByValue (TmApp t@(TmLam x old) new)
   | isValue new = subst x new old
@@ -97,7 +99,7 @@ reduceCallByValue t = t
 
 -- | β-reduction
 --
--- 定義5.3.5 (P.54)
+-- Definition 5.3.5 (P.54)
 subst :: Text -> UntypedLambda -> UntypedLambda -> UntypedLambda
 subst v1 after t@(TmVar v2)
   | v1 == v2 = after
@@ -109,17 +111,11 @@ subst v1 after t@(TmLam v2 t')
     notIn v term = v `Set.notMember` freeVars Set.empty term
 subst v after (TmApp t1 t2) = (TmApp `on` subst v after) t1 t2
 
--- | 与えられた項が閉じているかどうか判定する述語
---
--- 項が閉じている = 自由変数が無い
---
--- 閉じた項はコンビネータとも呼ばれる。
+-- | a predicate that determines whether a given term is closed
 isClosed :: UntypedLambda -> Bool
 isClosed = Set.null . freeVars Set.empty
 
--- | 項に含まれる自由変数を返す
---
--- 定義5.3.2 (p.52)
+-- | return free variable contained in term. Definition 5.3.2 (p.52)
 freeVars :: Set VarName -> UntypedLambda -> Set VarName
 freeVars fv (TmVar v)
   | Set.member v fv = Set.empty
@@ -127,42 +123,41 @@ freeVars fv (TmVar v)
 freeVars fv (TmLam v t) = freeVars fv t `Set.difference` Set.singleton v
 freeVars fv (TmApp t1 t2) = (Set.union `on` freeVars fv) t1 t2
 
--- | 与えられた項が値かどうか判定する述語
+-- | predicate that determines whether a given term is a value
 isValue :: UntypedLambda -> Bool
 isValue (TmVar _) = True
 isValue (TmLam _ _) = True
 isValue _ = False
 
--- | 項のサイズを計算する
---
--- 演習5.3.3 (P.52)
+-- | Calculate the size of a term. Exercise 5.3.3 (P.52)
 size :: UntypedLambda -> Int
 size (TmVar _) = 1
 size (TmLam _ t) = 1 + size t
 size (TmApp t1 t2) = size t1 + size t2
 
--- | 演習6.1.5 (P.59)
+-- | Exercise 6.1.5 (P.59)
 --
--- 仮定: FV(t) ⊆ dom(Γ）)
+-- supposition: FV(t) ⊆ dom(Γ）)
 removenames :: Context -> UntypedLambda -> NamelessTerm
 removenames g t
   | freeVars Set.empty t `Set.isSubsetOf` Set.fromList g = removenames' g t
   | otherwise = error "Does not satisfy: FV(t) `isSubsetOf` dom(Γ)"
   where
-    removenames' g' (TmVar x) = NlTmVar $ fromMaybe (error "Can't find variable") $ L.elemIndex x g'
+    removenames' g' (TmVar x) = NlTmVar $ fromMaybe (error "Can't find variable") $ List.elemIndex x g'
     removenames' g' (TmLam x t1) = NlTmLam $ removenames (x : g') t1
     removenames' g' (TmApp t1 t2) = (NlTmApp `on` removenames' g') t1 t2
 
--- | 演習6.1.5 (P.59)
+-- | Exercise 6.1.5 (P.59)
 --
--- 仮定1: Γに含まれる名前は互いに異なる
--- 仮定2: 変数名の集合Vは順序付けられている
+-- supposition1: The names in Γ are different from each other.
+--
+-- supposition2: The set V of variable names is ordered
 restorenames :: Context -> NamelessTerm -> UntypedLambda
 restorenames g nt
   | isValid g = restorenames' g nt
   | otherwise = error "Error: duplicate variables in context."
   where
-    isValid g' = ((==) `on` (length . L.nub)) g' g'
+    isValid g' = ((==) `on` (length . List.nub)) g' g'
     restorenames' g' (NlTmVar k) = TmVar (g' List.Partial.!! k)
     restorenames' g' (NlTmLam t) =
       let x = mkFreshVarName g'
@@ -176,11 +171,11 @@ mkFreshVarName (v : _) = Text.pack $ mconcat ["a", show $ textToInt v + 1]
     textToInt :: Text -> Int
     textToInt = fromMaybe 0 . readMaybe . Text.unpack . Text.Partial.tail -- FIXME
 
--- | 定義6.2.1 (P.60)
+-- | Definition 6.2.1 (P.60)
 --
--- c: 打ち切り値
+-- c: cutoff
 --
--- d: シフト数
+-- d: shift
 shift :: Int -> Int -> NamelessTerm -> NamelessTerm
 shift c d (NlTmVar k)
   | k < c = NlTmVar k
@@ -188,7 +183,7 @@ shift c d (NlTmVar k)
 shift c d (NlTmLam t) = NlTmLam $ shift (c + 1) d t
 shift c d (NlTmApp t1 t2) = (NlTmApp `on` shift c d) t1 t2
 
--- | 定義6.2.4 (P.60)
+-- | Definition 6.2.4 (P.60)
 namelessSubst :: Int -> NamelessTerm -> NamelessTerm -> NamelessTerm
 namelessSubst j s t@(NlTmVar k)
   | k == j = s
@@ -196,7 +191,7 @@ namelessSubst j s t@(NlTmVar k)
 namelessSubst j s (NlTmLam t) = NlTmLam $ namelessSubst (j + 1) (shift 0 1 s) t
 namelessSubst j s (NlTmApp t1 t2) = (NlTmApp `on` namelessSubst j s) t1 t2
 
--- | 名前無し項のβ簡約 (値呼び)
+-- | β reduction for nameless terms (call by value)
 reduceNameless :: NamelessTerm -> NamelessTerm
 reduceNameless (NlTmApp (NlTmLam t12) v2) = shift 0 (-1) $ namelessSubst 0 (shift 0 1 v2) t12
 reduceNameless (NlTmApp t1@(NlTmApp _ _) t2@(NlTmApp _ _)) = (NlTmApp `on` reduceNameless) t1 t2

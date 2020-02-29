@@ -1,10 +1,11 @@
 module Language.NB.Parser
   ( runNbParser
-    )
+  )
 where
 
 import Language.Core.Parser
 import Language.NB.Types
+
 import RIO
 import Text.Trifecta
 
@@ -12,8 +13,7 @@ runNbParser :: String -> Either String Term
 runNbParser = runParserString termP
 
 termP :: Parser Term
-termP =
-  trueP
+termP = trueP
     <|> falseP
     <|> ifP
     <|> zeroP
@@ -46,10 +46,10 @@ falseP :: Parser Term
 falseP = TmFalse <$ symbol "false"
 
 ifP :: Parser Term
-ifP =
-  TmIf <$ symbol "if"
-    <*> (parens termP <|> token termP)
-    <* symbol "then"
-    <*> (parens termP <|> token termP)
-    <* symbol "else"
-    <*> (parens termP <|> token termP)
+ifP = TmIf
+  <$ symbol "if"
+  <*> (parens termP <|> token termP)
+  <* symbol "then"
+  <*> (parens termP <|> token termP)
+  <* symbol "else"
+  <*> (parens termP <|> token termP)

@@ -7,9 +7,10 @@ import Language.UntypedLambda
 import Language.UntypedLambda.Lib.Bool
 import Language.UntypedLambda.Lib.Church
 import Language.UntypedLambda.Lib.List
+
+import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
-import Prelude hiding (head, tail)
 
 test_ul :: TestTree
 test_ul =

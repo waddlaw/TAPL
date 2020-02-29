@@ -1,29 +1,30 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.FullSimpleLambda
-  ( module Language.FullSimpleLambda.Types,
-    module Language.FullSimpleLambda.Parser,
-    module Language.FullSimpleLambda.Pretty,
-    typeof,
-    desugar,
-    eval
-    )
+  ( module Language.FullSimpleLambda.Types
+  , module Language.FullSimpleLambda.Parser
+  , module Language.FullSimpleLambda.Pretty
+  , typeof
+  , desugar
+  , eval
+  )
 where
 
-import Data.Monoid
 import Language.FullSimpleLambda.Internal
 import Language.FullSimpleLambda.Parser
 import Language.FullSimpleLambda.Pretty
 import Language.FullSimpleLambda.TypeCheck
 import Language.FullSimpleLambda.Types
-import RIO
-import qualified RIO.List.Partial as L.Partial
 
--- | 定義6.2.1 (P.60)
+import RIO
+import qualified RIO.List.Partial as List.Partial
+import Data.Monoid
+
+-- | Definition 6.2.1
 --
--- c: 打ち切り値
+-- c: cuttoff
 --
--- d: シフト数
+-- d: shift number
 shift :: Int -> Int -> Term -> Term
 shift c d (TmVar k)
   | k < c = TmVar k
@@ -47,7 +48,7 @@ shift c d (TmPairFst t) = TmPairFst $ shift c d t
 shift c d (TmPairSnd t) = TmPairSnd $ shift c d t
 shift c d (TmTuple ts) = TmTuple $ map (shift c d) ts
 shift c d (TmTupleProj i t) = TmTupleProj i $ shift c d t
-shift c d (TmRecord rs) = TmRecord $ map (\(l, t) -> (l, shift c d t)) rs
+shift c d (TmRecord rs) = TmRecord $ map (second (shift c d)) rs
 shift c d (TmRecordProj l t) = TmRecordProj l $ shift c d t
 shift c d (TmPattern p t1 t2) = TmPattern p (shift c d t1) (shift (c + 1) d t2) -- TODO (check, 間違ってるかも)
 shift c d (TmInL t ty) = TmInL (shift c d t) ty
@@ -57,11 +58,11 @@ shift c d (TmCase t (x1, t1) (x2, t2)) = TmCase (shift c d t) altL altR
     altL = (x1, shift (c + 1) d t1)
     altR = (x2, shift (c + 1) d t2)
 
--- | 定義 6.2.4 (P.60)
+-- | Definition 6.2.4
 --
--- j: 変数番号
+-- j: variable number
 --
--- s: 代入する値
+-- s: assigned value
 subst :: Int -> Value -> Term -> Term
 subst j s t@(TmVar k)
   | k == j = s
@@ -85,7 +86,7 @@ subst j s (TmPairFst t) = TmPairFst $ subst j s t
 subst j s (TmPairSnd t) = TmPairSnd $ subst j s t
 subst j s (TmTuple ts) = TmTuple $ map (subst j s) ts
 subst j s (TmTupleProj i t) = TmTupleProj i $ subst j s t
-subst j s (TmRecord rs) = TmRecord $ map (\(l, t) -> (l, subst j s t)) rs
+subst j s (TmRecord rs) = TmRecord $ map (second (subst j s)) rs
 subst j s (TmRecordProj l t) = TmRecordProj l $ subst j s t
 subst j s (TmPattern p t1 t2) = TmPattern p (subst j s t1) (subst (j + 1) (shift 0 1 s) t2) -- TODO check (間違っていそう)
 subst j s (TmInL t ty) = TmInL (subst j s t) ty
@@ -95,63 +96,85 @@ subst j s (TmCase t (x1, t1) (x2, t2)) = TmCase (subst j s t) altL altR
     altL = (x1, subst (j + 1) s t1)
     altR = (x2, subst (j + 1) s t2)
 
--- | 評価規則
 eval :: Term -> Term
-eval (TmIf TmTrue t2 _t3) = t2 -- E-IFTRUE
-eval (TmIf TmFalse _t2 t3) = t3 -- E-IFFALSE
-eval (TmIf t1 t2 t3) = TmIf (eval t1) t2 t3 -- E-IF
-eval (TmSucc t) = TmSucc (eval t) -- E-SUCC
-eval (TmPred TmZero) = TmZero -- E-PREDZERO
-eval (TmPred (TmSucc nv@(isNumericValue -> True))) = nv -- E-PREDSUCC
-eval (TmPred t1) = TmPred (eval t1) -- E-PRED
-eval (TmIsZero TmZero) = TmTrue -- E-ISZEROZERO
-eval (TmIsZero (TmSucc (isNumericValue -> True))) = TmFalse -- E-ISZEROSUCC
-eval (TmIsZero t) = TmIsZero (eval t) -- E-ISZERO
-eval (TmApp (TmLam _x _ t1) v2@(isValue -> True)) = shift 0 (-1) $ subst 0 (shift 0 1 v2) t1 -- E-APPABS
-eval (TmApp (TmWildcard _ t12) _t2@(isValue -> True)) = t12 -- E-WILDCARD
-eval (TmApp v1@(isValue -> True) t2) = TmApp v1 (eval t2) -- E-APP2
-eval (TmApp t1 t2) = TmApp (eval t1) t2 -- E-APP1
-eval (TmSeq _t1@(isValue -> True) t2) = t2 -- E-SEQNEXT
-eval (TmSeq t1 t2) = TmSeq (eval t1) t2 -- E-SEQ
-eval (TmAscribe v@(isValue -> True) _) = v -- E-ASCRIBE
-eval (TmAscribe t1 tyT) = TmAscribe (eval t1) tyT -- E-ASCRIBE1
-eval (TmLet _x v1@(isValue -> True) t2) = shift 0 (-1) $ subst 0 (shift 0 1 v1) t2 -- E-LETV
-eval (TmLet x t1 t2) = TmLet x (eval t1) t2 -- E-LET
-eval (TmPairFst (TmPair v1@(isValue -> True) _v2@(isValue -> True))) = v1 -- E-PAIRBETA1
-eval (TmPairSnd (TmPair _v1@(isValue -> True) v2@(isValue -> True))) = v2 -- E-PAIRBETA2
-eval (TmPairFst t) = TmPairFst (eval t) -- E-PROJ1
-eval (TmPairSnd t) = TmPairSnd (eval t) -- E-PROJ2
-eval (TmPair v1@(isValue -> True) t2) = TmPair v1 (eval t2) -- E-PAIR2
-eval (TmPair t1 t2) = TmPair (eval t1) t2 -- E-PAIR1
-eval (TmTupleProj j (TmTuple ts)) -- E-PROJTUPLE
-  | all isValue ts =
-    if j < length ts
-      then ts L.Partial.!! j
-      else error "タプルのサイズより大きな値が指定されています"
-  | otherwise = error "eval: 値ではない項が存在します。"
-eval (TmTupleProj i t) = TmTupleProj i (eval t) -- E-PROJ
-eval (TmTuple ts) = TmTuple (vs ++ [eval t] ++ ts') -- E-TUPLE
-  where
-    (vs, t, ts') = splitTerm ts
-eval (TmRecordProj label t@(TmRecord fields)) -- E-PROJRCD
-  | isValue t = fromMaybe (error "field label not found (E-PROJRCD)") $ lookup label fields
-  | otherwise = TmRecordProj label (eval t)
-eval (TmRecordProj label t) = TmRecordProj label (eval t) -- E-PROJ
-eval t@(TmRecord []) = t -- E-RCD
-eval t@(TmRecord _)
-  | isValue t = t
-  | otherwise = TmRecord (vfs ++ [t'] ++ tfs) -- E-RCD
-  where
-    (vfs, (label, tj), tfs) = splitRecord t
-    t' = (label, eval tj)
-eval (TmPattern p v@(isValue -> True) t2) = match p v t2 -- E-LETV (Pattern)
-eval (TmPattern p t1 t2) = TmPattern p (eval t1) t2 -- E-LET (Pattern)
-eval (TmInL t ty) = TmInL (eval t) ty -- E-INL (Sum)
-eval (TmInR t ty) = TmInR (eval t) ty -- E-INR (Sum)
-eval (TmCase (TmInL v@(isValue -> True) _ty) (TmVar x1, t1) _altInR) = subst x1 v t1 -- E-CASEINL (Sum)
-eval (TmCase (TmInR v@(isValue -> True) _ty) _altInL (TmVar x2, t2)) = subst x2 v t2 -- E-CASEINR (Sum)
-eval (TmCase t altL altR) = TmCase (eval t) altL altR -- E-CASE (Sum)
-eval _ = error "unexpected term"
+eval = \case
+  TmIf TmTrue   t2 _t3 -> t2                    -- E-IFTRUE
+  TmIf TmFalse _t2  t3 -> t3                    -- E-IFFALSE
+  TmIf t1       t2  t3 -> TmIf (eval t1) t2 t3  -- E-IF
+  
+  TmSucc   t                                    -> TmSucc (eval t)    -- E-SUCC
+  TmPred   TmZero                               -> TmZero             -- E-PREDZERO
+  TmPred   (TmSucc nv@(isNumericValue -> True)) -> nv                 -- E-PREDSUCC
+  TmPred   t                                    -> TmPred (eval t)    -- E-PRED
+  TmIsZero TmZero                               -> TmTrue             -- E-ISZEROZERO
+  TmIsZero (TmSucc (isNumericValue -> True))    -> TmFalse            -- E-ISZEROSUCC
+  TmIsZero t                                    -> TmIsZero (eval t)  -- E-ISZERO
+
+  TmApp (TmLam _x _ t1)      v2@(isValue -> True) -> shift 0 (-1) $ subst 0 (shift 0 1 v2) t1 -- E-APPABS
+  TmApp (TmWildcard _ t12)  _t2@(isValue -> True) -> t12                                      -- E-WILDCARD
+  TmApp v1@(isValue -> True) t2                   -> TmApp v1        (eval t2)                -- E-APP2
+  TmApp t1                   t2                   -> TmApp (eval t1) t2                       -- E-APP1
+
+  TmSeq _t1@(isValue -> True) t2 -> t2                  -- E-SEQNEXT
+  TmSeq t1                    t2 -> TmSeq (eval t1) t2  -- E-SEQ
+
+  TmAscribe v@(isValue -> True) _   -> v                       -- E-ASCRIBE
+  TmAscribe t1                  tyT -> TmAscribe (eval t1) tyT -- E-ASCRIBE1
+
+  TmLet _x v1@(isValue -> True) t2 -> shift 0 (-1) $ subst 0 (shift 0 1 v1) t2 -- E-LETV
+  TmLet x  t1                   t2 -> TmLet x (eval t1) t2                     -- E-LET
+
+  TmPairFst (TmPair v1@(isValue -> True) _v2@(isValue -> True)) -> v1                   -- E-PAIRBETA1
+  TmPairFst t                                                   -> TmPairFst (eval t)   -- E-PROJ1
+  TmPairSnd (TmPair _v1@(isValue -> True) v2@(isValue -> True)) -> v2                   -- E-PAIRBETA2
+  TmPairSnd t                                                   -> TmPairSnd (eval t)   -- E-PROJ2
+  TmPair    v1@(isValue -> True)          t2                    -> TmPair v1 (eval t2)  -- E-PAIR2
+  TmPair    t1                            t2                    -> TmPair (eval t1) t2  -- E-PAIR1
+
+  -- E-PROJTUPLE
+  TmTupleProj j (TmTuple ts) ->
+    if | all isValue ts ->
+          if j < length ts
+            then ts List.Partial.!! j
+            else error "A value greater than the size of the tuple was specified"
+       | otherwise      -> error "A term exists that is not a value."
+
+  -- E-PROJ
+  TmTupleProj i t -> TmTupleProj i (eval t)
+
+  -- E-TUPLE
+  TmTuple ts ->
+    let (vs, t, ts') = splitTerm ts
+     in TmTuple (vs ++ [eval t] ++ ts')
+
+  -- E-PROJRCD
+  TmRecordProj label t@(TmRecord fields) ->
+    if | isValue t -> fromMaybe (error "field label not found (E-PROJRCD)") $ lookup label fields
+       | otherwise -> TmRecordProj label (eval t)
+
+  -- E-PROJ
+  TmRecordProj label t -> TmRecordProj label (eval t)
+
+  -- E-RCD
+  t@(TmRecord ts) -> case ts of
+    [] -> t
+    _ -> let (vfs, (label, tj), tfs) = splitRecord t
+             t'                      = (label, eval tj)
+          in if
+              | isValue t -> t
+              | otherwise -> TmRecord (vfs ++ [t'] ++ tfs)
+
+  TmPattern p v@(isValue -> True) t2 -> match p v t2             -- E-LETV
+  TmPattern p t1                  t2 -> TmPattern p (eval t1) t2 -- E-LET
+
+  TmInL t ty -> TmInL (eval t) ty -- E-INL
+  TmInR t ty -> TmInR (eval t) ty -- E-INR
+  TmCase (TmInL v@(isValue -> True) _ty) (TmVar x1, t1) _altInR        -> subst x1 v t1             -- E-CASEINL
+  TmCase (TmInR v@(isValue -> True) _ty) _altInL        (TmVar x2, t2) -> subst x2 v t2             -- E-CASEINR
+  TmCase t                                altL           altR          -> TmCase (eval t) altL altR -- E-CASE
+
+  _ -> error "unexpected term"
+
 
 match :: Pattern -> Value -> (Term -> Term)
 match (PtVar _ n) v = subst n v
@@ -165,31 +188,33 @@ sameFieldLength :: Pattern -> Value -> Bool
 sameFieldLength (PtRecord fs1) (TmRecord fs2) = length fs1 == length fs2
 sameFieldLength _ _ = error "unexpected field"
 
--- | 対象の構文
+-- | Target Syntax
 --
 -- TmSeq
 --
 -- TmWildcard
 desugar :: Term -> Term
-desugar (TmSeq t1 t2) = TmApp (TmLam "x" TyUnit t2) t1 -- FIXME x notin FV(t2)
-desugar (TmWildcard ty t) = TmLam "x" ty t -- FIXME x notin FV(t)
-desugar (TmAscribe t ty) = TmApp (TmLam "x" ty (TmVar 0)) t -- FIXME x notin FV(t)
-desugar term = term
+desugar = \case
+  TmSeq t1 t2     -> TmApp (TmLam "x" TyUnit t2) t1   -- FIXME x notin FV(t2)
+  TmWildcard ty t -> TmLam "x" ty t                   -- FIXME x notin FV(t)
+  TmAscribe t ty  -> TmApp (TmLam "x" ty (TmVar 0)) t -- FIXME x notin FV(t)
+  term            -> term
 
 ----------------------
 -- helper functions --
 ----------------------
 
--- | 少なくとも1つは項である
+-- | at least one term
 splitTerm :: [Term] -> ([Value], Term, [Term])
-splitTerm [] = error "empty list is not expected"
-splitTerm ts = (vs, L.Partial.head ts', L.Partial.tail ts')
-  where
-    (vs, ts') = span isValue ts
+splitTerm = \case
+  [] -> error "empty list is not expected"
+  ts -> let (vs, ts') = span isValue ts
+         in (vs, List.Partial.head ts', List.Partial.tail ts')
 
--- | レコードのみ想定
+-- | Assume records only
 splitRecord :: Term -> ([(FieldLabel, Value)], (FieldLabel, Term), [(FieldLabel, Term)])
-splitRecord (TmRecord fs) = (vfs, L.Partial.head tfs, L.Partial.tail tfs)
-  where
-    (vfs, tfs) = span (isValue . snd) fs
-splitRecord _ = error "only record"
+splitRecord = \case
+  TmRecord fs ->
+    let (vfs, tfs) = span (isValue . snd) fs
+     in (vfs, List.Partial.head tfs, List.Partial.tail tfs)
+  _ -> error "only record"

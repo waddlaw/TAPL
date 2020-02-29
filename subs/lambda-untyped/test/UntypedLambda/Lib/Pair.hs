@@ -4,10 +4,11 @@ module UntypedLambda.Lib.Pair where
 
 import Language.UntypedLambda
 import Language.UntypedLambda.Lib.Pair
+
+import RIO hiding (fst, snd)
 import Test.Tasty
 import Test.Tasty.HUnit
 import Utils
-import Prelude hiding (fst, snd)
 
 test_ul :: TestTree
 test_ul =

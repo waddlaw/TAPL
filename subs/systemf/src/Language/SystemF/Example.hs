@@ -27,3 +27,21 @@ quadruple = TmTypeLam "X" $ TmApp (TmTypeApp double (TyArr (TyVar "X" 0) (TyVar 
 -- λx:∀X.X->X. x [∀X.X->X] x
 selfApp :: Term
 selfApp = TmLam "x" (TyForAll "X" (TyArr (TyVar "X" 0) (TyVar "X" 0))) $ TmApp (TmTypeApp (TmVar "x" 0) (TyForAll "X" (TyArr (TyVar "X" 0) (TyVar "X" 0)))) (TmVar "x" 0)
+
+map' :: Term
+map' =
+  TmTypeLam "X" $ TmTypeLam "Y" $
+    TmLam "f" (TyArr (TyVar "X" 1) (TyVar "Y" 0)) $
+      TmFix $
+        TmLam "m" (TyArr (TyList $ TyVar "X" 3) (TyList $ TyVar "Y" 2)) $
+          TmLam "l" (TyList $ TyVar "X" 4) $
+            TmIf
+              (TmApp (TmTypeApp TmIsNil (TyVar "X" 4)) (TmVar "l" 0))
+              (TmTypeApp TmNil (TyVar "Y" 3))
+              (TmApp
+                (TmApp (TmTypeApp TmCons (TyVar "Y" 3)) (TmApp (TmVar "f" 2) e1))
+                (TmApp (TmVar "m" 1) e2)
+              )
+  where
+    e1 = TmApp (TmTypeApp TmHead (TyVar "X" 4)) (TmVar "l" 0)
+    e2 = TmApp (TmTypeApp TmTail (TyVar "X" 4)) (TmVar "l" 0)

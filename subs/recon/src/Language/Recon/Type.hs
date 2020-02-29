@@ -17,7 +17,7 @@ data Ty
   | TyBool
   | TyNat
   | TyVar VarName
-  deriving (Eq, Show, Ord)
+  deriving stock (Eq, Show, Ord)
 
 data Term
   = TmVar VarName
@@ -31,7 +31,7 @@ data Term
   | TmPred Term
   | TmIsZero Term
   | TmFix Term
-  deriving (Eq, Show)
+  deriving stock (Eq, Show)
 
 type Context = [(VarName, Ty)]
 type VarName = Text

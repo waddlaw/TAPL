@@ -19,7 +19,7 @@ data Ty
   | TyNat
   | TyArr Ty Ty
   | TyVar VarName
-  deriving (Eq, Show, Ord)
+  deriving stock (Eq, Show, Ord)
 
 data Term
   = TmVar VarName
@@ -134,7 +134,7 @@ apply (s, t) u
 runUnify :: (Ty, ConstraintSet) -> Ty
 runUnify (ty, constr) = subst ty (unify constr)
   where
-    subst = foldl (flip apply)
+    subst = List.foldl (flip apply)
 
 calcPrincipalType :: Term -> Ty
 calcPrincipalType = runUnify . runTypingC

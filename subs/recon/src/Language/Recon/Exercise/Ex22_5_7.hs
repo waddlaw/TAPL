@@ -135,7 +135,7 @@ apply (s, t) u
   | otherwise = u
 
 subst :: Ty -> ConstraintSet -> Ty
-subst = foldl (flip apply)
+subst = List.foldl (flip apply)
 
 -- >>> runTypingC example1
 -- TyArr ( TyVar "X" ) ( TyVar "X" )

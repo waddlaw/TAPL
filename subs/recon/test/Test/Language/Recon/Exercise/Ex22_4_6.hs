@@ -2,11 +2,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Test.Language.Recon.Exercise.Ex22_4_6 where
 
+import Language.Recon.Exercise.Ex22_4_6
+
+import RIO
+import qualified RIO.Set as Set
 import Test.Tasty
 import Test.Tasty.HUnit
-import qualified RIO.Set as Set
-
-import Language.Recon.Exercise.Ex22_4_6
 
 test_unify :: TestTree
 test_unify = testGroup "ex22.3.10"

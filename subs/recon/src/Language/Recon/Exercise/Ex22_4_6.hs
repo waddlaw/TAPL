@@ -6,17 +6,16 @@ module Language.Recon.Exercise.Ex22_4_6 where
 import RIO
 import qualified RIO.Set as Set
 import qualified RIO.List as List
+import qualified RIO.List.Partial as List.Partial
 
 data Ty
   = TyBool
   | TyNat
   | TyArr Ty Ty
   | TyVar VarName
-  deriving (Eq, Show, Ord)
+  deriving stock (Eq, Show, Ord)
 
 r = [(TyVar "?X_1",TyArr (TyVar "?X_2") (TyVar "?X_3")),(TyVar "X",TyArr (TyVar "Z") (TyArr (TyVar "?X_2") (TyVar "?X_3"))),(TyVar "Y",TyArr (TyVar "Z") (TyVar "?X_2"))]
-
-p = map (bimap pretty pretty)
 
 pretty :: Ty -> Text
 pretty = \case
@@ -37,7 +36,7 @@ unify = fmap (Set.fromList . go . reverse) . unify1
 unify1 :: Set Constraint -> Maybe [Constraint]
 unify1 c
   | Set.null c = Just []
-  | Set.size c == 1 = unify2 . head . Set.toList $ c
+  | Set.size c == 1 = unify2 . List.Partial.head . Set.toList $ c
   | otherwise = Just . concat . mapMaybe unify1 . Set.splitRoot $ c
 
 unify2 :: Constraint -> Maybe [Constraint]

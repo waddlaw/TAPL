@@ -13,7 +13,7 @@ on:
     - cron: "00 15 * * *"
 
 jobs:
-  lint:
+  hlint:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2

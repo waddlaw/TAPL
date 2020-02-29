@@ -1,25 +1,36 @@
-# Types and Programming Languages (型システム入門 プログラミング言語と型の理論)
+# Types and Programming Languages
 
+![stack](https://github.com/waddlaw/TAPL/workflows/stack/badge.svg)
+![cabal](https://github.com/waddlaw/TAPL/workflows/cabal/badge.svg)
+![lint](https://github.com/waddlaw/TAPL/workflows/lint/badge.svg)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8c7df8ad-e448-40fd-821e-9338ad72482b/deploy-status)](https://app.netlify.com/sites/tapl/deploys)
 
-- [オーム社の公式ページ](https://www.ohmsha.co.jp/book/9784274069116/)
-- [日本語版サポートページ](http://tapl.proofcafe.org/)
-  - [正誤表](http://tapl.proofcafe.org/errata)
-- [原著サポートページ](http://www.cis.upenn.edu/~bcpierce/)
-  - [Errata](http://www.cis.upenn.edu/~bcpierce/tapl/index.html)
+## Quick Start Guide
+
+app | versionn
+------|-------
+cabal-install | 3.0.0.0
+cabal-fmt | 0.1.2
+stack | 2.1.3
+
+```shell
+$ git clone https://github.com/waddlaw/TAPL.git
+$ cd TAPL
+$ stack build
+```
 
 ## Available Systems
 
-chapter | package name        | parse | eval | typecheck | prettypring | note
---------|---------------------|-------|------|-----------|-------------|------
-ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     |
-ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     |
-ch05    | lambda-Untyped      |   ✅  |  ✅  |    N/A    |     ✅     |
-ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     |
-ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     |
-ch19    | featherweight-java  |   🚧  |  ✅  |     🚧    |     ✅     |
-ch22    | recon               |   🚧  |  ✅  |     🚧    |     ✅     |
-ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     |
+chapter | package name        | parse | eval | typecheck | prettypring | run application
+--------|---------------------|-------|------|-----------|-------------|---------------
+ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run proofb`
+ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run nb`
+ch05    | lambda-Untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
+ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | 🚧
+ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | 🚧
+ch19    | featherweight-java  |   🚧  |  ✅  |     🚧    |     ✅     | 🚧
+ch22    | recon               |   🚧  |  ✅  |     🚧    |     ✅     | 🚧
+ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     | 🚧
 
 ### components
 
@@ -90,33 +101,13 @@ Fig      | Name                                             |1 |2 |3 |4 |5 |6 |7
 
 ## Screenshot
 
-Arithmetic expressions
+### Arithmetic expressions
 
 ![Arithmetic expressions](screenshots/untyped-arith.gif)
 
-Untyped lambda-calculus
+### Untyped lambda-calculus
 
 ![Untyped lambda-calculus](screenshots/untyped-lambda.gif)
-
-## Quick Start Guide
-
-app | versionn
-------|-------
-cabal-install | 3.0.0.0
-cabal-fmt | 0.1.2
-stack | 2.1.3
-
-```shell
-$ git clone https://github.com/waddlaw/TAPL.git
-$ cd TAPL
-$ stack run
-```
-
-ghcid
-
-```shell
-λ ghcid --allow-eval "--command=ghci XXX.hs"
-```
 
 ## Development
 
@@ -131,52 +122,35 @@ $ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -qg -RTS"
 # test
 $ stack test --fast --file-watch
 
-## generate hoogle database
-$ stack hoogle --keep-going
-
 ## generate haddock document
 $ stack clean && stack haddock
 
 ## benchmark
-# all
 $ stack bench --benchmark-arguments "--small"
-
-# gauge
-$ stack bench tapl:bench:gauge --benchmark-arguments "--small"
-
-# criterion
-$ stack bench tapl:bench:criterion --benchmark-arguments "--output bench.html"
 ```
 
-### cabal
+### ghcid
 
 ```shell
-# build
-$ cabal build
-
-# test
-$ cabal test all
+λ ghcid --allow-eval "--command=ghci XXX.hs"
 ```
 
 ### other commands
 
 ```shell
 # pedantic
-$ stack clean && stack test --fast --pedantic --file-watch
+$ stack clean && stack test --fast --pedantic --file-watch --no-run-tests
 
 # hlint
 $ hlint .
-
-# generate travis-ci config
-λ haskell-ci --config cabal.haskell-ci cabal.project
 ```
 
-## running
+## Japanese book infomation
 
-```shell
-$ stack run proofb
+型システム入門 プログラミング言語と型の理論
 
-$ stack run nb
-
-$ stack run untyped-lambda
-```
+- [オーム社の公式ページ](https://www.ohmsha.co.jp/book/9784274069116/)
+- [日本語版サポートページ](http://tapl.proofcafe.org/)
+  - [正誤表](http://tapl.proofcafe.org/errata)
+- [原著サポートページ](http://www.cis.upenn.edu/~bcpierce/)
+  - [Errata](http://www.cis.upenn.edu/~bcpierce/tapl/index.html)

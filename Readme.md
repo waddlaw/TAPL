@@ -12,27 +12,29 @@
 
 ## Available Systems
 
-chapter | package name | parse | eval | typecheck | prettypring | note
---------|--------------|-------|------|-----------|-------------|------
-ch03 | bool   | ✅ | ✅ | N/A | ✅
-ch03 | arith | ✅ | ✅ | N/A | ✅ 
-ch11 | lambda-fullsimple | ✅ | ✅ | ✅ | ✅ 
-ch19 | featherweight-java | 🚧 | ✅ | 🚧 | ✅ 
+chapter | package name        | parse | eval | typecheck | prettypring | note
+--------|---------------------|-------|------|-----------|-------------|------
+ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     |
+ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     |
+ch05    | lambda-Untyped      |   ✅  |  ✅  |    N/A    |     ✅     |
+ch11    | lambda-fullsimple   |   ✅  |  ✅  |    ✅     |     ✅     |
+ch19    | featherweight-java  |   🚧  |  ✅  |    🚧     |     ✅     |
 
 ### components
 
 1. bool
 2. arith
-3. lambda-fullsimple
-4. featherweight-java
+3. lambda-Untyped
+4. lambda-fullsimple
+5. featherweight-java
 
-Fig      | Name                                             | 1  | 2 | 3 | 4
----------|--------------------------------------------------|----|---|---|----
-3-1   | Booleans (B)                                        | ✅ | - | ✅| - |
-3-2   | Arithmetic expressions (NB)                         | -  | ✅| - | - |
-5-3   | Untyped lambda-calculus (λ)                         |
-8-1   | Typing rules for booleans (B)                       |
-8-2   | Typing rules for numbers (NB)                       |
+Fig      | Name                                             |1 |2 |3 |4 |
+---------|--------------------------------------------------|--|--|--|--|
+3-1   | Booleans (B)                                        |✅|  |  |  |
+3-2   | Arithmetic expressions (NB)                         |  |✅|  |  |
+5-3   | Untyped lambda-calculus (λ)                         |  |  |✅|  |
+8-1   | Typing rules for booleans (B)                       |  |
+8-2   | Typing rules for numbers (NB)                       |  |
 9-1   | Pure simply typed lambda-calculus (λ->)             |
 11-1  | Uninterpreted base types                            |
 11-2  | Unit type                                           |
@@ -59,7 +61,7 @@ Fig      | Name                                             | 1  | 2 | 3 | 4
 16-1  | Subtype relation with records (compact version)     |
 16-2  | Algorithmic subtyping                               |
 16-3  | Algorithmic typing                                  |
-19-1  | Featherweight Java (syntax and subtyping)           |
+19-1  | Featherweight Java (syntax and subtyping)           |  |  | 
 19-2  | Featherweight Java (auxiliary definitions)          |
 19-3  | Featherweight Java (evaluation)                     |
 19-4  | Featherweight Java (typing)                         |

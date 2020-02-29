@@ -3,6 +3,8 @@
 module UntypedLambda.Lib.Bool where
 
 import Language.UntypedLambda.Lib.Bool
+
+import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
 import Utils

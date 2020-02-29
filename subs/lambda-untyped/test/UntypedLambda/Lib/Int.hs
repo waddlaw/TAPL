@@ -8,6 +8,8 @@ import Language.UntypedLambda.Lib.Bool
 import Language.UntypedLambda.Lib.Church
 import Language.UntypedLambda.Lib.Int
 import Language.UntypedLambda.Lib.Pair
+
+import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
 

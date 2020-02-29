@@ -1,5 +1,6 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Types
   ( Term (..)
@@ -18,9 +19,7 @@ import Data.Text.Prettyprint.Doc
 import qualified RIO.Text as Text
 
 type UntypedLambda = Term Text
-
 type VarName = Text
-
 -- | Contrary to books, ["x" , "y" , "z"] is indexed from left to right as [0, 1, 2]
 type Context = [VarName]
 
@@ -53,7 +52,7 @@ data Term a
 
 instance Pretty UntypedLambda where
   pretty (TmVar x) = pretty x
-  pretty (TmLam x t) = pretty "λ" <> pretty x <> pretty "." <+> pretty t
+  pretty (TmLam x t) = "λ" <> pretty x <> "." <+> pretty t
   pretty (TmApp t1 t2) = ppr t1 <+> ppr t2
     where
       ppr t@(TmVar _) = pretty t

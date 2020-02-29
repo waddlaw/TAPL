@@ -23,6 +23,7 @@ common deps
   build-depends:
     , base         >=4.12 && <4.14
     , lambda-core
+    , rio          ^>=0.1
 
   default-language:   Haskell2010
 
@@ -51,7 +52,6 @@ library
   build-depends:
     , parsers        ^>=0.12
     , prettyprinter  ^>=1.3
-    , rio            ^>=0.1
     , transformers   ^>=0.5
     , trifecta       ^>=2.1
 

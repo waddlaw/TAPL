@@ -37,5 +37,5 @@ jobs:
 
     - name: Build
       run: |
-        stack test    --fast --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml
-        stack install --fast --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml
+        stack test    --fast --pedantic --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml
+        stack install --fast --pedantic --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml

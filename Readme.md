@@ -145,7 +145,7 @@ $ stack clean && stack test --fast --pedantic --file-watch --no-run-tests
 $ hlint .
 ```
 
-## Japanese book infomation
+## Japanese book information
 
 型システム入門 プログラミング言語と型の理論
 

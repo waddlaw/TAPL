@@ -43,7 +43,7 @@ library
   build-depends:
     , lambda-core
     , parsers        ^>=0.12
-    , prettyprinter  ^>=1.3
+    , prettyprinter  >=1.2 && <1.7
     , transformers   ^>=0.5
     , trifecta       ^>=2.1
 

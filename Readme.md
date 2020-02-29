@@ -21,7 +21,7 @@ ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     |
 ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     |
 ch19    | featherweight-java  |   🚧  |  ✅  |     🚧    |     ✅     |
 ch22    | recon               |   🚧  |  ✅  |     🚧    |     ✅     |
-ch23    | systemf             |   🚧  |  🚧  |     🚧    |     🚧     |
+ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     |
 
 ### components
 
@@ -36,12 +36,12 @@ ch23    | systemf             |   🚧  |  🚧  |     🚧    |     🚧     |
 
 Fig      | Name                                             |1 |2 |3 |4 |5 |6 |7 |8 |
 ---------|--------------------------------------------------|--|--|--|--|--|--|--|--|
-3-1   | Booleans (B)                                        |✅|  |  |✅|✅|  |  |  |
-3-2   | Arithmetic expressions (NB)                         |  |✅|  |  |✅|  |  |  |
+3-1   | Booleans (B)                                        |✅|  |  |✅|✅|  |✅|✅|
+3-2   | Arithmetic expressions (NB)                         |  |✅|  |  |✅|  |✅|✅|
 5-3   | Untyped lambda-calculus (λ)                         |  |  |✅|  |  |  |  |  |
-8-1   | Typing rules for booleans (B)                       |  |  |  |✅|✅|  |  |  |
-8-2   | Typing rules for numbers (NB)                       |  |  |  |  |✅|  |  |  |
-9-1   | Pure simply typed lambda-calculus (λ->)             |  |  |  |✅|✅|  |  |  |
+8-1   | Typing rules for booleans (B)                       |  |  |  |✅|✅|  |✅|✅|
+8-2   | Typing rules for numbers (NB)                       |  |  |  |  |✅|  |✅|✅|
+9-1   | Pure simply typed lambda-calculus (λ->)             |  |  |  |✅|✅|  |✅|✅|
 11-1  | Uninterpreted base types                            |  |  |  |  |  |  |  |  |
 11-2  | Unit type                                           |  |  |  |  |✅|  |  |  |
 11-3  | Ascription                                          |  |  |  |  |✅|  |  |  |
@@ -53,8 +53,8 @@ Fig      | Name                                             |1 |2 |3 |4 |5 |6 |7
 11-9  | Sums                                                |  |  |  |  |✅|  |  |  |
 11-10 | Sums (with unique typing)                           |  |  |  |  |🚧|  |  |  |
 11-11 | Variants                                            |  |  |  |  |🚧|  |  |  |
-11-12 | General recursion                                   |  |  |  |  |🚧|  |  |  |
-11-13 | Lists                                               |  |  |  |  |🚧|  |  |  |
+11-12 | General recursion                                   |  |  |  |  |🚧|  |✅|✅|
+11-13 | Lists                                               |  |  |  |  |🚧|  |  |✅|
 13-1  | References                                          |  |  |  |  |  |  |  |  |
 14-1  | Errors                                              |  |  |  |  |  |  |  |  |
 14-2  | Error handling                                      |  |  |  |  |  |  |  |  |
@@ -72,9 +72,9 @@ Fig      | Name                                             |1 |2 |3 |4 |5 |6 |7
 19-3  | Featherweight Java (evaluation)                     |  |  |  |  |  |✅|  |  |
 19-4  | Featherweight Java (typing)                         |  |  |  |  |  |🚧|  |  |
 20-1  | Iso-recursive types (λμ)                            |  |  |  |  |  |  |  |  |
-22-1  | Constraint typing rules                             |  |  |  |  |  |  |  |  |
-22-2  | Unification algorithm                               |  |  |  |  |  |  |  |  |
-23-1  | Polymorphic lambda-calculus (System F)              |  |  |  |  |  |  |  |  |
+22-1  | Constraint typing rules                             |  |  |  |  |  |  |✅|  |
+22-2  | Unification algorithm                               |  |  |  |  |  |  |✅|  |
+23-1  | Polymorphic lambda-calculus (System F)              |  |  |  |  |  |  |  |✅|
 24-1  | Existential types                                   |  |  |  |  |  |  |  |  |
 26-1  | Bounded quantification (kernel F<:)                 |  |  |  |  |  |  |  |  |
 26-2  | "Full" bounded quantification                       |  |  |  |  |  |  |  |  |

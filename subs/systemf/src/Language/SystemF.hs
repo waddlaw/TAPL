@@ -28,7 +28,7 @@ typeof ctx = \case
     if typeof ctx t1 == TyBool
       then
         let tyT2 = typeof ctx t2
-         in if tyT2 == typeof ctx t3
+         in if eqType tyT2 (typeof ctx t3)
               then tyT2
               else error "arms of conditional have different types"
       else error "guard of conditional not a boolean"
@@ -64,9 +64,15 @@ typeof ctx = \case
         tyT2 = typeof ctx t2
      in case tyT1 of
           TyArr tyT11 tyT12
-            | tyT2 == tyT11 -> tyT12
-            | otherwise     -> error "parameter type mismatch"
+            | eqType tyT2 tyT11 -> tyT12
+            | otherwise         -> error $ "T-APP: parameter type mismatch: " <> show tyT11
           _ -> error "arrow type expected"
+
+  -- 11-12. T-FIX
+  TmFix t1 ->
+    case typeof ctx t1 of
+      TyArr ty1 ty2 -> if eqType ty1 ty2 then ty1 else error $ "T-FIX: " <> show ty1
+      e -> error $ "T-FIX: " <> show e
 
   -- 11-13. T-NIL
   TmNil   -> TyForAll "X" . TyList $ TyVar "X" 0
@@ -106,3 +112,10 @@ getBinding ctx i = ctx' L.Partial.!! i
 -- erase (TmVar x) = Untyped.TmVar x
 -- erase (TmAbs x _tyT1 t2) = Untyped.TmLam x (erase t2)
 -- erase (TmApp t1 t2) = Untyped.TmApp (erase t1) (erase t2)
+
+eqType :: Ty -> Ty -> Bool
+eqType (TyVar x1 _) (TyVar x2 _) = x1 == x2
+eqType (TyArr ty11 ty12) (TyArr ty21 ty22) = eqType ty11 ty21 && eqType ty12 ty22
+eqType (TyList ty1) (TyList ty2) = eqType ty1 ty2
+eqType (TyForAll x1 ty1) (TyForAll x2 ty2) = x1 == x2 && eqType ty1 ty2
+eqType ty1 ty2 = ty1 == ty2

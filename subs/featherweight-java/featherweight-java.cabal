@@ -32,10 +32,3 @@ library
   -- cabal-fmt: expand src
   exposed-modules: Language.FJ
   hs-source-dirs:  src
-
-test-suite featherweight-java-test
-  import:         deps
-  type:           exitcode-stdio-1.0
-  main-is:        Spec.hs
-  hs-source-dirs: test
-  build-depends:  featherweight-java

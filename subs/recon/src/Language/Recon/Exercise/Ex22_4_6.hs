@@ -15,14 +15,15 @@ data Ty
   | TyVar VarName
   deriving stock (Eq, Show, Ord)
 
+r :: [(Ty, Ty)]
 r = [(TyVar "?X_1",TyArr (TyVar "?X_2") (TyVar "?X_3")),(TyVar "X",TyArr (TyVar "Z") (TyArr (TyVar "?X_2") (TyVar "?X_3"))),(TyVar "Y",TyArr (TyVar "Z") (TyVar "?X_2"))]
 
 pretty :: Ty -> Text
 pretty = \case
-  TyBool -> "Bool"
-  TyNat -> "Nat"
+  TyBool        -> "Bool"
+  TyNat         -> "Nat"
   TyArr ty1 ty2 -> pretty ty1 <> " -> " <> pretty ty2
-  TyVar x -> x
+  TyVar x       -> x
 
 type Constraint = (Ty, Ty)
 type VarName = Text

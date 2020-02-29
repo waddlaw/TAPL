@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 module Language.FJ
   ( run
   , runAll
@@ -6,9 +7,10 @@ module Language.FJ
   )
 where
 
-import RIO
+import RIO hiding (to)
 import qualified RIO.List as List
-import Prelude (putStrLn, head)
+import qualified RIO.List.Partial as List.Partial
+import Prelude (putStrLn)
 
 type Program = (CT, Term)
 
@@ -75,10 +77,11 @@ fields ct = \case
 >>> mtype exCT (MN "setfst") (CN "Pair")
 ([CN "Object"],CN "Pair")
 -}
-mtype :: CT -> Method -> Class -> Maybe ([Class], Class)
-mtype ct m = fmap f . mhelper ct m
-  where
-    f (M rt _ args _) = (map fst args, rt)
+-- TODO
+-- mtype :: CT -> Method -> Class -> Maybe ([Class], Class)
+-- mtype ct m = fmap f . mhelper ct m
+--   where
+--     f (M rt _ args _) = (map fst args, rt)
 
 {- |
 >>> mbody exCT (MN "setfst") (CN "Pair")
@@ -92,7 +95,7 @@ mbody ct m = fmap f . mhelper ct m
 mhelper :: CT -> Method -> Class -> Maybe MethodDef
 mhelper ct m = \case
   CN "Object" -> Nothing
-  c           -> let CL _ d cfs _ ms = ct c
+  c           -> let CL _ d _cfs _ ms = ct c
                   in maybe (mhelper ct m d) pure $ findMethodDef m ms
 
 eqMethodDef :: Method -> MethodDef -> Bool
@@ -101,14 +104,15 @@ eqMethodDef m1 (M _ m2 _ _) = m1 == m2
 findMethodDef :: Method -> [MethodDef] -> Maybe MethodDef
 findMethodDef m ms
     | null md   = Nothing
-    | otherwise = Just (head md)
+    | otherwise = Just (List.Partial.head md)
   where
     md = filter (eqMethodDef m) ms
 
-override :: CT -> Method -> Class -> ([Class], Class) -> Bool
-override ct m d (cs, c0) = case mtype ct m d of
-  Nothing       -> True
-  Just (ds, d0) -> cs == ds && c0 == d0
+-- TODO
+-- override :: CT -> Method -> Class -> ([Class], Class) -> Bool
+-- override ct m d (cs, c0) = case mtype ct m d of
+--   Nothing       -> True
+--   Just (ds, d0) -> cs == ds && c0 == d0
 
 -- ============================
 -- = Figure 19-3: evaluation
@@ -132,6 +136,7 @@ evalTrace ct t = do
 
 eval' :: CT -> Term -> Term
 eval' ct = \case
+  TmVar _ -> error "TODO: TmVar"
   -- E-NEW-ARG
   TmNew c ts ->
     -- ti:rest is absolutely successful
@@ -143,7 +148,7 @@ eval' ct = \case
       -- E-PROJNEW
       then
         let TmNew c vs = t
-         in fst . head . dropWhile ((/=fi) . snd . snd) $ zip vs $ fields ct c
+         in fst . List.Partial.head . dropWhile ((/=fi) . snd . snd) $ zip vs $ fields ct c
       -- E-FIELD
       else TmFieldRef (eval ct t) fi
 
@@ -153,7 +158,7 @@ eval' ct = \case
         if all isValue ts
           -- E-INVKNEW
           then
-            let this@(TmNew c vs) = t
+            let this@(TmNew c _vs) = t
                 (xs, t0) = fromMaybe (error $ "E-INVKNEW: " <> show m <> ", " <> show c) $ mbody ct m c
              in subst ((VN "this", this):zip xs ts) t0
           -- E-INVK-ARG
@@ -167,8 +172,8 @@ eval' ct = \case
   TmCast d@c t ->
     if isValue t
       -- E-CASTNEW
-      then let TmNew c vs = t
-            in if checkCast ct c d then t else error "E-CASTNEW"
+      then let TmNew c' _vs = t
+            in if checkCast ct c' d then t else error "E-CASTNEW"
       -- E-CAST
       else TmCast c (eval ct t)
 

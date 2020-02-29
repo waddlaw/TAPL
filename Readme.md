@@ -104,7 +104,6 @@ app | versionn
 ------|-------
 cabal-install | 3.0.0.0
 cabal-fmt | 0.1.2
-haskell-ci | 0.8
 stack | 2.1.3
 
 ```shell

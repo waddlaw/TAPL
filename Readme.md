@@ -17,72 +17,78 @@ chapter | package name        | parse | eval | typecheck | prettypring | note
 ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     |
 ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     |
 ch05    | lambda-Untyped      |   ✅  |  ✅  |    N/A    |     ✅     |
-ch11    | lambda-fullsimple   |   ✅  |  ✅  |    ✅     |     ✅     |
-ch19    | featherweight-java  |   🚧  |  ✅  |    🚧     |     ✅     |
+ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     |
+ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     |
+ch19    | featherweight-java  |   🚧  |  ✅  |     🚧    |     ✅     |
+ch22    | recon               |   🚧  |  ✅  |     🚧    |     ✅     |
+ch23    | systemf             |   🚧  |  🚧  |     🚧    |     🚧     |
 
 ### components
 
 1. bool
 2. arith
-3. lambda-Untyped
-4. lambda-fullsimple
-5. featherweight-java
+3. lambda-untyped
+4. lambda-simple
+5. lambda-fullsimple
+6. featherweight-java
+7. recon
+8. systemf
 
-Fig      | Name                                             |1 |2 |3 |4 |
----------|--------------------------------------------------|--|--|--|--|
-3-1   | Booleans (B)                                        |✅|  |  |  |
-3-2   | Arithmetic expressions (NB)                         |  |✅|  |  |
-5-3   | Untyped lambda-calculus (λ)                         |  |  |✅|  |
-8-1   | Typing rules for booleans (B)                       |  |
-8-2   | Typing rules for numbers (NB)                       |  |
-9-1   | Pure simply typed lambda-calculus (λ->)             |
-11-1  | Uninterpreted base types                            |
-11-2  | Unit type                                           |
-11-3  | Ascription                                          |
-11-4  | Let binding                                         | 
-11-5  | Pairs                                               |
-11-6  | Tuples                                              |
-11-7  | Records                                             |
-11-8  | (Untyped) record patterns                           |
-11-9  | Sums                                                |
-11-10 | Sums (with unique typing)                           |
-11-11 | Variants                                            |
-11-12 | General recursion                                   |
-11-13 | Lists                                               |
-13-1  | References                                          | 
-14-1  | Errors                                              |
-14-2  | Error handling                                      | 
-14-3  | Exceptions carrying values                          |
-15-1  | Simply typed lambda-calculus with subtyping (λ<:)   |
-15-2  | Records (same as Figure 11-7)                       |
-15-3  | Records and subtyping                               |
-15-4  | Bottom type                                         |
-15-5  | Variants and subtyping                              |
-16-1  | Subtype relation with records (compact version)     |
-16-2  | Algorithmic subtyping                               |
-16-3  | Algorithmic typing                                  |
-19-1  | Featherweight Java (syntax and subtyping)           |  |  | 
-19-2  | Featherweight Java (auxiliary definitions)          |
-19-3  | Featherweight Java (evaluation)                     |
-19-4  | Featherweight Java (typing)                         |
-20-1  | Iso-recursive types (λμ)                            |
-22-1  | Constraint typing rules                             |
-22-2  | Unification algorithm                               |
-23-1  | Polymorphic lambda-calculus (System F)              |
-24-1  | Existential types                                   |
-26-1  | Bounded quantification (kernel F<:)                 |
-26-2  | "Full" bounded quantification                       |
-26-3  | Bounded existential quantification (kernel variant) |
-28-1  | Exposure Algorithm for F<:                          |
-28-2  | Algorithmic typing for F<:                          |
-28-3  | Algorithmic subtyping for kernel F<:                |
-28-4  | Algorithmic subtyping for full F<:                  |
-28-5  | Join and meet algorithms for kernel F<:             |
-29-1  | Type operators and kinding (λω)                     |
-30-1  | Higher-order polymorphic lambda-calculus (Fω)       |
-30-2  | Higher-order existential types                      |
-30-3  | Parallel reduction on types                         |
-32-1  | Polymorphic update                                  |
+Fig      | Name                                             |1 |2 |3 |4 |5 |6 |7 |8 |
+---------|--------------------------------------------------|--|--|--|--|--|--|--|--|
+3-1   | Booleans (B)                                        |✅|  |  |✅|✅|  |  |  |
+3-2   | Arithmetic expressions (NB)                         |  |✅|  |  |✅|  |  |  |
+5-3   | Untyped lambda-calculus (λ)                         |  |  |✅|  |  |  |  |  |
+8-1   | Typing rules for booleans (B)                       |  |  |  |✅|✅|  |  |  |
+8-2   | Typing rules for numbers (NB)                       |  |  |  |  |✅|  |  |  |
+9-1   | Pure simply typed lambda-calculus (λ->)             |  |  |  |✅|✅|  |  |  |
+11-1  | Uninterpreted base types                            |  |  |  |  |  |  |  |  |
+11-2  | Unit type                                           |  |  |  |  |✅|  |  |  |
+11-3  | Ascription                                          |  |  |  |  |✅|  |  |  |
+11-4  | Let binding                                         |  |  |  |  |✅|  |  |  |
+11-5  | Pairs                                               |  |  |  |  |✅|  |  |  |
+11-6  | Tuples                                              |  |  |  |  |✅|  |  |  |
+11-7  | Records                                             |  |  |  |  |✅|  |  |  |
+11-8  | (Untyped) record patterns                           |  |  |  |  |✅|  |  |  |
+11-9  | Sums                                                |  |  |  |  |✅|  |  |  |
+11-10 | Sums (with unique typing)                           |  |  |  |  |🚧|  |  |  |
+11-11 | Variants                                            |  |  |  |  |🚧|  |  |  |
+11-12 | General recursion                                   |  |  |  |  |🚧|  |  |  |
+11-13 | Lists                                               |  |  |  |  |🚧|  |  |  |
+13-1  | References                                          |  |  |  |  |  |  |  |  |
+14-1  | Errors                                              |  |  |  |  |  |  |  |  |
+14-2  | Error handling                                      |  |  |  |  |  |  |  |  |
+14-3  | Exceptions carrying values                          |  |  |  |  |  |  |  |  |
+15-1  | Simply typed lambda-calculus with subtyping (λ<:)   |  |  |  |  |  |  |  |  |
+15-2  | Records (same as Figure 11-7)                       |  |  |  |  |  |  |  |  |
+15-3  | Records and subtyping                               |  |  |  |  |  |  |  |  |
+15-4  | Bottom type                                         |  |  |  |  |  |  |  |  |
+15-5  | Variants and subtyping                              |  |  |  |  |  |  |  |  |
+16-1  | Subtype relation with records (compact version)     |  |  |  |  |  |  |  |  |
+16-2  | Algorithmic subtyping                               |  |  |  |  |  |  |  |  |
+16-3  | Algorithmic typing                                  |  |  |  |  |  |  |  |  |
+19-1  | Featherweight Java (syntax and subtyping)           |  |  |  |  |  |✅|  |  |
+19-2  | Featherweight Java (auxiliary definitions)          |  |  |  |  |  |✅|  |  |
+19-3  | Featherweight Java (evaluation)                     |  |  |  |  |  |✅|  |  |
+19-4  | Featherweight Java (typing)                         |  |  |  |  |  |🚧|  |  |
+20-1  | Iso-recursive types (λμ)                            |  |  |  |  |  |  |  |  |
+22-1  | Constraint typing rules                             |  |  |  |  |  |  |  |  |
+22-2  | Unification algorithm                               |  |  |  |  |  |  |  |  |
+23-1  | Polymorphic lambda-calculus (System F)              |  |  |  |  |  |  |  |  |
+24-1  | Existential types                                   |  |  |  |  |  |  |  |  |
+26-1  | Bounded quantification (kernel F<:)                 |  |  |  |  |  |  |  |  |
+26-2  | "Full" bounded quantification                       |  |  |  |  |  |  |  |  |
+26-3  | Bounded existential quantification (kernel variant) |  |  |  |  |  |  |  |  |
+28-1  | Exposure Algorithm for F<:                          |  |  |  |  |  |  |  |  |
+28-2  | Algorithmic typing for F<:                          |  |  |  |  |  |  |  |  |
+28-3  | Algorithmic subtyping for kernel F<:                |  |  |  |  |  |  |  |  |
+28-4  | Algorithmic subtyping for full F<:                  |  |  |  |  |  |  |  |  |
+28-5  | Join and meet algorithms for kernel F<:             |  |  |  |  |  |  |  |  |
+29-1  | Type operators and kinding (λω)                     |  |  |  |  |  |  |  |  |
+30-1  | Higher-order polymorphic lambda-calculus (Fω)       |  |  |  |  |  |  |  |  |
+30-2  | Higher-order existential types                      |  |  |  |  |  |  |  |  |
+30-3  | Parallel reduction on types                         |  |  |  |  |  |  |  |  |
+32-1  | Polymorphic update                                  |  |  |  |  |  |  |  |  |
 
 ## Screenshot
 

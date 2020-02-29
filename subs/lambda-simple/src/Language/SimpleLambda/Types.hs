@@ -10,10 +10,11 @@ module Language.SimpleLambda.Types
     )
 where
 
-import Data.Text.Prettyprint.Doc
 import RIO
-import qualified RIO.List.Partial as L.Partial
+import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Text as Text
+
+import Data.Text.Prettyprint.Doc
 
 type SimpleTypedLambda = Term
 
@@ -61,7 +62,7 @@ pprSimple ctx (TmVar n) =
     else pretty fv
   where
     ctx' = unCtx ctx
-    fv = fst (ctx' L.Partial.!! n)
+    fv = fst (ctx' List.Partial.!! n)
 pprSimple ctx (TmLam x ty t) = pretty "λ" <> pretty x <> pretty ":" <> pretty ty <> pretty "." <+> pprSimple ctx' t
   where
     ctx' = addContext (x, VarBind ty) ctx

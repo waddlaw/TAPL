@@ -1,15 +1,16 @@
 module Language.FullSimpleLambda.Parser
   ( runFullSimpleLambdaParser
-    )
+  )
 where
 
-import Control.Monad.Trans.State
 import Language.Core.Parser
 import Language.FullSimpleLambda.Types
+
 import RIO hiding (try)
-import qualified RIO.List as L
-import qualified RIO.List.Partial as L.Partial
+import qualified RIO.List as List
+import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Text as Text
+import Control.Monad.Trans.State
 import Text.Parser.Token.Highlight
 import Text.Trifecta
 
@@ -24,7 +25,7 @@ exprP = do
   pure $ lefty r1 r2
   where
     -- lefty <$> evalStateT factorP env <*> evalStateT termsP env
-    lefty x xs = L.Partial.foldl1 TmApp (x : xs)
+    lefty x xs = List.Partial.foldl1 TmApp (x : xs)
     termsP = many (space *> factorP)
 
 factorP :: StateT Context Parser Term
@@ -48,7 +49,7 @@ lambdaP =
 typeP :: StateT Context Parser Ty
 typeP = lefty <$> typeFactorP <*> termsP
   where
-    lefty x xs = L.Partial.foldl1 TyArr (x : xs)
+    lefty x xs = List.Partial.foldl1 TyArr (x : xs)
     termsP = many (spaces *> string "->" *> spaces *> typeFactorP)
 
 typeFactorP :: StateT Context Parser Ty
@@ -80,7 +81,7 @@ varP :: StateT Context Parser Term
 varP = do
   ctx <- get
   var <- lift $ toTerm <$> oneOf ['a' .. 'z'] <*> many alphaNum
-  pure $ TmVar $ fromMaybe (error $ Text.unpack var <> " is not found in Contexts") $ L.findIndex ((== var) . unWrapVarContext . fst) $ unCtx ctx
+  pure $ TmVar $ fromMaybe (error $ Text.unpack var <> " is not found in Contexts") $ List.findIndex ((== var) . unWrapVarContext . fst) $ unCtx ctx
   where
     toTerm x xs = Text.pack (x : xs)
 

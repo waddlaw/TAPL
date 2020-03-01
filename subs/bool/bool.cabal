@@ -40,7 +40,7 @@ library
   build-depends:
     , lambda-core
     , prettyprinter  >=1.2 && <1.7
-    , trifecta       >=2 && <2.2
+    , trifecta       >=2   && <2.2
 
 test-suite bool-test
   import:             deps

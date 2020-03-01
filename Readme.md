@@ -154,3 +154,4 @@ $ hlint .
   - [正誤表](http://tapl.proofcafe.org/errata)
 - [原著サポートページ](http://www.cis.upenn.edu/~bcpierce/)
   - [Errata](http://www.cis.upenn.edu/~bcpierce/tapl/index.html)
+- [住井英二郎（監訳者）＆翻訳チーム 「いまこそ学ぶ！ 型システム ～ TAPL日本語出版までの道のり　～」 - YouTube](https://www.youtube.com/watch?v=JELIVTVuFHo)

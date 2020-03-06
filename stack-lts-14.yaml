@@ -11,9 +11,3 @@ packages:
   - ./subs/featherweight-java
   - ./subs/recon
   - ./subs/systemf
-
-build:
-  haddock: false
-  haddock-arguments:
-    haddock-args:
-      - --odir=docs

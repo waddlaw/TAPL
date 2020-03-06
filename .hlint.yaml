@@ -5,8 +5,7 @@
 - ignore: { name: Reduce duplication }
 - ignore: { name: Redundant multi-way if }
 - arguments:
-  [ -XMultiWayIf
-  , -XNoImplicitPrelude
-  , -XRecordWildCards
-  , -XTypeApplications
-  ]
+  - -XMultiWayIf
+  - -XNoImplicitPrelude
+  - -XRecordWildCards
+  - -XTypeApplications

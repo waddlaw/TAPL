@@ -23,8 +23,8 @@ elP = EvalRelation <$> elP'
   where
     elP' =
       (,) <$> token termP
-        <* symbol "->"
-        <*> token termP
+          <* symbol "->"
+          <*> token termP
 
 termP :: Parser Term
 termP =
@@ -41,8 +41,8 @@ falseP = TmFalse <$ symbol "false"
 ifP :: Parser Term
 ifP =
   TmIf <$ symbol "if"
-    <*> (parens termP <|> token termP)
-    <* symbol "then"
-    <*> (parens termP <|> token termP)
-    <* symbol "else"
-    <*> (parens termP <|> token termP)
+       <*> (parens termP <|> token termP)
+       <* symbol "then"
+       <*> (parens termP <|> token termP)
+       <* symbol "else"
+       <*> (parens termP <|> token termP)

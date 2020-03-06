@@ -4,4 +4,9 @@
 - ignore: { name: Replace case with fromMaybe }
 - ignore: { name: Reduce duplication }
 - ignore: { name: Redundant multi-way if }
-- arguments: [-XMultiWayIf, -XNoImplicitPrelude]
+- arguments:
+  [ -XMultiWayIf
+  , -XNoImplicitPrelude
+  , -XRecordWildCards
+  , -XTypeApplications
+  ]

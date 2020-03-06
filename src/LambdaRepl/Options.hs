@@ -1,5 +1,4 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module LambdaRepl.Options
   ( runApp
@@ -34,11 +33,11 @@ runApp m =
     isTrace <- newIORef False
     withLogFunc lo $ \lf ->
       let app = ReplEnv
-            { appLogFunc = lf,
-              appProcessContext = pc,
-              appStrategy = strategy,
-              appIsTrace = isTrace
-              }
+            { appLogFunc = lf
+            , appProcessContext = pc
+            , appStrategy = strategy
+            , appIsTrace = isTrace
+            }
        in runRIO app m
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> TraceFunc term -> Text -> LambdaREPL
@@ -57,9 +56,7 @@ evalCmd parser evaluator tracer input =
 tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> LambdaREPL
 tcCmd parser checker input =
   lift $ case Text.stripPrefix ":t " input of
-    Nothing -> do
-      logInfo "Bad command format."
-      return ()
+    Nothing -> logInfo "Bad command format."
     Just input' -> case parser (Text.unpack input') of
       Left err -> logError $ display $ Text.pack err
       Right term -> logInfo $ display $ Text.pack $ render $ checker term
@@ -69,15 +66,15 @@ helpCmd = lift (mapM_ (logInfo . display) $ "available commands" : commands)
 
 commands :: [Text]
 commands =
-  [ "  :set trace               -- Enabling Tracing (including the progress of the reduction)",
-    "  :set strategy <Strategy> -- Setting Up an Evaluation Strategy",
-    "  :unset trace             -- Disabling tracing",
-    "  :list strategy           -- View a list of evaluation strategies",
-    "  :list prelude            -- List Prelude Functions",
-    "  :env                     -- Show current settings",
-    "  :help                    -- Help",
-    "  :q                       -- Quit"
-    ]
+  [ "  :set trace               -- Enabling Tracing (including the progress of the reduction)"
+  , "  :set strategy <Strategy> -- Setting Up an Evaluation Strategy"
+  , "  :unset trace             -- Disabling tracing"
+  , "  :list strategy           -- View a list of evaluation strategies"
+  , "  :list prelude            -- List Prelude Functions"
+  , "  :env                     -- Show current settings"
+  , "  :help                    -- Help"
+  , "  :q                       -- Quit"
+  ]
 
 printEnvCmd :: LambdaREPL
 printEnvCmd =
@@ -87,9 +84,9 @@ printEnvCmd =
       isTrace <- readIORef appIsTrace
       let msg =
             Text.unlines
-              [ "strategy: " <> tshow strategy,
-                "isTrace: " <> tshow isTrace
-                ]
+              [ "strategy: " <> tshow strategy
+              , "isTrace: " <> tshow isTrace
+              ]
       logInfo $ display msg
 
 updateEnvTraceCmd :: Bool -> LambdaREPL
@@ -107,9 +104,7 @@ updateEnvStrategyCmd input = do
   printEnvCmd
 
 readLastInput :: Read a => Text -> Maybe a
-readLastInput input = do
-  lastInput <- List.lastMaybe $ Text.words input
-  readMaybe $ Text.unpack lastInput
+readLastInput = join . fmap (readMaybe . Text.unpack) . List.lastMaybe . Text.words
 
 listStrategyCmd :: LambdaREPL
 listStrategyCmd = mapM_ (outputStrLn . show) strategies

@@ -11,7 +11,9 @@ common deps
     LambdaCase
     MultiParamTypeClasses
     MultiWayIf
+    RecordWildCards
     StrictData
+    TypeApplications
     TypeFamilies
     ViewPatterns
 
@@ -22,11 +24,15 @@ common deps
 
   build-depends:
     , base         >=4.12 && <4.14
-    , haskeline    ^>=0.7
+    , haskeline    ^>=0.8
     , lambda-core
     , rio          ^>=0.1
+    , rio-orphans  ^>=0.1
 
   default-language:   Haskell2010
+
+common app
+  build-depends: tapl
 
 library
   import:          deps
@@ -35,45 +41,37 @@ library
   exposed-modules:
     LambdaRepl
     LambdaRepl.Options
-    LambdaRepl.Orphans
     LambdaRepl.Types
 
   hs-source-dirs:  src
   build-depends:   prettyprinter >=1.2 && <1.7
 
 executable fullsimple-lambda
-  import:        deps
+  import:        deps, app
   main-is:       app/FullSimpleLambda.hs
-  build-depends:
-    , lambda-fullsimple
-    , tapl
+  build-depends: lambda-fullsimple
 
 executable nb
-  import:        deps
+  import:        deps, app
   main-is:       app/NB.hs
   build-depends: arith
 
 executable proofb
-  import:        deps
+  import:        deps, app
   main-is:       app/ProofB.hs
   build-depends:
     , bool
     , prettyprinter  >=1.2 && <1.7
-    , transformers   ^>=0.5
 
 executable simple-lambda
-  import:        deps
+  import:        deps, app
   main-is:       app/SimpleLambda.hs
-  build-depends:
-    , lambda-simple
-    , tapl
+  build-depends: lambda-simple
 
 executable untyped-lambda
-  import:        deps
+  import:        deps, app
   main-is:       app/UntypedLambda.hs
-  build-depends:
-    , lambda-untyped
-    , tapl
+  build-depends: lambda-untyped
 
 benchmark gauge
   import:        deps

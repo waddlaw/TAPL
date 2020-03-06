@@ -1,7 +1,4 @@
-module Language.B.Example
-  ( example
-  )
-where
+module Language.B.Example (example) where
 
 import Language.B.Types
 

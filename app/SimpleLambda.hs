@@ -1,14 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main
-  ( main
-    )
-where
+module Main (main) where
 
 import LambdaRepl
 import Language.Core
 import Language.SimpleLambda as SimpleLambda
 import RIO
+import RIO.Orphans ()
 import qualified RIO.Text as Text
 import System.Console.Haskeline hiding (display)
 
@@ -16,7 +14,7 @@ main :: IO ()
 main =
   runApp $ do
     logInfo "Start simple lambda repl"
-    logInfo ":help でコマンドの一覧が確認できます。"
+    logInfo ":help for a list of commands"
     _ <- runInputT defaultSettings main'
     logInfo "Leaving simple lambda repl"
 

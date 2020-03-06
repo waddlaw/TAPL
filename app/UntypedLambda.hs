@@ -1,10 +1,6 @@
-{-# LANGUAGE DisambiguateRecordFields #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Main
-  ( main
-    )
-where
+module Main (main) where
 
 import LambdaRepl
 import Language.Core
@@ -17,7 +13,7 @@ main :: IO ()
 main =
   runApp $ do
     logInfo "Start untyped lambda repl"
-    logInfo ":help でコマンドの一覧が確認できます。"
+    logInfo ":help for a list of commands"
     _ <- runInputT defaultSettings main'
     logInfo "Leaving untyped lambda repl"
 

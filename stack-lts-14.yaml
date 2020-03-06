@@ -11,3 +11,6 @@ packages:
   - ./subs/featherweight-java
   - ./subs/recon
   - ./subs/systemf
+
+extra-deps:
+- haskeline-0.8.0.0@sha256:0630452b759a5b40e0e3e7ca2ef4b0d55d5161d95e8d7b0dd3cf55888971437f,5440

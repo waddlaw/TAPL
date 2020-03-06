@@ -104,7 +104,7 @@ updateEnvStrategyCmd input = do
   printEnvCmd
 
 readLastInput :: Read a => Text -> Maybe a
-readLastInput = join . fmap (readMaybe . Text.unpack) . List.lastMaybe . Text.words
+readLastInput = ((readMaybe . Text.unpack) =<<) . List.lastMaybe . Text.words
 
 listStrategyCmd :: LambdaREPL
 listStrategyCmd = mapM_ (outputStrLn . show) strategies

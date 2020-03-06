@@ -46,20 +46,16 @@ commands =
     ]
 
 setTargetCmd :: Proof
-setTargetCmd = do
-  minput <- getInputLine "[term -> term]: "
-  case minput of
-    Nothing -> return ()
-    Just input -> case bparser input of
-      Left err -> outputStrLn err
-      Right er -> do
-        putPretty er
-        lift $ put er
+setTargetCmd = getInputLine "[term -> term]: " >>= \case
+  Nothing -> return ()
+  Just input -> case bparser input of
+    Left err -> outputStrLn err
+    Right er -> do
+      putPretty er
+      lift $ put er
 
 showTargetCmd :: Proof
-showTargetCmd = do
-  el <- lift get
-  putPretty el
+showTargetCmd = lift get >>= putPretty
 
 stepCmd :: String -> Proof
 stepCmd input = case stepCmdParser input of

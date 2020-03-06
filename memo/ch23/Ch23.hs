@@ -195,10 +195,10 @@ sndNat : PairNat -> CNat
 -}
 
 {- ex23.4.9
-f = \p:PairNat. \X. \f:CNat->CNat->X. p (csucc (fstNat p)) (fstNat p)
+f = \p:PairNat. \X. \f:CNat->CNat->X. f (csucc [X] (fstNat [X] p)) (fstNat [X] p)
 f : PairNat -> PairNat
 
-prd = \n:CNat. \X. \s:X->X. \z:X. sndNat (n [X] f (pairNat c0 c0))
+prd = \n:CNat. \X. \s:X->X. \z:X. sndNat [X] (n [X] f (pairNat c0 c0))
 prd : CNat -> CNat
 -}
 

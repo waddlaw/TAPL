@@ -46,11 +46,6 @@ library
   hs-source-dirs:  src
   build-depends:   prettyprinter >=1.2 && <1.7
 
-executable fullsimple-lambda
-  import:        deps, app
-  main-is:       app/FullSimpleLambda.hs
-  build-depends: lambda-fullsimple
-
 executable nb
   import:        deps, app
   main-is:       app/NB.hs
@@ -63,15 +58,20 @@ executable proofb
     , bool
     , prettyprinter  >=1.2 && <1.7
 
+executable untyped-lambda
+  import:        deps, app
+  main-is:       app/UntypedLambda.hs
+  build-depends: lambda-untyped
+
 executable simple-lambda
   import:        deps, app
   main-is:       app/SimpleLambda.hs
   build-depends: lambda-simple
 
-executable untyped-lambda
+executable fullsimple-lambda
   import:        deps, app
-  main-is:       app/UntypedLambda.hs
-  build-depends: lambda-untyped
+  main-is:       app/FullSimpleLambda.hs
+  build-depends: lambda-fullsimple
 
 benchmark gauge
   import:        deps

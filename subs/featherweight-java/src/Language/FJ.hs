@@ -1,4 +1,5 @@
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Language.FJ
   ( run
   , runAll
@@ -7,52 +8,13 @@ module Language.FJ
   )
 where
 
+import Language.FJ.Type
+
 import RIO hiding (to)
-import qualified RIO.List as List
-import qualified RIO.List.Partial as List.Partial
+import qualified RIO.List.Partial as List'
+import qualified RIO.Text as Text
+
 import Prelude (putStrLn)
-
-type Program = (CT, Term)
-
--- | Class Table
-type CT = Class -> ClassDef
-
--- | Class Declaration
-data ClassDef = CL
-  Class             -- ^ Self class name
-  Class             -- ^ Super class name
-  [(Class, Field)]  -- ^ Field declarations
-  ConstDef          -- ^ Constructor declarations
-  [MethodDef]       -- ^ Method declarations
-  deriving stock (Eq, Show)
-
--- | Constructor Declarations
-data ConstDef = K
-  Class            -- ^ Constructor name
-  [(Class, Field)] -- ^ The fields used to initialize the fields of the instance. The first part contains the fields for the superclass
-  deriving stock (Eq, Show)
-
--- | Method Declarations
-data MethodDef = M
-  Class          -- ^ The name of the return type (Class)
-  Method         -- ^ method name
-  [(Class, Var)] -- ^ Method arguments (Argument type and argument variable name)
-  Term           -- ^ Method body
-  deriving stock (Eq, Show)
-
-data Term
-  = TmVar Var                      -- ^ Variable
-  | TmFieldRef Term Field          -- ^ field access
-  | TmMethodInv Term Method [Term] -- ^ method invocation
-  | TmNew Class [Term]             -- ^ object creation
-  | TmCast Class Term              -- ^ cast
-  deriving (Eq, Show)
-
--- | It can be just a String, but it seems to be wrong, so I chose newtype.
-newtype Class  = CN String deriving stock (Eq, Show)
-newtype Method = MN String deriving stock (Eq, Show)
-newtype Field  = FN String deriving stock (Eq, Show)
-newtype Var    = VN String deriving stock (Eq, Show)
 
 isValue :: Term -> Bool
 isValue = \case
@@ -64,14 +26,14 @@ isValue = \case
 -- =======================================
 
 {- |
->>> fields exCT (CN "Pair")
-[(CN "Object",FN "fst"),(CN "Object",FN "snd")]
+>>> fields exCT (mkClass "Pair")
+[(mkClass "Object",FN "fst"),(mkClass "Object",FN "snd")]
 -}
-fields :: CT -> Class -> [(Class, Field)]
+fields :: ClassTable -> Class -> [(Class, Field)]
 fields ct = \case
-  CN "Object" -> []
-  c           -> let CL _ d cfs _ _ = ct c
-                  in cfs ++ fields ct d
+  (getClassName -> "Object") -> []
+  c -> let CL _ d cfs _ _ = ct c
+        in cfs ++ fields ct d
 
 {- |
 >>> mtype exCT (MN "setfst") (CN "Pair")
@@ -87,16 +49,16 @@ fields ct = \case
 >>> mbody exCT (MN "setfst") (CN "Pair")
 ([VN "newfst"],TmNew (CN "Pair") [TmVar (VN "newfst"),TmFieldRef (TmVar (VN "this")) (FN "snd")])
 -}
-mbody :: CT -> Method -> Class -> Maybe ([Var], Term)
+mbody :: ClassTable -> Method -> Class -> Maybe ([Var], Term)
 mbody ct m = fmap f . mhelper ct m
   where
     f (M _ _ args term) = (map snd args, term)
 
-mhelper :: CT -> Method -> Class -> Maybe MethodDef
+mhelper :: ClassTable -> Method -> Class -> Maybe MethodDef
 mhelper ct m = \case
-  CN "Object" -> Nothing
-  c           -> let CL _ d _cfs _ ms = ct c
-                  in maybe (mhelper ct m d) pure $ findMethodDef m ms
+  (getClassName -> "Object") -> Nothing
+  c -> let CL _ d _cfs _ ms = ct c
+        in maybe (mhelper ct m d) Just $ findMethodDef m ms
 
 eqMethodDef :: Method -> MethodDef -> Bool
 eqMethodDef m1 (M _ m2 _ _) = m1 == m2
@@ -104,7 +66,7 @@ eqMethodDef m1 (M _ m2 _ _) = m1 == m2
 findMethodDef :: Method -> [MethodDef] -> Maybe MethodDef
 findMethodDef m ms
     | null md   = Nothing
-    | otherwise = Just (List.Partial.head md)
+    | otherwise = Just (List'.head md)
   where
     md = filter (eqMethodDef m) ms
 
@@ -120,21 +82,25 @@ findMethodDef m ms
 
 {- |
 >>> uncurry eval example 
-TmNew (CN "Pair") [TmNew (CN "B") [],TmFieldRef (TmNew (CN "Pair") [TmNew (CN "A") [],TmNew (CN "B") []]) (FN "snd")]
+TmNew (mkClass "Pair")
+  [ TmNew (mkClass "B") []
+  , TmFieldRef (TmNew (mkClass "Pair") [TmNew (mkClass "A") []
+  , TmNew (mkClass "B") []]) (FN "snd")
+  ]
 -}
-eval :: CT -> Term -> Term
+eval :: ClassTable -> Term -> Term
 eval ct t
   | isValue t = t
-  | otherwise = eval ct $ eval' ct t
+  | otherwise = eval ct (eval' ct t)
 
-evalTrace :: CT -> Term -> IO ()
+evalTrace :: ClassTable -> Term -> IO ()
 evalTrace ct t = do
-  putStrLn $ pretty t
+  putStrLn . Text.unpack $ pretty t
   if isValue t
     then return ()
     else evalTrace ct (eval' ct t)
 
-eval' :: CT -> Term -> Term
+eval' :: ClassTable -> Term -> Term
 eval' ct = \case
   TmVar _ -> error "TODO: TmVar"
   -- E-NEW-ARG
@@ -148,7 +114,7 @@ eval' ct = \case
       -- E-PROJNEW
       then
         let TmNew c vs = t
-         in fst . List.Partial.head . dropWhile ((/=fi) . snd . snd) $ zip vs $ fields ct c
+         in fst . List'.head . dropWhile ((/=fi) . snd . snd) $ zip vs $ fields ct c
       -- E-FIELD
       else TmFieldRef (eval ct t) fi
 
@@ -160,7 +126,7 @@ eval' ct = \case
           then
             let this@(TmNew c _vs) = t
                 (xs, t0) = fromMaybe (error $ "E-INVKNEW: " <> show m <> ", " <> show c) $ mbody ct m c
-             in subst ((VN "this", this):zip xs ts) t0
+             in subst ((mkVar "this", this):zip xs ts) t0
           -- E-INVK-ARG
           else 
             -- ti:rest is absolutely successful
@@ -182,10 +148,10 @@ subst fs = \case
   TmVar x            -> fromMaybe (error "subst") $ lookup x fs
   TmFieldRef t field -> TmFieldRef (subst fs t) field
   TmMethodInv t m ts -> TmMethodInv (subst fs t) m (map (subst fs) ts)
-  TmNew c ts         -> TmNew c (map (subst fs) ts)
+  TmNew  c ts        -> TmNew c (map (subst fs) ts)
   TmCast c t         -> TmCast c (subst fs t)
 
-checkCast :: CT -> Class -> Class -> Bool
+checkCast :: ClassTable -> Class -> Class -> Bool
 checkCast ct from to = from == to || checkCast ct d to
   where
     CL _ d _ _ _ = ct from
@@ -197,21 +163,21 @@ checkCast ct from to = from == to || checkCast ct d to
 example :: Program
 example = (exCT, mainMethod)
   where
-    mainMethod = TmMethodInv p (MN "setfst") [b]
-    p = TmNew (CN "Pair") [a, b]
-    a = TmNew (CN "A") []
-    b = TmNew (CN "B") []
+    mainMethod = TmMethodInv p (mkMethod "setfst") [b]
+    p = TmNew (mkClass "Pair") [a, b]
+    a = TmNew (mkClass "A") []
+    b = TmNew (mkClass "B") []
 
 example2 :: Program
 example2 = (exCT, mainMethod)
   where
-    mainMethod = TmFieldRef cast (FN "snd")
-    cast = TmCast (CN "Pair") m
-    m    = TmFieldRef p1 (FN "fst")
-    p1   = TmNew (CN "Pair") [p2, a]
-    p2   = TmNew (CN "Pair") [a, b]
-    a    = TmNew (CN "A") []
-    b    = TmNew (CN "B") [] 
+    mainMethod = TmFieldRef cast (mkField "snd")
+    cast = TmCast (mkClass "Pair") m
+    m    = TmFieldRef p1 (mkField "fst")
+    p1   = TmNew (mkClass "Pair") [p2, a]
+    p2   = TmNew (mkClass "Pair") [a, b]
+    a    = TmNew (mkClass "A") []
+    b    = TmNew (mkClass "B") [] 
 
 {- The class table must satisfy all of the following conditions
 (1) CT (C) = class C ... for C ∈ dom (CT)
@@ -219,29 +185,30 @@ example2 = (exCT, mainMethod)
 (3) C ∈ dom (CT) for every class name C (except Object) appearing anywhere on CT
 (4) There is no circulation in the subfunctional relationship created by CT, i.e. the <: relationship is antisymmetric.
 -}
-exCT :: CT
-exCT (CN name) = case name of
-  "A"    -> CL (CN "A") (CN "Object") [] (K (CN "A") []) []
-  "B"    -> CL (CN "B") (CN "Object") [] (K (CN "B") []) []
-  "Pair" -> CL (CN "Pair") (CN "Object")
-               [ (CN "Object", FN "fst") , (CN "Object", FN "snd") ]
+exCT :: ClassTable
+exCT c = case getClassName c of
+  "A"    -> CL (mkClass "A") (mkClass "Object") [] (K (mkClass "A") []) []
+  "B"    -> CL (mkClass "B") (mkClass "Object") [] (K (mkClass "B") []) []
+  "Pair" -> CL (mkClass "Pair") (mkClass "Object")
+               [ (mkClass "Object", mkField "fst"), (mkClass "Object", mkField "snd") ]
                pairConstr
                [pairMethod]
-  _ -> error ("Can't find Class " ++ name ++ " in Class Tables.")
+  name   -> error ("Can't find Class " ++ Text.unpack name ++ " in Class Tables.")
   where
-    pairConstr = K (CN "Pair") [ (CN "Object", FN "fst"), (CN "Object", FN "snd") ]
-    pairMethod = M (CN "Pair") (MN "setfst") [(CN "Object", VN "newfst")] body
-    body       = TmNew (CN "Pair") [TmVar (VN "newfst"), TmFieldRef (TmVar (VN "this")) (FN "snd")]
+    pairConstr = K (mkClass "Pair") [ (mkClass "Object", mkField "fst"), (mkClass "Object", mkField "snd") ]
+    pairMethod = M (mkClass "Pair") (mkMethod "setfst") [(mkClass "Object", mkVar "newfst")] body
+    body       = TmNew (mkClass "Pair") [TmVar (mkVar "newfst"), TmFieldRef (TmVar (mkVar "this")) (mkField "snd")]
 
-pretty :: Term -> String
+pretty :: Term -> Text
 pretty = \case
-  TmVar (VN x)              -> x
-  TmFieldRef t (FN f)       -> pretty t <> "." <> f
-  TmMethodInv t (MN m) args -> pretty t <> "." <> m <> "(" <> List.intercalate ", " (map pretty args) <> ")"
-  TmNew (CN c) args         -> "new " <> c <> "(" <> List.intercalate ", " (map pretty args) <> ")"
-  TmCast (CN c) t           -> "(" <> c <> ")" <> pretty t
+  TmVar var -> getVarName var
+  TmFieldRef t field -> pretty t <> "." <> getFieldName field
+  TmMethodInv t method args
+    -> pretty t <> "." <> getMethodName method <> "(" <> Text.intercalate ", " (map pretty args) <> ")"
+  TmNew  cls args -> "new " <> getClassName cls <> "(" <> Text.intercalate ", " (map pretty args) <> ")"
+  TmCast cls t -> "(" <> getClassName cls <> ")" <> pretty t
 
-run :: Program -> String
+run :: Program -> Text
 run = pretty . uncurry eval
 
 runAll :: Program -> IO ()

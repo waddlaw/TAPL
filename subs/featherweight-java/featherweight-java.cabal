@@ -28,7 +28,13 @@ common deps
 
 library
   import:          deps
+  hs-source-dirs:  src
+
+  build-depends: megaparsec ^>=8.0
 
   -- cabal-fmt: expand src
+  exposed-modules:
+    Language.FJ,
   exposed-modules: Language.FJ
   hs-source-dirs:  src
+    Language.FJ.Type

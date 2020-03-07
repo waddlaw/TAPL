@@ -16,23 +16,22 @@ stack | 2.1.3
 ```shell
 $ git clone https://github.com/waddlaw/TAPL.git
 $ cd TAPL
-$ stack build
 ```
 
 ## Available Systems
 
 chapter | package name        | parse | eval | typecheck | prettypring | run application
---------|---------------------|-------|------|-----------|-------------|---------------
+--------|---------------------|:-----:|:----:|:---------:|:-----------:|---------------
 ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run proofb`
 ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run nb`
 ch05    | lambda-Untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
-ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | 🚧
-ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | 🚧
+ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | `stack run simple-lambda`
+ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | `stack run fullsimple-lambda`
 ch19    | featherweight-java  |   🚧  |  ✅  |     🚧    |     ✅     | 🚧
 ch22    | recon               |   🚧  |  ✅  |     🚧    |     ✅     | 🚧
 ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     | 🚧
 
-### components
+### Components
 
 1. bool
 2. arith
@@ -43,7 +42,7 @@ ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     | �
 7. recon
 8. systemf
 
-Fig      | Name                                             |1 |2 |3 |4 |5 |6 |7 |8 |
+Fig      | System Name                                      |1 |2 |3 |4 |5 |6 |7 |8 |
 ---------|--------------------------------------------------|--|--|--|--|--|--|--|--|
 3-1   | Booleans (B)                                        |✅|  |  |✅|✅|  |✅|✅|
 3-2   | Arithmetic expressions (NB)                         |  |✅|  |  |✅|  |✅|✅|
@@ -111,10 +110,6 @@ Fig      | Name                                             |1 |2 |3 |4 |5 |6 |7
 
 ## Development
 
-- [haddock](https://waddlaw.github.io/TAPL/)
-
-### stack
-
 ```shell
 # build
 $ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -qg -RTS"
@@ -129,13 +124,7 @@ $ stack clean && stack haddock
 $ stack bench --benchmark-arguments "--small"
 ```
 
-### ghcid
-
-```shell
-λ ghcid --allow-eval "--command=ghci XXX.hs"
-```
-
-### other commands
+### Other commands
 
 ```shell
 # pedantic

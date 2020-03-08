@@ -20,7 +20,7 @@ $ cd TAPL
 
 ## Available Systems
 
-chapter | package name        | parse | eval | typecheck | prettypring | run application
+chapter | package name        | parse | eval | typecheck | prettyprint | run application
 --------|---------------------|:-----:|:----:|:---------:|:-----------:|---------------
 ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run proofb`
 ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run nb`

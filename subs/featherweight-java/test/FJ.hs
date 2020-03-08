@@ -60,7 +60,7 @@ spec_evaluation = do
           b = TmNew (mkClass "B") []
       eval exCT exMain4 `shouldBe` expected
 
-  describe "evalTrace" $ do
+  describe "evalTrace" $
     it "((Pair)(new Pair(new Pair(new A(), new B()), new A()).fst)).snd" $ do
       let expected = [exMain2, step1, step2, step3]
           step1 = TmFieldRef (TmCast (mkClass "Pair") (TmNew (mkClass "Pair") [a, b])) (mkField "snd")

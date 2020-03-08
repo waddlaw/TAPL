@@ -46,7 +46,7 @@ maybeDefined :: ClassTable -> Method -> Class -> Maybe MethodDef
 maybeDefined ct m = \case
   (getClassName -> "Object") -> Nothing
   c -> let CL _ d _cfs _ ms = ct c
-        in maybe (maybeDefined ct m d) Just $ findMethodDef m ms
+        in findMethodDef m ms <|> maybeDefined ct m d
 
 eqMethodDef :: Method -> MethodDef -> Bool
 eqMethodDef m1 (M _ m2 _ _) = m1 == m2

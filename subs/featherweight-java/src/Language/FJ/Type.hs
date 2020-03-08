@@ -4,7 +4,7 @@ module Language.FJ.Type
   , Term (..)
   , ClassDef (..)
   , ConstDef (..)
-  , MethodDef (..)
+  , MethodDef (..), mkMethodDef
   , Class, mkClass, getClassName
   , Method, mkMethod, getMethodName
   , Field, mkField, getFieldName
@@ -32,6 +32,8 @@ data ClassDef = CL
 data ConstDef = K
   Class            -- ^ Constructor name
   [(Class, Field)] -- ^ The fields used to initialize the fields of the instance. The first part contains the fields for the superclass
+  [Field]
+  [(Field, Field)]
   deriving stock (Eq, Show)
 
 -- | Method Declarations
@@ -41,6 +43,9 @@ data MethodDef = M
   [(Class, Var)] -- ^ Method arguments (Argument type and argument variable name)
   Term           -- ^ Method body
   deriving stock (Eq, Show)
+
+mkMethodDef :: Class -> Method -> [(Class, Var)] -> Term -> MethodDef
+mkMethodDef = M
 
 data Term
   = TmVar Var                      -- ^ Variable

@@ -12,6 +12,7 @@ common deps
     MultiParamTypeClasses
     MultiWayIf
     StrictData
+    TypeApplications
     TypeFamilies
     ViewPatterns
 
@@ -21,8 +22,9 @@ common deps
     -Wredundant-constraints -Wtabs
 
   build-depends:
-    , base  >=4.12 && <4.14
-    , rio   ^>=0.1
+    , base        >=4.12 && <4.14
+    , megaparsec  ^>=8.0
+    , rio         ^>=0.1
 
   default-language:   Haskell2010
 
@@ -30,11 +32,28 @@ library
   import:          deps
   hs-source-dirs:  src
 
-  build-depends: megaparsec ^>=8.0
-
   -- cabal-fmt: expand src
   exposed-modules:
-    Language.FJ,
-  exposed-modules: Language.FJ
-  hs-source-dirs:  src
+    Language.FJ
+    Language.FJ.Eval
+    Language.FJ.Example
+    Language.FJ.Helper
+    Language.FJ.Parser
+    Language.FJ.Pretty
     Language.FJ.Type
+
+test-suite fj-test
+  import:             deps
+  type:               exitcode-stdio-1.0
+  hs-source-dirs:     test
+  main-is:            Driver.hs
+  build-depends:
+    , featherweight-java
+    , hspec-megaparsec    ^>=2.1
+    , tasty               ^>=1.2
+    , tasty-hspec         ^>=1.1
+
+  build-tool-depends: tasty-discover:tasty-discover ^>=4.2
+
+  -- cabal-fmt: expand test -Driver
+  other-modules:      FJ

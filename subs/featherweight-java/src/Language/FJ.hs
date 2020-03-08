@@ -3,7 +3,6 @@ module Language.FJ
   , module Language.FJ.Type
   , run
   , runAll
-  , pretty
   , debug
   )
 where
@@ -27,4 +26,4 @@ debug :: Program -> IO ()
 debug prog = do
   let steps = zip @Int [0..] (runAll prog)
   forM_ steps $ \(n, step) ->
-    putStrLn (show n <> ": " <> Text.unpack step)
+    putStrLn $ mconcat [show n, ": ", Text.unpack step]

@@ -45,27 +45,27 @@ pConstDef = do
   return (K cls args super this)
 
 pConstDefBody :: Parser ([Field], [(Field, Field)])
-pConstDefBody =
-  (,) <$  pKeyword "super"
-      <*> pArgs pField
-      <*  symbol ";"
-      <*> endBy pFieldAssign (symbol ";")
+pConstDefBody = (,)
+  <$  pKeyword "super"
+  <*> pArgs pField
+  <*  symbol ";"
+  <*> endBy pFieldAssign (symbol ";")
 
 pFieldAssign :: Parser (Field, Field)
-pFieldAssign =
-  (,) <$  pVar  -- this
-      <*  string "."
-      <*> pField
-      <*  symbol "="
-      <*> pField
+pFieldAssign = (,)
+  <$  pVar  -- this
+  <*  string "."
+  <*> pField
+  <*  symbol "="
+  <*> pField
 
 -- | Method declaration parser
 pMethodDef :: Parser MethodDef
-pMethodDef =
-  M <$> pClass
-    <*> pMethod
-    <*> pArgs pMethodArg
-    <*> pBody (pKeyword "return" *> pTerm <* symbol ";")
+pMethodDef = mkMethodDef
+  <$> pClass
+  <*> pMethod
+  <*> pArgs pMethodArg
+  <*> pBody (pKeyword "return" *> pTerm <* symbol ";")
 
 pMethodArg ::Parser (Class, Var)
 pMethodArg = (,) <$> pClass <*> pVar

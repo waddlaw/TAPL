@@ -21,28 +21,24 @@ import qualified RIO.Text as Text
 -}
 exCT :: ClassTable
 exCT c = case getClassName c of
-  "A"    -> CL (mkClass "A") (mkClass "Object") [] (K (mkClass "A") [] [] []) []
-  "B"    -> CL (mkClass "B") (mkClass "Object") [] (K (mkClass "B") [] [] []) []
-  "Pair" -> CL (mkClass "Pair") (mkClass "Object")
-               [ (mkClass "Object", mkField "fst"), (mkClass "Object", mkField "snd") ]
-               pairConstr
-               [pairMethod]
+  "A"    -> CL cA cObj [] (K cA [] [] []) []
+  "B"    -> CL cB cObj [] (K cB [] [] []) []
+  "Pair" -> CL cP cObj [(cObj, fFst),(cObj, fSnd)] pairConstr [pairMethod]
   name   -> error ("Can't find Class " ++ Text.unpack name ++ " in Class Tables.")
   where
-    pairConstr = K (mkClass "Pair")
-                   [ (mkClass "Object", mkField "fst"), (mkClass "Object", mkField "snd") ]
-                   []
-                   [ (mkField "fst", mkField "fst"), (mkField "snd", mkField "snd") ]
-    pairMethod = M (mkClass "Pair") (mkMethod "setfst") [(mkClass "Object", mkVar "newfst")] body
-    body       = TmNew (mkClass "Pair") [TmVar (mkVar "newfst"), TmFieldRef (TmVar (mkVar "this")) (mkField "snd")]
+    pairConstr = K cP [(cObj, fFst),(cObj, fSnd)] [] [ (fFst, fFst), (fSnd, fSnd) ]
+    pairMethod = M cP (mkMethod "setfst") [(cObj, mkVar "newfst")] body
+    body       = TmNew cP [TmVar (mkVar "newfst"), TmFieldRef (TmVar (mkVar "this")) fSnd]
+    cA = mkClass "A"
+    cB = mkClass "B"
+    cP = mkClass "Pair"
+    cObj = mkClass "Object"
+    fFst = mkField "fst"
+    fSnd = mkField "snd"
 
 -- | new Pair(new A(), new B()).setfst(new B())
 exMain1 :: Term
-exMain1 = TmMethodInv p (mkMethod "setfst") [b]
-  where
-    p = TmNew (mkClass "Pair") [a, b]
-    a = TmNew (mkClass "A") []
-    b = TmNew (mkClass "B") []
+exMain1 = TmMethodInv pAB (mkMethod "setfst") [b]
 
 -- | ((Pair)new Pair(new Pair(new A(), new B()), new A()).fst).snd
 exMain2 :: Term
@@ -50,23 +46,18 @@ exMain2 = TmFieldRef cast (mkField "snd")
   where
     cast = TmCast (mkClass "Pair") m
     m    = TmFieldRef p1 (mkField "fst")
-    p1   = TmNew (mkClass "Pair") [p2, a]
-    p2   = TmNew (mkClass "Pair") [a, b]
-    a    = TmNew (mkClass "A") []
-    b    = TmNew (mkClass "B") [] 
+    p1   = TmNew (mkClass "Pair") [pAB, a]
 
 -- | new Pair(new A(), newB()).snd
 exMain3 :: Term
-exMain3 = TmFieldRef p (mkField "snd")
-  where
-    p = TmNew (mkClass "Pair") [a, b]
-    a = TmNew (mkClass "A") []
-    b = TmNew (mkClass "B") []
+exMain3 = TmFieldRef pAB (mkField "snd")
 
 -- | (Pair)new Pair(new A(), new B())
 exMain4 :: Term
-exMain4 = TmCast (mkClass "Pair") p
-  where
-    p = TmNew (mkClass "Pair") [a, b]
-    a = TmNew (mkClass "A") []
-    b = TmNew (mkClass "B") []
+exMain4 = TmCast (mkClass "Pair") pAB
+
+-- utils
+a, b, pAB :: Term
+a = TmNew (mkClass "A") []
+b = TmNew (mkClass "B") []
+pAB = TmNew (mkClass "Pair") [a, b]

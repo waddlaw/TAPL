@@ -27,7 +27,7 @@ ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stac
 ch05    | lambda-Untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
 ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | `stack run simple-lambda`
 ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | `stack run fullsimple-lambda`
-ch19    | featherweight-java  |   🚧  |  ✅  |     🚧    |     ✅     | 🚧
+ch19    | featherweight-java  |   ✅  |  ✅  |     🚧    |     ✅     | 🚧
 ch22    | recon               |   🚧  |  ✅  |     🚧    |     ✅     | 🚧
 ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     | 🚧
 

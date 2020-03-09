@@ -3,11 +3,8 @@
 module Main (main) where
 
 import LambdaRepl
-import Language.Core
 import Language.SimpleLambda as SimpleLambda
 import RIO
-import RIO.Orphans ()
-import qualified RIO.Text as Text
 import System.Console.Haskeline hiding (display)
 
 main :: IO ()
@@ -19,16 +16,12 @@ main =
     logInfo "Leaving simple lambda repl"
 
 main' :: LambdaREPL
-main' = do
-  minput <- getInputLine "SimpleLambda> "
-  case Text.pack . trim <$> minput of
-    Nothing -> return ()
-    Just ":q" -> return ()
-    Just input ->
-      if
-        | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
-        | ":t" `Text.isPrefixOf` input -> tcCmd (parser mempty) typecheck input >> main'
-        | otherwise -> evalCmd (parser mempty) evaluator tracer input >> main'
+main' = repl "SimpleLambda" commands
+  where
+    commands = defaultReplCmd
+      { replCmdEval  = Action (evalCmd (parser mempty) evaluator tracer)
+      , replCmdTc    = Action (tcCmd (parser mempty) typecheck)
+      }
 
 parser :: Context -> ParseFunc SimpleLambda.Term
 parser = runSimpleLambdaParser

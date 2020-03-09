@@ -6,7 +6,6 @@ import LambdaRepl
 import Language.Core
 import Language.UntypedLambda as UntypedLambda
 import RIO
-import qualified RIO.Text as Text
 import System.Console.Haskeline hiding (display)
 
 main :: IO ()
@@ -18,22 +17,27 @@ main =
     logInfo "Leaving untyped lambda repl"
 
 main' :: LambdaREPL
-main' = do
-  minput <- getInputLine "UntypedLambda> "
-  case Text.pack . trim <$> minput of
-    Nothing -> return ()
-    Just ":q" -> return ()
-    Just input ->
-      if
-        | ":set trace" `Text.isPrefixOf` input -> updateEnvTraceCmd True >> main'
-        | ":set strategy" `Text.isPrefixOf` input -> updateEnvStrategyCmd input >> main'
-        | ":unset trace" `Text.isPrefixOf` input -> updateEnvTraceCmd False >> main'
-        | ":list strategy" `Text.isPrefixOf` input -> listStrategyCmd >> main'
-        | ":list prelude" `Text.isPrefixOf` input -> listPreludeCmd prelude' >> main'
-        | ":env" `Text.isPrefixOf` input -> printEnvCmd >> main'
-        | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
-        -- main process
-        | otherwise -> evalCmd parser evaluator tracer input >> main'
+main' = repl "UntypedLambda" commands
+  where
+    commands = defaultReplCmd
+      { replCmdSet   = Action subCmdSet
+      , replCmdUnset = Action subCmdUnset
+      , replCmdList  = Action subCmdList
+      , replCmdEnv   = ActionNoArg printEnvCmd
+      , replCmdEval  = Action (evalCmd parser evaluator tracer)
+      , replCmdTc    = NoAction
+      }
+    subCmdSet input = case subCmd "set" input of
+      "trace"    -> updateEnvTraceCmd True
+      "strategy" -> updateEnvStrategyCmd input
+      _ -> return ()
+    subCmdUnset input = case subCmd "unset" input of
+      "trace" -> updateEnvTraceCmd False
+      _ -> return ()
+    subCmdList input = case subCmd "list" input of
+      "strategy" -> listStrategyCmd
+      "prelude"  -> (listPreludeCmd prelude')
+      _  -> return ()
 
 parser :: ParseFunc UntypedLambda
 parser = UntypedLambda.runUlParser

@@ -3,10 +3,8 @@
 module Main (main) where
 
 import LambdaRepl
-import Language.Core
 import Language.FullSimpleLambda as FullSimpleLambda
 import RIO
-import qualified RIO.Text as Text
 import System.Console.Haskeline hiding (display)
 
 main :: IO ()
@@ -18,16 +16,12 @@ main =
     logInfo "Leaving full simple lambda repl"
 
 main' :: LambdaREPL
-main' = do
-  minput <- getInputLine "FullSimpleLambda> "
-  case Text.pack . trim <$> minput of
-    Nothing -> return ()
-    Just ":q" -> return ()
-    Just input ->
-      if
-        | ":help" `Text.isPrefixOf` input -> helpCmd >> main'
-        | ":t" `Text.isPrefixOf` input -> tcCmd (parser mempty) typecheck input >> main'
-        | otherwise -> evalCmd (parser mempty) evaluator tracer input >> main'
+main' = repl "FullSimpleLambda" commands
+  where
+    commands = defaultReplCmd
+      { replCmdEval = Action (evalCmd (parser mempty) evaluator tracer)
+      , replCmdTc   = Action (tcCmd (parser mempty) typecheck)
+      }
 
 parser :: Context -> ParseFunc FullSimpleLambda.Term
 parser = runFullSimpleLambdaParser

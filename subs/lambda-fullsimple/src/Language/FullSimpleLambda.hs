@@ -173,7 +173,8 @@ eval = \case
   TmCase (TmInR v@(isValue -> True) _ty) _altInL        (TmVar x2, t2) -> subst x2 v t2             -- E-CASEINR
   TmCase t                                altL           altR          -> TmCase (eval t) altL altR -- E-CASE
 
-  _ -> error "unexpected term"
+  t -> t
+  -- _ -> error "unexpected term"
 
 
 match :: Pattern -> Value -> (Term -> Term)

@@ -36,7 +36,7 @@ main' = repl "UntypedLambda" commands
       _ -> return ()
     subCmdList input = case subCmd "list" input of
       "strategy" -> listStrategyCmd
-      "prelude"  -> (listPreludeCmd prelude')
+      "prelude"  -> listPreludeCmd prelude'
       _  -> return ()
 
 parser :: ParseFunc UntypedLambda

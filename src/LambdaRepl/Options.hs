@@ -60,7 +60,7 @@ tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> LambdaREPL
 tcCmd parser checker input =
   lift $ case Text.stripPrefix ":t " input of
     Nothing -> logInfo "Bad command format."
-    Just input' -> do
+    Just input' ->
       case parser (Text.unpack input') of
         Left err -> logError $ display $ Text.pack err
         Right term -> logInfo $ display $ Text.pack $ render $ checker term

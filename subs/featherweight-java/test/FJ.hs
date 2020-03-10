@@ -19,7 +19,7 @@ testP p fp expected = do
   parse p "" input `shouldParse` expected
 
 spec_parser :: Spec
-spec_parser =
+spec_parser = do
   describe "pClassDef" $ do
     let test = testP pClassDef
     it "A" $ do
@@ -37,6 +37,47 @@ spec_parser =
           ms = [ M (mkClass "Pair") (mkMethod "setfst") [(mkClass "Object", mkVar "newfst")] t]
           expected = CL (mkClass "Pair") (mkClass "Object") fields constr ms
       test "test/resource/test3.fj" expected
+
+  describe "pTerm" $ do
+    it "new A()" $ do
+      let input = "new A()"
+          expected = TmNew (mkClass "A") []
+      parse pTerm "" input `shouldParse` expected
+
+    it "new Pair(new A(), new B())" $ do
+      let input = "new Pair(new A(), new B())"
+          expected = TmNew (mkClass "Pair") [TmNew (mkClass "A") [], TmNew (mkClass "B") []]
+      parse pTerm "" input `shouldParse` expected
+
+    it "new Pair(new Pair(new A(), new B()), new A())" $ do
+      let input = "new Pair(new Pair(new A(), new B()), new A())"
+          t1 = TmNew (mkClass "Pair") [TmNew (mkClass "A") [], TmNew (mkClass "B") []]
+          expected = TmNew (mkClass "Pair") [t1, TmNew (mkClass "A") []]
+      parse pTerm "" input `shouldParse` expected
+
+    it "new Pair(new Pair(new A(), new B()), new A()).fst" $ do
+      let input = "new Pair(new Pair(new A(), new B()), new A()).fst"
+          t1 = TmNew (mkClass "Pair") [TmNew (mkClass "A") [], TmNew (mkClass "B") []]
+          t2 = TmNew (mkClass "Pair") [t1, TmNew (mkClass "A") []]
+          expected = TmFieldRef t2 (mkField "fst")
+      parse pTerm "" input `shouldParse` expected
+
+    it "(Pair)new Pair(new Pair(new A(), new B()), new A()).fst" $ do
+      let input = "(Pair)new Pair(new Pair(new A(), new B()), new A()).fst"
+          t1 = TmNew (mkClass "Pair") [TmNew (mkClass "A") [], TmNew (mkClass "B") []]
+          t2 = TmNew (mkClass "Pair") [t1, TmNew (mkClass "A") []]
+          t3 = TmFieldRef t2 (mkField "fst")
+          expected = TmCast (mkClass "Pair") t3
+      parse pTerm "" input `shouldParse` expected
+      
+    it "((Pair)new Pair(new Pair(new A(), new B()), new A()).fst).snd" $ do
+      let input = "((Pair)new Pair(new Pair(new A(), new B()), new A()).fst).snd"
+          t1 = TmNew (mkClass "Pair") [TmNew (mkClass "A") [], TmNew (mkClass "B") []]
+          t2 = TmNew (mkClass "Pair") [t1, TmNew (mkClass "A") []]
+          t3 = TmFieldRef t2 (mkField "fst")
+          t4 = TmCast (mkClass "Pair") t3
+          expected = TmFieldRef t4 (mkField "snd")
+      parse pTerm "" input `shouldParse` expected
 
 spec_evaluation :: Spec
 spec_evaluation = do
@@ -103,7 +144,7 @@ spec_isValue = do
     isValue actual `shouldBe` False
 
 evalPrettyN :: Int -> Term -> Text
-evalPrettyN 0 t = pretty t
+evalPrettyN 0 t = renderFJ t
 evalPrettyN n t = evalPrettyN (n-1) $ eval' exCT t
 
 spec_pretty :: Spec

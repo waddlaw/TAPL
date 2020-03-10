@@ -1,5 +1,7 @@
 module Language.FJ
   ( module Language.FJ.Example
+  , module Language.FJ.Eval
+  , module Language.FJ.Parser
   , module Language.FJ.Type
   , run
   , runAll
@@ -9,6 +11,7 @@ where
 
 import Language.FJ.Example
 import Language.FJ.Eval
+import Language.FJ.Parser
 import Language.FJ.Pretty
 import Language.FJ.Type
 
@@ -17,10 +20,10 @@ import RIO
 import qualified RIO.Text as Text
 
 run :: Program -> Text
-run = pretty . uncurry eval
+run = renderFJ . uncurry eval
 
 runAll :: Program -> [Text]
-runAll = map pretty . uncurry evalTrace
+runAll = map renderFJ . uncurry evalTrace
 
 debug :: Program -> IO ()
 debug prog = do

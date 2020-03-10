@@ -1,5 +1,7 @@
 module LambdaRepl.Types
   ( LambdaREPL
+  , ReplCmd (..)
+  , ReplAction (..)
   , ReplEnv (..)
   , ParseFunc
   , EvalFunc
@@ -14,6 +16,26 @@ import RIO.Process
 import System.Console.Haskeline hiding (display)
 
 type LambdaREPL = InputT (RIO ReplEnv) ()
+
+data ReplCmd =
+  ReplCmd
+    { replCmdSet   :: ReplAction
+    , replCmdUnset :: ReplAction
+    , replCmdList  :: ReplAction
+    , replCmdEnv   :: ReplAction
+    , replCmdEval  :: ReplAction
+    , replCmdTc    :: ReplAction
+    , replCmdHelp  :: ReplAction
+    , replCmdQuit  :: ReplAction
+    }
+
+data ReplAction
+  = NotImplemented
+  | Help
+  | Action (Text -> LambdaREPL)
+  | ActionNoArg LambdaREPL
+  | NoAction
+  | Quit
 
 type ParseFunc term = String -> Either String term
 type EvalFunc  term = Strategy -> term -> term

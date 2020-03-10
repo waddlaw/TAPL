@@ -13,6 +13,7 @@ module LambdaRepl.Options
   , notImplCmd
   , repl
   , subCmd
+  , defaultReplCmd
   )
 where
 
@@ -153,5 +154,37 @@ getReplActionShort input cmd
   | ":q" `Text.isPrefixOf` input = replCmdQuit cmd
   | otherwise                    = replCmdEval cmd
 
+defaultReplCmd :: ReplCmd
+defaultReplCmd =
+  ReplCmd
+    { replCmdSet   = Action defaultCmdSet
+    , replCmdUnset = Action defaultCmdUnset
+    , replCmdList  = Action defaultCmdList
+    , replCmdEnv   = ActionNoArg printEnvCmd
+    , replCmdEval  = NotImplemented
+    , replCmdTc    = NotImplemented
+    , replCmdHelp  = Help
+    , replCmdQuit  = Quit
+    }
+
 subCmd :: Text -> Text -> Text
 subCmd cmd = Text.strip . Text.dropPrefix (":" <> cmd)
+
+defaultCmdSet :: Text -> LambdaREPL
+defaultCmdSet input =
+  case subCmd "set" input of
+    "trace"    -> updateEnvTraceCmd True
+    "strategy" -> updateEnvStrategyCmd input
+    _ -> return ()
+
+defaultCmdUnset :: Text -> LambdaREPL
+defaultCmdUnset input =
+  case subCmd "unset" input of
+    "trace" -> updateEnvTraceCmd False
+    _ -> return ()
+
+defaultCmdList :: Text -> LambdaREPL
+defaultCmdList input =
+  case subCmd "list" input of
+    "strategy" -> listStrategyCmd
+    _  -> return ()

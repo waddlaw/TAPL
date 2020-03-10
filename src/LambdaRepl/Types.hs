@@ -1,7 +1,6 @@
 module LambdaRepl.Types
   ( LambdaREPL
   , ReplCmd (..)
-  , defaultReplCmd
   , ReplAction (..)
   , ReplEnv (..)
   , ParseFunc
@@ -28,19 +27,6 @@ data ReplCmd =
     , replCmdTc    :: ReplAction
     , replCmdHelp  :: ReplAction
     , replCmdQuit  :: ReplAction
-    }
-
-defaultReplCmd :: ReplCmd
-defaultReplCmd =
-  ReplCmd
-    { replCmdSet   = NoAction
-    , replCmdUnset = NoAction
-    , replCmdList  = NoAction
-    , replCmdEnv   = NoAction
-    , replCmdEval  = NotImplemented
-    , replCmdTc    = NotImplemented
-    , replCmdHelp  = Help
-    , replCmdQuit  = Quit
     }
 
 data ReplAction

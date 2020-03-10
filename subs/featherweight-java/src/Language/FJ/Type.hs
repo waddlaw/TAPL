@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Language.FJ.Type
   ( Program
   , ClassTable
@@ -13,6 +14,7 @@ module Language.FJ.Type
 where
 
 import RIO
+import Data.Text.Prettyprint.Doc
 
 type Program = (ClassTable, Term)
 
@@ -55,11 +57,28 @@ data Term
   | TmCast Class Term              -- ^ cast
   deriving stock (Eq, Show)
 
+instance Pretty Term where
+  pretty = \case
+    TmVar var -> pretty var
+
+    TmFieldRef t@TmCast{} field ->
+      parens (pretty t) <> dot <> pretty field
+
+    TmFieldRef t field -> pretty t <> "." <> pretty field
+
+    TmMethodInv t method args ->
+      pretty t <> "." <> pretty method <> tupled (map pretty args)
+
+    TmNew cls args -> "new" <+> pretty cls <> tupled (map pretty args)
+
+    TmCast cls t@TmFieldRef{} -> parens (pretty cls) <> parens (pretty t)
+    TmCast cls t -> parens (pretty cls) <> pretty t
+
 -- | It can be just a String, but it seems to be wrong, so I chose newtype.
-newtype Class  = CN { getClassName  :: Text } deriving stock (Eq, Show)
-newtype Method = MN { getMethodName :: Text } deriving stock (Eq, Show)
-newtype Field  = FN { getFieldName  :: Text } deriving stock (Eq, Show)
-newtype Var    = VN { getVarName    :: Text } deriving stock (Eq, Show)
+newtype Class  = CN { getClassName  :: Text } deriving stock (Eq, Show) deriving Pretty via Text
+newtype Method = MN { getMethodName :: Text } deriving stock (Eq, Show) deriving Pretty via Text
+newtype Field  = FN { getFieldName  :: Text } deriving stock (Eq, Show) deriving Pretty via Text
+newtype Var    = VN { getVarName    :: Text } deriving stock (Eq, Show) deriving Pretty via Text
 
 mkClass :: Text -> Class
 mkClass = CN

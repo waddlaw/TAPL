@@ -73,6 +73,11 @@ executable fullsimple-lambda
   main-is:       app/FullSimpleLambda.hs
   build-depends: lambda-fullsimple
 
+executable fj
+  import:        deps, app
+  main-is:       app/FJ.hs
+  build-depends: featherweight-java
+
 benchmark gauge
   import:        deps
   type:          exitcode-stdio-1.0

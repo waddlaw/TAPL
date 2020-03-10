@@ -20,24 +20,17 @@ main' :: LambdaREPL
 main' = repl "UntypedLambda" commands
   where
     commands = defaultReplCmd
-      { replCmdSet   = Action subCmdSet
-      , replCmdUnset = Action subCmdUnset
-      , replCmdList  = Action subCmdList
-      , replCmdEnv   = ActionNoArg printEnvCmd
-      , replCmdEval  = Action (evalCmd parser evaluator tracer)
-      , replCmdTc    = NoAction
+      { replCmdList = Action subCmdList
+      , replCmdEval = Action (evalCmd parser evaluator tracer)
+      , replCmdTc   = NoAction
       }
-    subCmdSet input = case subCmd "set" input of
-      "trace"    -> updateEnvTraceCmd True
-      "strategy" -> updateEnvStrategyCmd input
-      _ -> return ()
-    subCmdUnset input = case subCmd "unset" input of
-      "trace" -> updateEnvTraceCmd False
-      _ -> return ()
-    subCmdList input = case subCmd "list" input of
-      "strategy" -> listStrategyCmd
-      "prelude"  -> listPreludeCmd prelude'
-      _  -> return ()
+
+subCmdList :: Text -> LambdaREPL
+subCmdList input =
+  case subCmd "list" input of
+    "strategy" -> listStrategyCmd
+    "prelude"  -> listPreludeCmd prelude'
+    _  -> return ()
 
 parser :: ParseFunc UntypedLambda
 parser = UntypedLambda.runUlParser

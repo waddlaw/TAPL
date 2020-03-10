@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Language.FJ.Parser
   ( Parser
+  , runFjParser
   , pClassDef
   , pTerm
   )
@@ -16,6 +17,11 @@ import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L 
 
 type Parser = Parsec Void Text
+
+runFjParser :: String -> Either String Term
+runFjParser input = case runParser pTerm "" (Text.pack input) of
+  Left bundle -> Left (errorBundlePretty bundle)
+  Right x -> Right x
 
 -- | Class declaration parser
 pClassDef :: Parser ClassDef
@@ -77,12 +83,16 @@ pBody :: Parser a -> Parser a
 pBody = between (symbol "{") (symbol "}")
 
 pName :: (Text -> b) -> Parser b
-pName f = f . Text.pack <$> lexeme (some alphaNumChar)
+pName f = do
+  c <- lowerChar
+  cs <- many alphaNumChar
+  return . f $ Text.pack (c:cs)
 
 -- | Term parser
 pTerm :: Parser Term
 pTerm = do
-  t <- choice [ pTermNew, pTermVar, pTermCast ]
+  let p = choice [ pTermNew, pTermCast, pTermVar ]
+  t <- try (between (symbol "(") (symbol ")") p) <|> p
   pTerm' t <|> return t
 
 pTerm' :: Term -> Parser Term

@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Language.FJ.Pretty (renderFJ) where
 
 import Language.FJ.Type

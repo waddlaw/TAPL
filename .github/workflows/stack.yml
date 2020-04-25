@@ -12,30 +12,30 @@ on:
 
 jobs:
   build:
-    name: ${{ matrix.os }} (${{ matrix.resolver }})
+    name: ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-18.04]
-        resolver: ["lts-14", "lts-15", "nightly"]
+        cache-version: ["2020-04-25"]
 
     steps:
     - uses: actions/checkout@v2
-    - uses: mstksg/setup-stack@v2
-
-    - name: Display stack version
-      run: stack --version
+    - uses: actions/setup-haskell@v1
+      with:
+        ghc-version: "8.8.3"
+        cabal-version: "3.0"
 
     - name: Cache ~/.stack
-      uses: actions/cache@v1.1.2
+      uses: actions/cache@v1
       with:
         path: ~/.stack
-        key: ${{ runner.os }}-${{ matrix.resolver }}-v1-stack
+        key: ${{ runner.os }}-${{ matrix.cache-version }}-stack
 
     - name: Install dependencies
-      run: stack test --only-dependencies --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml
+      run: stack test --only-dependencies --system-ghc
 
     - name: Build
       run: |
-        stack test    --fast --pedantic --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml
-        stack install --fast --pedantic --resolver ${{ matrix.resolver }} --stack-yaml stack-${{ matrix.resolver }}.yaml
+        stack test    --fast --pedantic --system-ghc
+        stack install --fast --pedantic --system-ghc

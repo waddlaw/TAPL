@@ -10,3 +10,5 @@ packages:
   ./subs/featherweight-java
   ./subs/recon
   ./subs/systemf
+
+with-compiler: ghc-8.8.3

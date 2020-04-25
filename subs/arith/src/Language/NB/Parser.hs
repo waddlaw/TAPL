@@ -1,9 +1,6 @@
-module Language.NB.Parser
-  ( runNbParser,
-  )
-where
+module Language.NB.Parser (runNbParser) where
 
-import Language.Core.Parser
+import Language.Core.Parser hiding (Parser, symbol)
 import Language.NB.Types
 import RIO
 import Text.Trifecta

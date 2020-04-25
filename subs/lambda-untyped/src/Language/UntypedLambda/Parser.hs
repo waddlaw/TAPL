@@ -1,9 +1,6 @@
-module Language.UntypedLambda.Parser
-  ( runUlParser,
-  )
-where
+module Language.UntypedLambda.Parser (runUlParser) where
 
-import Language.Core.Parser
+import Language.Core.Parser hiding (Parser, symbol)
 import Language.UntypedLambda.Lib.Church
 import Language.UntypedLambda.Prelude
 import Language.UntypedLambda.Types

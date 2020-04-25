@@ -6,8 +6,8 @@ module Language.FullSimpleLambda.System.As
     Ty (..),
     Context (..),
     eval,
-    typeof
-    )
+    typeof,
+  )
 where
 
 import Language.FullSimpleLambda.Class
@@ -18,23 +18,30 @@ data As
 type Value = Term As
 
 instance System As where
-
   data Term As
-    = TmVar Int -- ^ 変数
-    | TmLam VarName (Ty As) (Term As) -- ^ ラムダ抽象
-    | TmApp (Term As) (Term As) -- ^ 関数適用
-    | TmAscribe (Term As) (Ty As) -- ^ 11.4   型指定
-    deriving (Show, Eq)
+    = -- | 変数
+      TmVar Int
+    | -- | ラムダ抽象
+      TmLam VarName (Ty As) (Term As)
+    | -- | 関数適用
+      TmApp (Term As) (Term As)
+    | -- | 11.4   型指定
+      TmAscribe (Term As) (Ty As)
+    deriving stock (Show, Eq)
 
   data Ty As
-    = TyArr (Ty As) (Ty As) -- ^ 関数の型
-    | TyUnit -- ^ Unit 型
-    deriving (Show, Eq)
+    = -- | 関数の型
+      TyArr (Ty As) (Ty As)
+    | -- | Unit 型
+      TyUnit
+    deriving stock (Show, Eq)
 
   data Context As
-    = CtxEmpty -- ^ 空の文脈
-    | CtxVar (Context As) VarName (Ty As) -- ^ 項変数の束縛
-    deriving (Show, Eq)
+    = -- | 空の文脈
+      CtxEmpty
+    | -- | 項変数の束縛
+      CtxVar (Context As) VarName (Ty As)
+    deriving stock (Show, Eq)
 
   data Pattern As
 
@@ -72,11 +79,11 @@ instance System As where
           if tyT2 == tyT11
             then tyT12
             else
-              error . unlines
-                $ [ "parameter type mismatch (T-APP): ",
-                    "tyT2: " <> show tyT2,
-                    "tyT11: " <> show tyT11
-                    ]
+              error . unlines $
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1

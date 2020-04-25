@@ -10,63 +10,62 @@ import Test.Tasty.HUnit
 
 test_eval :: TestTree
 test_eval =
-  testGroup "eval"
+  testGroup
+    "eval"
     [ testCase "p.271: id [Nat]" $ do
         let expr = TmTypeApp identity TyNat
             expected = TmLam "x" TyNat $ TmVar "x" 0
-        evaluate expr @?= expected
-
-    , testCase "p.271: id [Nat] 0" $ do
+        evaluate expr @?= expected,
+      testCase "p.271: id [Nat] 0" $ do
         let expr = TmApp (TmTypeApp identity TyNat) TmZero
             expected = TmZero
-        evaluate expr @?= expected
-
-    , testCase "p.271: doubleNat = double [Nat]" $ do
-        let expected = TmLam "f" (TyArr TyNat TyNat) . 
-                        TmLam "a" TyNat $
-                          TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0))
-        evaluate doubleNat @?= expected
-
-    , testCase "p.271: doubleNat = double [Nat -> Nat]" $ do
-        let expected = TmLam "f" (TyArr (TyArr TyNat TyNat) (TyArr TyNat TyNat)) .
-                        TmLam "a" (TyArr TyNat TyNat) $
-                          TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0))
-        evaluate doubleNatArrowNat @?= expected
-
-    , testCase "p.271: double [Nat] (λx:Nat . succ(succ(x))) 3" $ do
+        evaluate expr @?= expected,
+      testCase "p.271: doubleNat = double [Nat]" $ do
+        let expected =
+              TmLam "f" (TyArr TyNat TyNat)
+                . TmLam "a" TyNat
+                $ TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0))
+        evaluate doubleNat @?= expected,
+      testCase "p.271: doubleNat = double [Nat -> Nat]" $ do
+        let expected =
+              TmLam "f" (TyArr (TyArr TyNat TyNat) (TyArr TyNat TyNat))
+                . TmLam "a" (TyArr TyNat TyNat)
+                $ TmApp (TmVar "f" 1) (TmApp (TmVar "f" 1) (TmVar "a" 0))
+        evaluate doubleNatArrowNat @?= expected,
+      testCase "p.271: double [Nat] (λx:Nat . succ(succ(x))) 3" $ do
         let expr1 = TmApp doubleNat (TmLam "x" TyNat $ TmSucc $ TmSucc (TmVar "x" 0))
             expr2 = TmApp expr1 $ mkN 3
-        evaluate expr2 @?= mkN 7
-
-    , testCase "p.271: quadruple [Nat] (λx:Nat . succ(succ(x))) 2" $ do
+        evaluate expr2 @?= mkN 7,
+      testCase "p.271: quadruple [Nat] (λx:Nat . succ(succ(x))) 2" $ do
         let sub = TmLam "x" TyNat $ TmSucc $ TmSucc (TmVar "x" 0)
             expr = TmApp (TmApp (TmTypeApp quadruple TyNat) sub) $ mkN 2
-        evaluate expr @?= mkN 10
-
-    , testCase "[E-HEADCONS] head [Nat] (cons [Nat] 0 nil)" $ do
-        let sub  = TmApp (TmApp (TmTypeApp TmCons TyNat) TmZero) TmNil
+        evaluate expr @?= mkN 10,
+      testCase "[E-HEADCONS] head [Nat] (cons [Nat] 0 nil)" $ do
+        let sub = TmApp (TmApp (TmTypeApp TmCons TyNat) TmZero) TmNil
             expr = TmApp (TmTypeApp TmHead TyNat) sub
         evaluate expr @?= TmZero
     ]
 
 test_typeof :: TestTree
 test_typeof =
-  testGroup "typeof"
+  testGroup
+    "typeof"
     [ testCase "p.272: l = cons [Nat] 4 (cons [Nat] 3 (cons [Nat] 2 (nil [Nat])))" $ do
         let sub1 = TmTypeApp TmNil TyNat
             sub2 = TmApp (TmApp (TmTypeApp TmCons TyNat) (mkN 2)) sub1
             sub3 = TmApp (TmApp (TmTypeApp TmCons TyNat) (mkN 3)) sub2
             expr = TmApp (TmApp (TmTypeApp TmCons TyNat) (mkN 4)) sub3
         typeof mempty expr @?= TyList TyNat
-    
-    -- , testCase "p.272: map'" $ do
-    --     let expected = TyForAll "X" $ TyForAll "Y" $ TyArr (TyArr (TyVar "X" 1) (TyVar "Y" 0)) (TyArr (TyList (TyVar "X" 1)) (TyList (TyVar "Y" 0)))
-    --     typeof mempty map' @?= expected
+
+      -- , testCase "p.272: map'" $ do
+      --     let expected = TyForAll "X" $ TyForAll "Y" $ TyArr (TyArr (TyVar "X" 1) (TyVar "Y" 0)) (TyArr (TyList (TyVar "X" 1)) (TyList (TyVar "Y" 0)))
+      --     typeof mempty map' @?= expected
     ]
 
 test_pretty :: TestTree
 test_pretty =
-  testGroup "pretty"
+  testGroup
+    "pretty"
     [ testCase "term" $ do
         let ctx1 = toContext $ TermVarBind "x" TyBool
         prettySystemFText ctx1 (TmVar "x" 0) @?= "x"
@@ -75,7 +74,6 @@ test_pretty =
         let ctx2 = toContext $ TermVarBind "x" TyBool
         prettySystemFText ctx2 (TmApp (TmLam "b" TyBool (TmVar "b" 0)) TmTrue) @?= "(λb:Bool. b) true"
         prettySystemFText mempty (TmIf TmTrue TmFalse TmFalse) @?= "if true then false else false",
-
       testCase "book examples (p.271)" $ do
         prettySystemFText mempty identity @?= "λX. λx:X. x"
 

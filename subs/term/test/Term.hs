@@ -11,7 +11,8 @@ import Test.Tasty.QuickCheck
 
 test_size :: TestTree
 test_size =
-  testGroup "集合 s のサイズチェック"
+  testGroup
+    "集合 s のサイズチェック"
     [ testCase "Set.size (s n)" $ do
         Set.size (Term.Set.s 0) @?= 0
         Set.size (Term.Set.s 1) @?= 3
@@ -22,7 +23,7 @@ test_size =
         HS.size (Term.HashSet.s 1) @?= 3
         HS.size (Term.HashSet.s 2) @?= 39
         HS.size (Term.HashSet.s 3) @?= 59439
-      ]
+    ]
 
 prop_inv01 :: Term.Set.Term -> Property
 prop_inv01 t = preCondition ==> Set.member t (Term.Set.s i)

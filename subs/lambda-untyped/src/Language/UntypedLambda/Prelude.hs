@@ -1,8 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Prelude
-  ( prelude
-    )
+  ( prelude,
+  )
 where
 
 import Language.Core
@@ -44,4 +44,4 @@ prelude =
       ("isnil", isnil),
       ("head", head),
       ("tail", tail)
-      ]
+    ]

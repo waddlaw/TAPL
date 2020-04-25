@@ -1,11 +1,11 @@
 module LambdaRepl.Types
-  ( LambdaREPL
-  , ReplCmd (..)
-  , ReplAction (..)
-  , ReplEnv (..)
-  , ParseFunc
-  , EvalFunc
-  , TraceFunc
+  ( LambdaREPL,
+    ReplCmd (..),
+    ReplAction (..),
+    ReplEnv (..),
+    ParseFunc,
+    EvalFunc,
+    TraceFunc,
   )
 where
 
@@ -17,17 +17,16 @@ import System.Console.Haskeline hiding (display)
 
 type LambdaREPL = InputT (RIO ReplEnv) ()
 
-data ReplCmd =
-  ReplCmd
-    { replCmdSet   :: ReplAction
-    , replCmdUnset :: ReplAction
-    , replCmdList  :: ReplAction
-    , replCmdEnv   :: ReplAction
-    , replCmdEval  :: ReplAction
-    , replCmdTc    :: ReplAction
-    , replCmdHelp  :: ReplAction
-    , replCmdQuit  :: ReplAction
-    }
+data ReplCmd = ReplCmd
+  { replCmdSet :: ReplAction,
+    replCmdUnset :: ReplAction,
+    replCmdList :: ReplAction,
+    replCmdEnv :: ReplAction,
+    replCmdEval :: ReplAction,
+    replCmdTc :: ReplAction,
+    replCmdHelp :: ReplAction,
+    replCmdQuit :: ReplAction
+  }
 
 data ReplAction
   = NotImplemented
@@ -38,16 +37,17 @@ data ReplAction
   | Quit
 
 type ParseFunc term = String -> Either String term
-type EvalFunc  term = Strategy -> term -> term
+
+type EvalFunc term = Strategy -> term -> term
+
 type TraceFunc term = Strategy -> term -> [term]
 
-data ReplEnv
-  = ReplEnv
-      { appLogFunc        :: LogFunc
-      , appProcessContext :: ProcessContext
-      , appStrategy       :: IORef Strategy
-      , appIsTrace        :: IORef Bool
-      }
+data ReplEnv = ReplEnv
+  { appLogFunc :: LogFunc,
+    appProcessContext :: ProcessContext,
+    appStrategy :: IORef Strategy,
+    appIsTrace :: IORef Bool
+  }
 
 instance HasLogFunc ReplEnv where
   logFuncL = lens appLogFunc (\x y -> x {appLogFunc = y})

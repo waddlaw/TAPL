@@ -3,9 +3,10 @@
 module Language.UntypedLambda.Lib.Base
   ( id,
     fix,
+
     -- * helper
-    mkFix
-    )
+    mkFix,
+  )
 where
 
 import Language.UntypedLambda.Lib.Bool

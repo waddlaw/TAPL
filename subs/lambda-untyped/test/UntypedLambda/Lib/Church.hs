@@ -6,14 +6,14 @@ import Language.Core.Types
 import Language.UntypedLambda
 import Language.UntypedLambda.Lib.Bool
 import Language.UntypedLambda.Lib.Church
-
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
 
 test_ul :: TestTree
 test_ul =
-  testGroup "UntypedLambda.Lib.Church"
+  testGroup
+    "UntypedLambda.Lib.Church"
     [ testCase "c" $ do
         c 0 @?= λ "s" (λ "z" "z")
         c 1 @?= λ "s" (λ "z" ("s" @@ "z"))
@@ -73,4 +73,4 @@ test_ul =
         eval CallByValue (isone @@ c 0) @?= fls
         eval CallByValue (isone @@ c 1) @?= tru
         eval CallByValue (isone @@ c 2) @?= fls
-      ]
+    ]

@@ -6,8 +6,8 @@ module Language.FullSimpleLambda.System.Seq
     Ty (..),
     Context (..),
     eval,
-    typeof
-    )
+    typeof,
+  )
 where
 
 import Language.FullSimpleLambda.Class
@@ -18,24 +18,32 @@ data Seq
 type Value = Term Seq
 
 instance System Seq where
-
   data Term Seq
-    = TmVar Int -- ^ 変数
-    | TmLam VarName (Ty Seq) (Term Seq) -- ^ ラムダ抽象
-    | TmApp (Term Seq) (Term Seq) -- ^ 関数適用
-    | TmUnit -- ^ 定数 unit
-    | TmSeq (Term Seq) (Term Seq) -- ^ 逐次実行 (t1;t2)
-    deriving (Show, Eq)
+    = -- | 変数
+      TmVar Int
+    | -- | ラムダ抽象
+      TmLam VarName (Ty Seq) (Term Seq)
+    | -- | 関数適用
+      TmApp (Term Seq) (Term Seq)
+    | -- | 定数 unit
+      TmUnit
+    | -- | 逐次実行 (t1;t2)
+      TmSeq (Term Seq) (Term Seq)
+    deriving stock (Show, Eq)
 
   data Ty Seq
-    = TyArr (Ty Seq) (Ty Seq) -- ^ 関数の型
-    | TyUnit -- ^ Unit 型
-    deriving (Show, Eq)
+    = -- | 関数の型
+      TyArr (Ty Seq) (Ty Seq)
+    | -- | Unit 型
+      TyUnit
+    deriving stock (Show, Eq)
 
   data Context Seq
-    = CtxEmpty -- ^ 空の文脈
-    | CtxVar (Context Seq) VarName (Ty Seq) -- ^ 項変数の束縛
-    deriving (Show, Eq)
+    = -- | 空の文脈
+      CtxEmpty
+    | -- | 項変数の束縛
+      CtxVar (Context Seq) VarName (Ty Seq)
+    deriving stock (Show, Eq)
 
   data Pattern Seq
 
@@ -73,11 +81,11 @@ instance System Seq where
           if tyT2 == tyT11
             then tyT12
             else
-              error . unlines
-                $ [ "parameter type mismatch (T-APP): ",
-                    "tyT2: " <> show tyT2,
-                    "tyT11: " <> show tyT11
-                    ]
+              error . unlines $
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1

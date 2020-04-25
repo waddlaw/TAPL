@@ -4,9 +4,10 @@ module Language.UntypedLambda.Lib.Pair
   ( pair,
     fst,
     snd,
+
     -- * helper
-    mkPair
-    )
+    mkPair,
+  )
 where
 
 import Language.UntypedLambda.Lib.Bool

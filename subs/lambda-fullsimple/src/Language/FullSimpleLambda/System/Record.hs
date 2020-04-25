@@ -4,8 +4,8 @@ module Language.FullSimpleLambda.System.Record
     Ty (..),
     Context (..),
     eval,
-    typeof
-    )
+    typeof,
+  )
 where
 
 import Language.FullSimpleLambda.Class
@@ -19,24 +19,32 @@ type Value = Term Record
 type FieldLabel = Text
 
 instance System Record where
-
   data Term Record
-    = TmVar Int -- ^ 変数
-    | TmLam VarName (Ty Record) (Term Record) -- ^ ラムダ抽象
-    | TmApp (Term Record) (Term Record) -- ^ 関数適用
-    | TmRecord [(FieldLabel, Term Record)] -- ^ レコード
-    | TmRecordProj FieldLabel (Term Record) -- ^ 射影
-    deriving (Show, Eq)
+    = -- | 変数
+      TmVar Int
+    | -- | ラムダ抽象
+      TmLam VarName (Ty Record) (Term Record)
+    | -- | 関数適用
+      TmApp (Term Record) (Term Record)
+    | -- | レコード
+      TmRecord [(FieldLabel, Term Record)]
+    | -- | 射影
+      TmRecordProj FieldLabel (Term Record)
+    deriving stock (Show, Eq)
 
   data Ty Record
-    = TyArr (Ty Record) (Ty Record) -- ^ 関数の型
-    | TyRecord [(FieldLabel, Ty Record)] -- ^ レコードの型
-    deriving (Show, Eq)
+    = -- | 関数の型
+      TyArr (Ty Record) (Ty Record)
+    | -- | レコードの型
+      TyRecord [(FieldLabel, Ty Record)]
+    deriving stock (Show, Eq)
 
   data Context Record
-    = CtxEmpty -- ^ 空の文脈
-    | CtxVar (Context Record) VarName (Ty Record) -- ^ 項変数の束縛
-    deriving (Show, Eq)
+    = -- | 空の文脈
+      CtxEmpty
+    | -- | 項変数の束縛
+      CtxVar (Context Record) VarName (Ty Record)
+    deriving stock (Show, Eq)
 
   data Pattern Record
 
@@ -80,11 +88,11 @@ instance System Record where
           if tyT2 == tyT11
             then tyT12
             else
-              error . unlines
-                $ [ "parameter type mismatch (T-APP): ",
-                    "tyT2: " <> show tyT2,
-                    "tyT11: " <> show tyT11
-                    ]
+              error . unlines $
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1

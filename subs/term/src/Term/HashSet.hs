@@ -4,8 +4,8 @@ module Term.HashSet
     consts,
     size,
     depth,
-    minT
-    )
+    minT,
+  )
 where
 
 import RIO
@@ -15,16 +15,16 @@ import Term.Types
 
 type T = HashSet Term
 
-{- |
-[定義 3.2.3 具体的な項の定義]:
-各自然数 i について、集合 Si を以下のように定義する。
-
->>> s 0
-fromList []
-
->>> s 1
-fromList [TTrue,TFalse,Zero]
--}
+-- |
+-- [定義 3.2.3 具体的な項の定義]:
+-- 各自然数 i について、集合 Si を以下のように定義する。
+--
+-- >>> s 0
+-- fromList []
+--
+-- >>> s 1
+-- fromList [TTrue,TFalse,Zero]
+--
 -- 簡略化のため Int を Nat として扱う。エラー処理は実装しない。
 s :: Int -> T
 s 0 = HS.empty
@@ -35,15 +35,14 @@ s i = HS.unions [s1, s2, s3]
     s3 = HS.fromList [If t1 t2 t3 | t1 <- si, t2 <- si, t3 <- si]
     si = HS.toList $ s (i - 1)
 
-{- |
-[定義 3.3.1 項tに現れる定数の集合を Consts(t) と書き、次のように定義する]:
-
->>> consts TTrue
-fromList [TTrue]
-
->>> consts (Succ (Succ (Succ Zero)))
-fromList [Zero]
--}
+-- |
+-- [定義 3.3.1 項tに現れる定数の集合を Consts(t) と書き、次のように定義する]:
+--
+-- >>> consts TTrue
+-- fromList [TTrue]
+--
+-- >>> consts (Succ (Succ (Succ Zero)))
+-- fromList [Zero]
 consts :: Term -> T
 consts TTrue = HS.singleton TTrue
 consts TFalse = HS.singleton TFalse
@@ -53,18 +52,17 @@ consts (Pred t) = consts t
 consts (IsZero t) = consts t
 consts (If t1 t2 t3) = HS.unions $ map consts [t1, t2, t3]
 
-{- |
-[定義 3.3.2 項tのサイズを size(t) と書き、次のように定義する]:
-
->>> size Zero
-1
-
->>> size (Succ (Succ (Succ Zero)))
-4
-
->>> size (If Zero (Succ (Succ Zero)) (Succ Zero))
-7
--}
+-- |
+-- [定義 3.3.2 項tのサイズを size(t) と書き、次のように定義する]:
+--
+-- >>> size Zero
+-- 1
+--
+-- >>> size (Succ (Succ (Succ Zero)))
+-- 4
+--
+-- >>> size (If Zero (Succ (Succ Zero)) (Succ Zero))
+-- 7
 size :: Term -> Int
 size TTrue = 1
 size TFalse = 1
@@ -74,18 +72,17 @@ size (Pred t) = size t + 1
 size (IsZero t) = size t + 1
 size (If t1 t2 t3) = size t1 + size t2 + size t3 + 1
 
-{- |
-[項tの深さを depth(t) と書き、次のように定義する]:
-
->>> depth Zero
-1
-
->>> depth (Succ (Succ (Succ Zero)))
-4
-
->>> depth (If Zero (Succ (Succ Zero)) (Succ Zero))
-4
--}
+-- |
+-- [項tの深さを depth(t) と書き、次のように定義する]:
+--
+-- >>> depth Zero
+-- 1
+--
+-- >>> depth (Succ (Succ (Succ Zero)))
+-- 4
+--
+-- >>> depth (If Zero (Succ (Succ Zero)) (Succ Zero))
+-- 4
 depth :: Term -> Int
 depth TTrue = 1
 depth TFalse = 1

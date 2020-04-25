@@ -19,18 +19,19 @@ main =
 main' :: LambdaREPL
 main' = repl "UntypedLambda" commands
   where
-    commands = defaultReplCmd
-      { replCmdList = Action subCmdList
-      , replCmdEval = Action (evalCmd parser evaluator tracer)
-      , replCmdTc   = NoAction
-      }
+    commands =
+      defaultReplCmd
+        { replCmdList = Action subCmdList,
+          replCmdEval = Action (evalCmd parser evaluator tracer),
+          replCmdTc = NoAction
+        }
 
 subCmdList :: Text -> LambdaREPL
 subCmdList input =
   case subCmd "list" input of
     "strategy" -> listStrategyCmd
-    "prelude"  -> listPreludeCmd prelude'
-    _  -> return ()
+    "prelude" -> listPreludeCmd prelude'
+    _ -> return ()
 
 parser :: ParseFunc UntypedLambda
 parser = UntypedLambda.runUlParser

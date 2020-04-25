@@ -3,8 +3,8 @@
 module Language.UntypedLambda.Lib.Either
   ( left,
     right,
-    isLeft
-    )
+    isLeft,
+  )
 where
 
 import Language.UntypedLambda.Lib.Bool

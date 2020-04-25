@@ -1,12 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Language.FullSimpleLambda.TypeCheck
-  ( typeof
-  )
-where
+module Language.FullSimpleLambda.TypeCheck (typeof) where
 
 import Language.FullSimpleLambda.Types
-
 import RIO
 import qualified RIO.List.Partial as List.Partial
 
@@ -23,12 +19,12 @@ typeof ctx (TmApp t1 t2) =
       if tyT2 == tyT11
         then tyT12
         else
-          error
-            $ unlines
-                [ "parameter type mismatch (T-APP): ",
-                  "tyT2: " <> show tyT2,
-                  "tyT11: " <> show tyT11
-                  ]
+          error $
+            unlines
+              [ "parameter type mismatch (T-APP): ",
+                "tyT2: " <> show tyT2,
+                "tyT11: " <> show tyT11
+              ]
     _ -> error "arrow type expected (T-APP)"
   where
     tyT1 = typeof ctx t1
@@ -135,9 +131,9 @@ addBinding ctx x bind = addContext (VarContext x, bind) ctx
 getTypeFromContext :: Context -> Int -> Ty
 getTypeFromContext ctx i =
   case getBinding ctx i of
-    VarBind tyT     -> tyT
+    VarBind tyT -> tyT
     PatternBind tyT -> tyT
-    _               -> error "getTypeFromContext"
+    _ -> error "getTypeFromContext"
 
 getBinding :: Context -> Int -> Binding
 getBinding ctx i = snd $ ctx' List.Partial.!! i

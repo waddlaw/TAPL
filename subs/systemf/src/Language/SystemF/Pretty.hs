@@ -1,7 +1,4 @@
-module Language.SystemF.Pretty
-  ( prettySystemFText
-    )
-where
+module Language.SystemF.Pretty (prettySystemFText) where
 
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.Text

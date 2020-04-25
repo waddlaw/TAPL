@@ -1,7 +1,4 @@
-module Language.Core.Parser
-  ( runParserString
-  )
-where
+module Language.Core.Parser (runParserString) where
 
 import RIO
 import Text.Trifecta

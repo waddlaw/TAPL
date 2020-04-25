@@ -1,20 +1,20 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE InstanceSigs      #-}
-{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.Recon.TySubst
-  ( tySubst
-  , example0
-  , example1
-  , example2
-  , example3
+  ( tySubst,
+    example0,
+    example1,
+    example2,
+    example3,
   )
 where
 
-import RIO
-import qualified RIO.Map  as Map
-
 import Language.Recon.Type
+import RIO
+import qualified RIO.Map as Map
 
 class TySubst a where
   tySubst :: Sigma -> a -> a
@@ -72,7 +72,7 @@ example2 :: Ty
 example2 = tySubst sigma ty
   where
     -- σ = [X |-> Bool, Y |-> X->X]
-    sigma = Map.fromList [ ("X", TyBool), ("Y", TyArr (TyVar "X") (TyVar "X"))]
+    sigma = Map.fromList [("X", TyBool), ("Y", TyArr (TyVar "X") (TyVar "X"))]
     -- X->Y
     ty = TyArr (TyVar "X") (TyVar "Y")
 

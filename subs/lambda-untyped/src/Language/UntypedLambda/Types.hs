@@ -3,23 +3,25 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Language.UntypedLambda.Types
-  ( Term (..)
-  , UntypedLambda
-  , (@@)
-  , λ
-  , Context
-  , VarName
-  , NamelessTerm (..)
-  , getNlTermVar
+  ( Term (..),
+    UntypedLambda,
+    (@@),
+    λ,
+    Context,
+    VarName,
+    NamelessTerm (..),
+    getNlTermVar,
   )
 where
 
-import RIO
 import Data.Text.Prettyprint.Doc
+import RIO
 import qualified RIO.Text as Text
 
 type UntypedLambda = Term Text
+
 type VarName = Text
+
 -- | Contrary to books, ["x" , "y" , "z"] is indexed from left to right as [0, 1, 2]
 type Context = [VarName]
 

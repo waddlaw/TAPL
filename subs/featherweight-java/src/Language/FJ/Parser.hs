@@ -1,20 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.FJ.Parser
-  ( Parser
-  , runFjParser
-  , pClassDef
-  , pTerm
+  ( Parser,
+    runFjParser,
+    pClassDef,
+    pTerm,
   )
 where
 
 import Language.FJ.Type
-
 import RIO hiding (many, some, try)
 import qualified RIO.Text as Text
-
 import Text.Megaparsec
 import Text.Megaparsec.Char
-import qualified Text.Megaparsec.Char.Lexer as L 
+import qualified Text.Megaparsec.Char.Lexer as L
 
 type Parser = Parsec Void Text
 
@@ -25,21 +24,20 @@ runFjParser input = case runParser pTerm "" (Text.pack input) of
 
 -- | Class declaration parser
 pClassDef :: Parser ClassDef
-pClassDef = CL
-  <$  pKeyword "class"
-  <*> pClass
-  <*  pKeyword "extends"
-  <*> pClass
-  <*  symbol "{"
+pClassDef =
+  CL
+    <$ pKeyword "class"
+    <*> pClass
+    <* pKeyword "extends"
+    <*> pClass
+    <* symbol "{"
+    -- body of class definition
+    <*> many (try (pFieldDef <* symbol ";"))
+    <*> pConstDef
+    <*> many pMethodDef
+    <* symbol "}"
 
-  -- body of class definition
-  <*> many (try (pFieldDef <* symbol ";"))
-  <*> pConstDef
-  <*> many pMethodDef
-
-  <*  symbol "}"
-
-pFieldDef ::Parser (Class, Field)
+pFieldDef :: Parser (Class, Field)
 pFieldDef = (,) <$> pClass <*> pField
 
 -- | Constructor declaration parser
@@ -51,29 +49,32 @@ pConstDef = do
   return (K cls args super this)
 
 pConstDefBody :: Parser ([Field], [(Field, Field)])
-pConstDefBody = (,)
-  <$  pKeyword "super"
-  <*> pArgs pField
-  <*  symbol ";"
-  <*> endBy pFieldAssign (symbol ";")
+pConstDefBody =
+  (,)
+    <$ pKeyword "super"
+    <*> pArgs pField
+    <* symbol ";"
+    <*> endBy pFieldAssign (symbol ";")
 
 pFieldAssign :: Parser (Field, Field)
-pFieldAssign = (,)
-  <$  pVar  -- this
-  <*  string "."
-  <*> pField
-  <*  symbol "="
-  <*> pField
+pFieldAssign =
+  (,)
+    <$ pVar -- this
+    <* string "."
+    <*> pField
+    <* symbol "="
+    <*> pField
 
 -- | Method declaration parser
 pMethodDef :: Parser MethodDef
-pMethodDef = mkMethodDef
-  <$> pClass
-  <*> pMethod
-  <*> pArgs pMethodArg
-  <*> pBody (pKeyword "return" *> pTerm <* symbol ";")
+pMethodDef =
+  mkMethodDef
+    <$> pClass
+    <*> pMethod
+    <*> pArgs pMethodArg
+    <*> pBody (pKeyword "return" *> pTerm <* symbol ";")
 
-pMethodArg ::Parser (Class, Var)
+pMethodArg :: Parser (Class, Var)
 pMethodArg = (,) <$> pClass <*> pVar
 
 pArgs :: Parser a -> Parser [a]
@@ -86,12 +87,12 @@ pName :: (Text -> b) -> Parser b
 pName f = do
   c <- lowerChar
   cs <- many alphaNumChar
-  return . f $ Text.pack (c:cs)
+  return . f $ Text.pack (c : cs)
 
 -- | Term parser
 pTerm :: Parser Term
 pTerm = do
-  let p = choice [ pTermNew, pTermCast, pTermVar ]
+  let p = choice [pTermNew, pTermCast, pTermVar]
   t <- try (between (symbol "(") (symbol ")") p) <|> p
   pTerm' t <|> return t
 
@@ -105,10 +106,11 @@ pTermVar :: Parser Term
 pTermVar = TmVar <$> pVar
 
 pTermNew :: Parser Term
-pTermNew = TmNew
-  <$  try (pKeyword "new")
-  <*> pClass
-  <*> pArgs pTerm
+pTermNew =
+  TmNew
+    <$ try (pKeyword "new")
+    <*> pClass
+    <*> pArgs pTerm
 
 pTermField :: Term -> Parser Term
 pTermField t = TmFieldRef t <$> pField
@@ -124,7 +126,7 @@ pClass :: Parser Class
 pClass = lexeme $ do
   c <- upperChar
   cs <- many alphaNumChar
-  return . mkClass $ Text.pack (c:cs)
+  return . mkClass $ Text.pack (c : cs)
 
 -- | Field name parser
 pField :: Parser Field
@@ -149,4 +151,4 @@ symbol :: Text -> Parser Text
 symbol = L.symbol sc
 
 sc :: Parser ()
-sc = L.space space1  (L.skipLineComment "//") (L.skipBlockComment "/*" "*/")
+sc = L.space space1 (L.skipLineComment "//") (L.skipBlockComment "/*" "*/")

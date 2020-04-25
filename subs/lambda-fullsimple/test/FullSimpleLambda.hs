@@ -4,7 +4,6 @@ module FullSimpleLambda where
 
 import Language.FullSimpleLambda
 import Language.FullSimpleLambda.Internal
-
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -17,7 +16,8 @@ evalN n term = foldr ($) term $ replicate n eval
 
 test_type :: TestTree
 test_type =
-  testGroup "Types"
+  testGroup
+    "Types"
     [ testCase "pretty" $ do
         prettyFullSimpleText "x" (TmVar 0) @?= "x"
         prettyFullSimpleText mempty (TmLam "x" TyBool (TmVar 0)) @?= "λx:Bool. x"
@@ -33,32 +33,37 @@ test_type =
         runFullSimpleLambdaParser "f" "λx:Bool. f (if (f x) then false else x)" @?= Right (TmLam "x" TyBool (TmApp (TmVar 1) (TmIf (TmApp (TmVar 1) (TmVar 0)) TmFalse (TmVar 0))))
         runFullSimpleLambdaParser mempty "λx:Bool. λy:Bool. λz:Bool. x y z" @?= Right (TmLam "x" TyBool (TmLam "y" TyBool (TmLam "z" TyBool (TmApp (TmApp (TmVar 2) (TmVar 1)) (TmVar 0)))))
         runFullSimpleLambdaParser mempty "λx:Bool. λy:Bool. λz:Bool. x (y z)" @?= Right (TmLam "x" TyBool (TmLam "y" TyBool (TmLam "z" TyBool (TmApp (TmVar 2) (TmApp (TmVar 1) (TmVar 0))))))
-      ]
+    ]
 
 -- , testCase "parser (そのうち直す" $ do
 --     runFullSimpleLambdaParser "f" "λx:Bool. f (if f x then false else x)" @?= Left
 test_function :: TestTree
 test_function =
-  testGroup "Functions"
+  testGroup
+    "Functions"
     [ testCase "isValue" $ do
         isValue (TmRecord []) @?= True
         isValue (TmRecord [("a", TmUnit)]) @?= True
         isValue (TmRecord [("a", TmUnit), ("b", TmUnit)]) @?= True
         isValue (TmRecord [("a", TmUnit), ("b", TmIf TmTrue TmFalse TmFalse)]) @?= False
-      ]
+    ]
 
 test_unit :: TestTree
 test_unit =
-  testGroup "unit"
-    [ testGroup "typecheck"
+  testGroup
+    "unit"
+    [ testGroup
+        "typecheck"
         [ testCase "unit:Unit" $ typeof mempty TmUnit @?= TyUnit
         ]
     ]
 
 test_pair :: TestTree
 test_pair =
-  testGroup "pair"
-    [ testGroup "eval"
+  testGroup
+    "pair"
+    [ testGroup
+        "eval"
         [ testCase "{pred 4, if true then false else false}.1" $ do
             let n4 = mkNat 4
                 tl = TmPred n4
@@ -85,13 +90,16 @@ test_pair =
 
 test_record :: TestTree
 test_record =
-  testGroup "record"
-    [ testGroup "pretty"
+  testGroup
+    "record"
+    [ testGroup
+        "pretty"
         [ testCase "{partno=0,cost=true}" $ do
             let t = TmRecord [("partno", TmZero), ("cost", TmTrue)]
             prettyFullSimpleText mempty t @?= "{partno=0,cost=true}"
-          ],
-      testGroup "eval"
+        ],
+      testGroup
+        "eval"
         [ testCase "フィールドの全てが値" $ do
             let t = TmRecord [("partno", TmUnit), ("cost", TmUnit)]
             eval t @?= TmRecord [("partno", TmUnit), ("cost", TmUnit)],
@@ -107,8 +115,9 @@ test_record =
             let redex = TmIf TmTrue TmFalse TmFalse
                 t = TmRecord [("partno", TmUnit), ("cost", redex)]
             eval t @?= TmRecord [("partno", TmUnit), ("cost", TmFalse)]
-          ],
-      testGroup "typecheck"
+        ],
+      testGroup
+        "typecheck"
         [ testCase "{x=5}:Nat" $ do
             let t = TmRecord [("x", mkNat 5)]
             typeof mempty t @?= TyRecord [("x", TyNat)],
@@ -125,20 +134,24 @@ test_pattern = do
       t2 = TmVar 0
       t = TmPattern p t1 t2
       ctx = mconcat ["x", "y"]
-  testGroup "pattern"
-    [ testGroup "pretty"
+  testGroup
+    "pattern"
+    [ testGroup
+        "pretty"
         [ testCase "let x=() in ()" $ do
             let t' = TmPattern (PtVar "x" 0) TmUnit TmUnit
             prettyFullSimpleText "x" t' @?= "let x=() in ()",
-          testCase "let {partno=x,cost=y}={partno=1,cost=true} in x"
-            $ prettyFullSimpleText ctx t
+          testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
+            prettyFullSimpleText ctx t
               @?= "let {partno=x,cost=y}={partno=succ 0,cost=true} in x"
-        ]
-    , testGroup "eval"
+        ],
+      testGroup
+        "eval"
         [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
             eval t @?= mkNat 1
-        ]
-    , testGroup "typecheck"
+        ],
+      testGroup
+        "typecheck"
         [ testCase "let {partno=x,cost=y}={partno=1,cost=true} in x" $
             typeof mempty t @?= TyNat
         ]
@@ -146,8 +159,10 @@ test_pattern = do
 
 test_sum :: TestTree
 test_sum =
-  testGroup "sum"
-    [ testGroup "pretty (term)"
+  testGroup
+    "sum"
+    [ testGroup
+        "pretty (term)"
         [ testCase "inr x" $ do
             let t = TmInL (TmVar 0) (TySum TyNat TyBool)
             prettyFullSimpleText mempty t @?= "inl FV0 as Nat+Bool",
@@ -159,13 +174,15 @@ test_sum =
                 t1 = (TmVar 0, TmRecordProj "firstlast" (TmVar 0))
                 t2 = (TmVar 0, TmRecordProj "name" (TmVar 0))
             prettyFullSimpleText mempty t @?= "case FV0 of inl FV0 => FV0.firstlast | inr FV0 => FV0.name"
-          ],
-      testGroup "pretty (type)"
+        ],
+      testGroup
+        "pretty (type)"
         [ testCase "Bool+Nat" $ do
             let ty = TySum TyBool TyNat
             prettyType ty @?= "Bool+Nat"
         ],
-      testGroup "eval"
+      testGroup
+        "eval"
         [ testCase "getName" $ do
             let physicalAddr = TmRecord [("firstlast", TmZero), ("addr", TmFalse)]
                 physicalAddrTy = TyRecord [("firstlast", TyNat), ("addr", TyBool)]
@@ -180,8 +197,9 @@ test_sum =
                 t' = TmApp getName (TmInR virtualAddr addrTy)
             evalN 3 t @?= TmZero
             evalN 3 t' @?= TmSucc TmZero
-          ],
-      testGroup "typecheck"
+        ],
+      testGroup
+        "typecheck"
         [ testCase "getName" $ do
             let physicalAddrTy = TyRecord [("firstlast", TyNat), ("addr", TyBool)]
                 virtualAddrTy = TyRecord [("name", TyNat), ("email", TyBool)]
@@ -205,5 +223,5 @@ test_sum =
                 t' = TmApp getName (TmInR virtualAddr addrTy)
             typeof mempty t @?= TyNat
             typeof mempty t' @?= TyNat
-          ]
-      ]
+        ]
+    ]

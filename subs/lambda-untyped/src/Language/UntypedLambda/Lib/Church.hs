@@ -7,28 +7,36 @@ module Language.UntypedLambda.Lib.Church
     times,
     iszro,
     prd,
+
     -- ** 演習5.2.2
     scc2,
+
     -- ** 演習5.2.3
     times2,
     times3,
+
     -- ** 演習5.2.4
     power1,
     power2,
+
     -- ** 演習5.2.5
     subtract1,
+
     -- ** 演習5.2.7
     equal,
+
     -- ** 演習5.2.9
     factorial,
+
     -- * extra
     isone,
+
     -- * helper
     mkPlus,
     mkTimes,
     mkSubtract,
-    mkEqual
-    )
+    mkEqual,
+  )
 where
 
 import Language.UntypedLambda.Lib.Base
@@ -36,7 +44,6 @@ import Language.UntypedLambda.Lib.Bool
 import Language.UntypedLambda.Lib.Pair
 import Language.UntypedLambda.Lib.Util
 import Language.UntypedLambda.Types
-
 import Prelude hiding ((.))
 
 -- |

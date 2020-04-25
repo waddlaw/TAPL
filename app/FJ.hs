@@ -18,10 +18,11 @@ main =
 main' :: LambdaREPL
 main' = repl "FJ" commands
   where
-    commands = defaultReplCmd
-      { replCmdEval  = Action (evalCmd parser evaluator tracer)
-      , replCmdTc    = NotImplemented
-      }
+    commands =
+      defaultReplCmd
+        { replCmdEval = Action (evalCmd parser evaluator tracer),
+          replCmdTc = NotImplemented
+        }
 
 parser :: ParseFunc FJ.Term
 parser = FJ.runFjParser

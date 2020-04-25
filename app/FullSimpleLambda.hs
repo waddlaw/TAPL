@@ -18,10 +18,11 @@ main =
 main' :: LambdaREPL
 main' = repl "FullSimpleLambda" commands
   where
-    commands = defaultReplCmd
-      { replCmdEval = Action (evalCmd (parser mempty) evaluator tracer)
-      , replCmdTc   = Action (tcCmd (parser mempty) typecheck)
-      }
+    commands =
+      defaultReplCmd
+        { replCmdEval = Action (evalCmd (parser mempty) evaluator tracer),
+          replCmdTc = Action (tcCmd (parser mempty) typecheck)
+        }
 
 parser :: Context -> ParseFunc FullSimpleLambda.Term
 parser = runFullSimpleLambdaParser

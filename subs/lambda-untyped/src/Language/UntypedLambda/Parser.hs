@@ -1,13 +1,13 @@
 module Language.UntypedLambda.Parser
-  ( runUlParser
+  ( runUlParser,
   )
 where
 
-import RIO hiding (try)
 import Language.Core.Parser
 import Language.UntypedLambda.Lib.Church
 import Language.UntypedLambda.Prelude
 import Language.UntypedLambda.Types
+import RIO hiding (try)
 import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Map as Map
 import qualified RIO.Text as Text
@@ -49,11 +49,12 @@ identP :: Parser Text
 identP = ident defaultIdentStyle
 
 defaultIdentStyle :: IdentifierStyle Parser
-defaultIdentStyle = IdentifierStyle
-  { _styleName = "UntypedLambda"
-  , _styleStart = oneOf ['a' .. 'z']
-  , _styleLetter = alphaNum
-  , _styleReserved = mempty
-  , _styleHighlight = Identifier
-  , _styleReservedHighlight = ReservedIdentifier
-  }
+defaultIdentStyle =
+  IdentifierStyle
+    { _styleName = "UntypedLambda",
+      _styleStart = oneOf ['a' .. 'z'],
+      _styleLetter = alphaNum,
+      _styleReserved = mempty,
+      _styleHighlight = Identifier,
+      _styleReservedHighlight = ReservedIdentifier
+    }

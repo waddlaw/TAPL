@@ -1,6 +1,6 @@
 module Language.Core.Types
-  ( Strategy (..)
-  , Prelude
+  ( Strategy (..),
+    Prelude,
   )
 where
 

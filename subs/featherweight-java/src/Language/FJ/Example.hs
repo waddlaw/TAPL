@@ -1,15 +1,15 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.FJ.Example
-  ( exCT
-  , exMain1
-  , exMain2
-  , exMain3
-  , exMain4
+  ( exCT,
+    exMain1,
+    exMain2,
+    exMain3,
+    exMain4,
   )
 where
 
 import Language.FJ.Type
-
 import RIO
 import qualified RIO.Text as Text
 
@@ -21,14 +21,14 @@ import qualified RIO.Text as Text
 -}
 exCT :: ClassTable
 exCT c = case getClassName c of
-  "A"    -> CL cA cObj [] (K cA [] [] []) []
-  "B"    -> CL cB cObj [] (K cB [] [] []) []
-  "Pair" -> CL cP cObj [(cObj, fFst),(cObj, fSnd)] pairConstr [pairMethod]
-  name   -> error ("Can't find Class " ++ Text.unpack name ++ " in Class Tables.")
+  "A" -> CL cA cObj [] (K cA [] [] []) []
+  "B" -> CL cB cObj [] (K cB [] [] []) []
+  "Pair" -> CL cP cObj [(cObj, fFst), (cObj, fSnd)] pairConstr [pairMethod]
+  name -> error ("Can't find Class " ++ Text.unpack name ++ " in Class Tables.")
   where
-    pairConstr = K cP [(cObj, fFst),(cObj, fSnd)] [] [ (fFst, fFst), (fSnd, fSnd) ]
+    pairConstr = K cP [(cObj, fFst), (cObj, fSnd)] [] [(fFst, fFst), (fSnd, fSnd)]
     pairMethod = M cP (mkMethod "setfst") [(cObj, mkVar "newfst")] body
-    body       = TmNew cP [TmVar (mkVar "newfst"), TmFieldRef (TmVar (mkVar "this")) fSnd]
+    body = TmNew cP [TmVar (mkVar "newfst"), TmFieldRef (TmVar (mkVar "this")) fSnd]
     cA = mkClass "A"
     cB = mkClass "B"
     cP = mkClass "Pair"
@@ -45,8 +45,8 @@ exMain2 :: Term
 exMain2 = TmFieldRef cast (mkField "snd")
   where
     cast = TmCast (mkClass "Pair") m
-    m    = TmFieldRef p1 (mkField "fst")
-    p1   = TmNew (mkClass "Pair") [pAB, a]
+    m = TmFieldRef p1 (mkField "fst")
+    p1 = TmNew (mkClass "Pair") [pAB, a]
 
 -- | new Pair(new A(), newB()).snd
 exMain3 :: Term
@@ -57,7 +57,7 @@ exMain4 :: Term
 exMain4 = TmCast (mkClass "Pair") pAB
 
 -- utils
-a, b, pAB :: Term
+a , b, pAB :: Term
 a = TmNew (mkClass "A") []
 b = TmNew (mkClass "B") []
 pAB = TmNew (mkClass "Pair") [a, b]

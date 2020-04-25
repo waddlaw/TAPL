@@ -1,11 +1,7 @@
-module Utils
-  ( evalAllStrategy
-  )
-where
+module Utils (evalAllStrategy) where
 
 import Language.Core.Types
 import Language.UntypedLambda
-
 import RIO
 import Test.Tasty.HUnit
 

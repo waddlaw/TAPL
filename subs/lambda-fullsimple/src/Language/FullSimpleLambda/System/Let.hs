@@ -4,8 +4,8 @@ module Language.FullSimpleLambda.System.Let
     Ty (..),
     Context (..),
     eval,
-    typeof
-    )
+    typeof,
+  )
 where
 
 import Language.FullSimpleLambda.Class
@@ -16,22 +16,28 @@ data Let
 type Value = Term Let
 
 instance System Let where
-
   data Term Let
-    = TmVar Int -- ^ 変数
-    | TmLam VarName (Ty Let) (Term Let) -- ^ ラムダ抽象
-    | TmApp (Term Let) (Term Let) -- ^ 関数適用
-    | TmLet VarName (Term Let) (Term Let) -- ^ let 束縛
-    deriving (Show, Eq)
+    = -- | 変数
+      TmVar Int
+    | -- | ラムダ抽象
+      TmLam VarName (Ty Let) (Term Let)
+    | -- | 関数適用
+      TmApp (Term Let) (Term Let)
+    | -- | let 束縛
+      TmLet VarName (Term Let) (Term Let)
+    deriving stock (Show, Eq)
 
   data Ty Let
-    = TyArr (Ty Let) (Ty Let) -- ^ 関数の型
-    deriving (Show, Eq)
+    = -- | 関数の型
+      TyArr (Ty Let) (Ty Let)
+    deriving stock (Show, Eq)
 
   data Context Let
-    = CtxEmpty -- ^ 空の文脈
-    | CtxVar (Context Let) VarName (Ty Let) -- ^ 項変数の束縛
-    deriving (Show, Eq)
+    = -- | 空の文脈
+      CtxEmpty
+    | -- | 項変数の束縛
+      CtxVar (Context Let) VarName (Ty Let)
+    deriving stock (Show, Eq)
 
   data Pattern Let
 
@@ -69,11 +75,11 @@ instance System Let where
           if tyT2 == tyT11
             then tyT12
             else
-              error . unlines
-                $ [ "parameter type mismatch (T-APP): ",
-                    "tyT2: " <> show tyT2,
-                    "tyT11: " <> show tyT11
-                    ]
+              error . unlines $
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                ]
       where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2

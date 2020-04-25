@@ -1,6 +1,6 @@
 module Language.SimpleLambda.Parser
-  ( runSimpleLambdaParser
-    )
+  ( runSimpleLambdaParser,
+  )
 where
 
 -- λs:Bool.λz:Bool.s (s z)
@@ -97,11 +97,12 @@ identP = do
   return v
 
 defaultIdentStyle :: IdentifierStyle Parser
-defaultIdentStyle = IdentifierStyle
-  { _styleName = "SimpleLambda",
-    _styleStart = oneOf ['a' .. 'z'],
-    _styleLetter = alphaNum,
-    _styleReserved = mempty,
-    _styleHighlight = Identifier,
-    _styleReservedHighlight = ReservedIdentifier
+defaultIdentStyle =
+  IdentifierStyle
+    { _styleName = "SimpleLambda",
+      _styleStart = oneOf ['a' .. 'z'],
+      _styleLetter = alphaNum,
+      _styleReserved = mempty,
+      _styleHighlight = Identifier,
+      _styleReservedHighlight = ReservedIdentifier
     }

@@ -1,49 +1,35 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Language.B.Parser
-  ( bparser,
-    stepCmdParser,
+  ( Parser,
+    runLangParser,
+    pTerm,
+    pTrue,
+    pFalse,
+    pIf,
   )
 where
 
-import Language.B.Types
+import Language.B.Type
 import Language.Core.Parser
-import RIO
-import Text.Trifecta
+import RIO hiding (many, some, try)
+import Text.Megaparsec
 
-bparser :: String -> Either String EvalRelation
-bparser = runParserString elP
+pTerm :: Parser Term
+pTerm = try (between (symbol "(") (symbol ")") pTerm') <|> pTerm'
 
-stepCmdParser :: String -> Either String Int
-stepCmdParser = runParserString p
-  where
-    p = fromIntegral <$ symbol ":step" <*> natural
+pTerm' :: Parser Term
+pTerm' = asum [pTrue, pFalse, pIf]
 
-elP :: Parser EvalRelation
-elP = EvalRelation <$> elP'
-  where
-    elP' =
-      (,)
-        <$> token termP
-        <* symbol "->"
-        <*> token termP
+pTrue :: Parser Term
+pTrue = TmTrue <$ pKeyword "true"
 
-termP :: Parser Term
-termP =
-  trueP
-    <|> falseP
-    <|> ifP
+pFalse :: Parser Term
+pFalse = TmFalse <$ pKeyword "false"
 
-trueP :: Parser Term
-trueP = TmTrue <$ symbol "true"
-
-falseP :: Parser Term
-falseP = TmFalse <$ symbol "false"
-
-ifP :: Parser Term
-ifP =
+pIf :: Parser Term
+pIf =
   TmIf
-    <$ symbol "if"
-    <*> (parens termP <|> token termP)
-    <* symbol "then"
-    <*> (parens termP <|> token termP)
-    <* symbol "else"
-    <*> (parens termP <|> token termP)
+    <$ pKeyword "if" <*> pTerm
+    <* pKeyword "then" <*> pTerm
+    <* pKeyword "else" <*> pTerm

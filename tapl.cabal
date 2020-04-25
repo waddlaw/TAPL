@@ -51,9 +51,9 @@ executable nb
   main-is:       app/NB.hs
   build-depends: arith
 
-executable proofb
+executable bool
   import:        common, app
-  main-is:       app/ProofB.hs
+  main-is:       app/B.hs
   build-depends:
     , bool
     , prettyprinter

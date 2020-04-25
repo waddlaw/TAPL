@@ -1,9 +1,6 @@
-module Language.B.Example (example) where
+module Language.B.Example (s, t, u) where
 
-import Language.B.Types
-
-example :: EvalRelation
-example = EvalRelation (TmIf t TmFalse TmFalse, TmIf u TmFalse TmFalse)
+import Language.B.Type
 
 s , t, u :: Term
 s = TmIf TmTrue TmFalse TmFalse

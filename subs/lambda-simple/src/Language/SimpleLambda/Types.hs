@@ -6,15 +6,14 @@ module Language.SimpleLambda.Types
     unCtx,
     Binding (..),
     SimpleTypedLambda,
-    pprSimple
-    )
+    pprSimple,
+  )
 where
 
+import Data.Text.Prettyprint.Doc
 import RIO
 import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Text as Text
-
-import Data.Text.Prettyprint.Doc
 
 type SimpleTypedLambda = Term
 
@@ -34,13 +33,17 @@ addContext :: (Text, Binding) -> Context -> Context
 addContext v = Context . (v :) . unCtx
 
 data Binding
-  = NameBind -- ^ 型無しの変数
-  | VarBind Ty -- ^ 型付きの変数
+  = -- | 型無しの変数
+    NameBind
+  | -- | 型付きの変数
+    VarBind Ty
   deriving (Eq, Show)
 
 data Ty
-  = TyArr Ty Ty -- ^ 関数型
-  | TyBool -- ^ Bool型
+  = -- | 関数型
+    TyArr Ty Ty
+  | -- | Bool型
+    TyBool
   deriving (Eq, Show)
 
 data Term

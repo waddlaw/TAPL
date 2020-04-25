@@ -9,7 +9,8 @@ import Test.Tasty.HUnit
 
 test_sl :: TestTree
 test_sl =
-  testGroup "SimpleLambda"
+  testGroup
+    "SimpleLambda"
     [ testCase "pretty" $ do
         prettySimpleText "x" (TmVar 0) @?= "x"
         prettySimpleText mempty (TmLam "x" TyBool (TmVar 0)) @?= "λx:Bool. x"
@@ -25,6 +26,7 @@ test_sl =
         runSimpleLambdaParser "f" "λx:Bool. f (if (f x) then false else x)" @?= Right (TmLam "x" TyBool (TmApp (TmVar 1) (TmIf (TmApp (TmVar 1) (TmVar 0)) TmFalse (TmVar 0))))
         runSimpleLambdaParser mempty "λx:Bool. λy:Bool. λz:Bool. x y z" @?= Right (TmLam "x" TyBool (TmLam "y" TyBool (TmLam "z" TyBool (TmApp (TmApp (TmVar 2) (TmVar 1)) (TmVar 0)))))
         runSimpleLambdaParser mempty "λx:Bool. λy:Bool. λz:Bool. x (y z)" @?= Right (TmLam "x" TyBool (TmLam "y" TyBool (TmLam "z" TyBool (TmApp (TmVar 2) (TmApp (TmVar 1) (TmVar 0))))))
-      ]
+    ]
+
 -- , testCase "parser (そのうち直す" $ do
 --     runSimpleLambdaParser "f" "λx:Bool. f (if f x then false else x)" @?= Left

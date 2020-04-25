@@ -1,12 +1,13 @@
-{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE TypeApplications #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+
 module Language.Recon.Exercise.Ex22_5_7
-  ( runTypingC
-  , example1
-  , example2
-  , example3
+  ( runTypingC,
+    example1,
+    example2,
+    example3,
   )
 where
 
@@ -35,15 +36,19 @@ data Term
   deriving (Eq, Show)
 
 type ConstraintSet = [(Ty, Ty)]
+
 type Context = [(VarName, Ty)]
+
 type VarName = Text
+
 type ReturnType = Ty
+
 type TyVarIdStream = [VarName]
 
 runTypingC :: Term -> ReturnType
 runTypingC = extract . typingC [] tyVarIdStream
   where
-    tyVarIdStream = map (tshow @Int) [1..]
+    tyVarIdStream = map (tshow @Int) [1 ..]
     extract (ty, _, _) = ty
 
 typingC ::
@@ -57,15 +62,15 @@ typingC ctx varIds = \case
         ty = fromMaybe (error msg) $ List.lookup x ctx
      in (ty, varIds, [])
   TmLam x ty t ->
-    let (rt, restVarIds, c) = typingC ((x,ty):ctx) varIds t
+    let (rt, restVarIds, c) = typingC ((x, ty) : ctx) varIds t
      in (subst (TyArr ty rt) c, restVarIds, c)
   TmApp t1 t2 ->
     let (rt1, restVarIds1, c1) = typingC ctx varIds t1
-        (rt2, x:restVarIds2, c2) = typingC ctx restVarIds1 t2
+        (rt2, x : restVarIds2, c2) = typingC ctx restVarIds1 t2
         rt = TyVar x
         c = unify (c1 <> c2 <> [(rt1, TyArr rt2 rt)])
      in (subst rt c, restVarIds2, c)
-  TmTrue  -> (TyBool, varIds, [])
+  TmTrue -> (TyBool, varIds, [])
   TmFalse -> (TyBool, varIds, [])
   TmIf t1 t2 t3 ->
     let (rt1, restVarIds1, c1) = typingC ctx varIds t1
@@ -89,27 +94,27 @@ typingC ctx varIds = \case
 
 unify :: ConstraintSet -> ConstraintSet
 unify [] = []
-unify ((s, t):c')
-  | s == t  = unify c'
+unify ((s, t) : c')
+  | s == t = unify c'
   | isVar s && s `notInFv` t =
-      let sigma = (s, t)
-      in  sigma : unify (map (applyC sigma) c')
+    let sigma = (s, t)
+     in sigma : unify (map (applyC sigma) c')
   | isVar t && t `notInFv` s =
-      let sigma = (t, s)
-      in  sigma : unify (map (applyC sigma) c')
+    let sigma = (t, s)
+     in sigma : unify (map (applyC sigma) c')
   | isArr s && isArr t =
-      let TyArr s1 s2 = s
-          TyArr t1 t2 = t
-      in  unify ([(s1, t1), (s2, t2)] ++ c')
+    let TyArr s1 s2 = s
+        TyArr t1 t2 = t
+     in unify ([(s1, t1), (s2, t2)] ++ c')
   | otherwise = error "fail"
 
 -- utils
 isVar :: Ty -> Bool
-isVar TyVar{} = True
+isVar TyVar {} = True
 isVar _ = False
 
 isArr :: Ty -> Bool
-isArr TyArr{} = True
+isArr TyArr {} = True
 isArr _ = False
 
 notInFv :: Ty -> Ty -> Bool
@@ -128,10 +133,10 @@ applyC sigma = fork (apply sigma)
 
 apply :: (Ty, Ty) -> Ty -> Ty
 apply _ TyBool = TyBool
-apply _ TyNat  = TyNat
+apply _ TyNat = TyNat
 apply sigma (TyArr ty1 ty2) = (TyArr `on` apply sigma) ty1 ty2
 apply (s, t) u
-  | s == u    = t
+  | s == u = t
   | otherwise = u
 
 subst :: Ty -> ConstraintSet -> Ty
@@ -143,9 +148,9 @@ example1 :: Term
 example1 = TmLam "x" (TyVar "X") (TmVar "x")
 
 -- >>> runTypingC example2
--- TyArr 
---    ( TyArr ( TyVar "?X_1" ) ( TyVar "?X_2" ) ) 
---    ( TyArr 
+-- TyArr
+--    ( TyArr ( TyVar "?X_1" ) ( TyVar "?X_2" ) )
+--    ( TyArr
 --        ( TyArr TyBool ( TyVar "?X_1" ) ) ( TyVar "?X_2" )
 --    )
 example2 :: Term

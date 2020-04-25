@@ -1,20 +1,20 @@
 module Language.Core
-  ( module Language.Core.Types
-  , trim
-  , render
-  , renderPrelude
-  , displayRender
-  , strategies
+  ( module Language.Core.Types,
+    trim,
+    render,
+    renderPrelude,
+    displayRender,
+    strategies,
   )
 where
 
-import RIO
 import Data.Text.Prettyprint.Doc
 import Data.Text.Prettyprint.Doc.Render.String
 import Language.Core.Types
+import RIO
 import qualified RIO.Char as Char
 import qualified RIO.List as List
-import qualified RIO.Map  as Map
+import qualified RIO.Map as Map
 import qualified RIO.Text as Text
 
 trim :: String -> String

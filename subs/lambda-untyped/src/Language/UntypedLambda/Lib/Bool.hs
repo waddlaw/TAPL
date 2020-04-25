@@ -6,15 +6,17 @@ module Language.UntypedLambda.Lib.Bool
     fls,
     test,
     and,
+
     -- * 演習 5.2.1
     or,
     not,
+
     -- * helper
     mkTest,
     mkAnd,
     mkOr,
-    mkNot
-    )
+    mkNot,
+  )
 where
 
 import Language.UntypedLambda.Lib.Util

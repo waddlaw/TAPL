@@ -7,16 +7,16 @@ import Language.UntypedLambda
 import Language.UntypedLambda.Lib.Bool
 import Language.UntypedLambda.Lib.Church
 import Language.UntypedLambda.Lib.List
-
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
 
 test_ul :: TestTree
 test_ul =
-  testGroup "UntypedLambda.Lib.List"
-    [ testCase "cons"
-        $ eval NormalOrder (cons @@ "x" @@ nil)
+  testGroup
+    "UntypedLambda.Lib.List"
+    [ testCase "cons" $
+        eval NormalOrder (cons @@ "x" @@ nil)
           @?= λ "c" (λ "n" $ "c" @@ "x" @@ "n"), -- TODO: 振る舞い等価
       testCase "isnil" $ do
         eval CallByValue (isnil @@ nil) @?= tru
@@ -33,4 +33,4 @@ test_ul =
         let l = cons @@ c 2 @@ (cons @@ c 3 @@ (cons @@ c 4 @@ nil))
         eval CallByValue (equal @@ (sumlist @@ l) @@ c 9) @?= tru
         eval CallByValue (equal @@ (sumlist' @@ l) @@ c 9) @?= tru
-      ]
+    ]

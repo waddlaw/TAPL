@@ -1,16 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.SystemF
   ( module Language.SystemF.Eval,
     module Language.SystemF.Types,
     module Language.SystemF.Parser,
     module Language.SystemF.Pretty,
     module Language.SystemF.Example,
-    typeof
-    )
+    typeof,
+  )
 where
 
-import Language.SystemF.Example
 import Language.SystemF.Eval
+import Language.SystemF.Example
 import Language.SystemF.Parser
 import Language.SystemF.Pretty
 import Language.SystemF.Types
@@ -32,7 +33,6 @@ typeof ctx = \case
               then tyT2
               else error "arms of conditional have different types"
       else error "guard of conditional not a boolean"
-
   -- 8-2. T-ZERO
   TmZero -> TyNat
   -- 8-2. T-SUCC
@@ -50,7 +50,6 @@ typeof ctx = \case
     case typeof ctx t of
       TyNat -> TyBool
       _ -> error "nat type expected"
-
   -- 9-1. T-VAR
   TmVar _varName i -> getTypeFromContext ctx i
   -- 9-1. T-ABS
@@ -65,36 +64,33 @@ typeof ctx = \case
      in case tyT1 of
           TyArr tyT11 tyT12
             | eqType tyT2 tyT11 -> tyT12
-            | otherwise         -> error $ "T-APP: parameter type mismatch: " <> show tyT11
+            | otherwise -> error $ "T-APP: parameter type mismatch: " <> show tyT11
           _ -> error "arrow type expected"
-
   -- 11-12. T-FIX
   TmFix t1 ->
     case typeof ctx t1 of
       TyArr ty1 ty2 -> if eqType ty1 ty2 then ty1 else error $ "T-FIX: " <> show ty1
       e -> error $ "T-FIX: " <> show e
-
   -- 11-13. T-NIL
-  TmNil   -> TyForAll "X" . TyList $ TyVar "X" 0
+  TmNil -> TyForAll "X" . TyList $ TyVar "X" 0
   -- 11-13. T-CONS
-  TmCons  ->
+  TmCons ->
     TyForAll "X" . TyArr (TyVar "X" 0) $ TyArr (TyList $ TyVar "X" 0) (TyList $ TyVar "X" 0)
   -- 11-13. T-ISNIL
   TmIsNil -> TyForAll "X" $ TyArr (TyList $ TyVar "X" 0) TyBool
   -- 11-13. T-HEAD
-  TmHead  -> TyForAll "X" $ TyArr (TyList $ TyVar "X" 0) (TyVar "X" 0)
+  TmHead -> TyForAll "X" $ TyArr (TyList $ TyVar "X" 0) (TyVar "X" 0)
   -- 11-13. T-TAIL
-  TmTail  -> TyForAll "X" $ TyArr (TyList $ TyVar "X" 0) (TyList $ TyVar "X" 0)
-
+  TmTail -> TyForAll "X" $ TyArr (TyList $ TyVar "X" 0) (TyList $ TyVar "X" 0)
   -- 23-1. T-TABS
   TmTypeLam tyVar t2 ->
     let ctx' = addContext (TypeVarBind tyVar) ctx
-        ty2  = typeof ctx' t2
+        ty2 = typeof ctx' t2
      in TyForAll tyVar ty2
   -- 23-1. T-TAPP
   TmTypeApp t1 ty2 ->
     case typeof ctx t1 of
-      TyForAll _tyVar ty12 -> substT 0 (Left ty2) ty12 
+      TyForAll _tyVar ty12 -> substT 0 (Left ty2) ty12
       _ -> error "T-TAPP"
 
 getTypeFromContext :: Context -> Int -> Ty

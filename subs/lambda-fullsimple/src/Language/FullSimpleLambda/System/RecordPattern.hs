@@ -4,8 +4,8 @@ module Language.FullSimpleLambda.System.RecordPattern
     Ty (..),
     Context (..),
     eval,
-    typeof
-    )
+    typeof,
+  )
 where
 
 import Data.Monoid
@@ -20,31 +20,42 @@ type Value = Term RecordPattern
 type FieldLabel = Text
 
 instance System RecordPattern where
-
   data Term RecordPattern
-    = TmVar Int -- ^ 変数
-    | TmLam VarName (Ty RecordPattern) (Term RecordPattern) -- ^ ラムダ抽象
-    | TmApp (Term RecordPattern) (Term RecordPattern) -- ^ 関数適用
-    | TmRecord [(FieldLabel, Term RecordPattern)] -- ^ レコード
-    | TmRecordProj FieldLabel (Term RecordPattern) -- ^ 射影
-    | TmPattern (Pattern RecordPattern) (Term RecordPattern) (Term RecordPattern) -- ^ パターン束縛
-    deriving (Show, Eq)
+    = -- | 変数
+      TmVar Int
+    | -- | ラムダ抽象
+      TmLam VarName (Ty RecordPattern) (Term RecordPattern)
+    | -- | 関数適用
+      TmApp (Term RecordPattern) (Term RecordPattern)
+    | -- | レコード
+      TmRecord [(FieldLabel, Term RecordPattern)]
+    | -- | 射影
+      TmRecordProj FieldLabel (Term RecordPattern)
+    | -- | パターン束縛
+      TmPattern (Pattern RecordPattern) (Term RecordPattern) (Term RecordPattern)
+    deriving stock (Show, Eq)
 
   data Ty RecordPattern
-    = TyArr (Ty RecordPattern) (Ty RecordPattern) -- ^ 関数の型
-    | TyRecord [(FieldLabel, Ty RecordPattern)] -- ^ レコードの型
-    deriving (Show, Eq)
+    = -- | 関数の型
+      TyArr (Ty RecordPattern) (Ty RecordPattern)
+    | -- | レコードの型
+      TyRecord [(FieldLabel, Ty RecordPattern)]
+    deriving stock (Show, Eq)
 
   data Context RecordPattern
-    = CtxEmpty -- ^ 空の文脈
-    | CtxVar (Context RecordPattern) VarName (Ty RecordPattern) -- ^ 項変数の束縛
+    = -- | 空の文脈
+      CtxEmpty
+    | -- | 項変数の束縛
+      CtxVar (Context RecordPattern) VarName (Ty RecordPattern)
     | CtxDelta (Context RecordPattern) (Term RecordPattern) (Ty RecordPattern)
-    deriving (Show, Eq)
+    deriving stock (Show, Eq)
 
   data Pattern RecordPattern
-    = PtVar VarName Int -- ^ 変数パターン
-    | PtRecord [(FieldLabel, Pattern RecordPattern)] -- ^ レコードパターン
-    deriving (Show, Eq)
+    = -- | 変数パターン
+      PtVar VarName Int
+    | -- | レコードパターン
+      PtRecord [(FieldLabel, Pattern RecordPattern)]
+    deriving stock (Show, Eq)
 
   eval :: Term RecordPattern -> Term RecordPattern
   eval = \case
@@ -91,11 +102,11 @@ instance System RecordPattern where
           if tyT2 == tyT11
             then tyT12
             else
-              error . unlines
-                $ [ "parameter type mismatch (T-APP): ",
-                    "tyT2: " <> show tyT2,
-                    "tyT11: " <> show tyT11
-                    ]
+              error . unlines $
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1
@@ -179,6 +190,6 @@ delta :: Pattern RecordPattern -> Ty RecordPattern -> Context RecordPattern
 delta (PtVar varName _) = CtxVar CtxEmpty varName
 delta (PtRecord pfs) = \case
   TyRecord tfs ->
-    foldr (\(p, ty') acc -> CtxVar acc) CtxEmpty
-      $ zip (map snd pfs) (map snd tfs)
+    foldr (\(p, ty') acc -> CtxVar acc) CtxEmpty $
+      zip (map snd pfs) (map snd tfs)
   _ -> error "delta: expected Record term"

@@ -6,10 +6,11 @@ module Language.UntypedLambda.Lib.List
     isnil,
     head,
     tail,
-    -- ** 演習5.2.11
+
+    -- ** Exercise 5.2.11
     sumlist,
-    sumlist'
-    )
+    sumlist',
+  )
 where
 
 import Language.UntypedLambda.Lib.Base

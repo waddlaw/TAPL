@@ -5,13 +5,13 @@ import Data.Text.Prettyprint.Doc.Render.String
 import Language.B
 import qualified Language.B.Example as B
 import Language.Core
-import Prelude (print, putStrLn)
 import RIO
 import qualified RIO.List as List
 import RIO.Orphans ()
 import qualified RIO.Partial as RIO'
 import RIO.State
 import System.Console.Haskeline
+import Prelude (print, putStrLn)
 
 type Proof = InputT (StateT EvalRelation IO) ()
 
@@ -31,9 +31,8 @@ main' = do
     Just ":set" -> setTargetCmd >> main'
     Just ":show" -> showTargetCmd >> main'
     Just input ->
-      if
-        | ":step" `List.isPrefixOf` input -> stepCmd input >> main'
-        | otherwise -> helpCmd >> main'
+      if  | ":step" `List.isPrefixOf` input -> stepCmd input >> main'
+          | otherwise -> helpCmd >> main'
 
 helpCmd :: Proof
 helpCmd = mapM_ outputStrLn $ "available commands" : commands
@@ -45,7 +44,7 @@ commands =
     "  :step",
     "  :rules",
     "  :q"
-    ]
+  ]
 
 setTargetCmd :: Proof
 setTargetCmd = getInputLine "[term -> term]: " >>= \case

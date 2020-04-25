@@ -15,22 +15,24 @@ module Language.UntypedLambda
     steps,
     subst,
     size,
+
     -- * Exercise 6.1.5
     removenames,
     restorenames,
+
     -- * Definition 6.2.1
     shift,
+
     -- * Definition 6.2.4
     namelessSubst,
-    reduceNameless
-    )
+    reduceNameless,
+  )
 where
 
 import Language.Core
 import Language.UntypedLambda.Parser
 import Language.UntypedLambda.Prelude
 import Language.UntypedLambda.Types
-
 import RIO hiding (trace)
 import qualified RIO.List as List
 import qualified RIO.List.Partial as List.Partial

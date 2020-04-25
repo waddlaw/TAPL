@@ -1,19 +1,19 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module LambdaRepl.Options
-  ( runApp
-  , evalCmd
-  , tcCmd
-  , helpCmd
-  , printEnvCmd
-  , updateEnvTraceCmd
-  , updateEnvStrategyCmd
-  , listStrategyCmd
-  , listPreludeCmd
-  , notImplCmd
-  , repl
-  , subCmd
-  , defaultReplCmd
+  ( runApp,
+    evalCmd,
+    tcCmd,
+    helpCmd,
+    printEnvCmd,
+    updateEnvTraceCmd,
+    updateEnvStrategyCmd,
+    listStrategyCmd,
+    listPreludeCmd,
+    notImplCmd,
+    repl,
+    subCmd,
+    defaultReplCmd,
   )
 where
 
@@ -36,18 +36,19 @@ runApp m =
     strategy <- newIORef NormalOrder
     isTrace <- newIORef False
     withLogFunc lo $ \lf ->
-      let app = ReplEnv
-            { appLogFunc = lf
-            , appProcessContext = pc
-            , appStrategy = strategy
-            , appIsTrace = isTrace
-            }
+      let app =
+            ReplEnv
+              { appLogFunc = lf,
+                appProcessContext = pc,
+                appStrategy = strategy,
+                appIsTrace = isTrace
+              }
        in runRIO app m
 
 evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> TraceFunc term -> Text -> LambdaREPL
 evalCmd parser evaluator tracer input =
-  lift
-    $ ask >>= \ReplEnv {..} -> do
+  lift $
+    ask >>= \ReplEnv {..} -> do
       strategy <- readIORef appStrategy
       isTrace <- readIORef appIsTrace
       case parser (Text.unpack input) of
@@ -74,27 +75,27 @@ notImplCmd = lift $ logInfo "Sorry. Not yet implemented."
 
 cmdList :: [Text]
 cmdList =
-  [ "  :set trace               -- Enabling Tracing (including the progress of the reduction)"
-  , "  :set strategy <Strategy> -- Setting Up an Evaluation Strategy"
-  , "  :unset trace             -- Disabling tracing"
-  , "  :list strategy           -- View a list of evaluation strategies"
-  , "  :list prelude            -- List Prelude Functions"
-  , "  :env                     -- Show current settings"
-  , "  :t                       -- Typecheck"
-  , "  :help                    -- Help"
-  , "  :q                       -- Quit"
+  [ "  :set trace               -- Enabling Tracing (including the progress of the reduction)",
+    "  :set strategy <Strategy> -- Setting Up an Evaluation Strategy",
+    "  :unset trace             -- Disabling tracing",
+    "  :list strategy           -- View a list of evaluation strategies",
+    "  :list prelude            -- List Prelude Functions",
+    "  :env                     -- Show current settings",
+    "  :t                       -- Typecheck",
+    "  :help                    -- Help",
+    "  :q                       -- Quit"
   ]
 
 printEnvCmd :: LambdaREPL
 printEnvCmd =
-  lift
-    $ ask >>= \ReplEnv {..} -> do
+  lift $
+    ask >>= \ReplEnv {..} -> do
       strategy <- readIORef appStrategy
       isTrace <- readIORef appIsTrace
       let msg =
             Text.unlines
-              [ "strategy: " <> tshow strategy
-              , "isTrace: " <> tshow isTrace
+              [ "strategy: " <> tshow strategy,
+                "isTrace: " <> tshow isTrace
               ]
       logInfo $ display msg
 
@@ -138,33 +139,33 @@ repl prompt cmd = do
 
 getReplAction :: Text -> ReplCmd -> ReplAction
 getReplAction input cmd
-  | ":set"       `Text.isPrefixOf` input = replCmdSet   cmd
-  | ":unset"     `Text.isPrefixOf` input = replCmdUnset cmd
-  | ":list"      `Text.isPrefixOf` input = replCmdList  cmd
-  | ":env"       `Text.isPrefixOf` input = replCmdEnv   cmd
-  | ":typecheck" `Text.isPrefixOf` input = replCmdTc    cmd
-  | ":help"      `Text.isPrefixOf` input = replCmdHelp  cmd
-  | ":quit"      `Text.isPrefixOf` input = replCmdQuit  cmd
-  | otherwise                            = getReplActionShort input cmd
+  | ":set" `Text.isPrefixOf` input = replCmdSet cmd
+  | ":unset" `Text.isPrefixOf` input = replCmdUnset cmd
+  | ":list" `Text.isPrefixOf` input = replCmdList cmd
+  | ":env" `Text.isPrefixOf` input = replCmdEnv cmd
+  | ":typecheck" `Text.isPrefixOf` input = replCmdTc cmd
+  | ":help" `Text.isPrefixOf` input = replCmdHelp cmd
+  | ":quit" `Text.isPrefixOf` input = replCmdQuit cmd
+  | otherwise = getReplActionShort input cmd
 
-getReplActionShort :: Text -> ReplCmd -> ReplAction 
+getReplActionShort :: Text -> ReplCmd -> ReplAction
 getReplActionShort input cmd
-  | ":t" `Text.isPrefixOf` input = replCmdTc   cmd
+  | ":t" `Text.isPrefixOf` input = replCmdTc cmd
   | ":h" `Text.isPrefixOf` input = replCmdHelp cmd
   | ":q" `Text.isPrefixOf` input = replCmdQuit cmd
-  | otherwise                    = replCmdEval cmd
+  | otherwise = replCmdEval cmd
 
 defaultReplCmd :: ReplCmd
 defaultReplCmd =
   ReplCmd
-    { replCmdSet   = Action defaultCmdSet
-    , replCmdUnset = Action defaultCmdUnset
-    , replCmdList  = Action defaultCmdList
-    , replCmdEnv   = ActionNoArg printEnvCmd
-    , replCmdEval  = NotImplemented
-    , replCmdTc    = NotImplemented
-    , replCmdHelp  = Help
-    , replCmdQuit  = Quit
+    { replCmdSet = Action defaultCmdSet,
+      replCmdUnset = Action defaultCmdUnset,
+      replCmdList = Action defaultCmdList,
+      replCmdEnv = ActionNoArg printEnvCmd,
+      replCmdEval = NotImplemented,
+      replCmdTc = NotImplemented,
+      replCmdHelp = Help,
+      replCmdQuit = Quit
     }
 
 subCmd :: Text -> Text -> Text
@@ -173,7 +174,7 @@ subCmd cmd = Text.strip . Text.dropPrefix (":" <> cmd)
 defaultCmdSet :: Text -> LambdaREPL
 defaultCmdSet input =
   case subCmd "set" input of
-    "trace"    -> updateEnvTraceCmd True
+    "trace" -> updateEnvTraceCmd True
     "strategy" -> updateEnvStrategyCmd input
     _ -> return ()
 
@@ -187,4 +188,4 @@ defaultCmdList :: Text -> LambdaREPL
 defaultCmdList input =
   case subCmd "list" input of
     "strategy" -> listStrategyCmd
-    _  -> return ()
+    _ -> return ()

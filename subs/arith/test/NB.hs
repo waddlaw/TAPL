@@ -1,14 +1,14 @@
 module NB where
 
 import Language.NB
-
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
 
 test_nb :: TestTree
 test_nb =
-  testGroup "NB"
+  testGroup
+    "NB"
     [ testCase "isNumericalVal" $ do
         isNumericalVal TmTrue @?= False
         isNumericalVal TmZero @?= True
@@ -22,13 +22,14 @@ test_nb =
         eval TmTrue @?= TmTrue
         eval (TmIf TmTrue TmTrue TmFalse) @?= TmTrue
         eval (TmIsZero (TmPred (TmSucc (TmPred (TmSucc TmZero))))) @?= TmTrue
-      ]
+    ]
 
 test_nb_parser :: TestTree
 test_nb_parser =
-  testGroup "NB.Parser"
+  testGroup
+    "NB.Parser"
     [ testCase "runNbParser" $ do
         runNbParser "true" @?= Right TmTrue
         runNbParser "succ (succ (succ 0))" @?= Right (TmSucc (TmSucc (TmSucc TmZero)))
         runNbParser "iszero 0" @?= Right (TmIsZero TmZero)
-      ]
+    ]

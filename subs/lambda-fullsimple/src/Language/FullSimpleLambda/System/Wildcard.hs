@@ -6,8 +6,8 @@ module Language.FullSimpleLambda.System.Wildcard
     Ty (..),
     Context (..),
     eval,
-    typeof
-    )
+    typeof,
+  )
 where
 
 import Language.FullSimpleLambda.Class
@@ -18,22 +18,28 @@ data Wildcard
 type Value = Term Wildcard
 
 instance System Wildcard where
-
   data Term Wildcard
-    = TmVar Int -- ^ 変数
-    | TmLam VarName (Ty Wildcard) (Term Wildcard) -- ^ ラムダ抽象
-    | TmApp (Term Wildcard) (Term Wildcard) -- ^ 関数適用
-    | TmWildcard (Ty Wildcard) (Term Wildcard) -- ^ 11.3 ワイルドカード
-    deriving (Show, Eq)
+    = -- | 変数
+      TmVar Int
+    | -- | ラムダ抽象
+      TmLam VarName (Ty Wildcard) (Term Wildcard)
+    | -- | 関数適用
+      TmApp (Term Wildcard) (Term Wildcard)
+    | -- | 11.3 ワイルドカード
+      TmWildcard (Ty Wildcard) (Term Wildcard)
+    deriving stock (Show, Eq)
 
   data Ty Wildcard
-    = TyArr (Ty Wildcard) (Ty Wildcard) -- ^ 関数の型
-    deriving (Show, Eq)
+    = -- | 関数の型
+      TyArr (Ty Wildcard) (Ty Wildcard)
+    deriving stock (Show, Eq)
 
   data Context Wildcard
-    = CtxEmpty -- ^ 空の文脈
-    | CtxVar (Context Wildcard) VarName (Ty Wildcard) -- ^ 項変数の束縛
-    deriving (Show, Eq)
+    = -- | 空の文脈
+      CtxEmpty
+    | -- | 項変数の束縛
+      CtxVar (Context Wildcard) VarName (Ty Wildcard)
+    deriving stock (Show, Eq)
 
   data Pattern Wildcard
 
@@ -69,11 +75,11 @@ instance System Wildcard where
           if tyT2 == tyT11
             then tyT12
             else
-              error . unlines
-                $ [ "parameter type mismatch (T-APP): ",
-                    "tyT2: " <> show tyT2,
-                    "tyT11: " <> show tyT11
-                    ]
+              error . unlines $
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                ]
       where
         tyT1 = typeof ctx t1
         tyT2 = typeof ctx t2

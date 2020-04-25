@@ -1,20 +1,21 @@
-{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE TypeApplications #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+
 module Language.Recon.Exercise.Ex22_7_1
-  ( calcPrincipalType
-  , runRecon
-  , example1
-  , example2
-  , example3
-  , example4
+  ( calcPrincipalType,
+    runRecon,
+    example1,
+    example2,
+    example3,
+    example4,
   )
 where
 
 import RIO
 import qualified RIO.List as List
-import qualified RIO.Set  as Set
+import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 
 data Ty
@@ -35,20 +36,26 @@ data Term
   | TmSucc Term
   | TmPred Term
   | TmIsZero Term
-  | TmLet VarName Term Term  -- ^ 追加した
-  | TmLamInf VarName Term    -- ^ 追加した
+  | -- | 追加した
+    TmLet VarName Term Term
+  | -- | 追加した
+    TmLamInf VarName Term
   deriving (Eq, Show)
 
 type ConstraintSet = [(Ty, Ty)]
+
 type Context = [(VarName, Ty)]
+
 type VarName = Text
+
 type ReturnType = Ty
+
 type TyVarIdStream = [VarName]
 
 runRecon :: Term -> (ReturnType, ConstraintSet)
 runRecon = extract . recon [] tyVarIdStream
   where
-    tyVarIdStream = map (tshow @Int) [1..]
+    tyVarIdStream = map (tshow @Int) [1 ..]
     extract (ty, _, constr) = (ty, constr)
 
 recon ::
@@ -62,15 +69,15 @@ recon ctx varIds = \case
         ty = fromMaybe (error msg) $ List.lookup x ctx
      in (ty, varIds, [])
   TmLam x ty t ->
-    let (rt, restVarIds, c) = recon ((x,ty):ctx) varIds t
+    let (rt, restVarIds, c) = recon ((x, ty) : ctx) varIds t
      in (TyArr ty rt, restVarIds, c)
   TmApp t1 t2 ->
     let (rt1, restVarIds1, c1) = recon ctx varIds t1
-        (rt2, x:restVarIds2, c2) = recon ctx restVarIds1 t2
+        (rt2, x : restVarIds2, c2) = recon ctx restVarIds1 t2
         rt = TyVar x
         c = c1 <> c2 <> [(rt1, TyArr rt2 rt)]
-     in(rt, restVarIds2, c)
-  TmTrue  -> (TyBool, varIds, [])
+     in (rt, restVarIds2, c)
+  TmTrue -> (TyBool, varIds, [])
   TmFalse -> (TyBool, varIds, [])
   TmIf t1 t2 t3 ->
     let (rt1, restVarIds1, c1) = recon ctx varIds t1
@@ -89,17 +96,17 @@ recon ctx varIds = \case
     let (rt, restVarIds, c) = recon ctx varIds t
      in (TyBool, restVarIds, c <> [(rt, TyNat)])
   TmLet x t1 t2 ->
-    let (_, restVarIds1, c1) = recon ctx varIds  t1
+    let (_, restVarIds1, c1) = recon ctx varIds t1
         (rt2, restVarIds2, c2) = recon ctx restVarIds1 (subst (x, t1) t2)
      in (rt2, restVarIds2, c1 <> c2)
   TmLamInf _ t ->
-    let (x:restVarIds1) = varIds
+    let (x : restVarIds1) = varIds
         tyX = TyVar x
-        (rt, restVarIds2, c) = recon ((x, tyX):ctx) restVarIds1 t
+        (rt, restVarIds2, c) = recon ((x, tyX) : ctx) restVarIds1 t
      in (TyArr tyX rt, restVarIds2, c)
 
 subst :: (VarName, Term) -> Term -> Term
-subst a@(x, s) = \case 
+subst a@(x, s) = \case
   t@(TmVar y)
     | x == y -> s
     | otherwise -> t
@@ -140,27 +147,27 @@ getFreeVars = Set.toList . go Set.empty
 
 unify :: ConstraintSet -> ConstraintSet
 unify [] = []
-unify ((s, t):c')
-  | s == t  = unify c'
+unify ((s, t) : c')
+  | s == t = unify c'
   | isVar s && s `notInFv` t =
-      let sigma = (s, t)
-      in  sigma : unify (map (applyC sigma) c')
+    let sigma = (s, t)
+     in sigma : unify (map (applyC sigma) c')
   | isVar t && t `notInFv` s =
-      let sigma = (t, s)
-      in  sigma : unify (map (applyC sigma) c')
+    let sigma = (t, s)
+     in sigma : unify (map (applyC sigma) c')
   | isArr s && isArr t =
-      let TyArr s1 s2 = s
-          TyArr t1 t2 = t
-      in  unify ([(s1, t1), (s2, t2)] ++ c')
+    let TyArr s1 s2 = s
+        TyArr t1 t2 = t
+     in unify ([(s1, t1), (s2, t2)] ++ c')
   | otherwise = error "fail"
 
 -- utils
 isVar :: Ty -> Bool
-isVar TyVar{} = True
+isVar TyVar {} = True
 isVar _ = False
 
 isArr :: Ty -> Bool
-isArr TyArr{} = True
+isArr TyArr {} = True
 isArr _ = False
 
 notInFv :: Ty -> Ty -> Bool
@@ -179,10 +186,10 @@ applyC sigma = fork (apply sigma)
 
 apply :: (Ty, Ty) -> Ty -> Ty
 apply _ TyBool = TyBool
-apply _ TyNat  = TyNat
+apply _ TyNat = TyNat
 apply sigma (TyArr ty1 ty2) = (TyArr `on` apply sigma) ty1 ty2
 apply (s, t) u
-  | s == u    = t
+  | s == u = t
   | otherwise = u
 
 runUnify :: (Ty, ConstraintSet) -> Ty
@@ -213,7 +220,7 @@ example2 = TmLet "double" var body
 let double = \f -> \a:Bool -> f (f a)
 in let a = double (\x:Nat  -> succ (succ x)) 2
   in let b = double (\x:Bool -> x) false
-    in 
+    in
 
 >>> calcPrincipalType $ example3 $ TmVar "a"
 TyNat
@@ -222,8 +229,8 @@ TyNat
 TyBool
 
 >>> calcPrincipalType $ example3 $ TmVar "double"
-TyArr 
-    ( TyArr ( TyVar "?X_20" ) ( TyVar "?X_20" ) ) 
+TyArr
+    ( TyArr ( TyVar "?X_20" ) ( TyVar "?X_20" ) )
     ( TyArr ( TyVar "?X_20" ) ( TyVar "?X_20" ) )
 -}
 example3 :: Term -> Term
@@ -236,11 +243,11 @@ example3 body = TmLet "double" decl body1
 {-
 >>> runRecon example4
 ( TyNat
-, 
-    [ 
+,
+    [
         ( TyBool
         , TyArr TyNat ( TyVar "?X_1" )
-        ) 
+        )
     ]
 )
 

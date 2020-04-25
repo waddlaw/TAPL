@@ -4,8 +4,8 @@ module Language.FullSimpleLambda.System.Pair
     Ty (..),
     Context (..),
     eval,
-    typeof
-    )
+    typeof,
+  )
 where
 
 import Language.FullSimpleLambda.Class
@@ -16,25 +16,34 @@ data Pair
 type Value = Term Pair
 
 instance System Pair where
-
   data Term Pair
-    = TmVar Int -- ^ 変数
-    | TmLam VarName (Ty Pair) (Term Pair) -- ^ ラムダ抽象
-    | TmApp (Term Pair) (Term Pair) -- ^ 関数適用
-    | TmPair (Term Pair) (Term Pair) -- ^ 2つ組
-    | TmPairFst (Term Pair) -- ^ 第一要素の射影
-    | TmPairSnd (Term Pair) -- ^ 第二要素の射影
-    deriving (Show, Eq)
+    = -- | 変数
+      TmVar Int
+    | -- | ラムダ抽象
+      TmLam VarName (Ty Pair) (Term Pair)
+    | -- | 関数適用
+      TmApp (Term Pair) (Term Pair)
+    | -- | 2つ組
+      TmPair (Term Pair) (Term Pair)
+    | -- | 第一要素の射影
+      TmPairFst (Term Pair)
+    | -- | 第二要素の射影
+      TmPairSnd (Term Pair)
+    deriving stock (Show, Eq)
 
   data Ty Pair
-    = TyArr (Ty Pair) (Ty Pair) -- ^ 関数の型
-    | TyProd (Ty Pair) (Ty Pair) -- ^ 直積型
-    deriving (Show, Eq)
+    = -- | 関数の型
+      TyArr (Ty Pair) (Ty Pair)
+    | -- | 直積型
+      TyProd (Ty Pair) (Ty Pair)
+    deriving stock (Show, Eq)
 
   data Context Pair
-    = CtxEmpty -- ^ 空の文脈
-    | CtxVar (Context Pair) VarName (Ty Pair) -- ^ 項変数の束縛
-    deriving (Show, Eq)
+    = -- | 空の文脈
+      CtxEmpty
+    | -- | 項変数の束縛
+      CtxVar (Context Pair) VarName (Ty Pair)
+    deriving stock (Show, Eq)
 
   data Pattern Pair
 
@@ -82,11 +91,11 @@ instance System Pair where
           if tyT2 == tyT11
             then tyT12
             else
-              error . unlines
-                $ [ "parameter type mismatch (T-APP): ",
-                    "tyT2: " <> show tyT2,
-                    "tyT11: " <> show tyT11
-                    ]
+              error . unlines $
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1

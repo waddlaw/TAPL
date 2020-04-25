@@ -1,16 +1,16 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.Recon.Sigma
-  ( dom
-  , range
-  , example
+  ( dom,
+    range,
+    example,
   )
 where
 
-import RIO
-import qualified RIO.Map  as Map
-import qualified RIO.Set  as Set
-
 import Language.Recon.Type
+import RIO
+import qualified RIO.Map as Map
+import qualified RIO.Set as Set
 
 -- >>> dom example
 -- fromList ["X","Y","Z"]
@@ -23,8 +23,9 @@ range :: Sigma -> Set Ty
 range = Set.fromList . Map.elems
 
 example :: Sigma
-example = Map.fromList
-  [ ("X", TyBool)
-  , ("Y", TyArr (TyVar "X") (TyVar "X"))
-  , ("Z", TyBool)
-  ]
+example =
+  Map.fromList
+    [ ("X", TyBool),
+      ("Y", TyArr (TyVar "X") (TyVar "X")),
+      ("Z", TyBool)
+    ]

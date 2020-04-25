@@ -1,16 +1,15 @@
 module Language.FullSimpleLambda.Parser
-  ( runFullSimpleLambdaParser
+  ( runFullSimpleLambdaParser,
   )
 where
 
+import Control.Monad.Trans.State
 import Language.Core.Parser
 import Language.FullSimpleLambda.Types
-
 import RIO hiding (try)
 import qualified RIO.List as List
 import qualified RIO.List.Partial as List.Partial
 import qualified RIO.Text as Text
-import Control.Monad.Trans.State
 import Text.Parser.Token.Highlight
 import Text.Trifecta
 
@@ -94,11 +93,12 @@ identP = do
   return v
 
 defaultIdentStyle :: IdentifierStyle Parser
-defaultIdentStyle = IdentifierStyle
-  { _styleName = "FullSimpleLambda",
-    _styleStart = oneOf ['a' .. 'z'],
-    _styleLetter = alphaNum,
-    _styleReserved = mempty,
-    _styleHighlight = Identifier,
-    _styleReservedHighlight = ReservedIdentifier
+defaultIdentStyle =
+  IdentifierStyle
+    { _styleName = "FullSimpleLambda",
+      _styleStart = oneOf ['a' .. 'z'],
+      _styleLetter = alphaNum,
+      _styleReserved = mempty,
+      _styleHighlight = Identifier,
+      _styleReservedHighlight = ReservedIdentifier
     }

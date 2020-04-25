@@ -6,8 +6,8 @@ module Language.UntypedLambda.Lib.Int
     succNI,
     plusI,
     isZeroI,
-    isAbsOneI
-    )
+    isAbsOneI,
+  )
 where
 
 import Language.UntypedLambda.Lib.Base

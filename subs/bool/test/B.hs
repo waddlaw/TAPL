@@ -2,14 +2,14 @@ module B where
 
 import Language.B
 import qualified Language.B.Example as B
-
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
 
 test_reduction :: TestTree
 test_reduction =
-  testGroup "Check reduction"
+  testGroup
+    "Check reduction"
     [ testCase "reduction" $ do
         let t1 = TmIf TmFalse TmTrue TmFalse
             t = TmIf TmTrue t1 TmTrue
@@ -18,7 +18,8 @@ test_reduction =
 
 test_proof :: TestTree
 test_proof =
-  testGroup "Proob"
+  testGroup
+    "Proob"
     [ testCase "derivable" $ do
         let z1 = B.example
             z2 = EvalRelation (TmIf TmTrue TmTrue TmFalse, TmTrue)

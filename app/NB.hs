@@ -2,9 +2,9 @@ module Main (main) where
 
 import Language.Core
 import Language.NB
-import Prelude (putStrLn)
 import RIO
 import System.Console.Haskeline
+import Prelude (putStrLn)
 
 main :: IO ()
 main = do

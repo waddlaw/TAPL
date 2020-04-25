@@ -1,7 +1,4 @@
-module Language.SystemF.Parser
-  ( runSystemFParser
-    )
-where
+module Language.SystemF.Parser (runSystemFParser) where
 
 -- λs:Bool.λz:Bool.s (s z)
 -- λf:Bool.(λx:Bool.f (λy:Bool. (x x) y)) (λx:Bool. f (λy:Bool. (x x) y))
@@ -36,7 +33,8 @@ factorP =
     <|> ifP
     <|> lambdaP
     <|> token constP
-    -- <|> varP
+
+-- <|> varP
 
 lambdaP :: StateT Context Parser Term
 lambdaP =
@@ -95,11 +93,12 @@ identP = do
   return (VarName v)
 
 defaultIdentStyle :: IdentifierStyle Parser
-defaultIdentStyle = IdentifierStyle
-  { _styleName = "SystemF",
-    _styleStart = oneOf ['a' .. 'z'],
-    _styleLetter = alphaNum,
-    _styleReserved = mempty,
-    _styleHighlight = Identifier,
-    _styleReservedHighlight = ReservedIdentifier
+defaultIdentStyle =
+  IdentifierStyle
+    { _styleName = "SystemF",
+      _styleStart = oneOf ['a' .. 'z'],
+      _styleLetter = alphaNum,
+      _styleReserved = mempty,
+      _styleHighlight = Identifier,
+      _styleReservedHighlight = ReservedIdentifier
     }

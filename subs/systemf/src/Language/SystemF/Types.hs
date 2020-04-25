@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.SystemF.Types
   ( Ty (..),
     Term (..),
@@ -10,28 +11,30 @@ module Language.SystemF.Types
     pprTerm,
     VarName (..),
     Value,
-    )
+  )
 where
 
+import Data.Text.Prettyprint.Doc
 import RIO
 import qualified RIO.List.Partial as L.Partial
-
-import Data.Text.Prettyprint.Doc
 
 newtype Context = Context {unCtx :: [Binding]}
   deriving stock (Eq, Show)
   deriving (Semigroup, Monoid) via [Binding]
 
 addContext :: Binding -> Context -> Context
-addContext v = Context . (v:) . unCtx
+addContext v = Context . (v :) . unCtx
 
 toContext :: Binding -> Context
 toContext = Context . pure
 
 data Binding
-  = EmptyBinding           -- ^ 9-1.  empty context
-  | TermVarBind VarName Ty -- ^ 9-1.  term variable binding
-  | TypeVarBind TyVarName  -- ^ 23-1. type variable binding
+  = -- | 9-1.  empty context
+    EmptyBinding
+  | -- | 9-1.  term variable binding
+    TermVarBind VarName Ty
+  | -- | 23-1. type variable binding
+    TypeVarBind TyVarName
   deriving stock (Eq, Show)
 
 instance Pretty Binding where
@@ -41,12 +44,18 @@ instance Pretty Binding where
     TypeVarBind tyVarName -> pretty tyVarName
 
 data Ty
-  = TyBool                  -- ^ 8-1.  type of booleans
-  | TyNat                   -- ^ 8-2.  type of natural numbers
-  | TyArr Ty Ty             -- ^ 9-1.  type of functions
-  | TyList Ty               -- ^ 11-13 type of lists
-  | TyVar TyVarName Int     -- ^ 23-1  type variable
-  | TyForAll TyVarName Ty   -- ^ 23-1. universal type
+  = -- | 8-1.  type of booleans
+    TyBool
+  | -- | 8-2.  type of natural numbers
+    TyNat
+  | -- | 9-1.  type of functions
+    TyArr Ty Ty
+  | -- | 11-13 type of lists
+    TyList Ty
+  | -- | 23-1  type variable
+    TyVar TyVarName Int
+  | -- | 23-1. universal type
+    TyForAll TyVarName Ty
   deriving stock (Eq, Show)
 
 instance Pretty Ty where
@@ -81,24 +90,42 @@ newtype TyVarName = TyVarName Text
 type Value = Term
 
 data Term
-  = TmTrue                    -- ^ 3-1.   constant true
-  | TmFalse                   -- ^ 3-1.   constant false
-  | TmIf Term Term Term       -- ^ 3-1.   conditional
-  | TmZero                    -- ^ 3-2.   constant zero
-  | TmSucc Term               -- ^ 3-2.   successor
-  | TmPred Term               -- ^ 3-2.   predecessor
-  | TmIsZero Term             -- ^ 3-2.   zero test
-  | TmVar VarName Int         -- ^ 9-1.   variable
-  | TmLam VarName Ty Term     -- ^ 9-1.   abstraction
-  | TmApp Term Term           -- ^ 9-1.   application
-  | TmFix Term                -- ^ 11-12. fixed point of t
-  | TmNil                     -- ^ 11-13. empty list
-  | TmCons                    -- ^ 11-13. list constructor
-  | TmIsNil                   -- ^ 11-13. test for empty list
-  | TmHead                    -- ^ 11-13. head of a list
-  | TmTail                    -- ^ 11-13. tail of a list
-  | TmTypeLam TyVarName Term  -- ^ 23-1.  type abstraction
-  | TmTypeApp Term Ty         -- ^ 23-1.  type application
+  = -- | 3-1.   constant true
+    TmTrue
+  | -- | 3-1.   constant false
+    TmFalse
+  | -- | 3-1.   conditional
+    TmIf Term Term Term
+  | -- | 3-2.   constant zero
+    TmZero
+  | -- | 3-2.   successor
+    TmSucc Term
+  | -- | 3-2.   predecessor
+    TmPred Term
+  | -- | 3-2.   zero test
+    TmIsZero Term
+  | -- | 9-1.   variable
+    TmVar VarName Int
+  | -- | 9-1.   abstraction
+    TmLam VarName Ty Term
+  | -- | 9-1.   application
+    TmApp Term Term
+  | -- | 11-12. fixed point of t
+    TmFix Term
+  | -- | 11-13. empty list
+    TmNil
+  | -- | 11-13. list constructor
+    TmCons
+  | -- | 11-13. test for empty list
+    TmIsNil
+  | -- | 11-13. head of a list
+    TmHead
+  | -- | 11-13. tail of a list
+    TmTail
+  | -- | 23-1.  type abstraction
+    TmTypeLam TyVarName Term
+  | -- | 23-1.  type application
+    TmTypeApp Term Ty
   deriving stock (Eq, Show)
 
 instance Pretty Term where
@@ -118,28 +145,26 @@ pprTerm ctx = \case
     let ctx' = addContext (TypeVarBind tyVarName) ctx
      in "λ" <> pretty tyVarName <> "." <+> pprTerm ctx' t
   TmTypeApp t ty -> wrapPpr t <+> brackets (pprType ctx ty)
-
-  TmZero      -> "0"
-  TmSucc t    -> "succ" <+> parens (pprTerm ctx t)
-  TmPred t    -> "pred" <+> parens (pprTerm ctx t)
-  TmIsZero t  -> "iszero" <+> parens (pprTerm ctx t)
-
-  TmTrue        -> "true"
-  TmFalse       -> "false"
+  TmZero -> "0"
+  TmSucc t -> "succ" <+> parens (pprTerm ctx t)
+  TmPred t -> "pred" <+> parens (pprTerm ctx t)
+  TmIsZero t -> "iszero" <+> parens (pprTerm ctx t)
+  TmTrue -> "true"
+  TmFalse -> "false"
   TmIf t1 t2 t3 ->
-    "if"   <+> pprTerm ctx t1 <+>
-    "then" <+> pprTerm ctx t2 <+>
-    "else" <+> pprTerm ctx t3
-
+    "if" <+> pprTerm ctx t1
+      <+> "then"
+      <+> pprTerm ctx t2
+      <+> "else"
+      <+> pprTerm ctx t3
   -- 11-12. General recursion
   TmFix t -> "fix" <+> pprTerm ctx t
-
   -- 11-13. Lists
-  TmNil   -> "[]"
-  TmCons  -> "(:)"
+  TmNil -> "[]"
+  TmCons -> "(:)"
   TmIsNil -> "isnil"
-  TmHead  -> "head"
-  TmTail  -> "tail"
+  TmHead -> "head"
+  TmTail -> "tail"
   where
     wrapPpr a
       | isAtom a = pprTerm ctx a
@@ -150,30 +175,30 @@ class IsAtom a where
 
 instance IsAtom Ty where
   isAtom = \case
-    TyNat      -> True
-    TyBool     -> True
-    TyArr{}    -> False
-    TyVar{}    -> True
-    TyForAll{} -> False
-    TyList{}   -> False
+    TyNat -> True
+    TyBool -> True
+    TyArr {} -> False
+    TyVar {} -> True
+    TyForAll {} -> False
+    TyList {} -> False
 
 instance IsAtom Term where
   isAtom = \case
-    TmVar{}     -> True
-    TmLam{}     -> False
-    TmApp{}     -> False
-    TmTypeLam{} -> False
-    TmTypeApp{} -> False
-    TmTrue      -> True
-    TmFalse     -> True
-    TmIf{}      -> False
-    TmZero      -> True
-    TmSucc{}    -> False
-    TmPred{}    -> False
-    TmIsZero{}  -> False
-    TmFix{}     -> False
-    TmNil       -> True
-    TmCons{}    -> False
-    TmIsNil{}   -> False
-    TmHead{}    -> False
-    TmTail{}    -> False
+    TmVar {} -> True
+    TmLam {} -> False
+    TmApp {} -> False
+    TmTypeLam {} -> False
+    TmTypeApp {} -> False
+    TmTrue -> True
+    TmFalse -> True
+    TmIf {} -> False
+    TmZero -> True
+    TmSucc {} -> False
+    TmPred {} -> False
+    TmIsZero {} -> False
+    TmFix {} -> False
+    TmNil -> True
+    TmCons {} -> False
+    TmIsNil {} -> False
+    TmHead {} -> False
+    TmTail {} -> False

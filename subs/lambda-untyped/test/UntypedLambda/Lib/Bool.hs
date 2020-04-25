@@ -3,7 +3,6 @@
 module UntypedLambda.Lib.Bool where
 
 import Language.UntypedLambda.Lib.Bool
-
 import RIO
 import Test.Tasty
 import Test.Tasty.HUnit
@@ -11,7 +10,8 @@ import Utils
 
 test_ul :: TestTree
 test_ul =
-  testGroup "UntypedLambda.Lib.Base"
+  testGroup
+    "UntypedLambda.Lib.Base"
     [ testCase "test" $ do
         evalAllStrategy (mkTest tru tru fls) tru
         evalAllStrategy (mkTest fls tru fls) fls,
@@ -28,4 +28,4 @@ test_ul =
       testCase "not" $ do
         evalAllStrategy (mkNot fls) tru
         evalAllStrategy (mkNot tru) fls
-      ]
+    ]

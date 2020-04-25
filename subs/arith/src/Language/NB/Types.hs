@@ -1,12 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 module Language.NB.Types
-  ( Term (..)
-  , TmError (..)
+  ( Term (..),
+    TmError (..),
   )
 where
 
-import RIO
 import Data.Text.Prettyprint.Doc
+import RIO
 
 data Term
   = TmTrue
@@ -20,16 +21,18 @@ data Term
 
 instance Pretty Term where
   pretty = \case
-    TmTrue        -> "true"
-    TmFalse       -> "false"
+    TmTrue -> "true"
+    TmFalse -> "false"
     TmIf t1 t2 t3 ->
-      "if"   <+> pretty t1 <+>
-      "then" <+> pretty t2 <+>
-      "else" <+> pretty t3
-    TmZero        -> "0"
-    TmSucc   t    -> "succ"   <+> pretty t
-    TmPred   t    -> "pred"   <+> pretty t
-    TmIsZero t    -> "iszero" <+> pretty t
+      "if" <+> pretty t1
+        <+> "then"
+        <+> pretty t2
+        <+> "else"
+        <+> pretty t3
+    TmZero -> "0"
+    TmSucc t -> "succ" <+> pretty t
+    TmPred t -> "pred" <+> pretty t
+    TmIsZero t -> "iszero" <+> pretty t
 
 data TmError = NoRuleApplies
   deriving stock (Eq, Show)

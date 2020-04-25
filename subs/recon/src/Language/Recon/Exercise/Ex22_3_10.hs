@@ -1,19 +1,21 @@
-{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TypeApplications  #-}
+{-# LANGUAGE TypeApplications #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
+
 module Language.Recon.Exercise.Ex22_3_10 where
 
 import RIO
 import qualified RIO.List as List
-import qualified RIO.Set  as Set
+import qualified RIO.Set as Set
 import qualified RIO.Text as Text
 
 data Ty
   = TyBool
   | TyNat
   | TyArr Ty Ty
-  | TyVar VarName  -- ^ TyId
+  | -- | TyId
+    TyVar VarName
   deriving (Eq, Show, Ord)
 
 data Term
@@ -30,24 +32,28 @@ data Term
   deriving (Eq, Show)
 
 type ConstraintSet = Set (Ty, Ty)
+
 type Context = [(VarName, Ty)]
+
 type VarName = Text
+
 type ReturnType = Ty
+
 type TyVarIdStream = [VarName]
 
 -- >>> runTypingC (TmApp TmZero TmTrue)
--- ( TyVar "?X_1" 
--- , fromList 
---    [ 
+-- ( TyVar "?X_1"
+-- , fromList
+--    [
 --        ( TyNat
 --        , TyArr TyBool ( TyVar "?X_1" )
---        ) 
+--        )
 --    ]
 --)
 runTypingC :: Term -> (ReturnType, ConstraintSet)
 runTypingC = extract . typingC [] tyVarIdStream
   where
-    tyVarIdStream = map (("?X_" <>) . tshow @Int) [1..]
+    tyVarIdStream = map (("?X_" <>) . tshow @Int) [1 ..]
     -- stream を捨てないと、結果を表示する際に計算が止まらなくなるので注意
     extract (ty, _, constr) = (ty, constr)
 
@@ -63,15 +69,15 @@ typingC ctx varIds = \case
         ty = fromMaybe (error msg) $ List.lookup x ctx
      in (ty, varIds, Set.empty)
   TmLam x ty t ->
-    let (rt, restVarIds, c) = typingC ((x,ty):ctx) varIds t
+    let (rt, restVarIds, c) = typingC ((x, ty) : ctx) varIds t
      in (TyArr ty rt, restVarIds, c)
   TmApp t1 t2 ->
     let (rt1, restVarIds1, c1) = typingC ctx varIds t1
-        (rt2, x:restVarIds2, c2) = typingC ctx restVarIds1 t2
+        (rt2, x : restVarIds2, c2) = typingC ctx restVarIds1 t2
         rt = TyVar x
         c = c1 <> c2 <> Set.singleton (rt1, TyArr rt2 rt)
      in (rt, restVarIds2, c)
-  TmTrue  -> (TyBool, varIds, Set.empty)
+  TmTrue -> (TyBool, varIds, Set.empty)
   TmFalse -> (TyBool, varIds, Set.empty)
   TmIf t1 t2 t3 ->
     let (rt1, restVarIds1, c1) = typingC ctx varIds t1
@@ -99,24 +105,24 @@ ex22_3_3 = TmLam "x" (TyVar "X") . TmLam "y" (TyVar "Y") . TmLam "z" (TyVar "Z")
     t2 = TmApp (TmVar "y") (TmVar "z")
 
 {-
-λ> runTypingC ex22_3_3 
-( TyArr ( TyVar "X" ) 
-    ( TyArr ( TyVar "Y" ) 
+λ> runTypingC ex22_3_3
+( TyArr ( TyVar "X" )
+    ( TyArr ( TyVar "Y" )
         ( TyArr ( TyVar "Z" ) ( TyVar "?X_3" ) )
     )
-, fromList 
-    [ 
-        ( TyVar "?X_1" 
+, fromList
+    [
+        ( TyVar "?X_1"
         , TyArr ( TyVar "?X_2" ) ( TyVar "?X_3" )
-        ) 
-    , 
-        ( TyVar "X" 
+        )
+    ,
+        ( TyVar "X"
         , TyArr ( TyVar "Z" ) ( TyVar "?X_1" )
-        ) 
-    , 
-        ( TyVar "Y" 
+        )
+    ,
+        ( TyVar "Y"
         , TyArr ( TyVar "Z" ) ( TyVar "?X_2" )
-        ) 
-    ] 
+        )
+    ]
 )
 -}

@@ -4,8 +4,8 @@ module Language.FullSimpleLambda.System.Tuple
     Ty (..),
     Context (..),
     eval,
-    typeof
-    )
+    typeof,
+  )
 where
 
 import Language.FullSimpleLambda.Class
@@ -17,24 +17,32 @@ data Tuple
 type Value = Term Tuple
 
 instance System Tuple where
-
   data Term Tuple
-    = TmVar Int -- ^ 変数
-    | TmLam VarName (Ty Tuple) (Term Tuple) -- ^ ラムダ抽象
-    | TmApp (Term Tuple) (Term Tuple) -- ^ 関数適用
-    | TmTuple [Term Tuple] -- ^ 組
-    | TmTupleProj Int (Term Tuple) -- ^ 射影
-    deriving (Show, Eq)
+    = -- | 変数
+      TmVar Int
+    | -- | ラムダ抽象
+      TmLam VarName (Ty Tuple) (Term Tuple)
+    | -- | 関数適用
+      TmApp (Term Tuple) (Term Tuple)
+    | -- | 組
+      TmTuple [Term Tuple]
+    | -- | 射影
+      TmTupleProj Int (Term Tuple)
+    deriving stock (Show, Eq)
 
   data Ty Tuple
-    = TyArr (Ty Tuple) (Ty Tuple) -- ^ 関数の型
-    | TyTuple [Ty Tuple] -- ^ 組の型
-    deriving (Show, Eq)
+    = -- | 関数の型
+      TyArr (Ty Tuple) (Ty Tuple)
+    | -- | 組の型
+      TyTuple [Ty Tuple]
+    deriving stock (Show, Eq)
 
   data Context Tuple
-    = CtxEmpty -- ^ 空の文脈
-    | CtxVar (Context Tuple) VarName (Ty Tuple) -- ^ 項変数の束縛
-    deriving (Show, Eq)
+    = -- | 空の文脈
+      CtxEmpty
+    | -- | 項変数の束縛
+      CtxVar (Context Tuple) VarName (Ty Tuple)
+    deriving stock (Show, Eq)
 
   data Pattern Tuple
 
@@ -80,11 +88,11 @@ instance System Tuple where
           if tyT2 == tyT11
             then tyT12
             else
-              error . unlines
-                $ [ "parameter type mismatch (T-APP): ",
-                    "tyT2: " <> show tyT2,
-                    "tyT11: " <> show tyT11
-                    ]
+              error . unlines $
+                [ "parameter type mismatch (T-APP): ",
+                  "tyT2: " <> show tyT2,
+                  "tyT11: " <> show tyT11
+                ]
         _ -> error "arrow type expected (T-APP)"
       where
         tyT1 = typeof ctx t1

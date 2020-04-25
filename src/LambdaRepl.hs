@@ -1,6 +1,6 @@
 module LambdaRepl
-  ( module LambdaRepl.Options
-  , module LambdaRepl.Types
+  ( module LambdaRepl.Options,
+    module LambdaRepl.Types,
   )
 where
 

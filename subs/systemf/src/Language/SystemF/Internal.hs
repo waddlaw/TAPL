@@ -1,8 +1,8 @@
 module Language.SystemF.Internal
   ( isValue,
     isNumericValue,
-    mkN
-    )
+    mkN,
+  )
 where
 
 import Language.SystemF.Types
@@ -15,18 +15,14 @@ isValue = \case
   TmTrue -> True
   -- 3-1. false value
   TmFalse -> True
-
   -- 9-1. abstraction value
-  TmLam{} -> True
-
+  TmLam {} -> True
   -- 11-13. empty list
   TmNil -> True
   -- 11-13. list constructor
-  TmApp (TmApp TmCons t1) t2 -> isValue t1 && isValue t2 
-
+  TmApp (TmApp TmCons t1) t2 -> isValue t1 && isValue t2
   -- 23-1. type abstraction value
-  TmTypeLam{} -> True
-
+  TmTypeLam {} -> True
   -- 3-2. numeric value
   t -> isNumericValue t
 
@@ -41,4 +37,4 @@ isNumericValue = \case
 
 mkN :: Int -> Term
 mkN 0 = TmZero
-mkN n = TmSucc $ mkN (n-1)
+mkN n = TmSucc $ mkN (n -1)

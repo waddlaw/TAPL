@@ -1,12 +1,12 @@
 module Language.Recon.Type
-  ( Ty (..)
-  , VarName
-  , Term (..)
-  , Context
-  , TyVarName
-  , Sigma
-  , ConstraintSet
-  , ReturnType
+  ( Ty (..),
+    VarName,
+    Term (..),
+    Context,
+    TyVarName,
+    Sigma,
+    ConstraintSet,
+    ReturnType,
   )
 where
 
@@ -34,11 +34,14 @@ data Term
   deriving stock (Eq, Show)
 
 type Context = [(VarName, Ty)]
+
 type VarName = Text
+
 type TyVarName = Text
 
 -- 型代入
 type Sigma = Map TyVarName Ty
 
 type ConstraintSet = Set (Ty, Ty)
+
 type ReturnType = Ty

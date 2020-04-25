@@ -1,12 +1,11 @@
 module Language.B.Parser
-  ( bparser
-  , stepCmdParser
+  ( bparser,
+    stepCmdParser,
   )
 where
 
 import Language.B.Types
 import Language.Core.Parser
-
 import RIO
 import Text.Trifecta
 
@@ -22,9 +21,10 @@ elP :: Parser EvalRelation
 elP = EvalRelation <$> elP'
   where
     elP' =
-      (,) <$> token termP
-          <* symbol "->"
-          <*> token termP
+      (,)
+        <$> token termP
+        <* symbol "->"
+        <*> token termP
 
 termP :: Parser Term
 termP =
@@ -40,9 +40,10 @@ falseP = TmFalse <$ symbol "false"
 
 ifP :: Parser Term
 ifP =
-  TmIf <$ symbol "if"
-       <*> (parens termP <|> token termP)
-       <* symbol "then"
-       <*> (parens termP <|> token termP)
-       <* symbol "else"
-       <*> (parens termP <|> token termP)
+  TmIf
+    <$ symbol "if"
+    <*> (parens termP <|> token termP)
+    <* symbol "then"
+    <*> (parens termP <|> token termP)
+    <* symbol "else"
+    <*> (parens termP <|> token termP)

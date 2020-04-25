@@ -14,6 +14,7 @@ module LambdaRepl.Options
     repl,
     subCmd,
     defaultReplCmd,
+    execLambdaRepl,
   )
 where
 
@@ -21,11 +22,20 @@ import Data.Text.Prettyprint.Doc
 import LambdaRepl.Types
 import Language.Core
 import RIO hiding (trace)
-import qualified RIO.List as List
+import qualified RIO.List as L
 import RIO.Process
-import qualified RIO.Text as Text
+import qualified RIO.Text as T
 import System.Console.Haskeline hiding (display)
 import System.Environment
+
+execLambdaRepl :: Text -> String -> ReplCmd -> IO ()
+execLambdaRepl systemName prompt replCmd =
+  runApp $ do
+    let msg = systemName <> " (" <> T.pack prompt <> ") " <> "repl"
+    logInfo . display $ "Start " <> msg
+    logInfo ":help for a list of commands"
+    _ <- runInputT defaultSettings $ repl prompt replCmd
+    logInfo . display $ "Leaving " <> msg
 
 runApp :: MonadIO m => RIO ReplEnv a -> m a
 runApp m =
@@ -45,27 +55,38 @@ runApp m =
               }
        in runRIO app m
 
-evalCmd :: Pretty term => ParseFunc term -> EvalFunc term -> TraceFunc term -> Text -> LambdaREPL
+evalCmd ::
+  Pretty term =>
+  ParseFunc term ->
+  EvalFunc term ->
+  TraceFunc term ->
+  Text ->
+  LambdaREPL
 evalCmd parser evaluator tracer input =
   lift $
     ask >>= \ReplEnv {..} -> do
       strategy <- readIORef appStrategy
       isTrace <- readIORef appIsTrace
-      case parser (Text.unpack input) of
-        Left err -> logError $ display $ Text.pack err
+      case parser (T.unpack input) of
+        Left err -> logError . display $ T.pack err
         Right term ->
           if isTrace
             then mapM_ (logInfo . displayRender) $ tracer strategy term
-            else logInfo $ displayRender $ evaluator strategy term
+            else logInfo . displayRender $ evaluator strategy term
 
-tcCmd :: Pretty t => ParseFunc term -> (term -> t) -> Text -> LambdaREPL
+tcCmd ::
+  Pretty t =>
+  ParseFunc term ->
+  (term -> t) ->
+  Text ->
+  LambdaREPL
 tcCmd parser checker input =
-  lift $ case Text.stripPrefix ":t " input of
+  lift $ case T.stripPrefix ":t " input of
     Nothing -> logInfo "Bad command format."
     Just input' ->
-      case parser (Text.unpack input') of
-        Left err -> logError $ display $ Text.pack err
-        Right term -> logInfo $ display $ Text.pack $ render $ checker term
+      case parser (T.unpack input') of
+        Left err -> logError . display $ T.pack err
+        Right term -> logInfo . display . T.pack . render $ checker term
 
 helpCmd :: LambdaREPL
 helpCmd = lift (mapM_ (logInfo . display) $ "available commands" : cmdList)
@@ -93,7 +114,7 @@ printEnvCmd =
       strategy <- readIORef appStrategy
       isTrace <- readIORef appIsTrace
       let msg =
-            Text.unlines
+            T.unlines
               [ "strategy: " <> tshow strategy,
                 "isTrace: " <> tshow isTrace
               ]
@@ -114,7 +135,7 @@ updateEnvStrategyCmd input = do
   printEnvCmd
 
 readLastInput :: Read a => Text -> Maybe a
-readLastInput = ((readMaybe . Text.unpack) =<<) . List.lastMaybe . Text.words
+readLastInput = ((readMaybe . T.unpack) =<<) . L.lastMaybe . T.words
 
 listStrategyCmd :: LambdaREPL
 listStrategyCmd = mapM_ (outputStrLn . show) strategies
@@ -125,7 +146,7 @@ listPreludeCmd = outputStrLn . renderPrelude
 repl :: String -> ReplCmd -> LambdaREPL
 repl prompt cmd = do
   minput <- getInputLine (prompt ++ "> ")
-  case Text.pack . trim <$> minput of
+  case T.pack . trim <$> minput of
     Nothing -> return ()
     Just input -> do
       let continue = repl prompt cmd
@@ -139,20 +160,20 @@ repl prompt cmd = do
 
 getReplAction :: Text -> ReplCmd -> ReplAction
 getReplAction input cmd
-  | ":set" `Text.isPrefixOf` input = replCmdSet cmd
-  | ":unset" `Text.isPrefixOf` input = replCmdUnset cmd
-  | ":list" `Text.isPrefixOf` input = replCmdList cmd
-  | ":env" `Text.isPrefixOf` input = replCmdEnv cmd
-  | ":typecheck" `Text.isPrefixOf` input = replCmdTc cmd
-  | ":help" `Text.isPrefixOf` input = replCmdHelp cmd
-  | ":quit" `Text.isPrefixOf` input = replCmdQuit cmd
+  | ":set" `T.isPrefixOf` input = replCmdSet cmd
+  | ":unset" `T.isPrefixOf` input = replCmdUnset cmd
+  | ":list" `T.isPrefixOf` input = replCmdList cmd
+  | ":env" `T.isPrefixOf` input = replCmdEnv cmd
+  | ":typecheck" `T.isPrefixOf` input = replCmdTc cmd
+  | ":help" `T.isPrefixOf` input = replCmdHelp cmd
+  | ":quit" `T.isPrefixOf` input = replCmdQuit cmd
   | otherwise = getReplActionShort input cmd
 
 getReplActionShort :: Text -> ReplCmd -> ReplAction
 getReplActionShort input cmd
-  | ":t" `Text.isPrefixOf` input = replCmdTc cmd
-  | ":h" `Text.isPrefixOf` input = replCmdHelp cmd
-  | ":q" `Text.isPrefixOf` input = replCmdQuit cmd
+  | ":t" `T.isPrefixOf` input = replCmdTc cmd
+  | ":h" `T.isPrefixOf` input = replCmdHelp cmd
+  | ":q" `T.isPrefixOf` input = replCmdQuit cmd
   | otherwise = replCmdEval cmd
 
 defaultReplCmd :: ReplCmd
@@ -169,7 +190,7 @@ defaultReplCmd =
     }
 
 subCmd :: Text -> Text -> Text
-subCmd cmd = Text.strip . Text.dropPrefix (":" <> cmd)
+subCmd cmd = T.strip . T.dropPrefix (":" <> cmd)
 
 defaultCmdSet :: Text -> LambdaREPL
 defaultCmdSet input =

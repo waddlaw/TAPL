@@ -24,15 +24,13 @@ common common
 
   build-depends:
     , base
-    , haskeline
-    , lambda-core
     , rio
-    , rio-orphans
 
   default-language:   Haskell2010
 
 common app
   build-depends: tapl
+  ghc-options:   -O2
 
 library
   import:          common
@@ -44,39 +42,56 @@ library
     LambdaRepl.Types
 
   hs-source-dirs:  src
-  build-depends:   prettyprinter
+  build-depends:
+    , haskeline
+    , lambda-core
+    , prettyprinter
+    , rio-orphans
 
 executable nb
   import:        common, app
   main-is:       app/NB.hs
-  build-depends: arith
+  build-depends:
+    , arith
+    , haskeline
+    , lambda-core
 
 executable bool
   import:        common, app
   main-is:       app/B.hs
-  build-depends:
-    , bool
-    , prettyprinter
+  build-depends: bool
 
 executable untyped-lambda
   import:        common, app
   main-is:       app/UntypedLambda.hs
-  build-depends: lambda-untyped
+  build-depends:
+    , haskeline
+    , lambda-core
+    , lambda-untyped
 
 executable simple-lambda
   import:        common, app
   main-is:       app/SimpleLambda.hs
-  build-depends: lambda-simple
+  build-depends:
+    , haskeline
+    , lambda-core
+    , lambda-simple
 
 executable fullsimple-lambda
   import:        common, app
   main-is:       app/FullSimpleLambda.hs
-  build-depends: lambda-fullsimple
+  build-depends:
+    , haskeline
+    , lambda-core
+    , lambda-fullsimple
 
 executable fj
   import:        common, app
   main-is:       app/FJ.hs
-  build-depends: featherweight-java
+  build-depends:
+    , featherweight-java
+    , haskeline
+    , lambda-core
 
 benchmark gauge
   import:        common

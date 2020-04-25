@@ -2,41 +2,33 @@
 -- = Figure 19-2: auxiliary definitions
 -- =======================================
 {-# LANGUAGE OverloadedStrings #-}
-module Language.FJ.Helper
-  ( fields
-  , mbody
+
+module Language.FJ.Auxiliary
+  ( fields,
+    mtype,
+    mbody,
   )
 where
 
 import Language.FJ.Type
-
 import RIO
 import qualified RIO.List.Partial as List'
 
-{- |
->>> fields exCT (mkClass "Pair")
-[(mkClass "Object",FN "fst"),(mkClass "Object",FN "snd")]
--}
 fields :: ClassTable -> Class -> [(Class, Field)]
 fields ct = \case
   (getClassName -> "Object") -> []
-  c -> let CL _ d cfs _ _ = ct c
-        in cfs ++ fields ct d
+  c ->
+    let CL _ d cfs _ _ = ct c
+     in cfs ++ fields ct d
 
-{- |
->>> mtype exCT (MN "setfst") (CN "Pair")
-([CN "Object"],CN "Pair")
--}
--- TODO
--- mtype :: CT -> Method -> Class -> Maybe ([Class], Class)
--- mtype ct m = fmap f . maybeDefined ct m
---   where
---     f (M rt _ args _) = (map fst args, rt)
+mtype :: ClassTable -> Method -> Class -> Maybe ([Class], Class)
+mtype ct m = fmap f . maybeDefined ct m
+  where
+    f (M rt _ args _) = (map fst args, rt)
 
-{- |
->>> mbody exCT (MN "setfst") (CN "Pair")
-([VN "newfst"],TmNew (CN "Pair") [TmVar (VN "newfst"),TmFieldRef (TmVar (VN "this")) (FN "snd")])
--}
+-- |
+-- >>> mbody exCT (MN "setfst") (CN "Pair")
+-- ([VN "newfst"],TmNew (CN "Pair") [TmVar (VN "newfst"),TmFieldRef (TmVar (VN "this")) (FN "snd")])
 mbody :: ClassTable -> Method -> Class -> Maybe ([Var], Term)
 mbody ct m = fmap f . maybeDefined ct m
   where
@@ -45,16 +37,17 @@ mbody ct m = fmap f . maybeDefined ct m
 maybeDefined :: ClassTable -> Method -> Class -> Maybe MethodDef
 maybeDefined ct m = \case
   (getClassName -> "Object") -> Nothing
-  c -> let CL _ d _cfs _ ms = ct c
-        in findMethodDef m ms <|> maybeDefined ct m d
+  c ->
+    let CL _ d _cfs _ ms = ct c
+     in findMethodDef m ms <|> maybeDefined ct m d
 
 eqMethodDef :: Method -> MethodDef -> Bool
 eqMethodDef m1 (M _ m2 _ _) = m1 == m2
 
 findMethodDef :: Method -> [MethodDef] -> Maybe MethodDef
 findMethodDef m ms
-    | null md   = Nothing
-    | otherwise = Just (List'.head md)
+  | null md = Nothing
+  | otherwise = Just (List'.head md)
   where
     md = filter (eqMethodDef m) ms
 

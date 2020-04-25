@@ -36,9 +36,9 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     Language.FJ
+    Language.FJ.Auxiliary
     Language.FJ.Eval
     Language.FJ.Example
-    Language.FJ.Helper
     Language.FJ.Parser
     Language.FJ.Pretty
     Language.FJ.Type
@@ -57,4 +57,8 @@ test-suite fj-test
   build-tool-depends: tasty-discover:tasty-discover ^>=4.2
 
   -- cabal-fmt: expand test -Driver
-  other-modules:      FJ
+  other-modules:
+    FJ.Auxiliary
+    FJ.Eval
+    FJ.Parser
+    FJ.Pretty

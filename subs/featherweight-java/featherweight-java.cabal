@@ -22,10 +22,10 @@ common deps
     -Wredundant-constraints -Wtabs
 
   build-depends:
-    , base           >=4.12 && <4.14
-    , megaparsec     ^>=8.0
-    , prettyprinter  >=1.2  && <1.7
-    , rio            ^>=0.1
+    , base
+    , megaparsec
+    , prettyprinter
+    , rio
 
   default-language:   Haskell2010
 
@@ -50,11 +50,11 @@ test-suite fj-test
   main-is:            Driver.hs
   build-depends:
     , featherweight-java
-    , hspec-megaparsec    ^>=2.1
-    , tasty               ^>=1.2
-    , tasty-hspec         ^>=1.1
+    , hspec-megaparsec
+    , tasty
+    , tasty-hspec
 
-  build-tool-depends: tasty-discover:tasty-discover ^>=4.2
+  build-tool-depends: tasty-discover:tasty-discover -any
 
   -- cabal-fmt: expand test -Driver
   other-modules:

@@ -1,14 +1,11 @@
-module Language.SimpleLambda.Parser
-  ( runSimpleLambdaParser,
-  )
-where
+module Language.SimpleLambda.Parser (runSimpleLambdaParser) where
 
 -- λs:Bool.λz:Bool.s (s z)
 -- λf:Bool.(λx:Bool.f (λy:Bool. (x x) y)) (λx:Bool. f (λy:Bool. (x x) y))
 
 -- import qualified RIO.Map                     as Map
 import Control.Monad.Trans.State
-import Language.Core.Parser
+import Language.Core.Parser hiding (Parser, symbol)
 import Language.SimpleLambda.Types
 import RIO hiding (try)
 import qualified RIO.List as L

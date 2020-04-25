@@ -1,10 +1,7 @@
-module Language.FullSimpleLambda.Parser
-  ( runFullSimpleLambdaParser,
-  )
-where
+module Language.FullSimpleLambda.Parser (runFullSimpleLambdaParser) where
 
 import Control.Monad.Trans.State
-import Language.Core.Parser
+import Language.Core.Parser hiding (Parser, symbol)
 import Language.FullSimpleLambda.Types
 import RIO hiding (try)
 import qualified RIO.List as List

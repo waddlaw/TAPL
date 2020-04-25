@@ -3,29 +3,30 @@
 ![stack](https://github.com/waddlaw/TAPL/workflows/stack/badge.svg)
 ![cabal](https://github.com/waddlaw/TAPL/workflows/cabal/badge.svg)
 ![lint](https://github.com/waddlaw/TAPL/workflows/lint/badge.svg)
+![format](https://github.com/waddlaw/TAPL/workflows/format/badge.svg)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/8c7df8ad-e448-40fd-821e-9338ad72482b/deploy-status)](https://app.netlify.com/sites/tapl/deploys)
 
 ## Quick Start Guide
-
-app | versionn
-------|-------
-cabal-install | 3.2.0.0
-cabal-fmt | 0.1.2
-stack | 2.1.3
-ormolu | 0.0.5.0
 
 ```shell
 $ git clone https://github.com/waddlaw/TAPL.git
 $ cd TAPL
 ```
 
+app | versionn
+------|-------
+cabal-install | 3.2.0.0 or 3.0.0.0
+cabal-fmt | 0.1.2
+stack | 2.1.3
+ormolu | 0.0.5.0
+
 ## Available Systems
 
 chapter | package name        | parse | eval | typecheck | prettyprint | run application
 --------|---------------------|:-----:|:----:|:---------:|:-----------:|---------------
-ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run proofb`
+ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run bool`
 ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run nb`
-ch05    | lambda-Untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
+ch05    | lambda-untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
 ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | `stack run simple-lambda`
 ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | `stack run fullsimple-lambda`
 ch19    | featherweight-java  |   ✅  |  ✅  |     🚧    |     ✅     | `stack run fj`
@@ -43,9 +44,9 @@ ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     | �
 7. recon
 8. systemf
 
-Fig      | System Name                                      |1 |2 |3 |4 |5 |6 |7 |8 |
----------|--------------------------------------------------|--|--|--|--|--|--|--|--|
-3-1   | Booleans (B)                                        |✅|  |  |✅|✅|  |✅|✅|
+Fig   | System Name                                         |1 |2 |3 |4 |5 |6 |7 |8 |
+:----:|-----------------------------------------------------|--|--|--|--|--|--|--|--|
+3-1   | Booleans (B)                                        |✅|✅|  |✅|✅|  |✅|✅|
 3-2   | Arithmetic expressions (NB)                         |  |✅|  |  |✅|  |✅|✅|
 5-3   | Untyped lambda-calculus (λ)                         |  |  |✅|  |  |  |  |  |
 8-1   | Typing rules for booleans (B)                       |  |  |  |✅|✅|  |✅|✅|
@@ -98,16 +99,6 @@ Fig      | System Name                                      |1 |2 |3 |4 |5 |6 |7
 30-2  | Higher-order existential types                      |  |  |  |  |  |  |  |  |
 30-3  | Parallel reduction on types                         |  |  |  |  |  |  |  |  |
 32-1  | Polymorphic update                                  |  |  |  |  |  |  |  |  |
-
-## Screenshot
-
-### Arithmetic expressions
-
-![Arithmetic expressions](screenshots/untyped-arith.gif)
-
-### Untyped lambda-calculus
-
-![Untyped lambda-calculus](screenshots/untyped-lambda.gif)
 
 ## Development
 

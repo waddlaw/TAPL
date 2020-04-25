@@ -12,3 +12,22 @@ packages:
   ./subs/systemf
 
 with-compiler: ghc-8.8.3
+
+constraints:
+  base ^>=4.13,
+  base-noprelude ^>=4.13,
+  gauge ^>=0.2,
+  haskeline ^>=0.8,
+  hspec-megaparsec ^>=2.1,
+  megaparsec ^>=8.0,
+  parsers ^>=0.12,
+  prettyprinter >=1.2 && <1.7,
+  QuickCheck ^>=2.13,
+  rio ^>=0.1,
+  rio-orphans ^>=0.1,
+  tasty ^>=1.2,
+  tasty-discover ^>=4.2,
+  tasty-hunit ^>=0.10,
+  tasty-quickcheck ^>=0.10,
+  transformers ^>=0.5,
+  trifecta >=2 && <2.2

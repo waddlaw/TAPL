@@ -3,7 +3,7 @@ name:          tapl
 version:       0.1.0
 tested-with:   GHC ==8.6.5 || ==8.8.3
 
-common deps
+common common
   default-extensions:
     NoImplicitPrelude
     DerivingVia
@@ -23,19 +23,17 @@ common deps
     -Wredundant-constraints -Wtabs
 
   build-depends:
-    , base         >=4.12 && <4.14
-    , haskeline    ^>=0.8
-    , lambda-core
-    , rio          ^>=0.1
-    , rio-orphans  ^>=0.1
+    , base
+    , rio
 
   default-language:   Haskell2010
 
 common app
   build-depends: tapl
+  ghc-options:   -O2
 
 library
-  import:          deps
+  import:          common
 
   -- cabal-fmt: expand src
   exposed-modules:
@@ -44,44 +42,61 @@ library
     LambdaRepl.Types
 
   hs-source-dirs:  src
-  build-depends:   prettyprinter >=1.2 && <1.7
+  build-depends:
+    , haskeline
+    , lambda-core
+    , prettyprinter
+    , rio-orphans
 
 executable nb
-  import:        deps, app
+  import:        common, app
   main-is:       app/NB.hs
-  build-depends: arith
-
-executable proofb
-  import:        deps, app
-  main-is:       app/ProofB.hs
   build-depends:
-    , bool
-    , prettyprinter  >=1.2 && <1.7
+    , arith
+    , haskeline
+    , lambda-core
+
+executable bool
+  import:        common, app
+  main-is:       app/B.hs
+  build-depends: bool
 
 executable untyped-lambda
-  import:        deps, app
+  import:        common, app
   main-is:       app/UntypedLambda.hs
-  build-depends: lambda-untyped
+  build-depends:
+    , haskeline
+    , lambda-core
+    , lambda-untyped
 
 executable simple-lambda
-  import:        deps, app
+  import:        common, app
   main-is:       app/SimpleLambda.hs
-  build-depends: lambda-simple
+  build-depends:
+    , haskeline
+    , lambda-core
+    , lambda-simple
 
 executable fullsimple-lambda
-  import:        deps, app
+  import:        common, app
   main-is:       app/FullSimpleLambda.hs
-  build-depends: lambda-fullsimple
+  build-depends:
+    , haskeline
+    , lambda-core
+    , lambda-fullsimple
 
 executable fj
-  import:        deps, app
+  import:        common, app
   main-is:       app/FJ.hs
-  build-depends: featherweight-java
+  build-depends:
+    , featherweight-java
+    , haskeline
+    , lambda-core
 
 benchmark gauge
-  import:        deps
+  import:        common
   type:          exitcode-stdio-1.0
   main-is:       bench/Gauge.hs
   build-depends:
-    , gauge  ^>=0.2
+    , gauge
     , term

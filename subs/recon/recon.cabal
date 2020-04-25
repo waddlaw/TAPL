@@ -21,8 +21,8 @@ common deps
     -Wredundant-constraints -Wtabs
 
   build-depends:
-    , base  >=4.12 && <4.14
-    , rio   ^>=0.1
+    , base
+    , rio
 
   default-language:   Haskell2010
 
@@ -50,8 +50,8 @@ test-suite unit-test
   main-is:            Driver.hs
   build-depends:
     , recon
-    , tasty        ^>=1.2
-    , tasty-hunit  ^>=0.10
+    , tasty
+    , tasty-hunit
 
   -- cabal-fmt: expand test -Driver
   other-modules:
@@ -59,4 +59,4 @@ test-suite unit-test
     Test.Language.Recon.Exercise.Ex22_4_6
     Test.Language.Recon.Recon
 
-  build-tool-depends: tasty-discover:tasty-discover ^>=4.2
+  build-tool-depends: tasty-discover:tasty-discover -any

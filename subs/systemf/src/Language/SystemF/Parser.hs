@@ -5,7 +5,7 @@ module Language.SystemF.Parser (runSystemFParser) where
 
 -- import qualified RIO.Map                     as Map
 import Control.Monad.Trans.State
-import Language.Core.Parser
+import Language.Core.Parser hiding (Parser, symbol)
 import Language.SystemF.Types
 import RIO hiding (try)
 import qualified RIO.List.Partial as L.Partial

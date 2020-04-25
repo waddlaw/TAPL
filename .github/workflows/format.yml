@@ -45,5 +45,5 @@ jobs:
     - name: Apply ormolu
       run: |
         export PATH=~/.cabal/bin/:$PATH
-        ormolu --mode inplace $(find app bench src subs -type f -name "*.hs")
+        ormolu -o -XTypeApplications -o -XBangPatterns --mode inplace $(find app bench src subs -type f -name "*.hs")
         git --no-pager diff --exit-code

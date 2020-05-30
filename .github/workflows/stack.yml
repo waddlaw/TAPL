@@ -17,17 +17,18 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-18.04]
-        cache-version: ["2020-04-25"]
+        cache-version: ["2020-05-30"]
 
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-haskell@v1
       with:
         ghc-version: "8.8.3"
-        cabal-version: "3.0"
+        stack-version: "2.3.1"
+        enable-stack: true
 
     - name: Cache ~/.stack
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/.stack
         key: ${{ runner.os }}-${{ matrix.cache-version }}-stack

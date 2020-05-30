@@ -17,8 +17,8 @@ jobs:
       matrix:
         os: [ubuntu-18.04, macos-10.15]
         ghc: ["8.8.3"]
-        cabal: ["3.0"]
-        cache-version: ["2020-04-25"]
+        cabal: ["3.2.0.0"]
+        cache-version: ["2020-05-30"]
 
     steps:
     - uses: actions/checkout@v2
@@ -27,18 +27,14 @@ jobs:
         ghc-version: ${{ matrix.ghc }}
         cabal-version: ${{ matrix.cabal }}
 
-    - name: Cache ~/.cabal/store
-      uses: actions/cache@v1
+    - name: Cache cabal stuff
+      uses: actions/cache@v2
       with:
-        path: ~/.cabal/store
-        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ matrix.cache-version }}-cabal-store
+        path: |
+          ~/.cabal/store
+          dist-newstyle
+        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ matrix.cache-version }}-cabal
 
-    - name: Cache dist-newstyle
-      uses: actions/cache@v1
-      with:
-        path: dist-newstyle
-        key: ${{ runner.os }}-${{ matrix.ghc }}-${{ matrix.cache-version }}-cabal-dist
-        
     - name: Install dependencies
       run: |
         cabal update

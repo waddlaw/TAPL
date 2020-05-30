@@ -15,16 +15,16 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        cache-version: ["2020-04-25"]
+        cache-version: ["2020-05-30"]
 
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-haskell@v1
       with:
         ghc-version: "8.8.3"
-        cabal-version: "3.0"
+        cabal-version: "3.2.0.0"
 
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store

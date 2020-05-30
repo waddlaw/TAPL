@@ -1,4 +1,4 @@
-resolver: lts-15.9
+resolver: lts-15.14
 packages:
   - .
   - ./subs/term

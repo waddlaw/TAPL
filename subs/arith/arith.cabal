@@ -22,6 +22,7 @@ common deps
 
   build-depends:
     , base
+    , megaparsec
     , rio
 
   default-language:   Haskell2010
@@ -32,8 +33,9 @@ library
   -- cabal-fmt: expand src
   exposed-modules:
     Language.NB
+    Language.NB.Eval
     Language.NB.Parser
-    Language.NB.Types
+    Language.NB.Type
 
   hs-source-dirs:  src
   build-depends:
@@ -47,11 +49,16 @@ test-suite arith-test
   main-is:            Driver.hs
 
   -- cabal-fmt: expand test -Driver
-  other-modules:      NB
+  other-modules:
+    NB.Eval
+    NB.Parser
+
   hs-source-dirs:     test
   build-depends:
     , arith
+    , hspec-megaparsec
     , tasty
+    , tasty-hspec
     , tasty-hunit
 
   build-tool-depends: tasty-discover:tasty-discover -any

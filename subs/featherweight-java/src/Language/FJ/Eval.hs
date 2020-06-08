@@ -71,7 +71,8 @@ eval' ct = \case
   -- E-CASTNEW
   TmCast d t@(isValue -> True) ->
     let TmNew c' _vs = t
-     in if  | checkCast ct c' d -> t
+     in if
+            | checkCast ct c' d -> t
             | otherwise -> error "E-CASTNEW"
   -- E-CAST
   TmCast c t -> TmCast c (eval' ct t)

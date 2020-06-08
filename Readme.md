@@ -15,17 +15,17 @@ $ cd TAPL
 
 app | versionn
 ------|-------
-cabal-install | 3.2.0.0 or 3.0.0.0
-cabal-fmt | 0.1.2
-stack | 2.1.3
-ormolu | 0.0.5.0
+cabal-install | 3.2.0.0
+cabal-fmt | 0.1.3
+stack | 2.3.1
+ormolu | 0.1.0.0
 
 ## Available Systems
 
 chapter | package name        | parse | eval | typecheck | prettyprint | run application
 --------|---------------------|:-----:|:----:|:---------:|:-----------:|---------------
 ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run bool`
-ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run nb`
+ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run arith`
 ch05    | lambda-untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
 ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | `stack run simple-lambda`
 ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | `stack run fullsimple-lambda`

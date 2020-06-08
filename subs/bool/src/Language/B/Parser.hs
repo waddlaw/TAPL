@@ -16,10 +16,11 @@ import RIO hiding (many, some, try)
 import Text.Megaparsec
 
 pTerm :: Parser Term
-pTerm = try (between (symbol "(") (symbol ")") pTerm') <|> pTerm'
-
-pTerm' :: Parser Term
-pTerm' = asum [pTrue, pFalse, pIf]
+pTerm =
+  pTrue
+    <|> pFalse
+    <|> pIf
+    <|> between (symbol "(") (symbol ")") pTerm
 
 pTrue :: Parser Term
 pTrue = TmTrue <$ pKeyword "true"

@@ -162,7 +162,8 @@ pprFullSimple ctx = \case
   TmVar n ->
     let ctx' = unCtx ctx
         fv = fst (ctx' L.Partial.!! n)
-     in if  | length ctx' <= n -> "FV" <> pretty n
+     in if
+            | length ctx' <= n -> "FV" <> pretty n
             | otherwise -> pretty fv
   TmLam x ty t ->
     let ctx' = addContext (VarContext x, VarBind ty) ctx
@@ -237,7 +238,8 @@ pprPattern :: Context -> Pattern -> Doc ann
 pprPattern ctx = \case
   PtVar varName n ->
     let ctx' = unCtx ctx
-     in if  | length ctx' <= n -> "FV" <> pretty n
+     in if
+            | length ctx' <= n -> "FV" <> pretty n
             | otherwise -> pretty varName
   PtRecord fs ->
     let pprField (label, p) = pretty label <> "=" <> pprPattern ctx p

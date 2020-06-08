@@ -57,9 +57,9 @@ test_typeof =
             expr = TmApp (TmApp (TmTypeApp TmCons TyNat) (mkN 4)) sub3
         typeof mempty expr @?= TyList TyNat
 
-      -- , testCase "p.272: map'" $ do
-      --     let expected = TyForAll "X" $ TyForAll "Y" $ TyArr (TyArr (TyVar "X" 1) (TyVar "Y" 0)) (TyArr (TyList (TyVar "X" 1)) (TyList (TyVar "Y" 0)))
-      --     typeof mempty map' @?= expected
+        -- , testCase "p.272: map'" $ do
+        --     let expected = TyForAll "X" $ TyForAll "Y" $ TyArr (TyArr (TyVar "X" 1) (TyVar "Y" 0)) (TyArr (TyList (TyVar "X" 1)) (TyList (TyVar "Y" 0)))
+        --     typeof mempty map' @?= expected
     ]
 
 test_pretty :: TestTree

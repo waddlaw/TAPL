@@ -1,24 +1,25 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Main (main) where
 
-import Language.Core
+import LambdaRepl
 import Language.NB
 import RIO
-import System.Console.Haskeline
-import Prelude (putStrLn)
 
 main :: IO ()
-main = do
-  putStrLn "Start NB repl"
-  _ <- runInputT defaultSettings main'
-  putStrLn "Leaving NB repl"
+main =
+  execLambdaRepl "arithmetic expressions" "NB" $
+    defaultReplCmd
+      { replCmdEnv = NotImplemented,
+        replCmdEval = Action (evalCmd parser evaluator tracer),
+        replCmdTc = NotImplemented
+      }
 
-main' :: InputT IO ()
-main' = do
-  minput <- getInputLine "NB> "
-  case trim <$> minput of
-    Nothing -> return ()
-    Just ":q" -> return ()
-    Just input -> evalCmd input >> main'
+parser :: ParseFunc Term
+parser = runLangParser pTerm
 
-evalCmd :: String -> InputT IO ()
-evalCmd = outputStrLn . either id (render . eval) . runNbParser
+evaluator :: EvalFunc Term
+evaluator _ = eval
+
+tracer :: TraceFunc Term
+tracer _ = evalTrace

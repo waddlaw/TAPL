@@ -42,10 +42,10 @@ test_ul =
       testCase "power1" $ do
         eval NormalOrder (power1 @@ c 2 @@ c 3) @?= c 8 -- TODO: 振る舞い等価
         eval NormalOrder (power1 @@ c 2 @@ c 0) @?= c 1, -- TODO: 振る舞い等価
-            -- , testCase "power2" $ do
-            -- TODO https://github.com/waddlaw/TAPL/issues/13
-            -- eval NormalOrder (TmApp (TmApp power2 (c 2)) (c 3))  @?= c 9
-            -- eval NormalOrder (TmApp (TmApp power2 (c 0)) (c 2))  @?= c 1
+        -- , testCase "power2" $ do
+        -- TODO https://github.com/waddlaw/TAPL/issues/13
+        -- eval NormalOrder (TmApp (TmApp power2 (c 2)) (c 3))  @?= c 9
+        -- eval NormalOrder (TmApp (TmApp power2 (c 0)) (c 2))  @?= c 1
       testCase "iszro" $ do
         eval CallByValue (iszro @@ c 0) @?= tru
         eval CallByValue (iszro @@ c 1) @?= fls,

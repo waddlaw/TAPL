@@ -57,7 +57,7 @@ exMain4 :: Term
 exMain4 = TmCast (mkClass "Pair") pAB
 
 -- utils
-a , b, pAB :: Term
+a, b, pAB :: Term
 a = TmNew (mkClass "A") []
 b = TmNew (mkClass "B") []
 pAB = TmNew (mkClass "Pair") [a, b]

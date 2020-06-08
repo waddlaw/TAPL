@@ -40,13 +40,13 @@ test_unify =
             let expected = Just $ Set.fromList []
             unify ex22_4_3_6 @?= expected
 
-          -- FIXME
-          -- , testCase "ex22.5.2" do
-          --     let expected = Just $ Set.fromList
-          --           [ (TyVar "X"    , TyArr (TyVar "Z")    (TyVar "?X_1"))
-          --           , (TyVar "Y"    , TyArr (TyVar "Z")    (TyVar "?X_2"))
-          --           , (TyVar "?X_1" , TyArr (TyVar "?X_2") (TyVar "?X_3"))
-          --           ]
-          --     unify ex22_5_2 @?= expected
+            -- FIXME
+            -- , testCase "ex22.5.2" do
+            --     let expected = Just $ Set.fromList
+            --           [ (TyVar "X"    , TyArr (TyVar "Z")    (TyVar "?X_1"))
+            --           , (TyVar "Y"    , TyArr (TyVar "Z")    (TyVar "?X_2"))
+            --           , (TyVar "?X_1" , TyArr (TyVar "?X_2") (TyVar "?X_3"))
+            --           ]
+            --     unify ex22_5_2 @?= expected
         ]
     ]

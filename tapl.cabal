@@ -48,18 +48,18 @@ library
     , prettyprinter
     , rio-orphans
 
-executable nb
+executable bool
+  import:        common, app
+  main-is:       app/B.hs
+  build-depends: bool
+
+executable arith
   import:        common, app
   main-is:       app/NB.hs
   build-depends:
     , arith
     , haskeline
     , lambda-core
-
-executable bool
-  import:        common, app
-  main-is:       app/B.hs
-  build-depends: bool
 
 executable untyped-lambda
   import:        common, app

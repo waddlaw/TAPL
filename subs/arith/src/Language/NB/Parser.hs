@@ -1,53 +1,55 @@
-module Language.NB.Parser (runNbParser) where
+{-# LANGUAGE OverloadedStrings #-}
 
-import Language.Core.Parser hiding (Parser, symbol)
-import Language.NB.Types
-import RIO
-import Text.Trifecta
+module Language.NB.Parser
+  ( Parser,
+    runLangParser,
+    pTerm,
+    pTrue,
+    pFalse,
+    pIf,
+    pZero,
+    pSucc,
+    pPred,
+  )
+where
 
-runNbParser :: String -> Either String Term
-runNbParser = runParserString termP
+import Language.Core.Parser
+import Language.NB.Type
+import RIO hiding (many, some, try)
+import Text.Megaparsec
 
-termP :: Parser Term
-termP =
-  trueP
-    <|> falseP
-    <|> ifP
-    <|> zeroP
-    <|> succP
-    <|> predP
-    <|> iszeroP
+pTerm :: Parser Term
+pTerm =
+  pTrue
+    <|> pFalse
+    <|> pIf
+    <|> pZero
+    <|> pSucc
+    <|> pPred
+    <|> pIsZero
+    <|> between (symbol "(") (symbol ")") pTerm
 
-iszeroP :: Parser Term
-iszeroP =
-  TmIsZero <$ symbol "iszero"
-    <*> (parens termP <|> token termP)
+pTrue :: Parser Term
+pTrue = TmTrue <$ pKeyword "true"
 
-predP :: Parser Term
-predP =
-  TmPred <$ symbol "pred"
-    <*> (parens termP <|> token termP)
+pFalse :: Parser Term
+pFalse = TmFalse <$ pKeyword "false"
 
-succP :: Parser Term
-succP =
-  TmSucc <$ symbol "succ"
-    <*> (parens termP <|> token termP)
-
-zeroP :: Parser Term
-zeroP = TmZero <$ symbol "0"
-
-trueP :: Parser Term
-trueP = TmTrue <$ symbol "true"
-
-falseP :: Parser Term
-falseP = TmFalse <$ symbol "false"
-
-ifP :: Parser Term
-ifP =
+pIf :: Parser Term
+pIf =
   TmIf
-    <$ symbol "if"
-    <*> (parens termP <|> token termP)
-    <* symbol "then"
-    <*> (parens termP <|> token termP)
-    <* symbol "else"
-    <*> (parens termP <|> token termP)
+    <$ pKeyword "if" <*> pTerm
+    <* pKeyword "then" <*> pTerm
+    <* pKeyword "else" <*> pTerm
+
+pZero :: Parser Term
+pZero = TmZero <$ pKeyword "0"
+
+pSucc :: Parser Term
+pSucc = TmSucc <$ pKeyword "succ" <*> pTerm
+
+pPred :: Parser Term
+pPred = TmPred <$ pKeyword "pred" <*> pTerm
+
+pIsZero :: Parser Term
+pIsZero = TmIsZero <$ pKeyword "iszero" <*> pTerm

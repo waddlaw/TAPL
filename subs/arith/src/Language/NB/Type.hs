@@ -1,22 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Language.NB.Types
-  ( Term (..),
-    TmError (..),
-  )
-where
+module Language.NB.Type (Term (..)) where
 
 import Data.Text.Prettyprint.Doc
 import RIO
 
 data Term
-  = TmTrue
-  | TmFalse
-  | TmIf Term Term Term
-  | TmZero
-  | TmSucc Term
-  | TmPred Term
-  | TmIsZero Term
+  = TmTrue -- constant true
+  | TmFalse -- constant false
+  | TmIf Term Term Term -- conditional
+  | TmZero -- constant zero
+  | TmSucc Term -- successor
+  | TmPred Term -- predecessor
+  | TmIsZero Term -- zero test
   deriving stock (Eq, Show)
 
 instance Pretty Term where
@@ -33,6 +29,3 @@ instance Pretty Term where
     TmSucc t -> "succ" <+> pretty t
     TmPred t -> "pred" <+> pretty t
     TmIsZero t -> "iszero" <+> pretty t
-
-data TmError = NoRuleApplies
-  deriving stock (Eq, Show)

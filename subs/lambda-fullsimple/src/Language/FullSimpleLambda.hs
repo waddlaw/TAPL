@@ -126,7 +126,8 @@ eval = \case
 
   -- E-PROJTUPLE
   TmTupleProj j (TmTuple ts) ->
-    if  | all isValue ts ->
+    if
+        | all isValue ts ->
           if j < length ts
             then ts List.Partial.!! j
             else error "A value greater than the size of the tuple was specified"
@@ -139,7 +140,8 @@ eval = \case
      in TmTuple (vs ++ [eval t] ++ ts')
   -- E-PROJRCD
   TmRecordProj label t@(TmRecord fields) ->
-    if  | isValue t -> fromMaybe (error "field label not found (E-PROJRCD)") $ lookup label fields
+    if
+        | isValue t -> fromMaybe (error "field label not found (E-PROJRCD)") $ lookup label fields
         | otherwise -> TmRecordProj label (eval t)
   -- E-PROJ
   TmRecordProj label t -> TmRecordProj label (eval t)
@@ -149,7 +151,8 @@ eval = \case
     _ ->
       let (vfs, (label, tj), tfs) = splitRecord t
           t' = (label, eval tj)
-       in if  | isValue t -> t
+       in if
+              | isValue t -> t
               | otherwise -> TmRecord (vfs ++ [t'] ++ tfs)
   TmPattern p v@(isValue -> True) t2 -> match p v t2 -- E-LETV
   TmPattern p t1 t2 -> TmPattern p (eval t1) t2 -- E-LET

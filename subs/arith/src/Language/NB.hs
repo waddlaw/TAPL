@@ -1,6 +1,6 @@
 module Language.NB
   ( module Language.NB.Parser,
-    module Language.NB.Types,
+    module Language.NB.Type,
     isVal,
     isNumericalVal,
     eval,
@@ -8,7 +8,7 @@ module Language.NB
 where
 
 import Language.NB.Parser
-import Language.NB.Types
+import Language.NB.Type
 import RIO
 
 eval :: Term -> Term
@@ -32,12 +32,16 @@ eval1 = \case
 
 isVal :: Term -> Bool
 isVal = \case
+  -- true value
   TmTrue -> True
+  -- false value
   TmFalse -> True
   t -> isNumericalVal t
 
 isNumericalVal :: Term -> Bool
 isNumericalVal = \case
+  -- zero value
   TmZero -> True
+  -- successor value
   TmSucc t1 -> isNumericalVal t1
   _ -> False

@@ -22,6 +22,7 @@ common deps
 
   build-depends:
     , base
+    , megaparsec
     , rio
 
   default-language:   Haskell2010
@@ -33,7 +34,7 @@ library
   exposed-modules:
     Language.NB
     Language.NB.Parser
-    Language.NB.Types
+    Language.NB.Type
 
   hs-source-dirs:  src
   build-depends:

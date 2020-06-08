@@ -25,7 +25,7 @@ ormolu | 0.0.5.0
 chapter | package name        | parse | eval | typecheck | prettyprint | run application
 --------|---------------------|:-----:|:----:|:---------:|:-----------:|---------------
 ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run bool`
-ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run nb`
+ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run arith`
 ch05    | lambda-untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
 ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | `stack run simple-lambda`
 ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | `stack run fullsimple-lambda`

@@ -22,7 +22,8 @@ eval' = \case
   -- E-IF
   TmIf t1 t2 t3 -> TmIf (eval' t1) t2 t3
   t ->
-    if  | isValue t -> t
+    if
+        | isValue t -> t
         | otherwise -> error "fail: eval'"
 
 isValue :: Term -> Bool

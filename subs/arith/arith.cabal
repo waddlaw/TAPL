@@ -49,7 +49,10 @@ test-suite arith-test
   main-is:            Driver.hs
 
   -- cabal-fmt: expand test -Driver
-  other-modules:      NB.Parser, NB.Eval
+  other-modules:
+    NB.Eval
+    NB.Parser
+
   hs-source-dirs:     test
   build-depends:
     , arith

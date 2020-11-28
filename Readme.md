@@ -16,33 +16,24 @@ $ cd TAPL
 app | versionn
 ------|-------
 cabal-install | 3.2.0.0
-cabal-fmt | 0.1.3
-stack | 2.3.1
-ormolu | 0.1.0.0
+stack | 2.5.1
+cabal-fmt | 0.1.5.1
+ormolu | 0.1.4.1
 
 ## Available Systems
 
-chapter | package name        | parse | eval | typecheck | prettyprint | run application
---------|---------------------|:-----:|:----:|:---------:|:-----------:|---------------
-ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run bool`
-ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run arith`
-ch05    | lambda-untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
-ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | `stack run simple-lambda`
-ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | `stack run fullsimple-lambda`
-ch19    | featherweight-java  |   ✅  |  ✅  |     🚧    |     ✅     | `stack run fj`
-ch22    | recon               |   🚧  |  ✅  |     🚧    |     ✅     | 🚧
-ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     | 🚧
+id | chapter | package name        | parse | eval | typecheck | prettyprint | run application
+---|---------|---------------------|:-----:|:----:|:---------:|:-----------:|---------------
+1  | ch03    | bool                |   ✅  |  ✅  |    N/A    |     ✅     | `stack run bool`
+2  | ch03    | arith               |   ✅  |  ✅  |    N/A    |     ✅     | `stack run arith`
+3  | ch05    | lambda-untyped      |   ✅  |  ✅  |    N/A    |     ✅     | `stack run untyped-lambda`
+4  | ch09    | lambda-simple       |   ✅  |  ✅  |     ✅    |     ✅     | `stack run simple-lambda`
+5  | ch11    | lambda-fullsimple   |   ✅  |  ✅  |     ✅    |     ✅     | `stack run fullsimple-lambda`
+6  | ch19    | featherweight-java  |   ✅  |  ✅  |     🚧    |     ✅     | `stack run fj`
+7  | ch22    | recon               |   🚧  |  ✅  |     🚧    |     ✅     | 🚧
+8  | ch23    | systemf             |   🚧  |  🚧  |     🚧    |     ✅     | 🚧
 
 ### Components
-
-1. bool
-2. arith
-3. lambda-untyped
-4. lambda-simple
-5. lambda-fullsimple
-6. featherweight-java
-7. recon
-8. systemf
 
 Fig   | System Name                                         |1 |2 |3 |4 |5 |6 |7 |8 |
 :----:|-----------------------------------------------------|--|--|--|--|--|--|--|--|

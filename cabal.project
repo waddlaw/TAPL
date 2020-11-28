@@ -11,24 +11,27 @@ packages:
   ./subs/recon
   ./subs/systemf
 
-with-compiler: ghc-8.8.3
-index-state: 2020-06-08T02:20:41Z
+with-compiler: ghc-8.10.2
+index-state: 2020-11-28T02:00:03Z
+
+allow-newer:
+  base-noprelude:base
 
 constraints:
-  base ^>=4.13,
+  base ^>=4.14,
   base-noprelude ^>=4.13,
   gauge ^>=0.2,
   haskeline ^>=0.8,
-  hspec-megaparsec ^>=2.1,
-  megaparsec ^>=8.0,
+  hspec-megaparsec ^>=2.2,
+  megaparsec ^>=9.0,
   parsers ^>=0.12,
-  prettyprinter >=1.2 && <1.7,
-  QuickCheck ^>=2.13,
+  prettyprinter ^>=1.7,
+  QuickCheck ^>=2.14,
   rio ^>=0.1,
   rio-orphans ^>=0.1,
-  tasty ^>=1.2,
+  tasty ^>=1.4,
   tasty-discover ^>=4.2,
   tasty-hunit ^>=0.10,
   tasty-quickcheck ^>=0.10,
   transformers ^>=0.5,
-  trifecta >=2 && <2.2
+  trifecta ^>=2.1

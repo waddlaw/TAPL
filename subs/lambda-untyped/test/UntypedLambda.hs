@@ -25,7 +25,6 @@ test_ul =
         prettyText @UntypedLambda (TmVar "x") @?= "x"
         prettyText @UntypedLambda (TmLam "x" "x") @?= "λx. x"
         prettyText @UntypedLambda (TmApp "x" "y") @?= "x y",
-
       testCase "parser" $ do
         runUlParser "x" @?= Right "x"
         runUlParser "x1y" @?= Right "x1y"
@@ -66,14 +65,12 @@ test_ul =
         runUlParser "isnil" @?= Right isnil
         runUlParser "cons" @?= Right cons
         runUlParser "tail" @?= Right tail,
-
       testCase "isClosed" $ do
         isClosed UL.example1 @?= False
         isClosed UL.example2 @?= True
         isClosed UL.example3 @?= True
         isClosed UL.example4 @?= False
         isClosed UL.example5 @?= True,
-
       testCase "evaluate (NormalOrder)" $ do
         reduceNormalOrder (TmApp (TmLam "x" "x") "y") @?= TmVar "y"
         reduceNormalOrder UL.example6 @?= TmApp (TmApp "u" "r") (TmLam "x" "x")
@@ -82,31 +79,25 @@ test_ul =
         reduceNormalOrder (TmApp id (TmLam "z" (TmApp id "z"))) @?= TmLam "z" (TmApp id "z")
         reduceNormalOrder (TmLam "z" (TmApp id "z")) @?= TmLam "z" "z"
         reduceNormalOrder (TmLam "z" "z") @?= TmLam "z" "z",
-
       testCase "evaluate (CallByName)" $ do
         reduceCallByName UL.example3 @?= TmApp id (TmLam "z" (TmApp id "z"))
         reduceCallByName (TmApp id (TmLam "z" (TmApp id "z"))) @?= TmLam "z" (TmApp id "z")
         reduceCallByName (TmLam "z" (TmApp id "z")) @?= TmLam "z" (TmApp id "z"),
-
       testCase "evaluate (CallByValue)" $ do
         reduceCallByValue UL.example3 @?= TmApp id (TmLam "z" (TmApp id "z"))
         reduceCallByValue (TmApp id (TmLam "z" (TmApp id "z"))) @?= TmLam "z" (TmApp id "z")
         reduceCallByValue (TmLam "z" (TmApp id "z")) @?= TmLam "z" (TmApp id "z"),
-
       testCase "evaluate" $ do
         eval NormalOrder UL.example3 @?= TmLam "z" "z"
         eval CallByName UL.example3 @?= TmLam "z" (TmApp id "z")
         eval CallByValue UL.example3 @?= TmLam "z" (TmApp id "z"),
-
       testCase "subst" $ do
         subst "x" (TmLam "z" (TmApp "z" "w")) (TmLam "y" "x") @?= TmLam "y" (TmLam "z" (TmApp "z" "w"))
         subst "x" "y" (TmLam "x" "x") @?= TmLam "x" "x"
         subst "x" "z" (TmLam "z" "x") @?= TmLam "z" "x",
-
       testCase "size" $ do
         size "x" @?= 1
         size (TmApp "x" "x") @?= 2,
-
       testCase "removenames" $ do
         -- Ex6.1.1
         removenames [] (c 0) @?= NlTmLam (NlTmLam "0")
@@ -116,7 +107,6 @@ test_ul =
         removenames [] fix @?= NlTmLam (NlTmApp t t)
         let foo = TmApp (TmLam "x" $ TmLam "x" "x") (TmLam "x" "x")
         removenames [] foo @?= NlTmApp (NlTmLam $ NlTmLam "0") (NlTmLam "0"),
-
       testCase "restorenames" $ do
         restorenames [] (NlTmLam (NlTmLam "0")) @?= TmLam "a0" (TmLam "a1" "a1")
         restorenames [] (NlTmLam (NlTmLam (NlTmApp "1" (NlTmApp "1" "0")))) @?= TmLam "a0" (TmLam "a1" (TmApp "a0" (TmApp "a0" "a1")))
@@ -125,11 +115,9 @@ test_ul =
             t' = TmLam "a1" $ TmApp "a0" $ TmLam "a2" $ TmApp (TmApp "a1" "a1") "a2"
         restorenames [] (NlTmLam (NlTmApp t t)) @?= TmLam "a0" (TmApp t' t')
         restorenames [] (NlTmApp (NlTmLam $ NlTmLam "0") (NlTmLam "0")) @?= TmApp (TmLam "a0" $ TmLam "a1" "a1") (TmLam "a0" "a0"),
-
       testCase "shift" $ do
         shift 0 2 (NlTmLam $ NlTmLam $ NlTmApp "1" (NlTmApp "0" "2")) @?= NlTmLam (NlTmLam $ NlTmApp "1" (NlTmApp "0" "4"))
         shift 0 2 (NlTmLam $ NlTmApp (NlTmApp "0" "1") (NlTmLam $ NlTmApp (NlTmApp "0" "1") "2")) @?= NlTmLam (NlTmApp (NlTmApp "0" "3") (NlTmLam $ NlTmApp (NlTmApp "0" "1") "4")),
-
       testCase "namelessSubst" $ do
         -- Ex6.2.5
         let g = ["b", "a"]
@@ -153,7 +141,6 @@ test_ul =
             s4 = removenames g "a"
             nt4 = removenames g t4
         namelessSubst k4 s4 nt4 @?= NlTmLam (NlTmApp "2" "0"),
-
       testCase "reduceNameless" $
         reduceNameless (NlTmApp (NlTmLam $ NlTmApp (NlTmApp "1" "0") "2") (NlTmLam "0"))
           @?= NlTmApp (NlTmApp "0" (NlTmLam "0")) "1"

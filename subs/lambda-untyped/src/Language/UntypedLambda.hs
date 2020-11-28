@@ -85,18 +85,15 @@ reduceNormalOrder :: UntypedLambda -> UntypedLambda
 reduceNormalOrder = \case
   -- E-ABS
   TmLam x t -> TmLam x (reduceNormalOrder t)
-
   -- E-APPABS
   TmApp (TmLam x old) new -> subst x new old
-
   TmApp t1 t2 ->
     if
-      -- E-APP2
-      | isNANF t1 -> TmApp t1 (reduceNormalOrder t2)
-      -- E-APP1
-      | isNA t1 -> TmApp (reduceNormalOrder t1) t2
-      | otherwise -> error "never happen"
-
+        -- E-APP2
+        | isNANF t1 -> TmApp t1 (reduceNormalOrder t2)
+        -- E-APP1
+        | isNA t1 -> TmApp (reduceNormalOrder t1) t2
+        | otherwise -> error "never happen"
   t -> t
 
 -- normal forms
@@ -119,7 +116,6 @@ isNA = \case
   TmApp _ _ -> True
   _ -> False
 
-
 -- | CallByName
 reduceCallByName :: UntypedLambda -> UntypedLambda
 reduceCallByName = \case
@@ -132,14 +128,12 @@ reduceCallByName = \case
 -- | CallByValue
 reduceCallByValue :: UntypedLambda -> UntypedLambda
 reduceCallByValue = \case
-  TmApp t@(TmLam x old) new -> 
+  TmApp t@(TmLam x old) new ->
     if
-      -- E-APPABS
-      | isValue new -> subst x new old
-      
-      -- E-APP2
-      | otherwise -> TmApp t (reduceCallByValue new)
-
+        -- E-APPABS
+        | isValue new -> subst x new old
+        -- E-APP2
+        | otherwise -> TmApp t (reduceCallByValue new)
   -- E-APP1
   TmApp t1 t2 -> TmApp (reduceCallByValue t1) t2
   t -> t

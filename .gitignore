@@ -14,3 +14,4 @@ cabal.project.local
 *.fls
 *.log
 *.gz
+tasks.json

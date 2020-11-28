@@ -5,7 +5,7 @@ data T where
   T :: forall a. a -> (a -> Int) -> T
 
 t1 :: T
-t1 = T 0 (+1)
+t1 = T 0 (+ 1)
 
 good :: Int
 good =

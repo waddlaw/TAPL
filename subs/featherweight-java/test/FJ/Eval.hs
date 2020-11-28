@@ -30,16 +30,16 @@ spec_evaluation = do
           b = TmNew (mkClass "B") []
       eval exCT exMain4 `shouldBe` expected
 
-  describe "evalTrace"
-    $ it "((Pair)(new Pair(new Pair(new A(), new B()), new A()).fst)).snd"
-    $ do
-      let expected = [exMain2, step1, step2, step3]
-          step1 = TmFieldRef (TmCast (mkClass "Pair") (TmNew (mkClass "Pair") [a, b])) (mkField "snd")
-          a = TmNew (mkClass "A") []
-          b = TmNew (mkClass "B") []
-          step2 = TmFieldRef (TmNew (mkClass "Pair") [a, b]) (mkField "snd")
-          step3 = b
-      evalTrace exCT exMain2 `shouldBe` expected
+  describe "evalTrace" $
+    it "((Pair)(new Pair(new Pair(new A(), new B()), new A()).fst)).snd" $
+      do
+        let expected = [exMain2, step1, step2, step3]
+            step1 = TmFieldRef (TmCast (mkClass "Pair") (TmNew (mkClass "Pair") [a, b])) (mkField "snd")
+            a = TmNew (mkClass "A") []
+            b = TmNew (mkClass "B") []
+            step2 = TmFieldRef (TmNew (mkClass "Pair") [a, b]) (mkField "snd")
+            step3 = b
+        evalTrace exCT exMain2 `shouldBe` expected
 
 spec_isValue :: Spec
 spec_isValue = do

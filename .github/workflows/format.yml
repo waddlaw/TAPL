@@ -11,39 +11,37 @@ on:
     - cron: "00 15 * * *"
 
 jobs:
-  format:
+  ormolu:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mrkkrp/ormolu-action@v1
+      with:
+        extra-args: "-o -XTypeApplications -o -XBangPatterns"
+
+  cabal-fmt:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        cache-version: ["2020-06-08"]
+        cache-version: ["2020-11-28"]
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-haskell@v1.1.0
-      with:
-        ghc-version: "8.8.3"
-        cabal-version: "3.2.0.0"
-
-    - uses: actions/cache@v2.0.0
+    - uses: actions/cache@v2
       name: Cache ~/.cabal/store
       with:
         path: ~/.cabal/store
         key: ${{ runner.os }}-${{ matrix.cache-version }}-cabal
 
-    - name: Install cabal-fmt, ormolu
+    - name: Install cabal-fmt
       run: |
         cabal update
-        cabal install cabal-fmt ormolu --overwrite-policy=always --install-method=copy -j2
-
+        cabal install cabal-fmt --overwrite-policy=always --install-method=copy -j2 -z
+        
     - name: Apply cabal-fmt
       run: |
         export PATH=~/.cabal/bin/:$PATH
         cabal-fmt -i *.cabal
         cabal-fmt -i subs/*/*.cabal
-        git --no-pager diff --exit-code
-
-    - name: Apply ormolu
-      run: |
-        export PATH=~/.cabal/bin/:$PATH
-        ormolu -o -XTypeApplications -o -XBangPatterns --mode inplace $(find app bench src subs -type f -name "*.hs")
+        cabal-fmt -n cabal.project
         git --no-pager diff --exit-code

@@ -8,12 +8,12 @@ insert cmp l y = snd $ foldr f e l
   where
     e = ([], [y])
     f hd acc@(rest, restwithe) =
-      let newrest = hd:rest
+      let newrest = hd : rest
           newrestwithe =
             if cmp y hd
-              then y:newrest
-              else hd:restwithe
-      in (newrest, newrestwithe)
+              then y : newrest
+              else hd : restwithe
+       in (newrest, newrestwithe)
 
 ex :: [Int]
-ex = sort (<=) [3,2,6,1,4]
+ex = sort (<=) [3, 2, 6, 1, 4]

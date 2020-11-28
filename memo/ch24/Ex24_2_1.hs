@@ -3,22 +3,25 @@
 {-# LANGUAGE RecordWildCards #-}
 
 data Stack where
-  Stack :: forall a.
-    { new     :: a
-    , push    :: Int -> a -> a
-    , top     :: a -> Int
-    , pop     :: a -> a
-    , isEmpty :: a -> Bool
-    } -> Stack
+  Stack ::
+    forall a.
+    { new :: a,
+      push :: Int -> a -> a,
+      top :: a -> Int,
+      pop :: a -> a,
+      isEmpty :: a -> Bool
+    } ->
+    Stack
 
 stackADT :: Stack
-stackADT = Stack
-  { new     = []
-  , push    = (:)
-  , top     = head
-  , pop     = tail
-  , isEmpty = null
-  }
+stackADT =
+  Stack
+    { new = [],
+      push = (:),
+      top = head,
+      pop = tail,
+      isEmpty = null
+    }
 
 -- λ> stackEx
 -- 2

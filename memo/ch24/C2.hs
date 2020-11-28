@@ -8,9 +8,9 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-import Prelude hiding ((.))
 import Data.Function hiding ((.))
 import Data.Kind
+import Prelude hiding ((.))
 
 (.) :: a -> (a -> b) -> b
 (.) = (&)
@@ -22,55 +22,66 @@ class Class c a where
   data Methods c a :: Type
 
 data ClassDef c a = ClassDef
-  { state :: a
-  , methods :: Methods c a
+  { state :: a,
+    methods :: Methods c a
   }
 
 data Counter
+
 instance Class Counter a where
   data Methods Counter a where
-    CounterM :: forall a. Class Counter a =>
-      { get :: a -> Int
-      , inc :: a -> a
-      } -> Methods Counter a
+    CounterM ::
+      forall a.
+      Class Counter a =>
+      { get :: a -> Int,
+        inc :: a -> a
+      } ->
+      Methods Counter a
 
 c :: ClassDef Counter Int
-c = ClassDef
-  { state = 1
-  , methods = CounterM { get = id, inc = (+1) }
-  }
+c =
+  ClassDef
+    { state = 1,
+      methods = CounterM {get = id, inc = (+ 1)}
+    }
 
 -- λ> c.sendGet
 -- 1
 sendGet :: ClassDef Counter a -> Int
 sendGet = \case
-  ClassDef {..} -> methods & \case
-    CounterM {..} -> get state
+  ClassDef {..} ->
+    methods & \case
+      CounterM {..} -> get state
 
 -- λ> c.sendInc.sendInc.sendGet
 -- 3
 sendInc :: ClassDef Counter a -> ClassDef Counter a
 sendInc = \case
-  ClassDef {..} -> methods & \case
-    CounterM {..} ->
-      ClassDef
-        { state = inc state
-        , methods = methods
-        }
+  ClassDef {..} ->
+    methods & \case
+      CounterM {..} ->
+        ClassDef
+          { state = inc state,
+            methods = methods
+          }
 
 data SubCounter
+
 instance Class Counter a => Class SubCounter a where
   data Methods SubCounter a where
-    SubCounterM :: forall a. Class Counter a =>
+    SubCounterM ::
+      forall a.
+      Class Counter a =>
       { dec :: a -> a
-      } -> Methods SubCounter a
+      } ->
+      Methods SubCounter a
 
 subc :: ClassDef SubCounter Int
-subc = ClassDef
-  { state = 1
-  , methods = SubCounterM { dec = subtract 1 }
-  }
-
+subc =
+  ClassDef
+    { state = 1,
+      methods = SubCounterM {dec = subtract 1}
+    }
 
 -- instance Class Counter a => Class SubCounter a where
 --   data Methods SubCounter a where

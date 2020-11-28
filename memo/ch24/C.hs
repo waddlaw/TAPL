@@ -8,9 +8,9 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 
-import Prelude hiding ((.))
 import Data.Function hiding ((.))
 import Data.Kind
+import Prelude hiding ((.))
 
 (.) :: a -> (a -> b) -> b
 (.) = (&)
@@ -24,84 +24,100 @@ class Class c a where
   m = error "Not exists method definition"
 
 data Counter where
-  Counter :: forall a. Class Counter a =>
-    { state   :: a
-    , methods :: Methods Counter a
-    } -> Counter
+  Counter ::
+    forall a.
+    Class Counter a =>
+    { state :: a,
+      methods :: Methods Counter a
+    } ->
+    Counter
 
 instance Class Counter a where
-  data Methods Counter a
-    = M1 { get :: a -> Int
-         , inc :: a -> a
-         }
+  data Methods Counter a = M1
+    { get :: a -> Int,
+      inc :: a -> a
+    }
 
 c :: Counter
-c = Counter
-  { state = 1 :: Int
-  , methods = M1 { get = id, inc = (+1) }
-  }
+c =
+  Counter
+    { state = 1 :: Int,
+      methods = M1 {get = id, inc = (+ 1)}
+    }
 
 -- λ> c.sendGet
 -- 1
 sendGet :: Counter -> Int
 sendGet = \case
-  Counter {..} -> methods & \case
-    M1 {..} -> get state
+  Counter {..} ->
+    methods & \case
+      M1 {..} -> get state
 
 -- λ> c.sendInc.sendInc.sendGet
 -- 3
 sendInc :: Counter -> Counter
 sendInc = \case
-  Counter {..} -> methods & \case
-    M1 {..} ->
-      Counter
-        { state = inc state
-        , methods = methods
-        }
+  Counter {..} ->
+    methods & \case
+      M1 {..} ->
+        Counter
+          { state = inc state,
+            methods = methods
+          }
 
 data FlipFlop where
-  FlipFlop :: forall a. Class FlipFlop a =>
-    { stateFF  :: a
-    , methodsFF :: Methods FlipFlop a
-    } -> FlipFlop
+  FlipFlop ::
+    forall a.
+    Class FlipFlop a =>
+    { stateFF :: a,
+      methodsFF :: Methods FlipFlop a
+    } ->
+    FlipFlop
 
 instance Class FlipFlop a where
-  data Methods FlipFlop a
-    = M2 { read   :: a -> Bool
-         , toggle :: a -> a
-         , reset  :: a -> a
-         }
+  data Methods FlipFlop a = M2
+    { read :: a -> Bool,
+      toggle :: a -> a,
+      reset :: a -> a
+    }
 
 flipflop :: FlipFlop
-flipflop = FlipFlop
-  { stateFF  = c
-  , methodsFF = M2
-                { read   = even ∘ sendGet
-                , toggle = sendInc
-                , reset  = const c
-                }
-  }
+flipflop =
+  FlipFlop
+    { stateFF = c,
+      methodsFF =
+        M2
+          { read = even ∘ sendGet,
+            toggle = sendInc,
+            reset = const c
+          }
+    }
 
 sendRead :: FlipFlop -> Bool
 sendRead = \case
-  FlipFlop {..} -> methodsFF & \case
-    M2 {..} -> read stateFF
+  FlipFlop {..} ->
+    methodsFF & \case
+      M2 {..} -> read stateFF
 
 sendToggle :: FlipFlop -> FlipFlop
 sendToggle = \case
-  FlipFlop {..} -> methodsFF & \case
-    M2 {..} -> FlipFlop
-      { stateFF   = toggle stateFF
-      , methodsFF = methodsFF
-      }
+  FlipFlop {..} ->
+    methodsFF & \case
+      M2 {..} ->
+        FlipFlop
+          { stateFF = toggle stateFF,
+            methodsFF = methodsFF
+          }
 
 sendReset :: FlipFlop -> FlipFlop
 sendReset = \case
-  FlipFlop {..} -> methodsFF & \case
-    M2 {..} -> FlipFlop
-      { stateFF   = reset stateFF
-      , methodsFF = methodsFF
-      }
+  FlipFlop {..} ->
+    methodsFF & \case
+      M2 {..} ->
+        FlipFlop
+          { stateFF = reset stateFF,
+            methodsFF = methodsFF
+          }
 
 {-
 λ> flipflop.sendToggle.sendToggle.sendRead
@@ -119,12 +135,16 @@ True
 --     } -> SubCounter
 
 data SubCounter
+
 instance Class Counter a => Class SubCounter a where
   data Methods SubCounter a where
-    SubCounter :: forall a. Class SubCounter a =>
-      { state' :: a
-      , methods' :: Methods SubCounter a
-      } -> Methods SubCounter a
+    SubCounter ::
+      forall a.
+      Class SubCounter a =>
+      { state' :: a,
+        methods' :: Methods SubCounter a
+      } ->
+      Methods SubCounter a
 
 -- sendDec :: SubCounter -> SubCounter
 -- sendDec = \case

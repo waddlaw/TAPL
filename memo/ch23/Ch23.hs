@@ -1,9 +1,10 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
+
 module Ch23 where
 
-import Prelude hiding (map, null, reverse)
 import Data.Function
+import Prelude hiding (map, null, reverse)
 
 null :: [a] -> Bool
 null [] = True
@@ -22,8 +23,10 @@ map :: forall x y. (x -> y) -> [x] -> [y]
 map (f :: x -> y) = fix $ \(m :: [x] -> [y]) (l :: [x]) ->
   if null @x l
     then [] @y
-    else (:) @y (f (head @x l))
-                (m (tail @x l))
+    else
+      (:) @y
+        (f (head @x l))
+        (m (tail @x l))
 
 {-
 reverse :: [a] -> [a]
@@ -36,11 +39,13 @@ reverse = go []
 reverse :: forall a. [a] -> [a]
 reverse =
   let go = fix $ \(m :: [x] -> [x] -> [x]) (acc :: [x]) (l :: [x]) ->
-            if null @x l
-              then acc
-              else m ((:) @x (head @x l) acc)
-                             (tail @x l)
-  in go []
+        if null @x l
+          then acc
+          else
+            m
+              ((:) @x (head @x l) acc)
+              (tail @x l)
+   in go []
 
 {- ex23.4.3 (O(n) バージョン)
 reverse = let go =
@@ -68,8 +73,11 @@ isort :: forall a. (a -> a -> Bool) -> [a] -> [a]
 isort cmp = fix $ \(m :: [a] -> [a]) (xs :: [a]) ->
   if null @a xs
     then [] @a
-    else insert @a cmp (head @a xs)
-                       (m (tail @a xs))
+    else
+      insert @a
+        cmp
+        (head @a xs)
+        (m (tail @a xs))
 
 {-
 isort = \X.
@@ -97,10 +105,13 @@ insert :: forall a. (a -> a -> Bool) -> a -> [a] -> [a]
 insert cmp x = fix $ \(m :: [a] -> [a]) (ys :: [a]) ->
   if null @a ys
     then (:) @a x ([] @a)
-    else if cmp x (head @a ys)
-            then (:) @a x ys
-            else (:) @a (head @a ys)
-                        (m (tail @a ys))
+    else
+      if cmp x (head @a ys)
+        then (:) @a x ys
+        else
+          (:) @a
+            (head @a ys)
+            (m (tail @a ys))
 
 {-
 insert = \X.

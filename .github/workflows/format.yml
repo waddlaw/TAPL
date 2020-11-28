@@ -16,6 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: mrkkrp/ormolu-action@v1
+      with:
+        extra-args: "-o -XTypeApplications -o -XBangPatterns"
 
   cabal-fmt:
     runs-on: ubuntu-18.04

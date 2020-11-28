@@ -12,11 +12,8 @@ packages:
   ./subs/systemf
 
 with-compiler: ghc-8.10.2
-index-state: 2020-11-28T02:00:03Z
-
-allow-newer:
-  base-noprelude:base
-
+index-state:   2020-11-28T02:00:03Z
+allow-newer:   base-noprelude:base
 constraints:
   base ^>=4.14,
   base-noprelude ^>=4.13,

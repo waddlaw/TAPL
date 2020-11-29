@@ -75,7 +75,6 @@ test_ul =
         reduceNormalOrder (TmApp (TmLam "x" "x") "y") @?= TmVar "y"
         reduceNormalOrder UL.example6 @?= TmApp (TmApp "u" "r") (TmLam "x" "x")
         reduceNormalOrder (TmApp (TmLam "x" (TmLam "y" (TmApp "x" "y"))) "z") @?= TmLam "y" (TmApp "z" "y")
-        -- 評価戦略の共通の例
         reduceNormalOrder UL.example3 @?= TmApp id (TmLam "z" (TmApp id "z"))
         reduceNormalOrder (TmApp id (TmLam "z" (TmApp id "z"))) @?= TmLam "z" (TmApp id "z")
         reduceNormalOrder (TmLam "z" (TmApp id "z")) @?= TmLam "z" "z"
@@ -100,7 +99,7 @@ test_ul =
         size "x" @?= 1
         size (TmApp "x" "x") @?= 2,
       testCase "removenames" $ do
-        -- 演習6.1.1
+        -- Ex6.1.1
         removenames [] (c 0) @?= NlTmLam (NlTmLam "0")
         removenames [] (c 2) @?= NlTmLam (NlTmLam (NlTmApp "1" (NlTmApp "1" "0")))
         removenames [] plus @?= NlTmLam (NlTmLam (NlTmLam (NlTmLam (NlTmApp (NlTmApp "3" "1") (NlTmApp (NlTmApp "2" "1") "0")))))
@@ -120,7 +119,7 @@ test_ul =
         shift 0 2 (NlTmLam $ NlTmLam $ NlTmApp "1" (NlTmApp "0" "2")) @?= NlTmLam (NlTmLam $ NlTmApp "1" (NlTmApp "0" "4"))
         shift 0 2 (NlTmLam $ NlTmApp (NlTmApp "0" "1") (NlTmLam $ NlTmApp (NlTmApp "0" "1") "2")) @?= NlTmLam (NlTmApp (NlTmApp "0" "3") (NlTmLam $ NlTmApp (NlTmApp "0" "1") "4")),
       testCase "namelessSubst" $ do
-        -- 演習6.2.5
+        -- Ex6.2.5
         let g = ["b", "a"]
         let t1 = TmApp "b" (TmLam "x" $ TmLam "y" "b")
             k1 = getNlTermVar $ removenames g "b"
